@@ -1,7 +1,7 @@
 
 ## Comprehensive Genome - wide Protein-DNA interactions Detected at Single-Nucleotide Resolution
 
-## Note:
+#### Note
 
 A sketch of the steps followed by the ChIP-Exo protocol is on the notes of  Rhee & Pugh, 2012.
 
