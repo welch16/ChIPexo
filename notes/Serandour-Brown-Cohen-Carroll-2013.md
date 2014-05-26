@@ -1,9 +1,9 @@
 
-### Development of an Ilumina-based ChI-exonuclease method provides insight into FoxA1-DNA binding properties
+## Development of an Ilumina-based ChI-exonuclease method provides insight into FoxA1-DNA binding properties
 
-Thei main resul is that ChIP-Exo outperforms ChIP-Seq in all the measures they choose. 
+The main resul is that ChIP-Exo outperforms ChIP-Seq in all the measures they choose. 
 
-## Results
+### Results
 
 The authors adapted another ChIP-Seq method (different from Pugh's original metethod).
 
