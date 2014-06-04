@@ -1,0 +1,127 @@
+ssh jgrass@scarcity-6.glbrc.org
+
+ssh jgrass@scarcity-5.glbrc.org
+
+# se data for ChIPexo
+
+#####
+
+# R1 = run423.edsn-1321-cult-1202-ChIPexo-20minRif-BetaPrimeFLAG_CTTGTA_L001_R1.fastq 
+
+# edsn#### = 1321_p2
+
+# run# = 423
+
+#####
+
+# mkdir run423_ChIPexo_results__2013_12_04 # need to only do once
+
+mkdir edsn1321_p2
+
+cd *fas
+cp *fa /home/GLBRCORG/jgrass/edsn1321_p2
+cp RL* /home/GLBRCORG/jgrass/edsn1321_p2
+
+cd /home/GLBRCORG/jgrass/*run423
+cp *1321*_R1.fastq.gz /home/GLBRCORG/jgrass/edsn1321_p2
+
+cd /home/GLBRCORG/jgrass/edsn1321_p2
+
+gzip -d *_R1.fastq.gz
+
+#####
+
+# Pre-QC:
+
+fastqc run423.edsn-1321-cult-1202-ChIPexo-20minRif-BetaPrimeFLAG_CTTGTA_L001_R1.fastq
+
+##### From R: ### at most 3-4 in parallel
+
+R ## to enter R
+
+# need "JGI.clean2.fa" present in the folder
+
+### for ChIPseq
+# SLIDINGWINDOW:3:26 MINLEN:25 ### less stringent SLIDINGWINDOW:3:30 MINLEN:36 ### more stringent
+
+### for ChIPexo or TSS
+# headcrop=0, targetQ=0, minlen=0 -- (this will leave the reads as is)
+# headcrop=0, targetQ=26, minlen=25 -- (This way, you'll remove the low-quality stuff from the 3'-end and will have the 5'-end intact)
+
+### assembling Trimmomatic system commands, extended to SE mode, trim versions and more trim parameters: target quality (targetQ) and minimal length of the trimmed read (minlen): 
+
+trimAssemble <- function(leftDirtyName, rightDirtyName=NULL, trimPath, qScore, headcrop=12, artifactsFile, myVersion, libMode, targetQ, minlen) {
+dashqScore <- paste("-", qScore, sep="")
+logName <- paste(leftDirtyName, "pairedtrim.log", sep=".")
+pairedTrimmed.1 <- paste("p", myVersion, ".", leftDirtyName, sep="")
+unpairedTrimmed.1 <- paste("u", myVersion, ".",  leftDirtyName, sep="")
+pairedTrimmed.2 <- paste("p",  myVersion, ".", rightDirtyName, sep="")
+unpairedTrimmed.2 <- paste("u", myVersion, ".", rightDirtyName, sep="") 
+trimParam <- paste("ILLUMINACLIP:", artifactsFile, ":2:30:10", " HEADCROP:", headcrop, " SLIDINGWINDOW:3:", targetQ, " MINLEN:", minlen, sep="")
+if (libMode == "PE") tcomm <- paste("java -jar", trimPath, "PE -threads 20", dashqScore, "-trimlog", logName, leftDirtyName, rightDirtyName, pairedTrimmed.1, unpairedTrimmed.1, pairedTrimmed.2, unpairedTrimmed.2, trimParam)
+if (libMode == "SE")  tcomm <- paste("java -jar", trimPath, "SE -threads 20", dashqScore, "-trimlog", logName, leftDirtyName, pairedTrimmed.1, trimParam)
+tcomm }
+###
+trimcomm <- trimAssemble("run423.edsn-1321-cult-1202-ChIPexo-20minRif-BetaPrimeFLAG_CTTGTA_L001_R1.fastq", trimPath='/opt/bifxapps/Trimmomatic-0.30/trimmomatic-0.30.jar', qScore="phred33", headcrop=0, artifactsFile="JGI.clean2.fa", myVersion="2", libMode="SE", targetQ=26, minlen=25)
+system(paste(trimcomm, "&"))
+
+# the folloing lines will appear when trimming is complete
+
+# > Input Reads: 23261985 Surviving: 22332347 (96.00%) Dropped: 929638 (4.00%)
+
+q() ## to exit R
+
+Save workspace image? [y/n/c]: # n
+
+##  p. ## read pairs that pass trimming
+
+##  u. ## read pairs that un-pass (do not pass) trimming
+
+###### 
+
+bwa index RL3000_rl111612jg.fas
+
+#
+
+bwa aln RL3000_rl111612jg.fas p2.run423.edsn-1321-cult-1202-ChIPexo-20minRif-BetaPrimeFLAG_CTTGTA_L001_R1.fastq > edsn1321_p2_Left.sai
+
+#
+
+bwa samse RL3000_rl111612jg.fas edsn1321_p2_Left.sai p2.run423.edsn-1321-cult-1202-ChIPexo-20minRif-BetaPrimeFLAG_CTTGTA_L001_R1.fastq > edsn1321_p2_qc.unsorted.sam 
+
+#
+
+samtools view -uS -t RL3000_rl111612jg.fas edsn1321_p2_qc.unsorted.sam | samtools sort - edsn1321_p2_qc.sorted
+
+#
+
+samtools index edsn1321_p2_qc.sorted.bam
+
+#
+
+cp edsn1321_p2_qc.sorted.* /home/GLBRCORG/jgrass/run423_ChIPexo_results__2013_12_04
+
+# cd /home/GLBRCORG/jgrass/run423_ChIPexo_results
+
+#
+
+smbclient --user=GLBRCORG\\jgrass //file.glbrc.org/shared/
+
+cd "3.1.4 Redime"\Private\GLBRC_data_Jeff\__Data\ChIP-seq_data
+
+# edsn1321_p2_qc.sorted.bam
+# edsn1321_p2_qc.sorted.bam.bai
+
+#####
+
+# BioChem server
+
+ssh -Y jagrass@landick-1.biochem.wisc.edu
+
+/opt/biotoolbox/scripts/bam2wig.pl --pos start --strand --rpm --in edsn1321_p2_qc.sorted.bam
+
+### 21,650,164 total mapped fragments
+
+#####
+##### end of file
+#####

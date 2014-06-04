@@ -1,0 +1,128 @@
+ssh jgrass@scarcity-6.glbrc.org
+
+ssh jgrass@scarcity-5.glbrc.org
+
+# run alignment with ### SLIDINGWINDOW:3:26 MINLEN:25 ### less stringent
+
+# Now we have scarcity-1, 2... and up to 9 available, and "lower" machines may be less (ab)used and will give better runs for non-RAM-intensive tasks (Trimmomati does not require huge RAM allocation). - OM
+
+#####
+
+# R1 = run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R1.fastq 
+
+# R2 = run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R2.fastq
+
+# edsn#### = edsn1398
+
+#####
+
+# mkdir run423_results # need to only do once
+
+mkdir edsn1398
+
+cd *fas
+cp *fa /home/GLBRCORG/jgrass/edsn1398
+cp RL* /home/GLBRCORG/jgrass/edsn1398
+
+cd ..
+cd *run423
+cp *1398*.gz /home/GLBRCORG/jgrass/edsn1398
+
+cd  /home/GLBRCORG/jgrass/edsn1398
+
+gzip -d *.gz
+
+#####
+
+# Pre-QC:
+
+fastqc run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R1.fastq run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R2.fastq
+
+##### From R: ### at most 3-4 in parallel
+
+R ## to enter R
+
+# need "JGI.clean2.fa" present in the folder
+
+# SLIDINGWINDOW:3:26 MINLEN:25 ### less stringent SLIDINGWINDOW:3:30 MINLEN:36 ### more stringent
+
+### assembling Trimmomatic system commands: 
+trimAssemble <- function(leftDirtyName, rightDirtyName, trimPath, qScore, headcrop=12, artifactsFile, myVersion) {
+dashqScore <- paste("-", qScore, sep="")
+logName <- paste(leftDirtyName, "pairedtrim.log", sep=".")
+pairedTrimmed.1 <- paste("p", myVersion, ".",leftDirtyName, sep="")
+unpairedTrimmed.1 <- paste("u", myVersion, ".",leftDirtyName, sep="")
+pairedTrimmed.2 <- paste("p", myVersion, ".", rightDirtyName, sep="")
+unpairedTrimmed.2 <- paste("u", myVersion, ".", rightDirtyName, sep="") 
+# trimParam <- paste("HEADCROP:", headcrop, " SLIDINGWINDOW:3:30 MINLEN:36 CROP:", crop, sep="")
+trimParam <- paste("ILLUMINACLIP:", artifactsFile, ":2:30:10", " HEADCROP:", headcrop, " SLIDINGWINDOW:3:26 MINLEN:25", sep="")
+tcomm <- paste("java -jar", trimPath, "PE -threads 20", dashqScore, "-trimlog", logName, leftDirtyName, rightDirtyName, pairedTrimmed.1, unpairedTrimmed.1, pairedTrimmed.2, unpairedTrimmed.2, trimParam)
+tcomm }
+#
+
+# change "1" to "2" if doing more than one setting for trimming
+
+trimcomm <- trimAssemble("run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R1.fastq", "run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R2.fastq", '/opt/bifxapps/Trimmomatic-0.30/trimmomatic-0.30.jar', "phred33", headcrop=12, "JGI.clean2.fa", "1")
+system(paste(trimcomm, "&"))
+
+# the folloing lines will appear when trimming is complete
+
+# > Input Read Pairs: 14985772 Both Surviving: 6531384 (43.58%) Forward Only Surviving: 5061549 (33.78%) Reverse Only Surviving: 299762 (2.00%) Dropped: 3093077 (20.64%)
+
+q() ## to exit R
+
+Save workspace image? [y/n/c]: # n
+
+##  p. ## read pairs that pass trimming
+
+##  u. ## read pairs that un-pass (do not pass) trimming
+
+###### 
+
+bwa index RL3000_rl111612jg.fas
+
+#
+
+bwa aln RL3000_rl111612jg.fas p1.run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R1.fastq > edsn1398_Left.sai &
+bwa aln RL3000_rl111612jg.fas p1.run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R2.fastq > edsn1398_Right.sai &
+
+#
+
+bwa sampe RL3000_rl111612jg.fas edsn1398_Left.sai edsn1398_Right.sai p1.run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R1.fastq p1.run423.edsn-1398-cult-1197-ChIPseqIP-20minRif-Sigma70_GTTTCG_L002_R2.fastq > edsn1398_qc.unsorted.sam & 
+
+#
+
+samtools view -uS -t RL3000_rl111612jg.fas edsn1398_qc.unsorted.sam | samtools sort - edsn1398_qc.sorted &
+
+#
+
+samtools index edsn1398_qc.sorted.bam &
+
+#
+
+cp edsn1398_qc.sorted.* /home/GLBRCORG/jgrass/run423_results
+
+# cd /home/GLBRCORG/jgrass/run423_results
+
+#
+
+smbclient --user=GLBRCORG\\jgrass //file.glbrc.org/shared/
+
+cd "3.1.4 Redime"/Private/GLBRC_data_Jeff
+
+# edsn1398_qc.sorted.bam
+# edsn1398_qc.sorted.bam.bai
+
+#####
+
+# BioChem server
+
+ssh -Y jagrass@landick-1.biochem.wisc.edu
+
+/opt/biotoolbox/scripts/bam2wig.pl --pos mid --pe --rpm --in edsn1398_qc.sorted.bam
+
+### 6,376,565 total mapped fragments
+
+#####
+##### end of file
+#####

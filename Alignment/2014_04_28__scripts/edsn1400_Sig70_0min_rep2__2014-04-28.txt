@@ -1,0 +1,116 @@
+ssh jgrass@scarcity-6.glbrc.org
+
+ssh jgrass@scarcity-5.glbrc.org
+
+# run alignment with ### SLIDINGWINDOW:3:26 MINLEN:25 ### less stringent
+
+# Now we have scarcity-1, 2... and up to 9 available, and "lower" machines may be less (ab)used and will give better runs for non-RAM-intensive tasks (Trimmomati does not require huge RAM allocation). - OM
+
+#####
+
+# R1 = run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R1.fastq 
+
+# R2 = run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R2.fastq
+
+# edsn#### = edsn1400
+
+#####
+
+# mkdir run423_ChIPexo_mapping__2014-04-28 # need to only do once
+
+cd *2014-04-28
+
+# mkdir run423_ChIPexo_mapping__2014-04-28__bam_files # need to only do once
+
+mkdir edsn1400_042814
+
+cd /home/GLBRCORG/jgrass/template-fas
+cp JGI.clean2.fa /home/GLBRCORG/jgrass/run423_ChIPexo_mapping__2014-04-28/edsn1400_042814  
+cp E.coli_K-12_MG1655_GENOME.fa /home/GLBRCORG/jgrass/run423_ChIPexo_mapping__2014-04-28/edsn1400_042814
+
+cd /home/GLBRCORG/jgrass/*run423
+cp *1400*.fastq /home/GLBRCORG/jgrass/run423_ChIPexo_mapping__2014-04-28/edsn1400_042814
+
+cd /home/GLBRCORG/jgrass/run423_ChIPexo_mapping__2014-04-28/edsn1400_042814
+
+# gzip -d *.gz
+
+ls
+
+#####
+
+# Pre-QC:
+
+fastqc run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R1.fastq run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R2.fastq
+
+##### From R: ### at most 3-4 in parallel
+
+R ## to enter R
+
+# need "JGI.clean2.fa" present in the folder
+
+# SLIDINGWINDOW:3:26 MINLEN:25 ### less stringent SLIDINGWINDOW:3:30 MINLEN:36 ### more stringent
+
+### assembling Trimmomatic system commands: 
+trimAssemble <- function(leftDirtyName, rightDirtyName, trimPath, qScore, headcrop=12, artifactsFile, myVersion) {
+dashqScore <- paste("-", qScore, sep="")
+logName <- paste(leftDirtyName, "pairedtrim.log", sep=".")
+pairedTrimmed.1 <- paste("p", myVersion, ".",leftDirtyName, sep="")
+unpairedTrimmed.1 <- paste("u", myVersion, ".",leftDirtyName, sep="")
+pairedTrimmed.2 <- paste("p", myVersion, ".", rightDirtyName, sep="")
+unpairedTrimmed.2 <- paste("u", myVersion, ".", rightDirtyName, sep="") 
+# trimParam <- paste("HEADCROP:", headcrop, " SLIDINGWINDOW:3:30 MINLEN:36 CROP:", crop, sep="")
+trimParam <- paste("ILLUMINACLIP:", artifactsFile, ":2:30:10", " HEADCROP:", headcrop, " SLIDINGWINDOW:3:26 MINLEN:25", sep="")
+tcomm <- paste("java -jar", trimPath, "PE -threads 20", dashqScore, "-trimlog", logName, leftDirtyName, rightDirtyName, pairedTrimmed.1, unpairedTrimmed.1, pairedTrimmed.2, unpairedTrimmed.2, trimParam)
+tcomm }
+#
+
+# change "1" to "2" if doing more than one setting for trimming
+
+trimcomm <- trimAssemble("run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R1.fastq", "run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R2.fastq", '/opt/bifxapps/Trimmomatic-0.30/trimmomatic-0.30.jar', "phred33", headcrop=12, "JGI.clean2.fa", "1")
+system(paste(trimcomm, "&"))
+
+# the folloing lines will appear when trimming is complete
+
+# > Input Read Pairs: 9005641 Both Surviving: 4220683 (46.87%) Forward Only Surviving: 3035014 (33.70%) Reverse Only Surviving: 183440 (2.04%) Dropped: 1566504 (17.39%)
+
+q() ## to exit R
+
+Save workspace image? [y/n/c]: # n
+
+##  p. ## read pairs that pass trimming
+
+##  u. ## read pairs that un-pass (do not pass) trimming
+
+###### 
+
+bwa index E.coli_K-12_MG1655_GENOME.fa
+
+#
+
+bwa aln E.coli_K-12_MG1655_GENOME.fa p1.run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R1.fastq > edsn1400_042814_Left.sai
+bwa aln E.coli_K-12_MG1655_GENOME.fa p1.run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R2.fastq > edsn1400_042814_Right.sai
+
+#
+
+bwa sampe E.coli_K-12_MG1655_GENOME.fa edsn1400_042814_Left.sai edsn1400_042814_Right.sai p1.run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R1.fastq p1.run423.edsn-1400-cult-1202-ChIPseqIP-0minRif-Sigma70_GAGTGG_L002_R2.fastq > edsn1400_042814_qc.unsorted.sam
+
+#
+
+samtools view -uS -t E.coli_K-12_MG1655_GENOME.fa edsn1400_042814_qc.unsorted.sam | samtools sort - edsn1400_042814_qc.sorted
+
+#
+
+samtools index edsn1400_042814_qc.sorted.bam
+
+#
+
+cp edsn1400_042814_qc.sorted.* /home/GLBRCORG/jgrass/run423_ChIPexo_mapping__2014-04-28/run423_ChIPexo_mapping__2014-04-28__bam_files
+
+cd /home/GLBRCORG/jgrass/run423_ChIPexo_mapping__2014-04-28/run423_ChIPexo_mapping__2014-04-28__bam_files
+
+ls
+
+#####
+##### end of file
+#####
