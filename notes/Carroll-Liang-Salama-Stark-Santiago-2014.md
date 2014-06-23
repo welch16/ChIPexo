@@ -13,6 +13,10 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 
 ### Quality metrics and cross - correlation profiles
 
+- SSD metrics where calculated using [htSeqTools](http://www.bioconductor.org/packages/release/bioc/html/htSeqTools.html), this calculates dispersion measures dependend on the number of reads. Like the standard deviation or Gini's index. The idea is that by comparing this measures, inneficient inmunoprecipitation (due to antibody's quality) samples can be revealed. 
+- RSC (Relative Strand Cross - Correlation) and NSC (Normalized Strand Cross - Correlation) where calculated using [ccQualityControl](https://code.google.com/p/phantompeakqualtools/), the definitions of both measures must be [here](http://www.nature.com/nbt/journal/v26/n12/full/nbt.1508.html) or [here](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3931556/)
+
+
 
 
 [The paper can be downloaded from here](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00075/full)
