@@ -54,7 +54,13 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 
 	* D - For ER too. For the reads that are in peak regions, those are classified if they are duplicated or not. The cross - correlation plot for non - duplicated reads seems very similar to the one in C of peak reads, and the ones that are duplicated and in peaks, seem to have the same ghost peak signal as the duplicated cross correlation curve of C, but without showing the higher signal close to the peak cross correlation curve summit.
 
+- **Figure 8**: For this plot, the FSC (Fragment length Strand Cross - correlation - The cross correlation function evaluated at shift = estimated fragment length) and the RSC (Relative Strand Cross - correlation) are explored
 
+    * A and B - For both ENCODE (A) and CRUK (B) data, FSC is calculated before and after some filtering was applied (usually a blacklist, duplicated reads and both) and the log2 change is plotted in a boxplot. Usually there is an increase in the value of FSC which looks like a decrease in log2 (this happens becase cross correlation < 1)
+
+	* C and D - This is the same plot, except that instead of investigating the log2 change in FSC, the RSC is investigated.
+
+	* The effect of duplication is more notorious in the log2 change and the effect of blacklisting is more notorious in RSC
 	
 
 
