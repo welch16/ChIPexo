@@ -27,9 +27,18 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 #### Figures
 - Figure 2: For A and B the reads are classified as all (red) (*need to check if it means all reads or the reads that aren't duplicated or multi-mapped*), duplicated (blue) and multimapped (orange):
 
-..* A - In this figure, the authors showed that the reads for all the experiments analyzed in the blacklisted regions are either duplicated or multimapped.
-..* B - This are boxplots of the same classification of reads, checking the percentage of total reads in DAC regions. We can see that if we compare ChIP-seq vs ChIP-Exo the quantity is smaller for ChIP-Exo in the 3 categories (all, duplicated and multimapped)
-..* C - This are RPKM within blacklisted regions.
+    * A - In this figure, the authors showed that the reads for all the experiments analyzed in the blacklisted regions are either duplicated or multimapped.
+  
+    * B - This are boxplots of the same classification of reads, checking the percentage of total reads in DAC regions. We can see that if we compare ChIP-seq vs ChIP-Exo the quantity is smaller for ChIP-Exo in the 3 categories (all, duplicated and multimapped)
+	
+    * C - This are RPKM within blacklisted regions.
+
+- Figure 3: In this plots the quantity of interest if the SSD
+
+    * A - The SSD of ENCODE data is higher before being blacklisted
+
+	* B - The order in variability of the SSD is Input  < TF  < Histone
+
 
 
 
