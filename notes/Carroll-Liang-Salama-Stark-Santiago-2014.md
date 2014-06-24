@@ -66,13 +66,33 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 
     * A - For ER. There are two type of reads in this figure, the ones that belong to a peak region and the ones that belong to blacklisted regions. In particular, we can see that both experiment look alike for the cross-correlation profile made with blacklisted reads. However, for the case of reads that belong to peaks, we can see that the summit of the cross correlation plot happens at a much smaller shift. Therefore, we can think that the fragment length estimated by the cross correlation approach is going to be smaller.
 
-	* B - For FOXA1. In this figure, they are comparing the same but only for the ChIP-Seq experiment. Lets notice that the shape of the cross - correlation plot is very different than the usual (or at least the shape that we saw in A).
+    * B - For FOXA1. In this figure, they are comparing the same but only for the ChIP-Seq experiment. Lets notice that the shape of the cross - correlation plot is very different than the usual (or at least the shape that we saw in A).
 
 - **Figure 10**: For FOXA1 (ChIP-Exo), in this plot we can see that two the two filters (DAC blacklist and duplicated reads) were applied. In this case, there wasn't a noticeable effect of applying the blacklisting filter. However, after applying the duplication filter, there was a dramatic decrease on the overall level and the cross correlation curve presented a smoother shape.
 
+    *  In ChIP-Seq the use of RSC is confounded by the overlap between read length and fragment length. However, for a ChIP-Exo experiment the observation of loss in a predefined read length, could act as an indication of successful removal of artifact signal.
 
+### Conclusions
 
+#### For the measures presented
 
+- The removal of artifact signal can improve fragment length estimation
+
+- SSD metric is highly sensitive to high signal artifact regions. Due to this sensitivity can be used as a flag of the persistence of artifacts regions in input reads.
+
+- The RSC metric provides a measure of ChIP to artifact signal, but the removal of blacklisted regions has been shown to eliminate the presence of the artifact peak which can oscure the RSC analysis. The assesment of RSC should be performed prior to blacklisting, to confirm the loss of the read length peak within the cross correlation profile.
+
+- Dupplicated reads contributes to both artifact and peaks signals, therefore its removal must be carefully considered in each case.
+
+- Recomendation: Assesment of RSC and NSC prior to blacklisting or duplicate removal and SSD before and after this steps to capture the extent and succes of this steps.
+
+#### For ChIP - Exo
+
+- The degree of blacklisted signal presents to be lower under this protocol.
+
+- The significant loss of ChIP related signal within cross correlation following removal of duplicated reads illustrates its greater contribution to ChIP-Exo enrichment signal. The removal of blacklists but the retention of duplicated reads is recomended by the authors.
+
+- The use of standard cross correlation analysis is confounded by the co-ocurrence of read and fragment length cross-correlation peaks. This prohibits the use of the RSC metric, but an adapted NSC metric may be generated as the extent of maximum cross - correlation within this profile over the background cross - correlation following the blacklisting of aberrant signal.
 
 
 [The paper can be downloaded from here](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00075/full)
