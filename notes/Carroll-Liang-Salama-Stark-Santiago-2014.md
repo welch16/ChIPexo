@@ -61,7 +61,13 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 	* C and D - This is the same plot, except that instead of investigating the log2 change in FSC, the RSC is investigated.
 
 	* The effect of duplication is more notorious in the log2 change and the effect of blacklisting is more notorious in RSC
-	
 
+- **Figure 9**: The idea of this figure is to compare the effects of blacklisting on the cross - correlation plot between a ChIP-Seq and a ChIP-Exo experiment
+
+    * A - There are two type of reads in this figure, the ones that belong to a peak region and the ones that belong to blacklisted regions. In particular, we can see that both experiment look alike for the cross-correlation profile made with blacklisted reads. However, for the case of reads that belong to peaks, we can see that the summit of the cross correlation plot happens at a much smaller shift. Therefore, we can think that the fragment length estimated by the cross correlation approach is going to be smaller.
+
+	* B - In this figure, they are comparing the same but only for the ChIP-Seq experiment. Lets notice that the shape of the cross - correlation plot is very different than the usual (or at least the shape that we saw in A).
+	
+	
 
 [The paper can be downloaded from here](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00075/full)
