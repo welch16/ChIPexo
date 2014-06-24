@@ -26,7 +26,7 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 
 #### Figures
 
-- Figure 2: For A and B the reads are classified as all (red) (*need to check if it means all reads or the reads that aren't duplicated or multi-mapped*), duplicated (blue) and multimapped (orange):
+- **Figure 2**: For A and B the reads are classified as all (red) (*need to check if it means all reads or the reads that aren't duplicated or multi-mapped*), duplicated (blue) and multimapped (orange):
 
     * A - In this figure, the authors showed that the reads for all the experiments analyzed in the blacklisted regions are either duplicated or multimapped.
   
@@ -34,18 +34,17 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 	
     * C - This are RPKM within blacklisted regions.
 
-- Figure 3: In this plots the quantity of interest if the SSD
+- **Figure 3**: In this plots the quantity of interest if the SSD
 
     * A - The SSD of ENCODE data is higher before being blacklisted
 
 	* B - The order in variability of the SSD is Input  < TF  < Histone
 
-- Figure 4: Illustration of extension of fragment length in both strands
+- **Figure 4**: Illustration of extension of fragment length in both strands
 
-- Figure 5: Example and explanation of the estimation of fragment length by the cross - correlation approach
+- **Figure 5**: Example and explanation of the estimation of fragment length by the cross - correlation approach
 
-- Figure 6: Scatter plots of the estimated fragment length before and after blacklisting
-
+- **Figure 6**: Scatter plots of the estimated fragment length before (the state is defined as the y axis) and after blacklisting (respect to x axis). For example, on the first panel the x-axis are the fragment length estimated after blacklisting with the DER blacklist and the y axis corresponds to the fragment lengths estimated using all the reads.
 
 
 
