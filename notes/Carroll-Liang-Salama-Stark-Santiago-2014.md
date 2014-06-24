@@ -46,6 +46,16 @@ The authors considered 3 blacklisted regions from where the first two can be dow
 
 - **Figure 6**: Scatter plots of the estimated fragment length before (the state is defined as the y axis) and after blacklisting (respect to x axis). For example, on the first panel the x-axis are the fragment length estimated after blacklisting with the DER blacklist and the y axis corresponds to the fragment lengths estimated using all the reads.
 
+- **Figure 7**: This are cross correlation plots for several TF's.
+
+    * A and B - For c-MYC and CTCF (respectively) those are the cc-plots, without any filter, removing DAC blacklist, removing duplicated reads and both at the same time. For both cases, the ghost peak seems to appear because of the duplicated reads.
+
+	* C - For ER. This plot compares the cross - correlation of different type of reads: The ones in peaks, the ones which are duplicated and the ones that are blacklisted (by DAC). In this case, there is a strong signal in the peak reads, and the ghost peak signal seems to be stronger in the other two cases.
+
+	* D - For ER too. For the reads that are in peak regions, those are classified if they are duplicated or not. The cross - correlation plot for non - duplicated reads seems very similar to the one in C of peak reads, and the ones that are duplicated and in peaks, seem to have the same ghost peak signal as the duplicated cross correlation curve of C, but without showing the higher signal close to the peak cross correlation curve summit.
+
+
+	
 
 
 [The paper can be downloaded from here](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00075/full)
