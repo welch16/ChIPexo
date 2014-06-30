@@ -54,7 +54,9 @@ PBC <- function(file)
 ### Figures
 
 **Figure 1**
+
 ![plot of chunk overall_boxplot](figure/overall_boxplot.png) 
+
 Some observations on the figure:
 - The overall level of the ChIP-Exo's PBC coefficients is lower than the level of the other two ChIP-Seq labels
 - The range of the ChIP-Exo's PBC coefficients is also smaller than other two ranges. In particular, the range of the PET coefficients is smaller than the range of the SET coefficients.
