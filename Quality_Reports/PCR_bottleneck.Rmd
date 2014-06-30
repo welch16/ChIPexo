@@ -73,19 +73,33 @@ tab[[3]]$type = "ChIP-Exo"
 ```
 ### Figures
 
-**Figure 1**
+#### Figure 1
 
 ```{r overall_boxplot,include = TRUE,echo = FALSE,results = "hide",fig.height = 4,fig.width = 4}
 df = do.call(rbind,tab)
 df$type = factor(df$type)
-p <- ggplot(df,aes(type,PBC))+geom_boxplot(aes(fill = type))+
+p <- ggplot(df,aes(type,PBC))+geom_boxplot()+
    theme(legend.position = "none",axis.text.x = element_text(angle = 90))
 print(p)
 ```
 
-Some observations on the figure:
+We can see:
 - The overall level of the ChIP-Exo's PBC coefficients is lower than the level of the other two ChIP-Seq labels
-- The range of the ChIP-Exo's PBC coefficients is also smaller than other two ranges. In particular, the range of the PET coefficients is smaller than the range of the SET coefficients.
+- The range of the ChIP-Exo's PBC coefficients is also smaller than other two ranges. In particular, the interquartile range of the PET coefficients is smaller than the interquartile range of the SET coefficients.
+
+#### Figure 2
+
+```{r boxplot_strand,include = TRUE,echo = FALSE,results = "hide",fig.height = 4,fig.width = 12}
+tab1 = lapply(tab,function(x)rbind(data.frame(type = x$type,PBC = x$PBC_plus,strand = "+"),
+  data.frame(type = x$type,PBC = x$PBC_minus,strand = "-")))
+df1 = do.call(rbind,tab1)
+df1$type = factor(df1$type)
+df1$strand = factor(df1$strand)
+p1 <- ggplot(df1,aes(strand,PBC))+geom_boxplot()+facet_grid(.~type)+
+  theme(legend.position = "none",axis.text.x = element_text(angle =90))
+print(p1)
+```
+
 
 
 ### Tables
