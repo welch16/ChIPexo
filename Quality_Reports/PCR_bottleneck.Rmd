@@ -1,7 +1,12 @@
 
 ## PCR bottleneck report
 
-### PCR bottleneck
+### Index
+
+[PCR bottleneck](#Def)
+
+
+### PCR bottleneck [Def] ##
 
 ```{r package_options, include=FALSE}
 opts_knit$set(progress = TRUE, verbose = TRUE)
