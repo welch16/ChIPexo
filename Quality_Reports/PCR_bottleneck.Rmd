@@ -89,7 +89,7 @@ We can see:
 
 #### Figure 2
 
-```{r boxplot_strand,include = TRUE,echo = FALSE,results = "hide",fig.height = 4,fig.width = 12}
+```{r boxplot_strand,include = TRUE,echo = FALSE,results = "hide",fig.height = 4}
 tab1 = lapply(tab[3:1],function(x)rbind(data.frame(type = x$type,PBC = x$PBC_plus,strand = "+"),
   data.frame(type = x$type,PBC = x$PBC_minus,strand = "-")))
 df1 = do.call(rbind,tab1)
