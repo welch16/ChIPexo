@@ -4,7 +4,9 @@
 ### Index
 
 [PCR bottleneck](#PCR-bottleneck)
+
 [Code](#Code)
+
 [Figures](#Figures)
 
 
