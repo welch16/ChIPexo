@@ -1,15 +1,6 @@
 
 ## PCR bottleneck report
 
-### Index
-
-[PCR bottleneck](#PCR-bottleneck)
-
-[Code](#Code)
-
-[Figures](#Figures)
-
-
 ### PCR bottleneck		
 
 ```{r package_options, include=FALSE}
