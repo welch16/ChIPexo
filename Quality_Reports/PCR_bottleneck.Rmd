@@ -96,11 +96,12 @@ df1 = do.call(rbind,tab1)
 df1$type = factor(df1$type)
 df1$strand = factor(df1$strand)
 p1 <- ggplot(df1,aes(strand,PBC))+geom_boxplot()+facet_grid(.~type)+
-  theme(legend.position = "none",axis.text.x = element_text(angle =90))
+  theme(legend.position = "none")
 print(p1)
 ```
 
 - For this plot, the PBC coefficents was calculated using only the reads with certain strand. In particular, we can see that for all 3 types, the boxplots for both strands are very similar.
+- The observations of figure 1 hold for both strands.
 
 
 

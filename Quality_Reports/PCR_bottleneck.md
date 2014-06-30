@@ -66,6 +66,7 @@ We can see:
 ![plot of chunk boxplot_strand](figure/boxplot_strand.png) 
 
 - For this plot, the PBC coefficents was calculated using only the reads with certain strand. In particular, we can see that for all 3 types, the boxplots for both strands are very similar.
+- The observations of figure 1 hold for both strands.
 
 
 
