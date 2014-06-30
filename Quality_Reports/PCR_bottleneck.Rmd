@@ -60,12 +60,24 @@ PBC <- function(file)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
 ```
+### Results
+
 And the following results where obtained:
 ```{r load_data,include = FALSE,echo = TRUE,results = "hide"}
 load("../RData/PBC.RData")
 ```
 
-```{r show,include = TRUE,echo = TRUE, results = "asis"}
-ls()
+#### ChIP - Seq - SET
+```{r show_set,include = TRUE,echo = FALSE, results = "asis"}
+kable(as.data.frame(t(do.call(cbind,SET))),format = "markdown")
+```
+
+#### ChIP - Seq - PET
+```{r show_pet,include = TRUE,echo = FALSE, results = "asis"}
+kable(as.data.frame(t(do.call(cbind,PET))),format = "markdown")
+```
+#### ChIP - Exo
+```{r show_exo,include = TRUE,echo = FALSE, results = "asis"}
+kable(as.data.frame(t(do.call(cbind,EXO))),format = "markdown")
 ```
 

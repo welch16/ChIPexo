@@ -49,14 +49,59 @@ PBC <- function(file)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
 ```
+### Results
+
 And the following results where obtained:
 
 
+#### ChIP - Seq - SET
 
+|                                        | PBC_plus| PBC_minus|    PBC|
+|:---------------------------------------|--------:|---------:|------:|
+|run101_Input_posO2_042814_qc.sorted.bam |   0.9770|    0.9760| 0.9765|
+|run62_Input_negO2_042814_qc.sorted.bam  |   0.6626|    0.6628| 0.6627|
+|run80_sig70_negO2_042814_qc.sorted.bam  |   0.3125|    0.3131| 0.3128|
+|run80_sig70_posO2_042814_qc.sorted.bam  |   0.3165|    0.3174| 0.3169|
 
-```r
-ls()
-```
+#### ChIP - Seq - PET
 
-[1] "dr"     "EXO"    "f"      "files"  "folder" "PBC"    "PET"    "SET"   
+|                              | PBC_plus| PBC_minus|    PBC|
+|:-----------------------------|--------:|---------:|------:|
+|edsn1369_042814_qc.sorted.bam |   0.8239|    0.8238| 0.8239|
+|edsn1396_042814_qc.sorted.bam |   0.5972|    0.5977| 0.5975|
+|edsn1397_042814_qc.sorted.bam |   0.5480|    0.5482| 0.5481|
+|edsn1398_042814_qc.sorted.bam |   0.5222|    0.5227| 0.5225|
+|edsn1399_042814_qc.sorted.bam |   0.2440|    0.2441| 0.2441|
+|edsn1400_042814_qc.sorted.bam |   0.5205|    0.5205| 0.5205|
+|edsn1401_042814_qc.sorted.bam |   0.5510|    0.5513| 0.5511|
+|edsn1402_042814_qc.sorted.bam |   0.5719|    0.5727| 0.5723|
+|edsn1403_042814_qc.sorted.bam |   0.3237|    0.3239| 0.3238|
+|edsn1416_042814_qc.sorted.bam |   0.8139|    0.8141| 0.8140|
+|edsn788_042814_qc.sorted.bam  |   0.3795|    0.3796| 0.3796|
+|edsn790_042814_qc.sorted.bam  |   0.1844|    0.1843| 0.1843|
+#### ChIP - Exo
+
+|                              | PBC_plus| PBC_minus|    PBC|
+|:-----------------------------|--------:|---------:|------:|
+|edsn1310_042814_qc.sorted.bam |   0.0275|    0.0277| 0.0276|
+|edsn1311_042814_qc.sorted.bam |   0.0902|    0.0919| 0.0911|
+|edsn1312_042814_qc.sorted.bam |   0.0729|    0.0730| 0.0729|
+|edsn1313_042814_qc.sorted.bam |   0.0176|    0.0185| 0.0180|
+|edsn1314_042814_qc.sorted.bam |   0.1226|    0.1251| 0.1238|
+|edsn1315_042814_qc.sorted.bam |   0.0347|    0.0345| 0.0346|
+|edsn1316_042814_qc.sorted.bam |   0.0257|    0.0256| 0.0257|
+|edsn1317_042814_qc.sorted.bam |   0.0457|    0.0475| 0.0466|
+|edsn1318_042814_qc.sorted.bam |   0.1731|    0.1766| 0.1748|
+|edsn1319_042814_qc.sorted.bam |   0.0243|    0.0274| 0.0258|
+|edsn1320_042814_qc.sorted.bam |   0.0737|    0.0757| 0.0747|
+|edsn1321_042814_qc.sorted.bam |   0.0421|    0.0435| 0.0428|
+|edsn930_042814_qc.sorted.bam  |   0.0145|    0.0182| 0.0162|
+|edsn931_042814_qc.sorted.bam  |   0.1019|    0.1024| 0.1022|
+|edsn932_042814_qc.sorted.bam  |   0.0166|    0.0156| 0.0161|
+|edsn933_042814_qc.sorted.bam  |   0.1111|    0.1076| 0.1093|
+|edsn934_042814_qc.sorted.bam  |   0.0239|    0.0220| 0.0229|
+|edsn935_042814_qc.sorted.bam  |   0.1298|    0.1292| 0.1295|
+|edsn936_042814_qc.sorted.bam  |   0.0383|    0.0366| 0.0374|
+|edsn937_042814_qc.sorted.bam  |   0.1124|    0.1119| 0.1121|
+|edsn938_042814_qc.sorted.bam  |   0.0117|    0.0112| 0.0114|
 
