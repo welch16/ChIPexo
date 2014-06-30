@@ -76,7 +76,8 @@ tab[[3]]$type = "ChIP-Exo"
 ### Figures
 ```{r overall_boxplot,include = TRUE,echo = FALSE,results = "hide",fig.height = 4,fig.width = 4}
 df = do.call(rbind,tab)
-p <- ggplot(df,aes(factor(type),PBC))+geom_boxplot(aes(fill = factor(type)))
+p <- ggplot(df,aes(factor(type),PBC))+geom_boxplot(aes(fill = factor(type)))+
+   theme(legend.position = "none",axis.text.x = element_text(angle = 90))
 print(p)
 ```
 
