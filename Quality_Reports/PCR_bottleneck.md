@@ -53,6 +53,11 @@ PBC <- function(file)
 
 And the following results where obtained:
 
+### Figures
+![plot of chunk overall_boxplot](figure/overall_boxplot.png) 
+
+
+### Tables
 
 #### ChIP - Seq - SET
 
@@ -79,6 +84,7 @@ And the following results where obtained:
 |edsn1416_042814_qc.sorted.bam |   0.8139|    0.8141| 0.8140|
 |edsn788_042814_qc.sorted.bam  |   0.3795|    0.3796| 0.3796|
 |edsn790_042814_qc.sorted.bam  |   0.1844|    0.1843| 0.1843|
+
 #### ChIP - Exo
 
 |                              | PBC_plus| PBC_minus|    PBC|
