@@ -90,7 +90,7 @@ We can see:
 #### Figure 2
 
 ```{r boxplot_strand,include = TRUE,echo = FALSE,results = "hide",fig.height = 4,fig.width = 12}
-tab1 = lapply(tab,function(x)rbind(data.frame(type = x$type,PBC = x$PBC_plus,strand = "+"),
+tab1 = lapply(tab[3:1],function(x)rbind(data.frame(type = x$type,PBC = x$PBC_plus,strand = "+"),
   data.frame(type = x$type,PBC = x$PBC_minus,strand = "-")))
 df1 = do.call(rbind,tab1)
 df1$type = factor(df1$type)
@@ -99,6 +99,8 @@ p1 <- ggplot(df1,aes(strand,PBC))+geom_boxplot()+facet_grid(.~type)+
   theme(legend.position = "none",axis.text.x = element_text(angle =90))
 print(p1)
 ```
+
+- For this plot, the PBC coefficents was calculated using only the reads with certain strand. In particular, we can see that for all 3 types, the boxplots for both strands are very similar.
 
 
 
