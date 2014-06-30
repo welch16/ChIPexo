@@ -1,7 +1,7 @@
 
-# PCR bottleneck report
+## PCR bottleneck report
 
-## PCR bottleneck
+### PCR bottleneck
 
 ```{r package_options, include=FALSE}
 opts_knit$set(progress = TRUE, verbose = TRUE)
@@ -26,7 +26,7 @@ In particular we can see that always N1 <= Nd, so 0<= PBC <= 1. ENCODE recomends
 |0.8-0.9 | Mild |
 |0.9 - 1| Non-existant|
 
-```{r init,include = TRUE,echo = TRUE}
+```{r init,include = FALSE,echo = TRUE,results = "hide"}
 library(parallel)
 library(GenomicAlignments)
 library(ggplot2)
@@ -36,16 +36,15 @@ files = lapply(folder,function(x,dr){
   ff = list.files(file.path(dr,x))
   return(ff[!grepl("bai",ff) & !grepl("sam",ff)])},dr)
 names(files) = folder
-message(files[[1]])
 ```
+### Code
 
-For that purpose the following function was coded:
+The following function was used to calculate the PBC:
 
-```{r PBC_fun,include = TRUE,results = "hide"}
+```{r PBC_fun,include = TRUE,results = "hide",echo = TRUE}
 PBC <- function(file)
 {
   require(GenomicAlignments)
-  message(file)
   rr = readGAlignmentsFromBam(file,param = NULL)
   ss1 = subset(rr,subset =strand(rr)=="+")
   ss2 = subset(rr,subset = strand(rr)=="-")
@@ -55,17 +54,18 @@ PBC <- function(file)
   Nd1 = length(ss1)
   Nd2 = length(ss2)
   Nd = Nd1 + Nd2
-  PBC1 = N11 / Nd1
-  PBC2 = N12 / Nd2
-  PBC = N1 /Nd
-  message("PBC +:",round(PBC1,4))
-  message("PBC -:",round(PBC2,4))
-  message("PBC:",round(PBC,4))
-  return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))
+  PBC1 = round(N11 / Nd1,4)
+  PBC2 = round(N12 / Nd2,4)
+  PBC = round(N1 /Nd,4)
+  return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
 ```
+And the following results where obtained:
+```{r load_data,include = FALSE,echo = TRUE,results = "hide"}
+load("../RData/PBC.RData")
+```
 
-
-
-
+```{r show,include = TRUE,echo = TRUE, results = "asis"}
+ls()
+```
 

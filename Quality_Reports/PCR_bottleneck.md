@@ -1,7 +1,7 @@
 
-# PCR bottleneck report
+## PCR bottleneck report
 
-## PCR bottleneck
+### PCR bottleneck
 
 
 
@@ -25,67 +25,15 @@ In particular we can see that always N1 <= Nd, so 0<= PBC <= 1. ENCODE recomends
 |0.9 - 1| Non-existant|
 
 
-```r
-library(parallel)
-library(GenomicAlignments)
-```
+### Code
 
-```
-## Loading required package: BiocGenerics
-## 
-## Attaching package: 'BiocGenerics'
-## 
-## The following objects are masked from 'package:parallel':
-## 
-##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-##     clusterExport, clusterMap, parApply, parCapply, parLapply,
-##     parLapplyLB, parRapply, parSapply, parSapplyLB
-## 
-## The following object is masked from 'package:stats':
-## 
-##     xtabs
-## 
-## The following objects are masked from 'package:base':
-## 
-##     anyDuplicated, append, as.data.frame, as.vector, cbind,
-##     colnames, do.call, duplicated, eval, evalq, Filter, Find, get,
-##     intersect, is.unsorted, lapply, Map, mapply, match, mget,
-##     order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-##     rbind, Reduce, rep.int, rownames, sapply, setdiff, sort,
-##     table, tapply, union, unique, unlist
-## 
-## Loading required package: IRanges
-## Loading required package: GenomicRanges
-## Loading required package: GenomeInfoDb
-## Loading required package: Biostrings
-## Loading required package: XVector
-## Loading required package: Rsamtools
-## Loading required package: BSgenome
-```
-
-```r
-library(ggplot2)
-dr ="/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/Landick_ChIP-exo3/rawdata"
-folder = c("ChIPexo","ChIPseq_PET","ChIPseq_SET")
-files = lapply(folder,function(x,dr){
-  ff = list.files(file.path(dr,x))
-  return(ff[!grepl("bai",ff) & !grepl("sam",ff)])},dr)
-names(files) = folder
-message(files[[1]])
-```
-
-```
-## edsn1310_042814_qc.sorted.bamedsn1311_042814_qc.sorted.bamedsn1312_042814_qc.sorted.bamedsn1313_042814_qc.sorted.bamedsn1314_042814_qc.sorted.bamedsn1315_042814_qc.sorted.bamedsn1316_042814_qc.sorted.bamedsn1317_042814_qc.sorted.bamedsn1318_042814_qc.sorted.bamedsn1319_042814_qc.sorted.bamedsn1320_042814_qc.sorted.bamedsn1321_042814_qc.sorted.bamedsn930_042814_qc.sorted.bamedsn931_042814_qc.sorted.bamedsn932_042814_qc.sorted.bamedsn933_042814_qc.sorted.bamedsn934_042814_qc.sorted.bamedsn935_042814_qc.sorted.bamedsn936_042814_qc.sorted.bamedsn937_042814_qc.sorted.bamedsn938_042814_qc.sorted.bam
-```
-
-For that purpose the following function was coded:
+The following function was used to calculate the PBC:
 
 
 ```r
 PBC <- function(file)
 {
   require(GenomicAlignments)
-  message(file)
   rr = readGAlignmentsFromBam(file,param = NULL)
   ss1 = subset(rr,subset =strand(rr)=="+")
   ss2 = subset(rr,subset = strand(rr)=="-")
@@ -95,17 +43,20 @@ PBC <- function(file)
   Nd1 = length(ss1)
   Nd2 = length(ss2)
   Nd = Nd1 + Nd2
-  PBC1 = N11 / Nd1
-  PBC2 = N12 / Nd2
-  PBC = N1 /Nd
-  message("PBC +:",round(PBC1,4))
-  message("PBC -:",round(PBC2,4))
-  message("PBC:",round(PBC,4))
-  return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))
+  PBC1 = round(N11 / Nd1,4)
+  PBC2 = round(N12 / Nd2,4)
+  PBC = round(N1 /Nd,4)
+  return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
 ```
+And the following results where obtained:
 
 
 
 
+```r
+ls()
+```
+
+[1] "dr"     "EXO"    "f"      "files"  "folder" "PBC"    "PET"    "SET"   
 
