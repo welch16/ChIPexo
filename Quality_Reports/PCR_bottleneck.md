@@ -3,7 +3,9 @@
 
 ## PCR bottleneck
 
-According to the **ENCODE** definitions of [quality metrics](http://encodeproject.org/ENCODE/qualityMetrics.html#definitions), one of the metrics used is the *PCR bottleneck coefficient* or *PBC*.
+
+
+According to the **ENCODE** definitions of [quality metrics](http://encodeproject.org/ENCODE/qualityMetrics.html#definitions), one of the metrics used is the *PCR bottleneck coefficient* or **PBC**.
 
 The definition is:
 
@@ -11,7 +13,7 @@ A measure of library complexity, i.e. how skewed the distribution of read counts
 
 PBC = N1/Nd
 
-(where N1= number of genomic locations to which EXACTLY one unique mapping read maps, and Nd = the number of genomic locations to which **AT LEAST** one unique mapping read maps, i.e. the number of non-redundant, unique mapping reads).
+(where N1= number of genomic locations to which **EXACTLY** one unique mapping read maps, and Nd = the number of genomic locations to which **AT LEAST** one unique mapping read maps, i.e. the number of non-redundant, unique mapping reads).
 
 In particular we can see that always N1 <= Nd, so 0<= PBC <= 1. ENCODE recomends the following classification:
 
@@ -21,6 +23,60 @@ In particular we can see that always N1 <= Nd, so 0<= PBC <= 1. ENCODE recomends
 | 0.5-0.8 | Moderate|
 |0.8-0.9 | Mild |
 |0.9 - 1| Non-existant|
+
+
+```r
+library(parallel)
+library(GenomicAlignments)
+```
+
+```
+## Loading required package: BiocGenerics
+## 
+## Attaching package: 'BiocGenerics'
+## 
+## The following objects are masked from 'package:parallel':
+## 
+##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+##     clusterExport, clusterMap, parApply, parCapply, parLapply,
+##     parLapplyLB, parRapply, parSapply, parSapplyLB
+## 
+## The following object is masked from 'package:stats':
+## 
+##     xtabs
+## 
+## The following objects are masked from 'package:base':
+## 
+##     anyDuplicated, append, as.data.frame, as.vector, cbind,
+##     colnames, do.call, duplicated, eval, evalq, Filter, Find, get,
+##     intersect, is.unsorted, lapply, Map, mapply, match, mget,
+##     order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+##     rbind, Reduce, rep.int, rownames, sapply, setdiff, sort,
+##     table, tapply, union, unique, unlist
+## 
+## Loading required package: IRanges
+## Loading required package: GenomicRanges
+## Loading required package: GenomeInfoDb
+## Loading required package: Biostrings
+## Loading required package: XVector
+## Loading required package: Rsamtools
+## Loading required package: BSgenome
+```
+
+```r
+library(ggplot2)
+dr ="/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/Landick_ChIP-exo3/rawdata"
+folder = c("ChIPexo","ChIPseq_PET","ChIPseq_SET")
+files = lapply(folder,function(x,dr){
+  ff = list.files(file.path(dr,x))
+  return(ff[!grepl("bai",ff) & !grepl("sam",ff)])},dr)
+names(files) = folder
+message(files[[1]])
+```
+
+```
+## edsn1310_042814_qc.sorted.bamedsn1311_042814_qc.sorted.bamedsn1312_042814_qc.sorted.bamedsn1313_042814_qc.sorted.bamedsn1314_042814_qc.sorted.bamedsn1315_042814_qc.sorted.bamedsn1316_042814_qc.sorted.bamedsn1317_042814_qc.sorted.bamedsn1318_042814_qc.sorted.bamedsn1319_042814_qc.sorted.bamedsn1320_042814_qc.sorted.bamedsn1321_042814_qc.sorted.bamedsn930_042814_qc.sorted.bamedsn931_042814_qc.sorted.bamedsn932_042814_qc.sorted.bamedsn933_042814_qc.sorted.bamedsn934_042814_qc.sorted.bamedsn935_042814_qc.sorted.bamedsn936_042814_qc.sorted.bamedsn937_042814_qc.sorted.bamedsn938_042814_qc.sorted.bam
+```
 
 For that purpose the following function was coded:
 
@@ -48,6 +104,7 @@ PBC <- function(file)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))
 }
 ```
+
 
 
 

@@ -3,7 +3,11 @@
 
 ## PCR bottleneck
 
-According to the **ENCODE** definitions of [quality metrics](http://encodeproject.org/ENCODE/qualityMetrics.html#definitions), one of the metrics used is the *PCR bottleneck coefficient* or *PBC*.
+```{r package_options, include=FALSE}
+opts_knit$set(progress = TRUE, verbose = TRUE)
+```
+
+According to the **ENCODE** definitions of [quality metrics](http://encodeproject.org/ENCODE/qualityMetrics.html#definitions), one of the metrics used is the *PCR bottleneck coefficient* or **PBC**.
 
 The definition is:
 
@@ -11,7 +15,7 @@ A measure of library complexity, i.e. how skewed the distribution of read counts
 
 PBC = N1/Nd
 
-(where N1= number of genomic locations to which EXACTLY one unique mapping read maps, and Nd = the number of genomic locations to which **AT LEAST** one unique mapping read maps, i.e. the number of non-redundant, unique mapping reads).
+(where N1= number of genomic locations to which **EXACTLY** one unique mapping read maps, and Nd = the number of genomic locations to which **AT LEAST** one unique mapping read maps, i.e. the number of non-redundant, unique mapping reads).
 
 In particular we can see that always N1 <= Nd, so 0<= PBC <= 1. ENCODE recomends the following classification:
 
@@ -21,6 +25,19 @@ In particular we can see that always N1 <= Nd, so 0<= PBC <= 1. ENCODE recomends
 | 0.5-0.8 | Moderate|
 |0.8-0.9 | Mild |
 |0.9 - 1| Non-existant|
+
+```{r init,include = TRUE,echo = TRUE}
+library(parallel)
+library(GenomicAlignments)
+library(ggplot2)
+dr ="/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/Landick_ChIP-exo3/rawdata"
+folder = c("ChIPexo","ChIPseq_PET","ChIPseq_SET")
+files = lapply(folder,function(x,dr){
+  ff = list.files(file.path(dr,x))
+  return(ff[!grepl("bai",ff) & !grepl("sam",ff)])},dr)
+names(files) = folder
+message(files[[1]])
+```
 
 For that purpose the following function was coded:
 
@@ -47,6 +64,7 @@ PBC <- function(file)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))
 }
 ```
+
 
 
 
