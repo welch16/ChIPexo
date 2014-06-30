@@ -3,10 +3,12 @@
 
 ### Index
 
-[PCR bottleneck](#Def)
+[PCR bottleneck](#PCR-bottleneck)
+[Code](#Code)
+[Figures](#Figures)
 
 
-### PCR bottleneck [Def] ##
+### PCR bottleneck		
 
 
 
