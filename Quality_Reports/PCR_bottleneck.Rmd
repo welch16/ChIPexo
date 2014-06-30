@@ -60,9 +60,7 @@ PBC <- function(file)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
 ```
-### Results
 
-And the following results where obtained:
 ```{r load_data,include = FALSE,echo = TRUE,results = "hide"}
 load("../RData/PBC.RData")
 tab = list()
@@ -74,12 +72,18 @@ tab[[3]] = as.data.frame(t(do.call(cbind,EXO)))
 tab[[3]]$type = "ChIP-Exo"
 ```
 ### Figures
+
+**Figure 1**
 ```{r overall_boxplot,include = TRUE,echo = FALSE,results = "hide",fig.height = 4,fig.width = 4}
 df = do.call(rbind,tab)
-p <- ggplot(df,aes(factor(type),PBC))+geom_boxplot(aes(fill = factor(type)))+
+df$type = factor(df$type)
+p <- ggplot(df,aes(type,PBC))+geom_boxplot(aes(fill = type))+
    theme(legend.position = "none",axis.text.x = element_text(angle = 90))
 print(p)
 ```
+Some observations on the figure:
+- The overall level of the ChIP-Exo's PBC coefficients is lower than the level of the other two ChIP-Seq labels
+- The range of the ChIP-Exo's PBC coefficients is also smaller than other two ranges. In particular, the range of the PET coefficients is smaller than the range of the SET coefficients.
 
 
 ### Tables
