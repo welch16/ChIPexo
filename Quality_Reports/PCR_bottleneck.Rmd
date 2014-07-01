@@ -42,21 +42,22 @@ names(files) = folder
 The following function was used to calculate the PBC:
 
 ```{r PBC_fun,include = TRUE,results = "hide",echo = TRUE}
-PBC <- function(file)
+PBC <- function(file,cap = Inf)
 {
   require(GenomicAlignments)
+  message(file)
   rr = readGAlignmentsFromBam(file,param = NULL)
   ss1 = subset(rr,subset =strand(rr)=="+")
   ss2 = subset(rr,subset = strand(rr)=="-")
-  N11 = length(unique(start(ss1)))
-  N12 = length(unique(end(ss2)))
-  N1 = N11+N12
-  Nd1 = length(ss1)
-  Nd2 = length(ss2)
-  Nd = Nd1 + Nd2
-  PBC1 = round(N11 / Nd1,4)
-  PBC2 = round(N12 / Nd2,4)
-  PBC = round(N1 /Nd,4)
+  tab1 = table(start(ss1))
+  tab2 = table(end(ss2))
+  tab = table(c(start(ss1),end(ss2)))
+  PBC1 = round(sum(tab1 == 1)/sum(tab1 >= 1 & tab1 <= cap),4)
+  PBC2 = round(sum(tab2 == 1)/sum(tab2 >= 1 & tab2 <= cap),4)
+  PBC = round(sum(tab == 1) / sum(tab >= 1 & tab <= 4),4)
+  message("PBC +:",PBC1)
+  message("PBC -:",PBC2)
+  message("PBC:",PBC)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
 ```
@@ -85,7 +86,7 @@ print(p)
 
 We can see:
 - The overall level of the ChIP-Exo's PBC coefficients is lower than the level of the other two ChIP-Seq labels
-- The range of the ChIP-Exo's PBC coefficients is also smaller than other two ranges. In particular, the interquartile range of the PET coefficients is smaller than the interquartile range of the SET coefficients.
+- The level of ChIP-Seq PET is higher that the level of both SET generated y ChIP-Seq and ChIP-Exo
 
 #### Figure 2
 

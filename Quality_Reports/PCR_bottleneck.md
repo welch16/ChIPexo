@@ -31,21 +31,22 @@ The following function was used to calculate the PBC:
 
 
 ```r
-PBC <- function(file)
+PBC <- function(file,cap = Inf)
 {
   require(GenomicAlignments)
+  message(file)
   rr = readGAlignmentsFromBam(file,param = NULL)
   ss1 = subset(rr,subset =strand(rr)=="+")
   ss2 = subset(rr,subset = strand(rr)=="-")
-  N11 = length(unique(start(ss1)))
-  N12 = length(unique(end(ss2)))
-  N1 = N11+N12
-  Nd1 = length(ss1)
-  Nd2 = length(ss2)
-  Nd = Nd1 + Nd2
-  PBC1 = round(N11 / Nd1,4)
-  PBC2 = round(N12 / Nd2,4)
-  PBC = round(N1 /Nd,4)
+  tab1 = table(start(ss1))
+  tab2 = table(end(ss2))
+  tab = table(c(start(ss1),end(ss2)))
+  PBC1 = round(sum(tab1 == 1)/sum(tab1 >= 1 & tab1 <= cap),4)
+  PBC2 = round(sum(tab2 == 1)/sum(tab2 >= 1 & tab2 <= cap),4)
+  PBC = round(sum(tab == 1) / sum(tab >= 1 & tab <= 4),4)
+  message("PBC +:",PBC1)
+  message("PBC -:",PBC2)
+  message("PBC:",PBC)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
 ```
@@ -59,7 +60,7 @@ PBC <- function(file)
 
 We can see:
 - The overall level of the ChIP-Exo's PBC coefficients is lower than the level of the other two ChIP-Seq labels
-- The range of the ChIP-Exo's PBC coefficients is also smaller than other two ranges. In particular, the interquartile range of the PET coefficients is smaller than the interquartile range of the SET coefficients.
+- The level of ChIP-Seq PET is higher that the level of both SET generated y ChIP-Seq and ChIP-Exo
 
 #### Figure 2
 
@@ -76,51 +77,51 @@ We can see:
 
 |                                        | PBC_plus| PBC_minus|    PBC|
 |:---------------------------------------|--------:|---------:|------:|
-|run101_Input_posO2_042814_qc.sorted.bam |   0.9770|    0.9760| 0.9765|
-|run62_Input_negO2_042814_qc.sorted.bam  |   0.6626|    0.6628| 0.6627|
-|run80_sig70_negO2_042814_qc.sorted.bam  |   0.3125|    0.3131| 0.3128|
-|run80_sig70_posO2_042814_qc.sorted.bam  |   0.3165|    0.3174| 0.3169|
+|run101_Input_posO2_042814_qc.sorted.bam |   0.9773|    0.9763| 0.9650|
+|run62_Input_negO2_042814_qc.sorted.bam  |   0.6431|    0.6434| 0.4638|
+|run80_sig70_negO2_042814_qc.sorted.bam  |   0.5732|    0.5721| 0.5464|
+|run80_sig70_posO2_042814_qc.sorted.bam  |   0.5611|    0.5600| 0.5631|
 
 #### ChIP - Seq - PET
 
 |                              | PBC_plus| PBC_minus|    PBC|
 |:-----------------------------|--------:|---------:|------:|
-|edsn1369_042814_qc.sorted.bam |   0.8239|    0.8238| 0.8239|
-|edsn1396_042814_qc.sorted.bam |   0.5972|    0.5977| 0.5975|
-|edsn1397_042814_qc.sorted.bam |   0.5480|    0.5482| 0.5481|
-|edsn1398_042814_qc.sorted.bam |   0.5222|    0.5227| 0.5225|
-|edsn1399_042814_qc.sorted.bam |   0.2440|    0.2441| 0.2441|
-|edsn1400_042814_qc.sorted.bam |   0.5205|    0.5205| 0.5205|
-|edsn1401_042814_qc.sorted.bam |   0.5510|    0.5513| 0.5511|
-|edsn1402_042814_qc.sorted.bam |   0.5719|    0.5727| 0.5723|
-|edsn1403_042814_qc.sorted.bam |   0.3237|    0.3239| 0.3238|
-|edsn1416_042814_qc.sorted.bam |   0.8139|    0.8141| 0.8140|
-|edsn788_042814_qc.sorted.bam  |   0.3795|    0.3796| 0.3796|
-|edsn790_042814_qc.sorted.bam  |   0.1844|    0.1843| 0.1843|
+|edsn1369_042814_qc.sorted.bam |   0.8194|    0.8192| 0.7114|
+|edsn1396_042814_qc.sorted.bam |   0.7815|    0.7808| 0.7580|
+|edsn1397_042814_qc.sorted.bam |   0.7369|    0.7359| 0.7506|
+|edsn1398_042814_qc.sorted.bam |   0.6797|    0.6798| 0.6972|
+|edsn1399_042814_qc.sorted.bam |   0.5086|    0.5089| 0.5626|
+|edsn1400_042814_qc.sorted.bam |   0.7328|    0.7317| 0.7333|
+|edsn1401_042814_qc.sorted.bam |   0.7367|    0.7361| 0.7287|
+|edsn1402_042814_qc.sorted.bam |   0.7167|    0.7180| 0.7213|
+|edsn1403_042814_qc.sorted.bam |   0.5490|    0.5493| 0.5958|
+|edsn1416_042814_qc.sorted.bam |   0.8084|    0.8086| 0.6795|
+|edsn788_042814_qc.sorted.bam  |   0.6599|    0.6597| 0.6525|
+|edsn790_042814_qc.sorted.bam  |   0.4153|    0.4152| 0.4164|
 
 #### ChIP - Exo
 
 |                              | PBC_plus| PBC_minus|    PBC|
 |:-----------------------------|--------:|---------:|------:|
-|edsn1310_042814_qc.sorted.bam |   0.0275|    0.0277| 0.0276|
-|edsn1311_042814_qc.sorted.bam |   0.0902|    0.0919| 0.0911|
-|edsn1312_042814_qc.sorted.bam |   0.0729|    0.0730| 0.0729|
-|edsn1313_042814_qc.sorted.bam |   0.0176|    0.0185| 0.0180|
-|edsn1314_042814_qc.sorted.bam |   0.1226|    0.1251| 0.1238|
-|edsn1315_042814_qc.sorted.bam |   0.0347|    0.0345| 0.0346|
-|edsn1316_042814_qc.sorted.bam |   0.0257|    0.0256| 0.0257|
-|edsn1317_042814_qc.sorted.bam |   0.0457|    0.0475| 0.0466|
-|edsn1318_042814_qc.sorted.bam |   0.1731|    0.1766| 0.1748|
-|edsn1319_042814_qc.sorted.bam |   0.0243|    0.0274| 0.0258|
-|edsn1320_042814_qc.sorted.bam |   0.0737|    0.0757| 0.0747|
-|edsn1321_042814_qc.sorted.bam |   0.0421|    0.0435| 0.0428|
-|edsn930_042814_qc.sorted.bam  |   0.0145|    0.0182| 0.0162|
-|edsn931_042814_qc.sorted.bam  |   0.1019|    0.1024| 0.1022|
-|edsn932_042814_qc.sorted.bam  |   0.0166|    0.0156| 0.0161|
-|edsn933_042814_qc.sorted.bam  |   0.1111|    0.1076| 0.1093|
-|edsn934_042814_qc.sorted.bam  |   0.0239|    0.0220| 0.0229|
-|edsn935_042814_qc.sorted.bam  |   0.1298|    0.1292| 0.1295|
-|edsn936_042814_qc.sorted.bam  |   0.0383|    0.0366| 0.0374|
-|edsn937_042814_qc.sorted.bam  |   0.1124|    0.1119| 0.1121|
-|edsn938_042814_qc.sorted.bam  |   0.0117|    0.0112| 0.0114|
+|edsn1310_042814_qc.sorted.bam |   0.2849|    0.2805| 0.5952|
+|edsn1311_042814_qc.sorted.bam |   0.2800|    0.2846| 0.5207|
+|edsn1312_042814_qc.sorted.bam |   0.2545|    0.2482| 0.5181|
+|edsn1313_042814_qc.sorted.bam |   0.3393|    0.3376| 0.5929|
+|edsn1314_042814_qc.sorted.bam |   0.2691|    0.2706| 0.4674|
+|edsn1315_042814_qc.sorted.bam |   0.2332|    0.2355| 0.5281|
+|edsn1316_042814_qc.sorted.bam |   0.2587|    0.2529| 0.5703|
+|edsn1317_042814_qc.sorted.bam |   0.2656|    0.2657| 0.5515|
+|edsn1318_042814_qc.sorted.bam |   0.3036|    0.3011| 0.4743|
+|edsn1319_042814_qc.sorted.bam |   0.4975|    0.4976| 0.6856|
+|edsn1320_042814_qc.sorted.bam |   0.2151|    0.2157| 0.4502|
+|edsn1321_042814_qc.sorted.bam |   0.2140|    0.2157| 0.4851|
+|edsn930_042814_qc.sorted.bam  |   0.4964|    0.4985| 0.7017|
+|edsn931_042814_qc.sorted.bam  |   0.2136|    0.2177| 0.4282|
+|edsn932_042814_qc.sorted.bam  |   0.2950|    0.2939| 0.6234|
+|edsn933_042814_qc.sorted.bam  |   0.2489|    0.2455| 0.4606|
+|edsn934_042814_qc.sorted.bam  |   0.1749|    0.1783| 0.5256|
+|edsn935_042814_qc.sorted.bam  |   0.2604|    0.2576| 0.4395|
+|edsn936_042814_qc.sorted.bam  |   0.2323|    0.2307| 0.5109|
+|edsn937_042814_qc.sorted.bam  |   0.2480|    0.2456| 0.4529|
+|edsn938_042814_qc.sorted.bam  |   0.1633|    0.1621| 0.5067|
 
