@@ -1,8 +1,6 @@
 
 
 rm(list = ls())
-
-
 library(knitr)
 library(parallel)
 library(GenomicAlignments)
@@ -18,24 +16,21 @@ names(files) = folder
 
 
 
-PBC <- function(file)
+PBC <- function(file,cap = Inf)
 {
   require(GenomicAlignments)
   message(file)
   rr = readGAlignmentsFromBam(file,param = NULL)
   ss1 = subset(rr,subset =strand(rr)=="+")
   ss2 = subset(rr,subset = strand(rr)=="-")
-  N11 = length(unique(start(ss1)))
-  N12 = length(unique(end(ss2)))
-  N1 = N11+N12
-  Nd1 = length(ss1)
-  Nd2 = length(ss2)
-  Nd = Nd1 + Nd2
-  PBC1 = round(N11 / Nd1,4)
+  tab1 = table(start(ss1))
+  tab2 = table(end(ss2))
+  tab = table(c(start(ss1),end(ss2)))
+  PBC1 = round(sum(tab1 == 1)/sum(tab1 >= 1 & tab1 <= cap),4)
+  PBC2 = round(sum(tab2 == 1)/sum(tab2 >= 1 & tab2 <= cap),4)
+  PBC = round(sum(tab == 1) / sum(tab >= 1 & tab <= 4),4)
   message("PBC +:",PBC1)
-  PBC2 = round(N12 / Nd2,4)
   message("PBC -:",PBC2)
-  PBC = round(N1 /Nd,4)
   message("PBC:",PBC)
   return(c(PBC_plus=PBC1,PBC_minus=PBC2,PBC=PBC))  
 }
@@ -43,11 +38,13 @@ PBC <- function(file)
 
 ff = lapply(folder,function(x,dr,files)file.path(dr,x,files[[x]]),dr,files)
 
-suppressWarnings(SET <- lapply(ff[[3]],FUN = PBC))
+cap = Inf
+
+suppressWarnings(SET <- mclapply(ff[[3]],FUN = PBC,cap=cap,mc.cores =8))
 names(SET) = files[[3]]
-suppressWarnings(PET <- lapply(ff[[2]],FUN = PBC))
+suppressWarnings(PET <- mclapply(ff[[2]],FUN = PBC,cap=cap,mc.cores = 8))
 names(PET) = files[[2]]
-suppressWarnings(EXO <- lapply(ff[[1]],FUN = PBC))
+suppressWarnings(EXO <- mclapply(ff[[1]],FUN = PBC,cap=cap,mc.cores =8))
 names(EXO) = files[[1]]
 
 save(list = c("SET","PET","EXO"),file = "../RData/PBC.RData")
