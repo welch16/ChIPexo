@@ -4,6 +4,8 @@ rm(list = ls())
 library(knitr)
 library(parallel)
 library(GenomicAlignments)
+library(spp)
+
 
 dr ="/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/Landick_ChIP-exo3/rawdata"
 folder = c("ChIPexo","ChIPseq_PET","ChIPseq_SET")
@@ -28,7 +30,11 @@ PBC <- function(file,cap = Inf)
   tab = table(c(start(ss1),end(ss2)))
   PBC1 = round(sum(tab1 == 1)/sum(tab1 >= 1 & tab1 <= cap),4)
   PBC2 = round(sum(tab2 == 1)/sum(tab2 >= 1 & tab2 <= cap),4)
-  PBC = round(sum(tab == 1) / sum(tab >= 1 & tab <= 4),4)
+  chip.data = read.bam.tags(file)
+  table.chip.data = lapply(chip.data$tags,table)
+  nUniq = sum(sapply(table.chip.data,function(x) sum(x==1)))
+  nTotal =  sum(sapply(table.chip.data,length))
+  PBC = round(nUniq/nTotal ,4)
   message("PBC +:",PBC1)
   message("PBC -:",PBC2)
   message("PBC:",PBC)
@@ -48,3 +54,8 @@ suppressWarnings(EXO <- mclapply(ff[[1]],FUN = PBC,cap=cap,mc.cores =8))
 names(EXO) = files[[1]]
 
 save(list = c("SET","PET","EXO"),file = "../RData/PBC.RData")
+
+
+
+
+
