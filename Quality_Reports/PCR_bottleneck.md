@@ -73,8 +73,8 @@ We can see:
 
 - For this plot, the PBC coefficents was calculated using only the reads with certain strand. In particular, we can see that for all 3 types, the boxplots for both strands are very similar.
 - The observations of figure 1 hold for both strands.
-- Also, we can see that for both ChIP-Seq types, the overall level of the PBC calculated using both strands is lower than the PBC level calculating only one strand (in particular the level of the PBC score is approximately the same for both strands). However, for ChIP-Exo, we can see that the level of the PBC score increases when both strands are joined.
-
+- We can see that for all data types: The PBC level for each individual strand is very close to the one calculated using both strands.
+- After inspecting the calculated values in the tables below, we can see that for both ChIP-Seq tags, the level of the PBC calculated with both strands is in between of the PBC's calculated using only one strand. However, for most of the ChIP-Exo samples, we can see that the PBC calculated with both strand is slightly higher than the PBC calculated for both individual strands.
 
 ### Tables
 
