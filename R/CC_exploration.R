@@ -42,18 +42,20 @@ read_data <- function(file)
   return(list(chipqc= qc.sample,spp=spp.sample))
 }
 
-exo.data = lapply(ff[[1]],FUN = read_data)
-names(exo.data) = files[[1]]
+## exo.data = lapply(ff[[1]],FUN = read_data)
+## names(exo.data) = files[[1]]
 
-pet.data = lapply(ff[[2]],FUN = read_data)
-names(pet.data) = files[[2]]
+## pet.data = lapply(ff[[2]],FUN = read_data)
+## names(pet.data) = files[[2]]
 
-set.data = lapply(ff[[3]],FUN = read_data)
-names(set.data) = files[[3]]
+## set.data = lapply(ff[[3]],FUN = read_data)
+## names(set.data) = files[[3]]
 
-save(list = c("exo.data","pet.data","set.data"),file = "bam_data_chipqc_spp.RData")
+## save(list = c("exo.data","pet.data","set.data"),file = "bam_data_chipqc_spp.RData") 
 
-mc = 12
+mc = 6
+
+load("bam_data_chipqc_spp.RData")
 
 qc_metrics_cross_corr <- function(qc.sample)
 {
@@ -64,7 +66,7 @@ qc_metrics_cross_corr <- function(qc.sample)
 
 spp_binding_char <- function(spp.sample)
 {
-  return(get.binding.characteristics(chip.data,srange = c(1,300),bin = 1))
+  return(get.binding.characteristics(spp.sample,srange = c(1,300),bin = 1))
 }
 
 fragLen_and_cc <- function(seq.data)
