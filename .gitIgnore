@@ -1,0 +1,6 @@
+Refs/*
+.gitIgnore
+.gitIgnore~
+*~
+notes/*~
+Screenshot*
