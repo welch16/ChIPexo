@@ -1,0 +1,12 @@
+
+## Exploratory analysis of the strand
+
+### Description of the experiment
+
+```{r package_options, include=FALSE}
+opts_knit$set(progress = TRUE, verbose = TRUE)
+```
+
+![fig](figure/fromPaper/Kharchenko-Park-2008.jpg)
+
+
