@@ -1,5 +1,11 @@
 
-## Exploratory analysis of the strand
+## Strand exploratory analysis
+
+### What is the idea behind the strand cross - correlation
+
+
+According to [ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3431496/), a useful quality metric is the use of strand cross - correlation. Which is based in the fact that a high-quality ChIP-Seq experiment produces significant clustering of enriched DNA sequence tags at locations bound by the protein of interest, and that the sequence tag density acumulates in both strand centered around the binding site.
+
 
 ### Description of the experiment
 
@@ -7,6 +13,7 @@
 opts_knit$set(progress = TRUE, verbose = TRUE)
 ```
 
-![fig](figure/fromPaper/Kharchenko-Park-2008.jpg)
+
+
 
 
