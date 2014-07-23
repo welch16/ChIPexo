@@ -6,6 +6,12 @@
 
 According to [ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3431496/), a useful quality metric is the use of strand cross - correlation. Which is based in the fact that a high-quality ChIP-Seq experiment produces significant clustering of enriched DNA sequence tags at locations bound by the protein of interest, and that the sequence tag density acumulates in both strand centered around the binding site.
 
+A graphical explanation of this effect is given in the figure 5 of [Carroll et. al. 2014's paper](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00075/full):
+
+![plot of fraglen est. by cross - corr.](figure/fromPaper/figure5-carroll-2014.jpg)
+
+In this figure we can see:
+
 
 ### Description of the experiment
 

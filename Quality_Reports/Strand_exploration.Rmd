@@ -6,6 +6,12 @@
 
 According to [ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3431496/), a useful quality metric is the use of strand cross - correlation. Which is based in the fact that a high-quality ChIP-Seq experiment produces significant clustering of enriched DNA sequence tags at locations bound by the protein of interest, and that the sequence tag density acumulates in both strand centered around the binding site.
 
+A graphical explanation of this effect is given in the figure 5 of [Carroll et. al. 2014's paper](http://journal.frontiersin.org/Journal/10.3389/fgene.2014.00075/full):
+
+![plot of fraglen est. by cross - corr.](figure/fromPaper/figure5-carroll-2014.jpg)
+
+In this figure we can see:
+
 
 ### Description of the experiment
 
@@ -28,6 +34,10 @@ names(ff) = folder
 design = data.frame(Rep = c(rep(1,4),rep(2,4)),Rif = rep(c(0,0,20,20),2),IP = rep(c("Sigma70","BetaPrimeFlag"),4),
   exo.edns = c(1311,1312,1314,1315,1317,1318,1320,1321),pet.edsn = seq(1396,1403))
 betaF = data.frame(Rep = c(1,1,2,2),Rif = c(0,20,0,20),IP = rep("Beta",4),exo.edns = c(1310,1313,1316,1319))
+start = c(576875,798921,1152674,1192831,1820005,2310506,2996662,3351853,3973436,4262028)
+end = c(577492,799434,1153291,1193448,1820696,2311153,2997175,3352366,3973949,4262541)
+peaks = GRanges(seqnames = "U00096",ranges = IRanges(start = start,end = end),strand = "*")
+width(peaks) = 1000
 ```
 
 
