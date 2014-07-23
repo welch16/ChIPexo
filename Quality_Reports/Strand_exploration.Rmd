@@ -25,11 +25,14 @@ files = lapply(folder,function(x,dr){
 names(files) = folder
 ff = lapply(folder,function(x,dr,files)file.path(dr,x,files[[x]]),dr,files)
 names(ff) = folder
-df = data.frame(Rep = c(rep(1,4),rep(2,4)),Rif = rep(c(0,0,20,20),2),IP = rep(c("Sigma70","BetaPrimeFlag"),4),
+design = data.frame(Rep = c(rep(1,4),rep(2,4)),Rif = rep(c(0,0,20,20),2),IP = rep(c("Sigma70","BetaPrimeFlag"),4),
   exo.edns = c(1311,1312,1314,1315,1317,1318,1320,1321),pet.edsn = seq(1396,1403))
+betaF = data.frame(Rep = c(1,1,2,2),Rif = c(0,20,0,20),IP = rep("Beta",4),exo.edns = c(1310,1313,1316,1319))
 ```
+
+
 ```{r show_df,include = TRUE,echo = FALSE,results = "asis"}
-kable(df,format = "markdown")
+kable(design,format = "markdown")
 ```
 
 

@@ -13,6 +13,8 @@ According to [ChIP-seq guidelines and practices of the ENCODE and modENCODE cons
 
 
 
+
+
 | Rep| Rif|IP            | exo.edns| pet.edsn|
 |---:|---:|:-------------|--------:|--------:|
 |   1|   0|Sigma70       |     1311|     1396|
