@@ -13,6 +13,24 @@ According to [ChIP-seq guidelines and practices of the ENCODE and modENCODE cons
 opts_knit$set(progress = TRUE, verbose = TRUE)
 ```
 
+```{r init,include = FALSE,echo = TRUE,results = "hide"}
+library(GenomicAlignments)
+library(parallel)
+library(knitr)
+dr ="/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/Landick_ChIP-exo3/rawdata"
+folder = c("ChIPexo","ChIPseq_PET","ChIPseq_SET")
+files = lapply(folder,function(x,dr){
+  ff = list.files(file.path(dr,x))
+  return(ff[!grepl("bai",ff) & !grepl("sam",ff)])},dr)
+names(files) = folder
+ff = lapply(folder,function(x,dr,files)file.path(dr,x,files[[x]]),dr,files)
+names(ff) = folder
+df = data.frame(Rep = c(rep(1,4),rep(2,4)),Rif = rep(c(0,0,20,20),2),IP = rep(c("Sigma70","BetaPrimeFlag"),4),
+  exo.edns = c(1311,1312,1314,1315,1317,1318,1320,1321),pet.edsn = seq(1396,1403))
+```
+```{r show_df,include = TRUE,echo = FALSE,results = "asis"}
+kable(df,format = "markdown")
+```
 
 
 

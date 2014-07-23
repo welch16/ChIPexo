@@ -13,5 +13,17 @@ According to [ChIP-seq guidelines and practices of the ENCODE and modENCODE cons
 
 
 
+| Rep| Rif|IP            | exo.edns| pet.edsn|
+|---:|---:|:-------------|--------:|--------:|
+|   1|   0|Sigma70       |     1311|     1396|
+|   1|   0|BetaPrimeFlag |     1312|     1397|
+|   1|  20|Sigma70       |     1314|     1398|
+|   1|  20|BetaPrimeFlag |     1315|     1399|
+|   2|   0|Sigma70       |     1317|     1400|
+|   2|   0|BetaPrimeFlag |     1318|     1401|
+|   2|  20|Sigma70       |     1320|     1402|
+|   2|  20|BetaPrimeFlag |     1321|     1403|
+
+
 
 
