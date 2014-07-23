@@ -53,8 +53,32 @@ For the inspection the following structures where considered:
 
 ```{r show_df,include = TRUE,echo = FALSE,results = "asis"}
 kable(design,format = "markdown")
-kable(betaF,format = "markdown")
 ```
+
+Using the following function, we generated the strand coverage across for all peaks, for all data sets. The coverage was calculated using the function:
+
+```{r coverage_fun,include = TRUE,results = "hide",echo = TRUE}
+strand_coverage <- function(reads,peak,st, fragLen = 0)
+{
+  reads = as(reads,"GRanges")
+  reads = subset(reads, subset = strand(reads) == st)
+  if(fragLen >0){
+    reads = resize(reads,fragLen)
+  }
+  match = subjectHits(findOverlaps(peak,reads))
+  cover = coverage(reads[match])[[1]]
+  x = seq(start(peak),end(peak))
+  if(nrun(cover) == 1){
+    y = rep(runValue(cover),length(x))
+  }else{
+    xp = cumsum(runLength(cover)[1:(nrun(cover)-1)])
+    yp = runValue(cover)
+    y = stepfun(xp,yp)(x)
+  }
+  return(y)
+}
+```
+
 
 
 

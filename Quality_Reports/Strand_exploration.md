@@ -52,13 +52,31 @@ For the inspection the following structures where considered:
 |   2|  20|Sigma70       |     1320|     1402|
 |   2|  20|BetaPrimeFlag |     1321|     1403|
 
+Using the following function, we generated the strand coverage across for all peaks, for all data sets. The coverage was calculated using the function:
 
-| Rep| Rif|IP   | exo.edns|
-|---:|---:|:----|--------:|
-|   1|   0|Beta |     1310|
-|   1|  20|Beta |     1313|
-|   2|   0|Beta |     1316|
-|   2|  20|Beta |     1319|
+
+```r
+strand_coverage <- function(reads,peak,st, fragLen = 0)
+{
+  reads = as(reads,"GRanges")
+  reads = subset(reads, subset = strand(reads) == st)
+  if(fragLen >0){
+    reads = resize(reads,fragLen)
+  }
+  match = subjectHits(findOverlaps(peak,reads))
+  cover = coverage(reads[match])[[1]]
+  x = seq(start(peak),end(peak))
+  if(nrun(cover) == 1){
+    y = rep(runValue(cover),length(x))
+  }else{
+    xp = cumsum(runLength(cover)[1:(nrun(cover)-1)])
+    yp = runValue(cover)
+    y = stepfun(xp,yp)(x)
+  }
+  return(y)
+}
+```
+
 
 
 
