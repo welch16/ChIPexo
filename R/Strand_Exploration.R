@@ -82,7 +82,7 @@ pet = mclapply(ff[[2]][-c(11,12)],FUN = readGAlignmentsFromBam,param = pet_param
 
 save(list = c("exo","pet","set"),file = "../RData/Strand.RData")
 
-fileFromPeak <- function(seq,peak) paste(seq,as.character(seqnames(peak)),start(peak),end(peak),sep = "_")
+fileFromPeak <- function(seq,peak) paste(seq,as.character(seqnames(peak)),start(peak),end(peak),sep = "_") 
 
 names(exo) = sub("_qc.sorted.bam","",files[[1]])
 names(pet) = sub("_qc.sorted.bam","",files[[2]][-(11:12)])
@@ -122,6 +122,7 @@ tab = do.call(cbind,lapply(1:ncol(tab),function(i,tab){
 return(x)},tab))
 tab = as.data.frame(tab)
 names(tab) = nn
+rownames(tab)=NULL
 
 resume.samples <- function(edsn = NULL,cult = NULL,ip = NULL,phase = NULL,growth = NULL,
   rif = NULL,rep = NULL,seq = NULL)
@@ -141,11 +142,6 @@ resume.samples <- function(edsn = NULL,cult = NULL,ip = NULL,phase = NULL,growth
   return(st)
 }
 
-
-genomeLength = seqlengths(exo[[1]])
-binSize = 25
-bins = GRanges(seqnames = names(genomeLength),ranges = IRanges(start = seq(1,genomeLength,by=binSize),width = binSize),strand = "*")
-
 bin.density <- function(bins,reads)
 {  
   counts_F = countOverlaps(bins,subset(reads,subset = strand(reads) == "+"))
@@ -155,10 +151,55 @@ bin.density <- function(bins,reads)
 }
 
 
-ip = "Sig70"
-phase = "Exponential"
+plot.density <- function(binSize,exo.sets,pet.sets,genomeLength = seqlengths(exo.sets[[1]]),main = "")
+{
+  bins = GRanges(seqnames = names(genomeLength),ranges = IRanges(start = seq(1,genomeLength,by=binSize),width = binSize),strand = "*")
+  exo.densities = suppressWarnings(mclapply(exo.sets,function(x,bins)bin.density(bins,x),bins,mc.cores = 2))
+  pet.densities = suppressWarnings(mclapply(pet.sets,function(x,bins)bin.density(bins,x),bins,mc.cores =2))
+  par( mar=c(4,4,0.5,0.5), oma=c(0,0,2,0),mfrow = c(2,1) )   
+  yl = c(0,max(exo.densities[[1]]$y,exo.densities[[2]]$y,pet.densities[[1]]$y,pet.densities[[2]]$y)*1.2)
+  xl = c(0,1)
+  plot(exo.densities[[1]]$x ,exo.densities[[1]]$y,type = "l",ylim = yl,xlim = xl,xlab = "Fwd. strand ratio",ylab = "Density")
+  lines(pet.densities[[1]]$x , pet.densities[[1]]$y,col = "red")
+  legend("topright",lty=c(1,1),c("ChIP-Exo","ChIP-Seq-PET"),col=c("black","red")) 
+  plot(exo.densities[[2]]$x,exo.densities[[2]]$y,type = "l",ylim = yl,xlim = xl,xlab = "Fwd. strand ratio",ylab = "Density")
+  lines(pet.densities[[2]]$x,pet.densities[[2]]$y,col = "red")
+  legend("topright",lty=c(1,1),c("ChIP-Exo","ChIP-Seq-PET"),col=c("black","red"))   
+  mtext( main,outer = TRUE)
+
+}
+
+
+ip = c("Sig70","BetaPrimeFlag")
+rif = c("0 min","20 min")
 growth = "Aerobic"
-rif = "0 min"
+phase = "Exponential"
+j = 1
+st = list()
+for(i in ip){
+  for(r in rif){
+    st[[j]] = resume.samples(ip = i,rif = r,growth = growth,phase = phase)
+    j=j+1
+  }
+}
+    
+binSize = c(25,50,100,200,500,100)
+
+for(bin in binSize){
+  pdf(file = file.path("../Figs/Densities/",paste0("Densities_RifExperiment_",bin,".pdf")))
+  lapply(st1,function(x,bin,tab,exo,pet){
+    tt = subset(tab,subset = eval(parse(text =x)))
+    edsn = as.character(tt$edsn)
+    exo.sets = names(exo)[do.call(c,lapply(edsn,FUN = grep,names(exo)))]
+    exo.sets = lapply(exo.sets,function(y,exo)exo[[y]],exo)
+    pet.sets = names(pet)[do.call(c,lapply(edsn,FUN = grep,names(pet)))]
+    pet.sets = lapply(pet.sets,function(y,pet)pet[[y]],pet)
+    plot.density(bin,exo.sets,pet.sets,main = x)
+  },bin,tab,exo,pet)
+  dev.off()    
+}
+
+                         
 
 
 
