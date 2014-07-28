@@ -80,6 +80,7 @@ pet_param = ScanBamParam(flag = pet_flag, simpleCigar = FALSE,
                  what = character(0))
 pet = mclapply(ff[[2]][-c(11,12)],FUN = readGAlignmentsFromBam,param = pet_param,mc.cores = 8)
 
+
 save(list = c("exo","pet","set"),file = "../RData/Strand.RData")
 
 fileFromPeak <- function(seq,peak) paste(seq,as.character(seqnames(peak)),start(peak),end(peak),sep = "_") 
@@ -150,23 +151,46 @@ bin.density <- function(bins,reads)
   return(density(ratio))
 }
 
+library(ggplot2)
+library(grid)
 
 plot.density <- function(binSize,exo.sets,pet.sets,genomeLength = seqlengths(exo.sets[[1]]),main = "")
 {
   bins = GRanges(seqnames = names(genomeLength),ranges = IRanges(start = seq(1,genomeLength,by=binSize),width = binSize),strand = "*")
   exo.densities = suppressWarnings(mclapply(exo.sets,function(x,bins)bin.density(bins,x),bins,mc.cores = 2))
-  pet.densities = suppressWarnings(mclapply(pet.sets,function(x,bins)bin.density(bins,x),bins,mc.cores =2))
-  par( mar=c(4,4,0.5,0.5), oma=c(0,0,2,0),mfrow = c(2,1) )   
-  yl = c(0,max(exo.densities[[1]]$y,exo.densities[[2]]$y,pet.densities[[1]]$y,pet.densities[[2]]$y)*1.2)
-  xl = c(0,1)
-  plot(exo.densities[[1]]$x ,exo.densities[[1]]$y,type = "l",ylim = yl,xlim = xl,xlab = "Fwd. strand ratio",ylab = "Density")
-  lines(pet.densities[[1]]$x , pet.densities[[1]]$y,col = "red")
-  legend("topright",lty=c(1,1),c("ChIP-Exo","ChIP-Seq-PET"),col=c("black","red")) 
-  plot(exo.densities[[2]]$x,exo.densities[[2]]$y,type = "l",ylim = yl,xlim = xl,xlab = "Fwd. strand ratio",ylab = "Density")
-  lines(pet.densities[[2]]$x,pet.densities[[2]]$y,col = "red")
-  legend("topright",lty=c(1,1),c("ChIP-Exo","ChIP-Seq-PET"),col=c("black","red"))   
-  mtext( main,outer = TRUE)
+  pet.densities = suppressWarnings(mclapply(pet.sets,function(x,bins)bin.density(bins,x),bins,mc.cores =2)) 
 
+
+#  yl = c(0,max(exo.densities[[1]]$y,exo.densities[[2]]$y,pet.densities[[1]]$y,pet.densities[[2]]$y)*1.2)
+#  xl = c(0,1)
+
+  density2df <- function(dens){
+    return(data.frame("Fwd.Strand.Ratio" = dens$x ,density=dens$y)) 
+  }
+  
+  exo.densities = lapply(1:length(exo.densities),function(j,dens){
+    den = density2df(dens[[j]])
+    den$Rep = j
+    return(den)},exo.densities)
+  exo.densities = do.call(rbind,exo.densities)
+  exo.densities$seq = "ChIP-Exo"
+
+  pet.densities = lapply(1:length(pet.densities),function(j,dens){
+    den = density2df(dens[[j]])
+    den$Rep = j
+    return(den)},pet.densities)
+  pet.densities = do.call(rbind,pet.densities)
+  pet.densities$seq = "ChIP-Seq-PET"
+
+  df = rbind(exo.densities,pet.densities)
+  df$Rep = factor(df$Rep)
+  df$seq = factor(df$seq)
+
+  p <- ggplot(df,aes(Fwd.Strand.Ratio,density,colour = seq))+
+    geom_line()+facet_grid(Rep~.)+ggtitle(main)+
+    theme(legend.position = "top")
+  print(p)
+  
 }
 
 
@@ -183,23 +207,23 @@ for(i in ip){
   }
 }
     
-binSize = c(25,50,100,200,500,100)
+binSize = c(25,50,100,200,500,750,1000,2000)
+
 
 for(bin in binSize){
   pdf(file = file.path("../Figs/Densities/",paste0("Densities_RifExperiment_",bin,".pdf")))
-  lapply(st1,function(x,bin,tab,exo,pet){
+  message("Init ",bin)  
+  lapply(st,function(x,bin,tab,exo,pet){   
     tt = subset(tab,subset = eval(parse(text =x)))
     edsn = as.character(tt$edsn)
     exo.sets = names(exo)[do.call(c,lapply(edsn,FUN = grep,names(exo)))]
     exo.sets = lapply(exo.sets,function(y,exo)exo[[y]],exo)
     pet.sets = names(pet)[do.call(c,lapply(edsn,FUN = grep,names(pet)))]
-    pet.sets = lapply(pet.sets,function(y,pet)pet[[y]],pet)
+    pet.sets = lapply(pet.sets,function(y,pet)pet[[y]],pet)   
     plot.density(bin,exo.sets,pet.sets,main = x)
   },bin,tab,exo,pet)
   dev.off()    
 }
-
-                         
 
 
 
