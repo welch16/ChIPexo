@@ -18,15 +18,17 @@ For this analysis, we partitioned the E. Coli genome into bins. For each bin, th
 density.reads.per.strand.ratio
 ```
 
-function (bins, reads) 
-{
-    counts_F = countOverlaps(bins, subset(reads, subset = strand(reads) == 
-        "+"))
-    counts_R = countOverlaps(bins, subset(reads, subset = strand(reads) == 
-        "-"))
-    ratio = (counts_F + 1)/(counts_F + counts_R + 2)
-    return(density(ratio))
-}
+```
+## function (bins, reads) 
+## {
+##     counts_F = countOverlaps(bins, subset(reads, subset = strand(reads) == 
+##         "+"))
+##     counts_R = countOverlaps(bins, subset(reads, subset = strand(reads) == 
+##         "-"))
+##     ratio = (counts_F + 1)/(counts_F + counts_R + 2)
+##     return(density(ratio))
+## }
+```
 
 
 
