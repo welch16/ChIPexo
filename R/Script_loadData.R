@@ -34,9 +34,9 @@ names(exo) = sub("_qc.sorted.bam","",files[[1]])
 names(pet) = sub("_qc.sorted.bam","",files[[2]][-(11:12)])
 names(set) = sub("_qc.sorted.bam","",files[[3]])
 
-save(list = "exo",file = "data/chip_exo.RData")
-save(list = "pet",file = "data/chip_seq_pet.RData")
-save(list = "set",file = "data/chip_seq_set.RData")
+save(list = "exo",file = "data/chip.exo.RData")
+save(list = "pet",file = "data/chip.seq.pet.RData")
+save(list = "set",file = "data/chip.seq.set.RData")
 
 tab = list()
 tab[[1]] = read.xls("Alignment/ChIP-Exo-summary.xls",sheet = 1)[,1:7]
