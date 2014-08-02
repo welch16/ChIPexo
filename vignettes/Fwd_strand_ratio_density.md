@@ -47,53 +47,25 @@ For this experiment we are comparing the samples when :
 
 Initially several bin sizes were considered, but some of them undersmoothed the densities and others oversmoothed it. Therefore the densities calculated with bin size 200, 500 and 750 are shown. I
 
-** Bin size = 200 **
+
+
+
+
+|edsn |cult |ip    |phase       |growth  |rif   |rep |seq |
+|:----|:----|:-----|:-----------|:-------|:-----|:---|:---|
+|1311 |1197 |Sig70 |Exponential |Aerobic |0 min |1   |Exo |
+|1317 |1202 |Sig70 |Exponential |Aerobic |0 min |2   |Exo |
+|1396 |1197 |Sig70 |Exponential |Aerobic |0 min |1   |PET |
+|1400 |1202 |Sig70 |Exponential |Aerobic |0 min |2   |PET |
+
 
 ```r
-tab1 = subset(sample.info,eval(parse(text = st[[1]])))
-edsn = as.character(tab1$edsn)
-exo.sets = names(exo)[do.call(c,lapply(edsn,FUN = grep,names(exo)))]
-exo.sets = lapply(exo.sets,function(y,exo)exo[[y]],exo)
-pet.sets = names(pet)[do.call(c,lapply(edsn,FUN = grep,names(pet)))]
-pet.sets = lapply(pet.sets,function(y,pet)pet[[y]],pet)
-p1 = plot.density(200,exo.sets,pet.sets,genomeLength = seqlengths(exo.sets[[1]]))
-print(p1)
+p <- ggplot(df,aes(Fwd.Strand.Ratio,density,colour = seq))+geom_line()+
+  facet_grid(Rep ~ binSize) + theme(legend.position = "top")
+print(p)
 ```
 
 ![plot of chunk fig1](figure/fig1.png) 
-
-** Bin size = 500 **
-
-```r
-tab1 = subset(sample.info,eval(parse(text = st[[1]])))
-edsn = as.character(tab1$edsn)
-exo.sets = names(exo)[do.call(c,lapply(edsn,FUN = grep,names(exo)))]
-exo.sets = lapply(exo.sets,function(y,exo)exo[[y]],exo)
-pet.sets = names(pet)[do.call(c,lapply(edsn,FUN = grep,names(pet)))]
-pet.sets = lapply(pet.sets,function(y,pet)pet[[y]],pet)
-p1 = plot.density(500,exo.sets,pet.sets,genomeLength = seqlengths(exo.sets[[1]]))
-print(p1)
-```
-
-![plot of chunk fig2](figure/fig2.png) 
-
-** Bin size = 750 **
-
-```r
-tab1 = subset(sample.info,eval(parse(text = st[[1]])))
-edsn = as.character(tab1$edsn)
-exo.sets = names(exo)[do.call(c,lapply(edsn,FUN = grep,names(exo)))]
-exo.sets = lapply(exo.sets,function(y,exo)exo[[y]],exo)
-pet.sets = names(pet)[do.call(c,lapply(edsn,FUN = grep,names(pet)))]
-pet.sets = lapply(pet.sets,function(y,pet)pet[[y]],pet)
-p1 = plot.density(750,exo.sets,pet.sets,genomeLength = seqlengths(exo.sets[[1]]))
-print(p1)
-```
-
-![plot of chunk fig3](figure/fig3.png) 
-
-
-
 
 #### Tables
 
