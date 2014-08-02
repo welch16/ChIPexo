@@ -3,8 +3,9 @@ Refs/*
 .gitIgnore~
 *~
 notes/*~
-Screenshot*
+Screenshot/*png
 RData/*
 R/*RData
 Figs/*pdf
 *.Rout
+vignettes/*Rmd
