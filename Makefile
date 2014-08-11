@@ -1,7 +1,7 @@
 
 # Loads the bam files into RData file format
 load:
-	R CMD BATCH R/Script_loadData.R &
+	R CMD BATCH inst/scripts/Script_loadData.R &
 
 # removes not necessary stuff
 clean:
