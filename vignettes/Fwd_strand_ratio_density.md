@@ -87,33 +87,14 @@ Initially several bin sizes were considered, but some of them undersmoothed the 
 
 
 
-#### Tables
-
-
 |edsn |cult |ip            |phase       |growth  |rif    |rep |seq |
 |:----|:----|:-------------|:-----------|:-------|:------|:---|:---|
-|1311 |1197 |Sig70         |Exponential |Aerobic |0 min  |1   |Exo |
-|1312 |1197 |BetaPrimeFlag |Exponential |Aerobic |0 min  |1   |Exo |
-|1314 |1197 |Sig70         |Exponential |Aerobic |20 min |1   |Exo |
 |1315 |1197 |BetaPrimeFlag |Exponential |Aerobic |20 min |1   |Exo |
-|1317 |1202 |Sig70         |Exponential |Aerobic |0 min  |2   |Exo |
-|1318 |1202 |BetaPrimeFlag |Exponential |Aerobic |0 min  |2   |Exo |
-|1320 |1202 |Sig70         |Exponential |Aerobic |20 min |2   |Exo |
 |1321 |1202 |BetaPrimeFlag |Exponential |Aerobic |20 min |2   |Exo |
-
-
-
-|edsn |cult |ip            |phase       |growth  |rif    |rep |seq |
-|:----|:----|:-------------|:-----------|:-------|:------|:---|:---|
-|1396 |1197 |Sig70         |Exponential |Aerobic |0 min  |1   |PET |
-|1397 |1197 |BetaPrimeFlag |Exponential |Aerobic |0 min  |1   |PET |
-|1398 |1197 |Sig70         |Exponential |Aerobic |20 min |1   |PET |
 |1399 |1197 |BetaPrimeFlag |Exponential |Aerobic |20 min |1   |PET |
-|1400 |1202 |Sig70         |Exponential |Aerobic |0 min  |2   |PET |
-|1401 |1202 |BetaPrimeFlag |Exponential |Aerobic |0 min  |2   |PET |
-|1402 |1202 |Sig70         |Exponential |Aerobic |20 min |2   |PET |
 |1403 |1202 |BetaPrimeFlag |Exponential |Aerobic |20 min |2   |PET |
 
+![plot of chunk fig4density](figure/fig4density.png) 
 
 
 
