@@ -1,11 +1,8 @@
 Refs/*
-.gitIgnore
-.gitIgnore~
-*~
-notes/*~
 Screenshot/*png
 RData/*
 R/*RData
 Figs/*pdf
+Figs/Densities/*pdf
 *.Rout
 vignettes/*Rmd
