@@ -45,7 +45,12 @@ For this experiment we are comparing the samples when :
 
 #### Estimated densities
 
-Initially several bin sizes were considered, but some of them undersmoothed the densities and others oversmoothed it. Therefore the densities calculated with bin size 200, 500 and 750 are shown. I
+Initially several bin sizes were considered, but some of them undersmoothed the densities and others oversmoothed it. Therefore the densities calculated with bin size 200, 500 and 750 are shown. In particular we can see the following behaviour in allfigures:
+
+- The densities for ChIP-Exo data sets seems to be almost uniform, specially with larger bin sizes
+- The densities for ChIP-Exo and ChIP-Seq PET seems to be symmetrical, so it is not likely to be some sort of strand bias
+- For ChIP-Exo, there are bins that overlap with a large amount of one strand reads but not the other. This may suggest some sort of enzyme digestion bias
+- However, this is not related to a particular strand. We can asses that because for ChIP-Exo densities both tails are heavy and they seem to be of a very similar height
 
 
 
