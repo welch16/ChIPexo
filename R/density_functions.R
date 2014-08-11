@@ -57,11 +57,63 @@ resume.samples <- function(edsn = NULL,cult = NULL,ip = NULL,phase = NULL,growth
   return(st)
 }
 
+multi.df <- function(binsizes,exo.sets,pet.sets)
+{
+  bins = mclapply(binsizes,FUN = create.bins ,seqlengths(exo.sets[[1]]),mc.cores =length(binsizes))
 
+  exo.densities = suppressWarnings(mclapply(bins,function(b,seq.sets){
+    z = list()
+    z[[1]] = density.reads.per.strand.ratio(b,seq.sets[[1]])
+    z[[2]] = density.reads.per.strand.ratio(b,seq.sets[[2]])
+    return(z)},exo.sets,mc.cores = length(binsizes)))
+  names(exo.densities) = binsizes
 
+  pet.densities = suppressWarnings(mclapply(bins,function(b,seq.sets){
+    z = list()
+    z[[1]] = density.reads.per.strand.ratio(b,seq.sets[[1]])
+    z[[2]] = density.reads.per.strand.ratio(b,seq.sets[[2]])
+    return(z)},pet.sets,mc.cores = length(binsizes)))
+  names(pet.densities) = binsizes
+  
+  exo.df = lapply(exo.densities,function(x){
+    df1 = density2df(x[[1]])
+    df2 = density2df(x[[2]])
+    df1$Rep = 1
+    df2$Rep = 2
+    return(rbind(df1,df2))})
+  names(exo.df) = binsizes
+
+  pet.df = lapply(pet.densities,function(x){
+    df1 = density2df(x[[1]])
+    df2 = density2df(x[[2]])
+    df1$Rep = 1
+    df2$Rep = 2
+    return(rbind(df1,df2))})
+  names(pet.df) = binsizes
+
+  exo.df = lapply(binsizes,function(b,seq.df){
+    ss = seq.df[[as.character(b)]]
+    ss$binSize = b
+  return(ss)},exo.df)
+
+  pet.df = lapply(binsizes,function(b,seq.df){
+    ss = seq.df[[as.character(b)]]
+    ss$binSize = b
+  return(ss)},pet.df)
+
+  exo.df = do.call(rbind,exo.df)
+  exo.df$seq = "Exo"
+
+  pet.df = do.call(rbind,pet.df) 
+  pet.df$seq = "PET"
+  
+  df = rbind(exo.df,pet.df)
+  df$seq = factor(df$seq)
+  return(df)
+}
+  
 density2df <- function(dens)return(data.frame("Fwd.Strand.Ratio" = dens$x ,density=dens$y)) 
   
-
 plot.density <- function(binSize,exo.sets,pet.sets,genomeLength = seqlengths(exo.sets[[1]]))
 {
   bins = create.bins(binSize,genomeLength)
