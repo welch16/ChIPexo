@@ -64,7 +64,7 @@ density2df <- function(dens)return(data.frame("Fwd.Strand.Ratio" = dens$x ,densi
 
 plot.density <- function(binSize,exo.sets,pet.sets,genomeLength = seqlengths(exo.sets[[1]]))
 {
-  bins = GRanges(seqnames = names(genomeLength),ranges = IRanges(start = seq(1,genomeLength,by=binSize),width = binSize),strand = "*")
+  bins = create.bins(binSize,genomeLength)
   exo.densities = suppressWarnings(mclapply(exo.sets,function(x,bins)density.reads.per.strand.ratio(bins,x),bins,mc.cores = 2))
   pet.densities = suppressWarnings(mclapply(pet.sets,function(x,bins)density.reads.per.strand.ratio(bins,x),bins,mc.cores =2)) 
   
