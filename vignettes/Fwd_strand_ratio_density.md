@@ -58,13 +58,6 @@ Initially several bin sizes were considered, but some of them undersmoothed the 
 |1396 |1197 |Sig70 |Exponential |Aerobic |0 min |1   |PET |
 |1400 |1202 |Sig70 |Exponential |Aerobic |0 min |2   |PET |
 
-
-```r
-p <- ggplot(df,aes(Fwd.Strand.Ratio,density,colour = seq))+geom_line()+
-  facet_grid(Rep ~ binSize) + theme(legend.position = "top")
-print(p)
-```
-
 ![plot of chunk fig1](figure/fig1.png) 
 
 #### Tables
