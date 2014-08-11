@@ -1,8 +1,5 @@
-Refs/*
-Screenshot/*png
-RData/*
-R/*RData
-Figs/*pdf
-Figs/Densities/*pdf
+inst/refs/*
+inst/screenshot/*
+inst/figs/*
 *.Rout
 vignettes/*Rmd

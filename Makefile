@@ -10,6 +10,7 @@ clean:
 	rm -f .RDataTmp
 	rm -f .Rhistory
 	rm -f */.Rhistory
+	rm -f inst/scripts/*~
 
 # documents some functions
 doc:
