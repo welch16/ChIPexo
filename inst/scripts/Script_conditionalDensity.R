@@ -62,7 +62,7 @@ for(i in 1:L){
   df$binSize = factor(df$binSize)
   df$quantile = factor(df$quantile)
   df$Rep = factor(df$Rep)
-  pdf(file = file.path(figsdir,paste0("Conditional_density_",conditions[i],".pdf"),width = 8,height =5)
+  pdf(file = file.path(figsdir,paste0("Conditional_density_",conditions[i],".pdf")),width = 8,height =5)
   for(prob in probs){
     df1 = subset(df,quantile == prob )
     p <- ggplot(df1,aes(x=Fwd.Strand.Ratio,y=density,colour = Rep))+geom_line()+facet_grid(type  ~ binSize,scales = "free")+

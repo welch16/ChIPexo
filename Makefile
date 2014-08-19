@@ -12,7 +12,9 @@ clean:
 	rm -f */.Rhistory
 	rm -f inst/scripts/*~
 	rm -f inst/scripts/*Rout
-	rm -f *.Rout
+
+clean_out:
+	rm -fr *Rout
 
 # documents some functions
 doc:
