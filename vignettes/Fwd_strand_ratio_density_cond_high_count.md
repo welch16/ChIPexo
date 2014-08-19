@@ -34,5 +34,25 @@ quantile.df
 ## }
 ```
 
+First we are showing a comparison of the conditional densities of the ChIP-seq pet samples vs the ChIP-exo samples such that their edsn is > 1300. Considering the case when the Ip is Sig70, the rif time is 20 min, the grown is aerobic and the phase is exponential we can see, only for the first replicate:
+
+
+
+
+
+
+
+
+```
+## Warning: Removed 758 rows containing missing values (geom_path).
+## Warning: Removed 750 rows containing missing values (geom_path).
+## Warning: Removed 739 rows containing missing values (geom_path).
+## Warning: Removed 704 rows containing missing values (geom_path).
+## Warning: Removed 248 rows containing missing values (geom_path).
+```
+
+![plot of chunk fig1_condDensity](figure/fig1_condDensity.png) 
+
+
 
 
