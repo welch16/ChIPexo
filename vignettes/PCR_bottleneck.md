@@ -66,5 +66,11 @@ We can see:
 - We can see that for all data types: The PBC level for each individual strand is very close to the one calculated using both strands.
 - After inspecting the calculated values in the tables below, we can see that for both ChIP-Seq tags, the level of the PBC calculated with both strands is in between of the PBC's calculated using only one strand. However, for most of the ChIP-Exo samples, we can see that the PBC calculated with both strand is slightly higher than the PBC calculated for both individual strands.
 
+#### Figure 3
+
+![plot of chunk boxplot_pet](figure/boxplot_pet.png) 
+- For this plot we calculated the PBC for the ChIP-seq PET samples. Considering them as PET data and as SET data (as previously did), this is labeled as "pet-bad"
+- The levels are approximately the same. However, when calculating the PBC as PET we can see that there are upper and lower outliers instead of only lower outliers. This means, that there are some cases when calculating the PBC as PET improves the value of the PCR bottleneck coefficient.
+- Also we can see that the levels for the one-stranded PBC are approximately the same for both cases. However, for the complete case we can see a decrease in the overall value of the coefficient. Also, we can see a decrease in the inter-quartile difference.
 
 
