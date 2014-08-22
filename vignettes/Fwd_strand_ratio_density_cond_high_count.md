@@ -42,16 +42,17 @@ First we are showing a comparison of the conditional densities of the ChIP-seq p
 
 
 
-
-```
-## Warning: Removed 758 rows containing missing values (geom_path).
-## Warning: Removed 750 rows containing missing values (geom_path).
-## Warning: Removed 739 rows containing missing values (geom_path).
-## Warning: Removed 704 rows containing missing values (geom_path).
-## Warning: Removed 248 rows containing missing values (geom_path).
-```
-
 ![plot of chunk fig1_condDensity](figure/fig1_condDensity.png) 
+
+In the figure above we can see some behaviour that repeat accross several cases:
+- For ChIP-seq PET samples, the conditional forward strand ratio density behaves almost like a dirac delta centered in 0.5. Which means that for almost all the bins (for all bin sizes), there are approximately the same number of reads in the forward strand than in the backward strand.
+- For ChIP-seq PET samples, as the quantile increases we can see that the height of the density function at a ratio of 0.5 increases and the range of the density becomes smaller.
+
+For the ChIP-exo samples we can see:
+- When the bin size is smaller it is more likely to see a bimodal density with the modes being symmetric around a ratio = 0.5, and as the quantile increases we can see that the shape of the density resembles more the one of a unimodal density. Which means that the bins where there is an assymetry in the reads of each strand are the ones with lower counts.
+- As the bin size increase the mode of the density is taller and the tails of the density seems to be lighter.
+- 
+
 
 
 

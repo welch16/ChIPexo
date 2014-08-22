@@ -78,7 +78,8 @@ for(i in 1:L){
 # All chip exo forward strand ratio densities
 exo_sample1 = names(exo)[grepl("13",names(exo))]
 exo_sample2 = names(exo)[!grepl("13",names(exo))]
-  
+
+
 exo.sets1 = mclapply(exo_sample1,function(y,exo)as(exo[[y]],"GRanges"),exo,mc.cores =6)
 exo.sets2 = mclapply(exo_sample2,function(y,exo)as(exo[[y]],"GRanges"),exo,mc.cores =6)
 
@@ -122,8 +123,28 @@ dev.off()
 ## print(p)
 ## dev.off()
 
+# Individual exploration
+# edsn =930
+
+boxplot_logcount <- function(set,binsize)
+{
+  bin = create.bins(binsize,seqlengths(set))
+  count = countOverlaps(bin,set)
+  return(log(1 + count))
+}
 
 
+pdf(file = "Rplots.pdf")
+for(bin in binsizes){
+  logcounts1 = mclapply(exo.sets1,FUN = boxplot_logcount,bin,mc.cores = 8)
+  names(logcounts1) = do.call(c,lapply(exo_sample1,function(x)gsub("_042814","",x)))
 
+  df1 = melt(logcounts1)
+  colnames(df1) = c("log_counts","sample")
 
-
+  p = ggplot(df1,aes(sample,log_counts,fill = sample))+geom_boxplot()+theme(axis.text.x = element_text(angle = 90))+
+    ggtitle(paste("Bin size:",bin))
+  
+  print(p)
+}
+dev.off()
