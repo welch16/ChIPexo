@@ -51,7 +51,7 @@ In the figure above we can see some behaviour that repeat accross several cases:
 For the ChIP-exo samples we can see:
 - When the bin size is smaller it is more likely to see a bimodal density with the modes being symmetric around a ratio = 0.5, and as the quantile increases we can see that the shape of the density resembles more the one of a unimodal density. Which means that the bins where there is an assymetry in the reads of each strand are the ones with lower counts.
 - As the bin size increase the mode of the density is taller and the tails of the density seems to be lighter.
-- 
+ 
 
 
 
