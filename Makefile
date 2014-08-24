@@ -12,6 +12,7 @@ clean:
 	rm -f */.Rhistory
 	rm -f inst/scripts/*~
 	rm -f inst/scripts/*Rout
+	rm -f /.RData
 
 clean_out:
 	rm -fr *Rout

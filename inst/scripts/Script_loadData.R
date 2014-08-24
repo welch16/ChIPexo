@@ -39,9 +39,9 @@ save(list = "pet",file = "data/chip.seq.pet.RData")
 save(list = "set",file = "data/chip.seq.set.RData")
 
 tab = list()
-tab[[1]] = read.xls("Alignment/ChIP-Exo-summary.xls",sheet = 1)[,1:7]
-tab[[2]] = read.xls("Alignment/ChIP-Exo-summary.xls",sheet = 2)[,1:7]
-tab[[3]] = read.xls("Alignment/ChIP-Exo-summary.xls",sheet = 3)[,1:7]
+tab[[1]] = read.xls("inst/alignment/ChIP-Exo-summary.xls",sheet = 1)[,1:7]
+tab[[2]] = read.xls("inst/alignment/ChIP-Exo-summary.xls",sheet = 2)[,1:7]
+tab[[3]] = read.xls("inst/alignment/ChIP-Exo-summary.xls",sheet = 3)[,1:7]
 tab[[1]]$seq = "Exo"
 tab[[2]]$seq = "PET"
 tab[[3]]$seq = "SET"
