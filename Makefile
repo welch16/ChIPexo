@@ -29,6 +29,11 @@ cond_density:
 pbc:
 	R CMD BATCH inst/scripts/Script_PCR_bottleneck_coeff.R
 
+# depth scripth and logcount boxplots
+depth:
+	R CMD BATCH inst/scripts/Script_depth.R 
+
 # knit the vignettes
 vignettes/%.md:vignettes/%.Rmd
 	cd vignettes;R -e 'library(knitr);knit("$(<F)")';cd ..
+
