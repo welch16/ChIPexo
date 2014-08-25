@@ -107,44 +107,12 @@ dev.off()
 pdf(file = file.path(figsdir,"edsn900_ChIP_exo_samples.pdf"),width = 8,height =20)
 for(prob in probs){
   df1 = subset(df_exo2,quantile == prob )
-  p <- ggplot(df1,aes(x=Fwd.Strand.Ratio,y=density,colour = quantile))+geom_line()+facet_grid(sample  ~ binSize,scales = "free")+
+  p <- ggplot(df1,aes(x=Fwd.Strand.Ratio,y=density))+geom_line()+facet_grid(sample  ~ binSize,scales = "free")+
     theme(legend.position = "top",axis.text.x = element_text(angle = 90))+
       scale_x_continuous(limits = c(0,1))+ ggtitle(paste0("Quantile: ",prob*100, "%")) +
       geom_vline(xintercept=.5,linetype = 2)
   print(p)
 }
 dev.off()
-
   
-## pdf(file = "newdata_ChIP_exo_samples2.pdf",width = 8,height =20)
-## df1 = df_exo_exp
-## p <- ggplot(df1,aes(x=Fwd.Strand.Ratio,y=density,colour = quantile))+geom_line()+facet_grid(sample  ~ binSize,scales = "free") +theme(legend.position = "top",axis.text.x = element_text(angle = 90))+
-##     scale_x_continuous(limits = c(0,1))+ geom_vline(xintercept=.5,linetype = 2)
-## print(p)
-## dev.off()
 
-# Individual exploration
-# edsn =930
-
-boxplot_logcount <- function(set,binsize)
-{
-  bin = create.bins(binsize,seqlengths(set))
-  count = countOverlaps(bin,set)
-  return(log(1 + count))
-}
-
-
-pdf(file = "Rplots.pdf")
-for(bin in binsizes){
-  logcounts1 = mclapply(exo.sets1,FUN = boxplot_logcount,bin,mc.cores = 8)
-  names(logcounts1) = do.call(c,lapply(exo_sample1,function(x)gsub("_042814","",x)))
-
-  df1 = melt(logcounts1)
-  colnames(df1) = c("log_counts","sample")
-
-  p = ggplot(df1,aes(sample,log_counts,fill = sample))+geom_boxplot()+theme(axis.text.x = element_text(angle = 90))+
-    ggtitle(paste("Bin size:",bin))
-  
-  print(p)
-}
-dev.off()
