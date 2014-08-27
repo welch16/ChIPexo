@@ -33,6 +33,11 @@ pbc:
 depth:
 	R CMD BATCH inst/scripts/Script_depth.R 
 
+# cross-correlation 
+cross:
+	R CMD BATCH inst/scripts/Script_crossCorr_exploration.R
+
+
 # knit the vignettes
 vignettes/%.md:vignettes/%.Rmd
 	cd vignettes;R -e 'library(knitr);knit("$(<F)")';cd ..
