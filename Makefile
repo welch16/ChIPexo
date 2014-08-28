@@ -13,6 +13,7 @@ clean:
 	rm -f inst/scripts/*~
 	rm -f inst/scripts/*Rout
 	rm -f .RData
+	rm -f .*~
 
 clean_out:
 	rm -fr *Rout

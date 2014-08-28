@@ -17,4 +17,6 @@ Depends:
     spp (>= 1.0.0),
     gdata (>= 2.13.3),
     parallel
+Suggests:
+    knitr
 VignetteBuilder: knitr
