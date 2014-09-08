@@ -1,7 +1,8 @@
 
 # Loads the bam files into RData file format
 load:
-	R CMD BATCH inst/scripts/Script_loadData.R &
+	R CMD BATCH inst/rscripts/Script_loadData.R &
+	R CMD BATCH inst/rscripts/Script_loadRenData.R &
 
 # removes not necessary stuff
 clean:
@@ -24,19 +25,19 @@ doc:
 
 # conditional density
 cond_density:
-	R CMD BATCH inst/scripts/Script_conditionalDensity.R 
+	R CMD BATCH inst/rscripts/Script_conditionalDensity.R 
 
 # pbc bottleneck coeff
 pbc:
-	R CMD BATCH inst/scripts/Script_PCR_bottleneck_coeff.R
+	R CMD BATCH inst/rscripts/Script_PCR_bottleneck_coeff.R
 
 # depth scripth and logcount boxplots
 depth:
-	R CMD BATCH inst/scripts/Script_depth.R 
+	R CMD BATCH inst/rscripts/Script_depth.R 
 
 # cross-correlation 
 cross:
-	R CMD BATCH inst/scripts/Script_crossCorr_exploration.R
+	R CMD BATCH inst/rscripts/Script_crossCorr_exploration.R
 
 
 # knit the vignettes
