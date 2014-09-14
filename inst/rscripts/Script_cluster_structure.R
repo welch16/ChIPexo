@@ -13,81 +13,59 @@ load("data/chip.exo.RData")
 load("data/chip.seq.pet.RData")
 load("data/sample.summary.RData")
 
-
 source("R/depth_functions.R")
+source("R/density_functions.R")
 
-exo.edsn = c(1312,1315,1318,1321)
-pet.edsn = c(1397,1399,1401,1403)
-
-
-
-exo = exo[do.call(c,lapply(exo.edsn,function(x)grep(x,names(exo))))]
-pet = pet[do.call(c,lapply(pet.edsn,function(x)grep(x,names(pet))))]
-
-# pick 20 min rif
-exo.edsn = exo.edsn[c(2,4)]
-pet.edsn = pet.edsn[c(2,4)]
-
-
-## exo.edsn = exo.edsn[c(1,3)]
-## pet.edsn = pet.edsn[c(1,3)]
-
-
-exo = exo[do.call(c,lapply(exo.edsn,function(x)grep(x,names(exo))))]
-pet = pet[do.call(c,lapply(pet.edsn,function(x)grep(x,names(pet))))]
-
-
+# Parameters
 mc.cores = 8
-exo = mclapply(exo,as.GRanges,mc.cores=mc.cores)
-pet = mclapply(pet,as.GRanges,mc.cores=mc.cores)
-#set = mclapply(set,as.GRanges,mc.cores=mc.cores)
-
-
-# using the second rep of chip exo sig70 - rif 20 because it has the highest
-# depth
-l = sapply(exo,length)
-ss = exo[[which.max(l)]]
-pos = start(ss)  
-
-#U = sort(sample(1:seqlengths(ssF),2200))
-
+figsdir = "inst/figs/peak_plots"
 distance = 500
-idx = which(diff(pos) > distance)
-length(idx)
 
-## lowerBounds = U -500
-## upperBounds = U + 500
+# Set conditions
+conditions = rep("",4)
+conditions[1] = resume.samples(ip="Sig70",rif="0 min")
+conditions[2] = resume.samples(ip="BetaPrimeFlag",rif="0 min")
+conditions[3] = resume.samples(ip="Sig70",rif="20 min")
+conditions[4] = resume.samples(ip="BetaPrimeFlag",rif="20 min")
 
+edsn = lapply(conditions,function(x,sample.info)as.character(subset(sample.info,
+  subset = eval(parse(text=x)))$edsn),sample.info)
+names(edsn) =conditions
 
-lowerBounds = pmax(1,start(ss[idx])-distance)
-upperBounds = pmin(seqlengths(ss[idx]),start(ss[idx]) + distance)
+exo.sets = lapply(edsn,function(x)exo[do.call(c,lapply(x,function(y)grep(y,names(exo))))])
+pet.sets = lapply(edsn,function(x)pet[do.call(c,lapply(x,function(y)grep(y,names(pet))))])
 
+exo.sets = lapply(exo.sets,function(x,mc)mclapply(x,as.GRanges,mc.cores=mc),mc.cores)
+pet.sets = lapply(pet.sets,function(x,mc)mclapply(x,as.GRanges,mc.cores=mc),mc.cores)
 
 filterReads <- function(lb,ub,reads.pos)
   return(which(reads.pos >= lb & reads.pos <= ub))
 
-exo.idx = list()
-exo.idx[[1]] = mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(exo[[1]])),SIMPLIFY = FALSE)
-exo.idx[[2]] = mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(exo[[2]])),SIMPLIFY = FALSE)
+filterSets <- function(exo.sets_cond,pet.sets_cond,distance)
+{
+  lengths = sapply(exo.sets_cond,length)
+  ss = exo.sets_cond[[which.max(lengths)]]
+  pos = start(ss)
+  idx = which(diff(pos) > distance)
 
-pet.idx = list()
-pet.idx[[1]] = mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(pet[[1]])),SIMPLIFY = FALSE)
-pet.idx[[2]] = mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(pet[[2]])),SIMPLIFY = FALSE)
+  lowerBounds = pmax(1,start(ss[idx])-distance)
+  upperBounds = pmin(seqlengths(ss[idx]),start(ss[idx]) + distance)
 
-## reads.idx.F = mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(ssF)),SIMPLIFY = FALSE,
-##   mc.cores = mc.cores)
+  exo.idx = lapply(exo.sets_cond,function(y)
+    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE))
+  
+  pet.idx = lapply(pet.sets_cond,function(y)
+    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE))
 
-## reads.idx.R1 = mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(end(ssR)),SIMPLIFY = FALSE,
-##   mc.cores = mc.cores)
+  return(list(exo = exo.idx,pet =pet.idx))  
+}
 
-#snr <- function(reads_F,reads_R)return( (1 +length(reads_F))/(2 + length(reads_F) + length(reads_R)))
-#SNR = do.call(c,mcmapply(FUN = snr,reads.idx.F,reads.idx.R,SIMPLIFY = FALSE,mc.cores=mc.cores))
+indexes = mapply(FUN = filterSets,exo.sets,pet.sets,MoreArgs = list(distance),SIMPLIFY = FALSE)
+names(indexes) = conditions
+
+save(list = "indexes",file = "data/indexes_regions_1.RData")
 
 getReads <- function(idx,reads,mc)mclapply(idx,function(x,reads)reads[x],reads,mc.cores =mc)
-
-exo.reads = mapply(FUN = getReads,exo.idx,exo,MoreArgs = list(mc.cores),SIMPLIFY = FALSE)
-pet.reads = mapply(FUN = getReads,pet.idx,pet,MoreArgs = list(mc.cores),SIMPLIFY = FALSE)
-
 coverToVec <- function(lb,ub,cover)
 {
   x = seq(lb,ub,by=1)
@@ -126,6 +104,36 @@ all_plots <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2)
   single_set_plot(lb,ub,pet.reads2,"pet2")
 }
 
+filenames = c("Sig70_rif0_peak_plots.pdf","BetaPrimeFlag_rif0_peak_plots.pdf",
+  "Sig70_rif20_peak_plots.pdf","BetaPrimeFlag_rif20_peak_plots.pdf")
+
+# plots
+for(i in 1:4)
+{  
+  exo.reads = mapply(FUN = getReads,indexes[[i]]$exo,exo.sets[[i]],MoreArgs = list(mc.cores),SIMPLIFY = FALSE)
+  pet.reads = mapply(FUN = getReads,indexes[[i]]$pet,pet.sets[[i]],MoreArgs = list(mc.cores),SIMPLIFY = FALSE)
+
+  j = which.max(sapply(exo.sets[[i]],length))
+  ss = exo.sets[[i]][[j]]
+
+  pos = start(ss)
+  idx = which(diff(pos) > distance)
+  
+  lowerBounds = pmax(1,start(ss[idx])-distance)
+  upperBounds = pmin(seqlengths(ss[idx]),start(ss[idx]) + distance)
+  
+  pdf(file = file.path(figsdir,filenames[i]))
+  for(k in 1:length(lowerBounds)){
+    # message(k)
+    lb = lowerBounds[k]
+    ub = upperBounds[k]
+    all_plots(lb,ub,exo.reads[[1]][[k]],exo.reads[[2]][[k]],pet.reads[[1]][[k]],pet.reads[[2]][[k]])
+  }
+  dev.off()
+
+  write.csv(data.frame(lower = lowerBounds,upper = upperBounds),file = gsub(".pdf",".csv",filenames[i]),row.names = FALSE)
+}
+
 
 
 ## i=113
@@ -144,41 +152,9 @@ all_plots <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2)
 ## dev.off()
 
 
-pdf(file = "BetaPrimeFlag_0min.pdf")
-for(i in 1:length(lowerBounds)){
-  message(i)
-  lb = lowerBounds[i]
-  ub = upperBounds[i]
-  all_plots(lb,ub,exo.reads[[1]][[i]],exo.reads[[2]][[i]],pet.reads[[1]][[i]],pet.reads[[2]][[i]])
-}
-dev.off()
+## pdf(file = "Rplots.pdf")
+## mcmapply(FUN = all_plots,lowerBounds[1:8],upperBounds[1:8],exo.reads[[1]][1:8],exo.reads[[2]][1:8],pet.reads[[1]][1:8],pet.reads[[2]][1:8],SIMPLIFY = FALSE);dev.off()         
 
-pdf(file = "Rplots.pdf")
-mcmapply(FUN = all_plots,lowerBounds[1:8],upperBounds[1:8],exo.reads[[1]][1:8],exo.reads[[2]][1:8],pet.reads[[1]][1:8],pet.reads[[2]][1:8],SIMPLIFY = FALSE);dev.off()         
-
-
-
-
-
-## par(mfrow = c(2,2))
-## x = seq(-5,5,length.out = 100)
-## y = dunif(x)
-## y = y / norm(as.matrix(y))
-## plot(x,y,type = "l")
-## yf = fft(y)
-## plot(x, -log(Mod(yf)),type = "l")
-## plot(x,Re(yf),type = "l")
-## plot(x,Im(yf),type = "l")
-## par(mfrow = c(2,2))
-## x = seq(0,1,length.out = 100)
-## y = dunif(x)
-## y = y / norm(as.matrix(y))
-## plot(x,y,type = "l")
-## yf = fft(y)
-## plot(x, -log(Mod(yf)),type = "l")
-## plot(x,Re(yf),type = "l")
-## plot(x,Im(yf),type = "l")
-## dev.off()
 
 
 
