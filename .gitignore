@@ -3,3 +3,5 @@ inst/screenshot/*
 inst/figs/*
 *.Rout
 vignettes/*Rmd
+*.pdf
+*.csv
