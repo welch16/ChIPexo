@@ -39,6 +39,9 @@ depth:
 cross:
 	R CMD BATCH inst/rscripts/Script_crossCorr_exploration.R
 
+# peak-plots
+peaks:
+	R CMD BATCH inst/rscripts/Script_cluster_structure.R 
 
 # knit the vignettes
 vignettes/%.md:vignettes/%.Rmd
