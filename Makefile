@@ -11,8 +11,8 @@ clean:
 	rm -f .RDataTmp
 	rm -f .Rhistory
 	rm -f */.Rhistory
-	rm -f inst/scripts/*~
-	rm -f inst/scripts/*Rout
+	rm -f inst/rscripts/*~
+	rm -f inst/rscripts/*Rout
 	rm -f .RData
 	rm -f .*~
 
