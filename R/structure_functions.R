@@ -1,7 +1,7 @@
 filterReads <- function(lb,ub,reads.pos)
   return(which(reads.pos >= lb & reads.pos <= ub))
 
-filterSets <- function(exo.sets_cond,pet.sets_cond,distance)
+filterSets <- function(exo.sets_cond,pet.sets_cond,distance,mc=8)
 {
   lengths = sapply(exo.sets_cond,length)
   ss = exo.sets_cond[[which.max(lengths)]]
@@ -12,10 +12,10 @@ filterSets <- function(exo.sets_cond,pet.sets_cond,distance)
   upperBounds = pmin(seqlengths(ss[idx]),start(ss[idx]) + distance)
 
   exo.idx = lapply(exo.sets_cond,function(y)
-    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE))
+    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE,mc.cores = mc))
   
   pet.idx = lapply(pet.sets_cond,function(y)
-    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE))
+    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE,mc.cores = mc))
 
   return(list(exo = exo.idx,pet =pet.idx))  
 }
@@ -34,12 +34,17 @@ coverToVec <- function(lb,ub,cover)
   return(y)
 }
 
+cover_by_strand <- function(reads,str){
+  out <- suppressWarnings(coverage(subset(reads,strand(reads)==str))[[1]])
+  return(out)
+}
+  
 single_set_plot <- function(lb,ub,reads,main="")
 {
-  reads_F = subset(reads,strand(reads)=="+")
-  reads_R = subset(reads,strand(reads)=="-")
-  window_f= coverToVec(lb,ub,coverage(reads_F)[[1]])
-  window_r= coverToVec(lb,ub,coverage(reads_R)[[1]])
+  cover_F = cover_by_strand(reads,"+")
+  cover_R = cover_by_strand(reads,"-")
+  window_f= coverToVec(lb,ub,cover_F)
+  window_r= coverToVec(lb,ub,cover_R)
   x = seq(lb,ub,by=1)
   xlim = c(lb,ub)
   ylim = c(-1,1) * max(max(window_f),max(window_r))
