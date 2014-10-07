@@ -1,0 +1,28 @@
+%\VignetteEngine{knitr::knitr}
+\documentclass{article}
+
+<<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+  BiocStyle::latex()
+@ 
+
+
+\begin{document}
+
+\title{An analysis of quality control measures for ChIP-exo}
+\author{Rene Welch \\ Department of Statistics, University of Wisconsin-Madison \\ Madison, WI}
+
+\maketitle
+
+\abstract
+
+The idea of this document is to summarize the differet analyses made to asses the quality of different ChIP-exo datasets.
+
+
+\tableofcontents
+
+\section{Introduction}
+
+
+
+
+\end{document}
