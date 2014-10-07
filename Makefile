@@ -2,7 +2,6 @@
 # Loads the bam files into RData file format
 load:
 	R CMD BATCH inst/rscripts/Script_loadData.R &
-	R CMD BATCH inst/rscripts/Script_loadRenData.R &
 
 # removes not necessary stuff
 clean:
@@ -52,3 +51,5 @@ diff:
 vignettes/%.md:vignettes/%.Rmd
 	cd vignettes;R -e 'library(knitr);knit("$(<F)")';cd ..
 
+vignettes/%.pdf:vignettes/%.Rnw
+	cd vignettes;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
