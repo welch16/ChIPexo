@@ -5,3 +5,5 @@ inst/figs/*
 vignettes/*Rmd
 *.pdf
 *.csv
+vignettes/*
+data/*
