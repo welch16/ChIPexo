@@ -5,23 +5,102 @@
   BiocStyle::latex()
 @ 
 
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{graphicx}
+
 
 \begin{document}
 
-\title{An analysis of quality control measures for ChIP-exo}
+\title{An analysis of quality control measures for Chip-exo}
 \author{Rene Welch \\ Department of Statistics, University of Wisconsin-Madison \\ Madison, WI}
+\date{October 2014}
 
 \maketitle
-
-\abstract
-
-The idea of this document is to summarize the differet analyses made to asses the quality of different ChIP-exo datasets.
 
 
 \tableofcontents
 
 \section{Introduction}
 
+
+The idea of this document is to summarize the different analysis made
+to asses the quality of different ChIP-exo data sets. Several analysis
+were performed to the ChIP exo data.
+
+\subsection{The data}
+
+
+
+\section{PCR bottleneck coefficient}
+
+The PCR bottleneck coefficients is defined as a measure of library
+complexity, i.e. how skewed the distribution of read counts per
+location is towards 1 read per location. It is defined as:
+
+\begin{align} 
+  \text{PBC} = \frac{N_1}{N_d}
+\end{align}
+
+where:
+
+\begin{itemize}
+
+\item $N_1$ is the number of genomic locations to which
+  \textbf{exactly} one unique mapping read maps
+
+\item $N_d$ is the number of genomic locations to which \textbf{at
+    least} one unique mapping read maps, i.e. the number of
+  non-redundant unique mapping reads
+
+\end{itemize}
+
+Since $N_1 \leq N_d$ then $0 \leq \text{PBC} \leq 1$. Finally ENCODE
+recommends:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c|c}
+    \hline\hline
+    PBC range & Bottleneck class \\
+    \hline
+    0 - 0.5  & Severe  \\
+    0.5 - 0.8 & Moderate  \\
+    0.8 - 0.9 & Mild        \\  
+    0.9 - 1 & Non-existent  \\
+    \hline
+  \end{tabular}
+  \caption{PBC classification \label{pbc_class}}
+\end{table}
+
+We grouped the data sets by the protocol it was used to generate
+it. We considered three protocols: ChIP-exo, ChIP-seq PET and ChIP-seq
+SET. We wanted to compare if there is an overall level across the same
+protocols used. Thus, for each data set, we calculated it's PBC and
+plotted all together by grouping them across protocols:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width =
+  .4\textwidth]{../inst/figs/pbc/PBCboxplot.pdf}
+  \caption{PCR bottleneck coefficient separated by
+    protocol \label{pbcfig}}
+\end{figure}
+
+In figure \ref{pbcfig} we can see that PBC is higher for both ChIP-seq
+protocols. Also, we can see that the range of ChIP-Seq SET PBC is
+bigger than the other two.
+
+\section{Forward strand ratio density}
+
+
+
+
+\subsection{Forward strand ratio density estimation conditional to higher count bins}
+
+
+\section{Examples}
 
 
 
