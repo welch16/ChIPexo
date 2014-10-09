@@ -18,15 +18,23 @@ names(ff) = folder
 
 set_param = ScanBamParam(what = "qname")
 
-exo = mclapply(ff[[1]],FUN = readGAlignmentsFromBam,param = set_param,mc.cores = 8)
-set = mclapply(ff[[3]],FUN = readGAlignmentsFromBam,param = set_param,mc.cores = 8)
+read_bam <- function(file,param)
+{
+  galign = readGAlignmentsFromBam(file,param=param)
+  elementMetadata(galign)[["qname"]] = as.numeric(factor(elementMetadata(galign)[["qname"]]))
+  return(galign)
+}
+
+
+exo = mclapply(ff[[1]],FUN = read_bam,param = set_param,mc.cores = 8)
+set = mclapply(ff[[3]],FUN = read_bam,param = st_param,mc.cores = 8)
 
 # This part is to distinguish the files as Paired End tags
 pet_flag = scanBamFlag(isPaired = TRUE, isProperPair = TRUE, isUnmappedQuery = NA,hasUnmappedMate = NA, isMinusStrand = NA, isMateMinusStrand = NA,isFirstMateRead = NA, isSecondMateRead = NA, isNotPrimaryRead = NA, isNotPassingQualityControls = NA, isDuplicate = NA)
 
 pet_flag = scanBamFlag(isPaired=TRUE,isProperPair=TRUE)
 pet_param = ScanBamParam(flag = pet_flag,what = "qname")
-pet = mclapply(ff[[2]][-c(11,12)],FUN = readGAlignmentsFromBam,param = pet_param,mc.cores = 8)
+pet = mclapply(ff[[2]][-c(11,12)],FUN = read_bam,param = pet_param,mc.cores = 8)
 
 names(exo) = sub("_qc.sorted.bam","",files[[1]])
 names(pet) = sub("_qc.sorted.bam","",files[[2]][-(11:12)])
