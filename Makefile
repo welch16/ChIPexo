@@ -26,6 +26,11 @@ doc:
 cond_density:
 	R CMD BATCH inst/rscripts/Script_conditionalDensity.R 
 
+# densities
+densities:
+	R CMD BATCH inst/rscripts/Script_density.R
+
+
 # pbc bottleneck coeff
 pbc:
 	R CMD BATCH inst/rscripts/Script_PCR_bottleneck_coeff.R
