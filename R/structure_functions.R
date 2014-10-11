@@ -20,6 +20,30 @@ filterSets <- function(exo.sets_cond,pet.sets_cond,distance,mc=8)
   return(list(exo = exo.idx,pet =pet.idx))  
 }
 
+
+filterSets2 <- function(exo.sets_cond,pet.sets_cond,set.sets_cond,distance,mc=8)
+{
+  lengths = sapply(exo.sets_cond,length)
+  ss = exo.sets_cond[[which.max(lengths)]]
+  pos = start(ss)
+  idx = which(diff(pos) > distance)
+
+  lowerBounds = pmax(1,start(ss[idx])-distance)
+  upperBounds = pmin(seqlengths(ss[idx]),start(ss[idx]) + distance)
+
+  exo.idx = lapply(exo.sets_cond,function(y)
+    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE,mc.cores = mc))
+  
+  pet.idx = lapply(pet.sets_cond,function(y)
+    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE,mc.cores = mc))
+
+  set.idx = lapply(set.sets_cond,function(y)
+    mcmapply(FUN = filterReads,lowerBounds,upperBounds,MoreArgs = list(start(y)),SIMPLIFY = FALSE,mc.cores = mc))
+  
+  return(list(exo = exo.idx,pet =pet.idx,set=set.idx))  
+}
+
+
 getReads <- function(idx,reads,mc)mclapply(idx,function(x,reads)reads[x],reads,mc.cores =mc)
 coverToVec <- function(lb,ub,cover)
 {
@@ -61,4 +85,16 @@ all_plots <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2)
   single_set_plot(lb,ub,exo.reads2,"exo2")
   single_set_plot(lb,ub,pet.reads1,"pet1")
   single_set_plot(lb,ub,pet.reads2,"pet2")
+}
+
+
+all_plots2 <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2,set.reads1,set.reads2)
+{
+  par(mfcol=c(2,3), mar=c(4,4,0.5,0.5), oma=c(1.5,2,1,1))
+  single_set_plot(lb,ub,exo.reads1,"exo1")
+  single_set_plot(lb,ub,exo.reads2,"exo2")
+  single_set_plot(lb,ub,pet.reads1,"pet1")
+  single_set_plot(lb,ub,pet.reads2,"pet2")
+  single_set_plot(lb,ub,set.reads1,"set1")
+  single_set_plot(lb,ub,set.reads2,"set2")
 }
