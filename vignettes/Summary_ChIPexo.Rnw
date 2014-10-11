@@ -29,8 +29,6 @@ The idea of this document is to summarize the different analysis made
 to asses the quality of different ChIP-exo data sets. Several analysis
 were performed to the ChIP exo data.
 
-\subsection{The data}
-
 
 
 \section{PCR bottleneck coefficient}
@@ -169,17 +167,93 @@ In both figures \ref{fig:cc1} and \ref{fig:cc2} we can see typical cross correla
 That means that both strand are approximately uncorrelated. Thus, this method may not work to estimate the read fragment length for a ChIP-exo data set. Also, we can think that this low values may be an effect of having sparse tag count vectors (which may be happening because of the enzyme diggesting all positions from the 5' end until reaching the TF.
 
 
-
-
 \section{Forward strand ratio density}
 
+For this analysis, we divided the e.coli genome into bins of a fixed length $b$ and for each bin we counted the number of reads that overlap with it. Finally we calculated the forward strand ratio as:
 
+\begin{align}
+  \text{ratio} = \frac{f+1}{f+r+2} 
+\label{fwdratio}
+\end{align}
+
+where $f$ ($r$) is the number of reads in the forward (backward) strand that overlap with the bin. Ideally, we want to observe a uni-model density with small values around the extremes ($0$ and $1$). A typical ChIP-seq density looks like:
+
+<<loadensities,include=FALSE,echo=FALSE,eval=TRUE>>=
+load(file.path(datadir,"densities.RData")) # exo_density, pet_density,set_density
+load(file.path(datadir,"sample.summary.RData")) # sample.info
+source("../R/density_functions.R")
+row= subset(sample.info,eval(parse(text=resume.samples(edsn=1319))))
+rows = subset(sample.info,(eval(parse(text = resume.samples(ip=row$ip,rif=row$rif)))))
+rm(row)
+idd = do.call(c,lapply(rows$edsn,function(x)grep(x,names(exo_density))))
+rm(rows)
+@ 
+
+<<include=FALSE,echo=FALSE,eval=TRUE>>=
+  df = do.call(rbind, lapply(exo_density[idd],as.data.frame))
+  idd
+  ggplot(df,aes(x.x,x.y,colour = bin))+geom_line()+theme(legend.position = "bottom",aspect.ratio = 1,axis.title = element_text(size = rel(2.5)),axis.text = element_text(size = rel(2),angle=90),legend.text = element_text(size = rel(2)),legend.title = element_text(size = rel(2)))+ scale_color_brewer(palette ="Dark2")+facet_grid(.~edsn)+scale_x_continuous(limits = c(0,1))+xlab("fwd. strand ratio")+ylab("density")
+  ggsave("exoDens.pdf",width = 6,height = 6)
+  rm(idd)
+@ 
+
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=.5\textwidth]{exoDens.pdf}
+  \caption{Densities of forward strand ratio, the ip is $\beta$ and the condition is rif-20 min (both replicates)}
+  \label{dens_exo} 
+\end{figure}
+
+
+
+Clealy for both ChIP-seq cases the densities are well behaved. Almost all mass from the densities is concentrated around $0.5$. However, for the ChIP-exo case the tails seem to be heavier, which means that there are a lot of bins for which reads of only one strand are being mapped. We are assuming that this is due to some sort of diggestion bias.
+
+In figure \ref{dens_exo}, we can see two replicates of the same data set (ip=$\beta$ and rif=20 min), where the forward strand density behaves in two different ways, which suggests that this bias is sample dependent.
+
+<<chipseq_dens,include=FALSE,echo=FALSE,eval=TRUE>>=
+row= subset(sample.info,eval(parse(text=resume.samples(edsn=1400))))
+idd = do.call(c,lapply(row$edsn,function(x)grep(x,names(pet_density))))
+@ 
+
+For comparison purposes, a common case of a ChIP-seq forward strand density is shown (the same effect is observed in the rest of the samples):
+
+<<include=FALSE,echo=FALSE,eval=TRUE>>=
+  df1 = do.call(rbind,lapply(pet_density[idd],as.data.frame))
+  df1$seq = "PET"
+  df2 = do.call(rbind,lapply(set_density[idd],as.data.frame))
+  df2$seq = "SET"
+  df = rbind(df1,df2)
+  df$seq = factor(df$seq)
+  ggplot(df,aes(x.x,x.y,colour = bin))+geom_line()+theme(legend.position = "bottom",aspect.ratio = 1,axis.title = element_text(size = rel(2.5)),axis.text = element_text(size = rel(2),angle=90),legend.text = element_text(size = rel(2)),legend.title = element_text(size = rel(2)))+ scale_color_brewer(palette ="Dark2")+facet_grid(edsn~seq)+scale_x_continuous(limits = c(0,1))+xlab("fwd. strand ratio")+ylab("density")
+  ggsave("seqDens.pdf",width = 6,height = 6)  
+@ 
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.5\textwidth]{seqDens.pdf}
+  \caption{Forward strand ratio for $\sigma_{70}$ with rif=0 min (both ChIP-seq case)}
+  \label{dens_seq}
+\end{figure}
+
+In figure \ref{dens_seq} we can see that there is more probability mass around $0.5$ for the PET sample than for the SET sample. 
 
 
 \subsection{Forward strand ratio density estimation conditional to higher count bins}
 
+After comparing figures \ref{dens_exo} versus \ref{dens_seq}, it is clear that the tails from the \ref{dens_exo} are more heavier than the tails of any ChIP-seq case. 
+
+Usually, we are more interested in the densities with the highest counts, since those are the regions where some signal could be detected. Thus, we estimated the densities considering only the bins with counts greater than certain quantile.
+
+
 
 \section{Examples}
+
+
+\appendix
+
+\section{Sampling SET reads from PET reads}
 
 
 
