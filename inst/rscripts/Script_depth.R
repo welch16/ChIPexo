@@ -23,6 +23,7 @@ figsdir = "inst/figs/depth"
 
 exo = mclapply(exo,as.GRanges,mc.cores=mc.cores)
 pet = mclapply(pet,as.GRanges,mc.cores=mc.cores)
+
 set = mclapply(set,as.GRanges,mc.cores=mc.cores)
 
 index = !grepl("93?",names(exo))
@@ -60,7 +61,10 @@ print(p4);dev.off()
 sample.list = lapply(levels(sample.info$seq),function(x,samp)
   subset(samp,samp$seq==x),sample.info)
 exo.depth = mclapply(exo,length,mc.cores=mc.cores)
-pet.depth = mclapply(pet,length,mc.cores=mc.cores)
+pet.depth = mclapply(pet,function(x)length(x)/2,mc.cores=mc.cores)
+
+save(list = c("exo.depth","pet.depth"),file = "data/depth.RData")
+
 set.depth = mclapply(set,length,mc.cores=mc.cores)
 depth = list(exo.depth,pet.depth,set.depth)
 sample.list = lapply(1:3,function(i,sample.list,depth)assignDepth(sample.list[[i]],depth[[i]]),sample.list,depth)
