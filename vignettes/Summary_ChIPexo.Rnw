@@ -22,6 +22,8 @@
 
 \tableofcontents
 
+\newpage
+
 \section{Introduction}
 
 
@@ -30,6 +32,40 @@ to asses the quality of different ChIP-exo data sets. Several analysis
 were performed to the ChIP exo data.
 
 
+\section{Summary of the data sets}
+
+Right now we have only analized data sets from the E. Coli genome. 
+
+<<loaddepth,include=FALSE,echo=FALSE,eval=TRUE>>=
+  library(knitr)
+  library(reshape2)
+  load("../data/depth.RData")
+  exo.depth = melt(exo.depth)
+  exo.depth = exo.depth[,c(2,1)]
+  names(exo.depth) = c("Data set","Depth")
+  exo.depth[,1]= sapply(exo.depth[,1],function(x)gsub("_042814","",x))
+  pet.depth = melt(pet.depth)
+  pet.depth = pet.depth[,c(2,1)]
+  pet.depth[,1]= sapply(pet.depth[,1],function(x)gsub("_042814","",x))
+  names(pet.depth) = c("Data set","Depth")
+@ 
+
+\begin{table}[H]
+  \centering
+<<include=TRUE,echo=FALSE,eval=TRUE,results="asis">>=
+ kable(exo.depth,format = 'latex')
+@ 
+  \caption{Depth for ChIP-exo data sets}
+\end{table}
+
+
+\begin{table}[H]
+  \centering
+<<include=TRUE,echo=FALSE,eval=TRUE,results="asis">>=
+  kable(pet.depth,format ='latex')
+@ 
+\caption{Depth for ChIP-seq PET data sets}
+\end{table}
 
 \section{PCR bottleneck coefficient}
 
