@@ -71,3 +71,26 @@ idd = do.call(c,lapply(row$edsn,function(x)grep(x,names(pet_density))))
   ggplot(df,aes(x.x,x.y,colour = bin))+geom_line()+theme(legend.position = "bottom",aspect.ratio = 1,axis.title = element_text(size = rel(2.5)),axis.text = element_text(size = rel(2),angle=90),legend.text = element_text(size = rel(2)),legend.title = element_text(size = rel(2)))+ scale_color_brewer(palette ="Dark2")+facet_grid(edsn~seq)+scale_x_continuous(limits = c(0,1))+xlab("fwd. strand ratio")+ylab("density")
   ggsave("seqDens.pdf",width = 6,height = 6)  
 
+## ----include=FALSE,echo=FALSE,eval=TRUE-------------------------------------------------
+load(file = "../data/cond_densities.RData")
+fix_set <- function(cond_densities)
+{
+  cond_density = do.call(rbind,cond_densities)
+  cond_density$edsn = factor(cond_density$edsn)
+  cond_density$bin  = factor(cond_density$bin )
+  cond_density$prob = factor(cond_density$prob)
+  return(cond_density)
+}
+exo_cond_densities = lapply(exo_cond_densities,as.data.frame)
+exo_cond_density = fix_set(exo_cond_densities)
+
+## ----include=FALSE,echo=FALSE,eval=TRUE-------------------------------------------------
+  df = subset(exo_cond_density,edsn == "edsn1310")
+  ggplot(df,aes(x.x,x.y,colour = prob))+geom_line()+theme(legend.position = "bottom",aspect.ratio = 1,axis.title = element_text(size = rel(2.5)),axis.text = element_text(size = rel(2),angle=90),legend.text = element_text(size = rel(2)),legend.title = element_text(size = rel(2)))+ scale_color_brewer(palette ="Dark2")+facet_grid(edsn ~ bin)+scale_x_continuous(limits = c(0,1))+xlab("fwd. strand ratio")+ylab("density") 
+  ggsave("exo1310.pdf",width = 12,height = 6)  
+
+## ----include=FALSE,echo=FALSE,eval=TRUE-------------------------------------------------
+  df = subset(exo_cond_density,edsn == "edsn1319")
+  ggplot(df,aes(x.x,x.y,colour = prob))+geom_line()+theme(legend.position = "bottom",aspect.ratio = 1,axis.title = element_text(size = rel(2.5)),axis.text = element_text(size = rel(2),angle=90),legend.text = element_text(size = rel(2)),legend.title = element_text(size = rel(2)))+ scale_color_brewer(palette ="Dark2")+facet_grid(edsn ~ bin)+scale_x_continuous(limits = c(0,1))+xlab("fwd. strand ratio")+ylab("density") 
+  ggsave("exo1319.pdf",width = 12,height = 6)  
+
