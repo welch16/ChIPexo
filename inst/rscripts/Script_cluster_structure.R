@@ -9,8 +9,10 @@ library(wavelets)
 library(RColorBrewer)
 library(scales)
 
+
 load("data/chip.exo.RData")
 load("data/chip.seq.pet.RData")
+load("data/chip.seq.set.from.pet.RData")
 load("data/sample.summary.RData")
 
 source("R/depth_functions.R")
@@ -35,25 +37,33 @@ names(edsn) =conditions
 
 exo.sets = lapply(edsn,function(x)exo[do.call(c,lapply(x,function(y)grep(y,names(exo))))])
 pet.sets = lapply(edsn,function(x)pet[do.call(c,lapply(x,function(y)grep(y,names(pet))))])
+set.sets = lapply(edsn,function(x)set[do.call(c,lapply(x,function(y)grep(y,names(set))))])
+
 
 exo.sets = lapply(exo.sets,function(x,mc)mclapply(x,as.GRanges,mc.cores=mc),mc.cores)
 pet.sets = lapply(pet.sets,function(x,mc)mclapply(x,as.GRanges,mc.cores=mc),mc.cores)
+set.sets = lapply(set.sets,function(x,mc)mclapply(x,as.GRanges,mc.cores=mc),mc.cores)
 
 
-indexes = mapply(FUN = filterSets,exo.sets,pet.sets,MoreArgs = list(distance),SIMPLIFY = FALSE)
-names(indexes) = conditions
+load("data/indexes_regions_withSet.RData")
 
-save(list = "indexes",file = "data/indexes_regions_1.RData")
+## indexes = mapply(FUN = filterSets2,exo.sets,pet.sets,set.sets,MoreArgs = list(distance),SIMPLIFY = FALSE) 
+## names(indexes) = conditions
+## save(list = "indexes",file = "data/indexes_regions_withSet.RData")
 
-filenames = c("Sig70_rif0_peak_plots.pdf","BetaPrimeFlag_rif0_peak_plots.pdf",
-  "Sig70_rif20_peak_plots.pdf","BetaPrimeFlag_rif20_peak_plots.pdf")
+
+filenames = c("Sig70_rif0_peak_plots_withSet.pdf","BetaPrimeFlag_rif0_peak_plots_withSet.pdf",
+  "Sig70_rif20_peak_plots_withSet.pdf","BetaPrimeFlag_rif20_peak_plots_withSet.pdf")
 
 # plots
+i=4
+
 for(i in 1:4)
 {  
   exo.reads = mapply(FUN = getReads,indexes[[i]]$exo,exo.sets[[i]],MoreArgs = list(mc.cores),SIMPLIFY = FALSE)
-  pet.reads = mapply(FUN = getReads,indexes[[i]]$pet,pet.sets[[i]],MoreArgs = list(mc.cores),SIMPLIFY = FALSE)
-
+  pet.reads = mapply(FUN = getReads,indexes[[i]]$pet,pet.sets[[i]],MoreArgs = list(mc.cores),SIMPLIFY = FALSE)  
+  set.reads = mapply(FUN = getReads,indexes[[i]]$set,set.sets[[i]],MoreArgs = list(mc.cores),SIMPLIFY = FALSE)
+  
   j = which.max(sapply(exo.sets[[i]],length))
   ss = exo.sets[[i]][[j]]
 
@@ -63,16 +73,15 @@ for(i in 1:4)
   lowerBounds = pmax(1,start(ss[idx])-distance)
   upperBounds = pmin(seqlengths(ss[idx]),start(ss[idx]) + distance)
   
-  pdf(file = file.path(figsdir,filenames[i]))
+  pdf(file = file.path(figsdir,filenames[i]),width = 10,height = 4)  
   for(k in 1:length(lowerBounds)){
     # message(k)
-    lb = lowerBounds[k]
-    ub = upperBounds[k]
-    all_plots(lb,ub,exo.reads[[1]][[k]],exo.reads[[2]][[k]],pet.reads[[1]][[k]],pet.reads[[2]][[k]])
+    lb = lowerBounds[k];  ub = upperBounds[k]
+    all_plots2(lb,ub,exo.reads[[1]][[k]],exo.reads[[2]][[k]],pet.reads[[1]][[k]],pet.reads[[2]][[k]],set.reads[[1]][[k]],set.reads[[2]][[k]])
   }
   dev.off()
 
-  write.csv(data.frame(lower = lowerBounds,upper = upperBounds),file = gsub(".pdf",".csv",filenames[i]),row.names = FALSE)
+#  write.csv(data.frame(lower = lowerBounds,upper = upperBounds),file = gsub(".pdf",".csv",filenames[i]),row.names = FALSE)
 }
 
 
