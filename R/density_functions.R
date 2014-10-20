@@ -14,16 +14,25 @@ density.reads.per.strand.ratio <- function(bins,reads)
   return(density(ratio))
 }
 
+add_chr <-  function(chr,bins)
+{
+  return(GRanges(seqnames = chr,ranges = bins,strand = "*"))
+}
+
+  
 
 #' @title create.bins
 #' @description Create a GRanges object given the length of the genome and the desired size for each bin
 #' @param binSize Numeric value of the desired size for each bin
-#' @param genomeLength Numeric Length of the genome
+#' @param genomeLengths Numeric Length of the genome
 #' @return GRanges object
 #' @export
-create.bins <-  function(binSize, genomeLength)
+create.bins <-  function(binSize, genomeLengths)
 {
-  bins = GRanges(seqnames = names(genomeLength),ranges = IRanges(start = seq(1,genomeLength,by=binSize),width = binSize),strand = "*")
+  bins_list = lapply(genomeLengths,function(x,binSize)IRanges(start = seq(1,x,by=binSize),width = binSize),binSize)  
+  gr_list = mapply(add_chr,names(genomeLengths),bins_list)
+  bins = unlist(GRangesList(gr_list))
+  seqlengths(bins) = genomeLengths
   return(bins)
 }
 
