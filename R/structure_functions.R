@@ -63,19 +63,20 @@ cover_by_strand <- function(reads,str){
   return(out)
 }
   
-single_set_plot <- function(lb,ub,reads,main="")
+single_set_plot <- function(lb,ub,reads,ext,main="")
 {
   cover_F = cover_by_strand(reads,"+")
   cover_R = cover_by_strand(reads,"-")
-  window_f= coverToVec(lb,ub,cover_F)
-  window_r= coverToVec(lb,ub,cover_R)
-  x = seq(lb,ub,by=1)
-  xlim = c(lb,ub)
+  window_f= coverToVec(lb-ext,ub+ext,cover_F)
+  window_r= coverToVec(lb-ext,ub+ext,cover_R)
+  x = seq(lb-ext,ub+ext,by=1)
+  xlim = c(lb-ext,ub+ext)
   ylim = c(-1,1) * max(max(window_f),max(window_r))
   plot(x =1 ,y=0,xlim = xlim,ylim = ylim,type = "n",main =main ,xlab = "",ylab = "" )  
   abline(h=0,col =  "black",lty =2)
   lines(c(lb,x,ub),c(0,window_f,0),col = "red")
-  lines(c(lb,x,ub),c(0,-window_r,0),col = "blue")  
+  lines(c(lb,x,ub),c(0,-window_r,0),col = "blue")
+  abline(v = c(lb,ub),lty=2)
 }
 
 all_plots <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2)
@@ -88,13 +89,13 @@ all_plots <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2)
 }
 
 
-all_plots2 <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2,set.reads1,set.reads2)
+all_plots2 <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2,set.reads1,set.reads2,ext=0)
 {
   par(mfcol=c(2,3), mar=c(4,4,0.5,0.5), oma=c(1.5,2,1,1))
-  single_set_plot(lb,ub,exo.reads1,"exo1")
-  single_set_plot(lb,ub,exo.reads2,"exo2")
-  single_set_plot(lb,ub,pet.reads1,"pet1")
-  single_set_plot(lb,ub,pet.reads2,"pet2")
-  single_set_plot(lb,ub,set.reads1,"set1")
-  single_set_plot(lb,ub,set.reads2,"set2")
+  single_set_plot(lb,ub,exo.reads1,ext,"exo1")
+  single_set_plot(lb,ub,exo.reads2,ext,"exo2")
+  single_set_plot(lb,ub,pet.reads1,ext,"pet1")
+  single_set_plot(lb,ub,pet.reads2,ext,"pet2")
+  single_set_plot(lb,ub,set.reads1,ext,"set1")
+  single_set_plot(lb,ub,set.reads2,ext,"set2")
 }

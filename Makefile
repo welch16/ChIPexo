@@ -47,6 +47,10 @@ cross:
 peaks:
 	R CMD BATCH inst/rscripts/Script_cluster_structure.R 
 
+peaks_slice:
+	R CMD BATCH inst/rscripts/Script_cluster_structure_slice.R 
+
+
 # diff-plots
 diff:
 	R CMD BATCH inst/rscripts/Script_detailled_summary.R
