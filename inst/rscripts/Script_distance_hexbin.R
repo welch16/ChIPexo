@@ -49,7 +49,8 @@ distances = c("25","50","100","250","500","1000")
 
 d_counts = lapply(distances,function(x,set,width)d_ball_counts(set,as.numeric(x),ss,width)
 
-## system.time(d_counts[["10"]] <- d_ball_counts(ss,10,width))
+
+d_counts[["25"]] <- d_ball_counts(ss,10,width)
 ## system.time(d_counts[["25"]] <- d_ball_counts(ss,25,width))
 ## system.time(d_counts[["50"]] <- d_ball_counts(ss,50,width) )
 ## system.time(d_counts[["75"]] <- d_ball_counts(ss,75,width))
