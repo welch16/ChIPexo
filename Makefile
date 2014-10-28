@@ -50,6 +50,8 @@ peaks:
 peaks_slice:
 	R CMD BATCH inst/rscripts/Script_cluster_structure_slice.R 
 
+peaks_slice_Ren:
+	R CMD BATCH inst/rscripts/Ren/Script_cluster_analysis.R
 
 # diff-plots
 diff:
