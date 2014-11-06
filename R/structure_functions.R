@@ -65,18 +65,28 @@ cover_by_strand <- function(reads,str){
   
 single_set_plot <- function(lb,ub,reads,ext,main="")
 {
-  cover_F = cover_by_strand(reads,"+")
-  cover_R = cover_by_strand(reads,"-")
-  window_f= coverToVec(lb-ext,ub+ext,cover_F)
-  window_r= coverToVec(lb-ext,ub+ext,cover_R)
-  x = seq(lb-ext,ub+ext,by=1)
-  xlim = c(lb-ext,ub+ext)
-  ylim = c(-1,1) * max(max(window_f),max(window_r))
-  plot(x =1 ,y=0,xlim = xlim,ylim = ylim,type = "n",main =main ,xlab = "",ylab = "" )  
-  abline(h=0,col =  "black",lty =2)
-  lines(c(lb,x,ub),c(0,window_f,0),col = "red")
-  lines(c(lb,x,ub),c(0,-window_r,0),col = "blue")
-  abline(v = c(lb,ub),lty=2)
+  if(is.null(reads)){
+    x = seq(lb-ext,ub+ext,by=1)
+    xlim = c(lb-ext,ub+ext)
+    ylim = c(-1,1) 
+    plot(x =1 ,y=0,xlim = xlim,ylim = ylim,type = "n",main =main ,xlab = "",ylab = "" )
+    abline(h=0,col =  "black",lty =2)
+    abline( v = c(lb,ub),lty=2)
+  }else{
+    cover_F = cover_by_strand(reads,"+")
+    cover_R = cover_by_strand(reads,"-")
+    window_f= coverToVec(lb-ext,ub+ext,cover_F)
+    window_r= coverToVec(lb-ext,ub+ext,cover_R)
+    x = seq(lb-ext,ub+ext,by=1)
+    xlim = c(lb-ext,ub+ext)
+    ylim = c(-1,1) * max(max(window_f),max(window_r))
+    plot(x =1 ,y=0,xlim = xlim,ylim = ylim,type = "n",main =main ,
+         xlab = "",ylab = "" )  
+    abline(h=0,col =  "black",lty =2)
+    lines(c(lb,x,ub),c(0,window_f,0),col = "red")
+    lines(c(lb,x,ub),c(0,-window_r,0),col = "blue")
+    abline(v = c(lb,ub),lty=2)
+  }
 }
 
 all_plots <- function(lb,ub,exo.reads1,exo.reads2,pet.reads1,pet.reads2)
