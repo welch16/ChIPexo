@@ -58,6 +58,10 @@ diff:
 	R CMD BATCH inst/rscripts/Script_detailled_summary.R
 
 
+# positions
+positions:
+	R CMD BATCH inst/rscripts/Script_positions.R
+
 # knit the vignettes
 vignettes/%.md:vignettes/%.Rmd
 	cd vignettes;R -e 'library(knitr);knit("$(<F)")';cd ..
