@@ -11,6 +11,7 @@ clean:
 	rm -f .Rhistory
 	rm -f */.Rhistory
 	rm -f inst/rscripts/*~
+	rm -f inst/rscripts/Ren/*~
 	rm -f inst/rscripts/*Rout
 	rm -f .RData
 	rm -f .*~
