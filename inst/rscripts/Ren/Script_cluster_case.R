@@ -193,7 +193,7 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
   return(ourStats)  
 }
 
-merge_stats <- function(paramDf,summaryStats)
+merge_stats <- function(paramDf,summaryStats,regions)
 {  
   summaryStats = mclapply(summaryStats,function(x)do.call(rbind,x),mc.cores=12)
   summaryStats = mclapply(summaryStats,function(x)data.table(x),mc.cores=12)
@@ -210,9 +210,42 @@ merge_stats <- function(paramDf,summaryStats)
   return(merged_stats)
 }
 
-merged_stats1 = merge_stats(paramDf1,summaryStats1)
-merged_stats2 = merge_stats(paramDf2,summaryStats2)
-merged_stats3 = merge_stats(paramDf3,summaryStats3)
+merged_stats1 = merge_stats(paramDf1,summaryStats1,regions)
+merged_stats2 = merge_stats(paramDf2,summaryStats2,regions)
+merged_stats3 = merge_stats(paramDf3,summaryStats3,regions)
+
+save(list = "merged_stats1",file = file.path(dr,"AY552_summary_merged.RData"))
+save(list = "merged_stats2",file = file.path(dr,"AY553_summary_merged.RData"))
+save(list = "merged_stats3",file = file.path(dr,"AY554_summary_merged.RData"))
+
+## load(file = file.path(dr,"AY552_summary_merged.RData"))
+## load(file = file.path(dr,"AY553_summary_merged.RData"))
+## load(file = file.path(dr,"AY554_summary_merged.RData"))
+
+merge_all <- function(merged_stats,paramDf,regions)
+{
+  labels = paramDf[,list(label)][[1]]
+  chrs = paramDf[,list(chr)][[1]]
+  sets = paramDf[,list(set)][[1]]
+  merge_one <- function(set,label,chr,stats,regions)
+  {
+    ourRegions = regions[[label]][[set]][[chr]]
+    elementMetadata(ourRegions) = c(elementMetadata(ourRegions),stats)
+    return(ourRegions)    
+  }
+  ourRegions = mclapply(1:nrow(paramDf),function(j){
+    out = merge_one(sets[j],labels[j],chrs[j],merged_stats[[j]],regions)
+    return(out)},mc.cores= 12)
+  return(do.call(c,ourRegions))
+}
+
+AY552regions = merge_all(merged_stats1,paramDf1[strand == "fwd"],regions)
+AY553regions = merge_all(merged_stats2,paramDf2[strand == "fwd"],regions)
+AY554regions = merge_all(merged_stats3,paramDf3[strand == "fwd"],regions)
+                      
+save(list = "AY552regions",file = file.path(dr,"AY552_islandWsummary.RData"))
+save(list = "AY553regions",file = file.path(dr,"AY553_islandWsummary.RData"))
+save(list = "AY554regions",file = file.path(dr,"AY554_islandWsummary.RData"))
 
 
 
