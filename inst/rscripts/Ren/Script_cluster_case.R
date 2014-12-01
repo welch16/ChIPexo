@@ -152,60 +152,123 @@ save(list = "summaryStats1",file = file.path(dr,"AY552_summary.RData"))
 save(list = "summaryStats2",file = file.path(dr,"AY553_summary.RData"))
 save(list = "summaryStats3",file = file.path(dr,"AY554_summary.RData"))
 
+load(file = file.path(dr,"AY552_summary.RData"))
+load(file = file.path(dr,"AY553_summary.RData"))
+load(file = file.path(dr,"AY554_summary.RData"))
 
-summary_statistics <- function(reads)
+merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
 {
-  reads = data.table(as.data.frame(reads))
-  setkey(reads,strand)
-  fwd = na.omit(reads["+"])
-  bwd = na.omit(reads["-"])
-  f = nrow(fwd)
-  r = nrow(bwd)
-  
-  f_pos = length(unique(fwd$start))
-  b_pos = length(unique(bwd$end))
-
-  max_fwd = NA
-  fwd_summit_pos = NA
-  
-  if( f > 0){
-    fwd = GRanges(fwd$seqnames,ranges = IRanges(start = fwd$start,end=fwd$end),strand = "+")
-    fwd_cover = coverage(fwd)[[1]]
-    if(nrun(fwd_cover) > 1){
-      max_fwd = max(fwd_cover)
-      fwd_summit_pos = head(which(fwd_cover == max_fwd),n=1)
+  ourRegions = regions[[ourlabel]][[ourset]][[ourchr]]
+  ourParam = paramDf[label == ourlabel & set == ourset & chr == ourchr]
+  ids = ourParam[,list(ID)][[1]]
+  names(ids) = ourParam[,list(strand)][[1]]
+  ourstats = summaryStats[ids]
+  names(ourstats) = names(ids) # "fwd" & "bwd"
+  setkey(ourstats[["fwd"]],idx)
+  setkey(ourstats[["bwd"]],idx)
+  extract_summary <- function(sumstats){
+    out = rep(NA,4)
+    if(nrow(sumstats) > 0){
+      out[1] = sumstats[["depth"]]
+      out[2] = sumstats[["nrPos"]]
+      out[3] = sumstats[["maxCover"]]      
+      out[4] = sumstats[["summitPos"]]      
     }
+    out[1:2] = ifelse(is.na(out[1:2]),0,out[1:2])
+    return(out)    
   }
-
-  max_bwd = NA
-  bwd_summit_pos = NA
-  if(r > 0){  
-    bwd = GRanges(bwd$seqnames,ranges = IRanges(start = bwd$start,end=bwd$end),strand = "-")
-    bwd_cover = coverage(bwd)[[1]]
-    if(nrun(bwd_cover) > 1){
-      max_bwd = max(bwd_cover)
-      bwd_summit_pos = tail(which(bwd_cover == max_bwd),n=1)
-    }
-  }
-  depth = f + r
-  prob = f / depth
-  nrPos = f_pos + b_pos
-  
-  diff = bwd_summit_pos - fwd_summit_pos    
-  out = c(f=f,r=r,prob=prob,depth=depth,f_uniq = f_pos,r_uniq = b_pos,n_uniq = nrPos,max_f = max_fwd,
-    max_r = max_bwd,max_f_pos = fwd_summit_pos,max_r_pos = bwd_summit_pos,diff = diff)
-  return(out)
-    
+  ourStats = data.table(do.call(rbind,mclapply(1:length(ourRegions),function(i,ourstats){
+    fwd = extract_summary(ourstats[["fwd"]][idx==i])
+    bwd = extract_summary(ourstats[["bwd"]][idx==i])
+    depth = fwd[1] + bwd[1]
+    nr_positions = fwd[2] + bwd[2]
+    prob = fwd[1] / depth
+    diff = bwd[4] - fwd[4]    
+    out = c(fwd,bwd,depth,nr_positions,prob,diff)
+    names(out) = c("f","f_nrpos","f_maxcover","f_position",
+           "r","r_nrpos","r_maxcover","r_position",
+           "depth","nr_pos","prob","diff")
+    return(out)    
+  },ourstats,mc.cores =12)))
+  return(ourStats)  
 }
 
-both_idx = lapply(reg,function(x)as.character(which(x$label == "both")))
+merge_stats <- function(paramDf,summaryStats)
+{  
+  summaryStats = mclapply(summaryStats,function(x)do.call(rbind,x),mc.cores=12)
+  summaryStats = mclapply(summaryStats,function(x)data.table(x),mc.cores=12)
+  setkey(paramDf,strand)
+  subParamDf = paramDf[strand == "fwd"]
+  subParamDf$idx = 1:nrow(subParamDf)
+  setkey(subParamDf,idx)
+  merged_stats = lapply(1:nrow(subParamDf),function(j){
+    print(paste0(j,"/72"))
+    ourparam = subParamDf[idx == j]
+    merged_stats = merge_case(ourparam[["set"]],ourparam[["label"]],
+      ourparam[["chr"]],summaryStats,paramDf,regions)
+    return(merged_stats)})
+  return(merged_stats)
+}
 
-sub_sep_reads_idx = mapply(function(x,y){
-  return(which(names(x) %in% y))},sep_reads,both_idx,SIMPLIFY=FALSE)
+merged_stats1 = merge_stats(paramDf1,summaryStats1)
+merged_stats2 = merge_stats(paramDf2,summaryStats2)
+merged_stats3 = merge_stats(paramDf3,summaryStats3)
 
-sub_sep_reads = mapply(function(x,y){
-  return(x[y])},sep_reads,sub_sep_reads_idx,SIMPLIFY=FALSE)
 
-summary_stats = lapply(sub_sep_reads,function(x) data.table(t(mcmapply(summary_statistics,x,mc.cores=8))))
 
-save(file = file.path(datadir,"Ren2_summary_both.RData"),list = "summary_stats")
+## summary_statistics <- function(reads)
+## {
+##   reads = data.table(as.data.frame(reads))
+##   setkey(reads,strand)
+##   fwd = na.omit(reads["+"])
+##   bwd = na.omit(reads["-"])
+##   f = nrow(fwd)
+##   r = nrow(bwd)
+  
+##   f_pos = length(unique(fwd$start))
+##   b_pos = length(unique(bwd$end))
+
+##   max_fwd = NA
+##   fwd_summit_pos = NA
+  
+##   if( f > 0){
+##     fwd = GRanges(fwd$seqnames,ranges = IRanges(start = fwd$start,end=fwd$end),strand = "+")
+##     fwd_cover = coverage(fwd)[[1]]
+##     if(nrun(fwd_cover) > 1){
+##       max_fwd = max(fwd_cover)
+##       fwd_summit_pos = head(which(fwd_cover == max_fwd),n=1)
+##     }
+##   }
+
+##   max_bwd = NA
+##   bwd_summit_pos = NA
+##   if(r > 0){  
+##     bwd = GRanges(bwd$seqnames,ranges = IRanges(start = bwd$start,end=bwd$end),strand = "-")
+##     bwd_cover = coverage(bwd)[[1]]
+##     if(nrun(bwd_cover) > 1){
+##       max_bwd = max(bwd_cover)
+##       bwd_summit_pos = tail(which(bwd_cover == max_bwd),n=1)
+##     }
+##   }
+##   depth = f + r
+##   prob = f / depth
+##   nrPos = f_pos + b_pos
+  
+##   diff = bwd_summit_pos - fwd_summit_pos    
+##   out = c(f=f,r=r,prob=prob,depth=depth,f_uniq = f_pos,r_uniq = b_pos,n_uniq = nrPos,max_f = max_fwd,
+##     max_r = max_bwd,max_f_pos = fwd_summit_pos,max_r_pos = bwd_summit_pos,diff = diff)
+##   return(out)
+    
+## }
+
+## both_idx = lapply(reg,function(x)as.character(which(x$label == "both")))
+
+## sub_sep_reads_idx = mapply(function(x,y){
+##   return(which(names(x) %in% y))},sep_reads,both_idx,SIMPLIFY=FALSE)
+
+## sub_sep_reads = mapply(function(x,y){
+##   return(x[y])},sep_reads,sub_sep_reads_idx,SIMPLIFY=FALSE)
+
+## summary_stats = lapply(sub_sep_reads,function(x) data.table(t(mcmapply(summary_statistics,x,mc.cores=8))))
+
+## save(file = file.path(datadir,"Ren2_summary_both.RData"),list = "summary_stats")
