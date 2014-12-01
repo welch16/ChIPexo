@@ -58,7 +58,7 @@ coverToVec <- function(lb,ub,cover)
 
 
 
-plotpeak <- function(peak,ext=100)
+plotpeak <- function(peak,ext=100,mu=NULL)
 {
   setkey(peak,strand)
   coords = c(peak$start,peak$end)
@@ -96,6 +96,9 @@ plotpeak <- function(peak,ext=100)
     geom_line()+theme_bw()+theme(legend.position ="none")+
       scale_colour_manual(values = colors[vals %in% names(colors)])+
       scale_y_continuous(limits = ylim*1.2*c(-1,1))
+  if(!is.null(mu)){
+    p = p + geom_vline(xintercept = mu,linetype = 3,size=.3)
+  }
   return(p)
 }
 
@@ -165,14 +168,14 @@ peak = mclapply(1:1000,function(i)binding_sim(nreads = nreads,mu = mu , p = p,de
   sigma2 = sigma2,readlength = rl),mc.cores =12)
 
 
-plotpeaks <- function(...,ext=10,mu=500,mfrow = c(length(...),1))
+plotpeaks <- function(...,ext=10,mu=NULL,mfrow = c(length(...),1))
 {
   require(grid)
   mypos <- expand.grid(1:mfrow[1], 1:mfrow[2])
   mypos <- mypos[with(mypos, order(Var1)), ]
   pushViewport(viewport(layout = grid.layout(mfrow[1], mfrow[2])))
   
-  plots = lapply(...,function(x)plotpeak(x,ext)+geom_vline(xintercept = mu,linetype = 3,size=.3))
+  plots = lapply(...,function(x)plotpeak(x,ext,mu))
 
   j <- 1
   for (i in 1:length(plots)){
@@ -181,7 +184,8 @@ plotpeaks <- function(...,ext=10,mu=500,mfrow = c(length(...),1))
   }  
 }
 
-plotpeaks(peak[sample(1000,4)],ext= 10,mfrow = c(2,2))
+x11(width =12,height = 6)
+plotpeaks(peak[sample(1000,4)],ext= 10,mu=500,mfrow = c(2,2))
                       
 
 
