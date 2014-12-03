@@ -22,19 +22,18 @@ reads_bwd = mclapply(readsR1,function(x)subset(x,strand(x)=="-"),mc.cores= 3)
 cover_fwd = mclapply(reads_fwd,coverage,mc.cores = 3)
 cover_bwd = mclapply(reads_bwd,coverage,mc.cores = 3)
 
-slice_all <- function(cover,q)
+slice_all <- function(cover,lw)
 {
-  lw = quantile(runValue(cover),q)
+  #lw = quantile(runValue(cover),q)
   slice_list= mcmapply(slice,cover,lw,MoreArgs = list(rangesOnly=TRUE),SIMPLIFY=FALSE,mc.cores=8)
   slice_list = GRangesList(mcmapply(function(x,y)GRanges(seqnames = y,ranges = x,strand = "*"),slice_list,names(slice_list),
     SIMPLIFY= FALSE,mc.cores = 8))
   return(unlist(slice_list))
 }
 
-q = 0.75
-
-regions_fwd = lapply(cover_fwd,slice_all,q=q)
-regions_bwd = lapply(cover_bwd,slice_all,q=q)
+lw = 10
+regions_fwd = lapply(cover_fwd,slice_all,lw)
+regions_bwd = lapply(cover_bwd,slice_all,lw)
 
 create_regions <- function(fwd,bwd,minW =0)
 {
@@ -54,10 +53,11 @@ create_regions <- function(fwd,bwd,minW =0)
 }
 
 ourRegions = mcmapply(create_regions,regions_fwd,regions_bwd,MoreArgs = list(minW=0),SIMPLIFY=FALSE,mc.cores =3)
-readLength = 40
+
+#readLength = 40
 
 # Filter the regions with width less than readLength
-ourRegions = lapply(ourRegions,function(x)x[width(x)>readLength])
+#ourRegions = lapply(ourRegions,function(x)x[width(x)>readLength])
 chr = paste0("chr",c(1:22,"X","Y"))
 
 separate_regions <- function(regions,chr)
@@ -89,8 +89,8 @@ reads[["bwd"]] = lapply(reads_bwd,separate_regions,chr)
 
 dr = "/p/keles/ChIPexo/volume3/ChIPexo/data/Ren/separated"
 
-save(list = "reads",file = file.path(dr,"separated_reads.RData"))
-save(list = "regions",file = file.path(dr,"separated_regions.RData"))
+save(list = "reads",file = file.path(dr,"separated_reads_lw10.RData"))
+save(list = "regions",file = file.path(dr,"separated_regions_lw10.RData"))
 
 overlaps = list()
 sets = names(reads[[1]])
@@ -123,7 +123,7 @@ for(set in sets){
   )
 }
 
-save(list = "overlaps",file = file.path(dr,"separated_overlaps.RData"))
+save(list = "overlaps",file = file.path(dr,"separated_overlaps_lw10.RData"))
 
 
 

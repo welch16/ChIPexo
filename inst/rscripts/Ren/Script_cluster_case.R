@@ -1,5 +1,6 @@
 
 rm(list = ls())
+
 library(GenomicAlignments)
 library(parallel)
 library(data.table)
@@ -7,11 +8,11 @@ library(pryr)
 
 dr = "/p/keles/ChIPexo/volume3/ChIPexo/data/Ren/separated"
 
-load(file = file.path(dr,"separated_reads.RData"))
+load(file = file.path(dr,"separated_reads_lw10.RData"))
 # reads
-load(file = file.path(dr,"separated_regions.RData"))
+load(file = file.path(dr,"separated_regions_lw10.RData"))
 # regions
-load(file = file.path(dr,"separated_overlaps.RData"))
+load(file = file.path(dr,"separated_overlaps_lw10.RData"))
 # overlaps
 
 # Want to for each data set obtain a set of summary statistics
@@ -127,7 +128,7 @@ summaryStats1 = lapply(1:nrow(paramDf1),function(j){
   print(paste0(j,"/144"))
   reg = as.numeric(unique(sep_reads1[[j]][,list(region)])[[1]])
   stats = mclapply(reg,
-    function(i)strand_statistics(sep_reads1[[j]][region==i,],paramDf1[ID==i,],i),mc.cores=12)
+    function(i)strand_statistics(sep_reads1[[j]][region==i,],paramDf1[ID==i,],i),mc.cores=16)
   return(stats)
 })
 
@@ -135,7 +136,7 @@ summaryStats2 = lapply(1:nrow(paramDf2),function(j){
   print(paste0(j,"/144"))
   reg = as.numeric(unique(sep_reads2[[j]][,list(region)])[[1]])
   stats = mclapply(reg,
-    function(i)strand_statistics(sep_reads2[[j]][region==i,],paramDf2[ID==i,],i),mc.cores=12)
+    function(i)strand_statistics(sep_reads2[[j]][region==i,],paramDf2[ID==i,],i),mc.cores=16)
   return(stats)
 })
 
@@ -144,13 +145,13 @@ summaryStats3 = lapply(1:nrow(paramDf3),function(j){
   print(paste0(j,"/144"))  
   reg = as.numeric(unique(sep_reads3[[j]][,list(region)])[[1]])
   stats = mclapply(reg,
-    function(i)strand_statistics(sep_reads3[[j]][region==i,],paramDf3[ID==i,],i),mc.cores=12)
+    function(i)strand_statistics(sep_reads3[[j]][region==i,],paramDf3[ID==i,],i),mc.cores=16)
   return(stats)
 })
 
-save(list = "summaryStats1",file = file.path(dr,"AY552_summary.RData"))
-save(list = "summaryStats2",file = file.path(dr,"AY553_summary.RData"))
-save(list = "summaryStats3",file = file.path(dr,"AY554_summary.RData"))
+save(list = "summaryStats1",file = file.path(dr,"AY552_summary_lw10.RData"))
+save(list = "summaryStats2",file = file.path(dr,"AY553_summary_lw10.RData"))
+save(list = "summaryStats3",file = file.path(dr,"AY554_summary_lw10.RData"))
 
 load(file = file.path(dr,"AY552_summary.RData"))
 load(file = file.path(dr,"AY553_summary.RData"))
@@ -164,8 +165,15 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
   names(ids) = ourParam[,list(strand)][[1]]
   ourstats = summaryStats[ids]
   names(ourstats) = names(ids) # "fwd" & "bwd"
-  setkey(ourstats[["fwd"]],idx)
   setkey(ourstats[["bwd"]],idx)
+  if(nrow(ourstats[["fwd"]])==0){ # quick fix, need to fix this bug
+    ourstats[["fwd"]] = ourstats[["bwd"]][idx==1,]
+    ourstats[["fwd"]]$depth = 0
+    ourstats[["fwd"]]$nrPos = 0
+    ourstats[["fwd"]]$maxCover = NA
+    ourstats[["fwd"]]$summitPos = NA
+    setkey(ourstats[["fwd"]],idx)
+  }
   extract_summary <- function(sumstats){
     out = rep(NA,4)
     if(nrow(sumstats) > 0){
@@ -214,9 +222,9 @@ merged_stats1 = merge_stats(paramDf1,summaryStats1,regions)
 merged_stats2 = merge_stats(paramDf2,summaryStats2,regions)
 merged_stats3 = merge_stats(paramDf3,summaryStats3,regions)
 
-save(list = "merged_stats1",file = file.path(dr,"AY552_summary_merged.RData"))
-save(list = "merged_stats2",file = file.path(dr,"AY553_summary_merged.RData"))
-save(list = "merged_stats3",file = file.path(dr,"AY554_summary_merged.RData"))
+save(list = "merged_stats1",file = file.path(dr,"AY552_summary_merged_lw10.RData"))
+save(list = "merged_stats2",file = file.path(dr,"AY553_summary_merged_lw10.RData"))
+save(list = "merged_stats3",file = file.path(dr,"AY554_summary_merged_lw10.RData"))
 
 ## load(file = file.path(dr,"AY552_summary_merged.RData"))
 ## load(file = file.path(dr,"AY553_summary_merged.RData"))
@@ -243,9 +251,9 @@ AY552regions = merge_all(merged_stats1,paramDf1[strand == "fwd"],regions)
 AY553regions = merge_all(merged_stats2,paramDf2[strand == "fwd"],regions)
 AY554regions = merge_all(merged_stats3,paramDf3[strand == "fwd"],regions)
                       
-save(list = "AY552regions",file = file.path(dr,"AY552_islandWsummary.RData"))
-save(list = "AY553regions",file = file.path(dr,"AY553_islandWsummary.RData"))
-save(list = "AY554regions",file = file.path(dr,"AY554_islandWsummary.RData"))
+save(list = "AY552regions",file = file.path(dr,"AY552_islandWsummary_lw10.RData"))
+save(list = "AY553regions",file = file.path(dr,"AY553_islandWsummary_lw10.RData"))
+save(list = "AY554regions",file = file.path(dr,"AY554_islandWsummary_lw10.RData"))
 
 
 
