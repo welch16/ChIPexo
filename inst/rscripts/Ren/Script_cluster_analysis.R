@@ -25,13 +25,13 @@ cover_bwd = mclapply(reads_bwd,coverage,mc.cores = 3)
 slice_all <- function(cover,lw)
 {
   #lw = quantile(runValue(cover),q)
-  slice_list= mcmapply(slice,cover,lw,MoreArgs = list(rangesOnly=TRUE),SIMPLIFY=FALSE,mc.cores=8)
+  slice_list= mcmapply(slice,cover,lw,MoreArgs = list(rangesOnly=TRUE),SIMPLIFY=FALSE,mc.cores=12)
   slice_list = GRangesList(mcmapply(function(x,y)GRanges(seqnames = y,ranges = x,strand = "*"),slice_list,names(slice_list),
     SIMPLIFY= FALSE,mc.cores = 8))
   return(unlist(slice_list))
 }
 
-lw = 10
+lw = 3
 regions_fwd = lapply(cover_fwd,slice_all,lw)
 regions_bwd = lapply(cover_bwd,slice_all,lw)
 
@@ -89,8 +89,8 @@ reads[["bwd"]] = lapply(reads_bwd,separate_regions,chr)
 
 dr = "/p/keles/ChIPexo/volume3/ChIPexo/data/Ren/separated"
 
-save(list = "reads",file = file.path(dr,"separated_reads_lw10.RData"))
-save(list = "regions",file = file.path(dr,"separated_regions_lw10.RData"))
+save(list = "reads",file = file.path(dr,"separated_reads_lw3.RData"))
+save(list = "regions",file = file.path(dr,"separated_regions_lw3.RData"))
 
 overlaps = list()
 sets = names(reads[[1]])
@@ -99,31 +99,31 @@ for(set in sets){
     both = list(
       fwd = mcmapply(function(x,y)findOverlaps(x,y),
         regions[["both"]][[set]],
-        reads[["fwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 12),
+        reads[["fwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 16),
       bwd = mcmapply(function(x,y)findOverlaps(x,y),
         regions[["both"]][[set]],
-        reads[["bwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 12)
+        reads[["bwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 16)
     ),
     fwd = list(
       fwd = mcmapply(function(x,y)findOverlaps(x,y),
         regions[["fwd"]][[set]],
-        reads[["fwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 12),
+        reads[["fwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 16),
       bwd = mcmapply(function(x,y)findOverlaps(x,y),
         regions[["fwd"]][[set]],
-        reads[["bwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 12)
+        reads[["bwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 16)
     ),
     bwd = list(
       fwd = mcmapply(function(x,y)findOverlaps(x,y),
         regions[["bwd"]][[set]],
-        reads[["fwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 12),
+        reads[["fwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 16),
       bwd = mcmapply(function(x,y)findOverlaps(x,y),
         regions[["bwd"]][[set]],
-        reads[["bwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 12)
+        reads[["bwd"]][[set]],SIMPLIFY=FALSE,mc.cores= 16)
     )            
   )
 }
 
-save(list = "overlaps",file = file.path(dr,"separated_overlaps_lw10.RData"))
+save(list = "overlaps",file = file.path(dr,"separated_overlaps_lw3.RData"))
 
 
 

@@ -8,11 +8,11 @@ library(pryr)
 
 dr = "/p/keles/ChIPexo/volume3/ChIPexo/data/Ren/separated"
 
-load(file = file.path(dr,"separated_reads_lw10.RData"))
+load(file = file.path(dr,"separated_reads_lw3.RData"))
 # reads
-load(file = file.path(dr,"separated_regions_lw10.RData"))
+load(file = file.path(dr,"separated_regions_lw3.RData"))
 # regions
-load(file = file.path(dr,"separated_overlaps_lw10.RData"))
+load(file = file.path(dr,"separated_overlaps_lw3.RData"))
 # overlaps
 
 # Want to for each data set obtain a set of summary statistics
@@ -69,17 +69,17 @@ setkey(paramDf3,ID,label,strand,chr)
 sep_reads1 = mclapply(1:nrow(paramDf1),function(i){
   param = as.character(paramDf1[ID==i,list(set,label,strand,chr)])
   separated_reads<- extract_reads(param,reads,regions,overlaps)
-  return(separated_reads)},mc.cores = 12)
+  return(separated_reads)},mc.cores = 16)
 
 sep_reads2 = mclapply(1:nrow(paramDf2),function(i){
   param = as.character(paramDf2[ID==i,list(set,label,strand,chr)])
   separated_reads<- extract_reads(param,reads,regions,overlaps)
-  return(separated_reads)},mc.cores = 12)
+  return(separated_reads)},mc.cores = 16)
 
-sep_reads3 = mclapply(1:nrow(paramDf2),function(i){
+sep_reads3 = mclapply(1:nrow(paramDf3),function(i){
   param = as.character(paramDf3[ID==i,list(set,label,strand,chr)])
   separated_reads<- extract_reads(param,reads,regions,overlaps)
-  return(separated_reads)},mc.cores = 12)
+  return(separated_reads)},mc.cores = 16)
 
 
 data.table2IRanges <- function(DT){
@@ -108,27 +108,29 @@ strand_statistics <- function(region_reads,param,idx)
   }else{
     nrPos = length(unique(end(ranges)))
   }
+  newStart = min(start(ranges))
+  newEnd = max(end(ranges))
   # Summit position
   cover = coverage(ranges)
   if(nrun(cover) > 1){
     maxCover = max(cover)
-    if(as.character(param[,list(strand)])=="fwd"){
-      summitPos = head(which(cover == maxCover),n=1)
+    if(identical(param$strand,"bwd")){
+      summitPos = max(which(cover == maxCover))
     }else{
-      summitPos = tail(which(cover == maxCover),n=1)
+      summitPos = min(which(cover == maxCover))
     }
   }else{
     maxCover = NA
     summitPos = NA
   }
-  return(c(idx=idx,depth=depth,nrPos =nrPos,maxCover=maxCover,summitPos=summitPos))
+  return(c(idx=idx,depth=depth,nrPos =nrPos,maxCover=maxCover,summitPos=summitPos,newstart  =newStart, newend = newEnd))
 }
 
 summaryStats1 = lapply(1:nrow(paramDf1),function(j){
   print(paste0(j,"/144"))
   reg = as.numeric(unique(sep_reads1[[j]][,list(region)])[[1]])
   stats = mclapply(reg,
-    function(i)strand_statistics(sep_reads1[[j]][region==i,],paramDf1[ID==i,],i),mc.cores=16)
+    function(i)strand_statistics(sep_reads1[[j]][region==i,],paramDf1[ID==i,],i),mc.cores=24)
   return(stats)
 })
 
@@ -136,7 +138,7 @@ summaryStats2 = lapply(1:nrow(paramDf2),function(j){
   print(paste0(j,"/144"))
   reg = as.numeric(unique(sep_reads2[[j]][,list(region)])[[1]])
   stats = mclapply(reg,
-    function(i)strand_statistics(sep_reads2[[j]][region==i,],paramDf2[ID==i,],i),mc.cores=16)
+    function(i)strand_statistics(sep_reads2[[j]][region==i,],paramDf2[ID==i,],i),mc.cores=24)
   return(stats)
 })
 
@@ -145,17 +147,17 @@ summaryStats3 = lapply(1:nrow(paramDf3),function(j){
   print(paste0(j,"/144"))  
   reg = as.numeric(unique(sep_reads3[[j]][,list(region)])[[1]])
   stats = mclapply(reg,
-    function(i)strand_statistics(sep_reads3[[j]][region==i,],paramDf3[ID==i,],i),mc.cores=16)
+    function(i)strand_statistics(sep_reads3[[j]][region==i,],paramDf3[ID==i,],i),mc.cores=24)
   return(stats)
 })
 
-save(list = "summaryStats1",file = file.path(dr,"AY552_summary_lw10.RData"))
-save(list = "summaryStats2",file = file.path(dr,"AY553_summary_lw10.RData"))
-save(list = "summaryStats3",file = file.path(dr,"AY554_summary_lw10.RData"))
+save(list = "summaryStats1",file = file.path(dr,"AY552_summary_lw3.RData"))
+save(list = "summaryStats2",file = file.path(dr,"AY553_summary_lw3.RData"))
+save(list = "summaryStats3",file = file.path(dr,"AY554_summary_lw3.RData"))
 
-load(file = file.path(dr,"AY552_summary.RData"))
-load(file = file.path(dr,"AY553_summary.RData"))
-load(file = file.path(dr,"AY554_summary.RData"))
+load(file = file.path(dr,"AY552_summary_lw3.RData"))
+load(file = file.path(dr,"AY553_summary_lw3.RData"))
+load(file = file.path(dr,"AY554_summary_lw3.RData"))
 
 merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
 {
@@ -165,6 +167,14 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
   names(ids) = ourParam[,list(strand)][[1]]
   ourstats = summaryStats[ids]
   names(ourstats) = names(ids) # "fwd" & "bwd"
+  if(nrow(ourstats[["bwd"]])==0){ # quick fix, need to fix this bug
+    ourstats[["bwd"]] = ourstats[["bwd"]][idx==1,]
+    ourstats[["bwd"]]$depth = 0
+    ourstats[["bwd"]]$nrPos = 0
+    ourstats[["bwd"]]$maxCover = NA
+    ourstats[["bwd"]]$summitPos = NA
+    
+  }
   setkey(ourstats[["bwd"]],idx)
   if(nrow(ourstats[["fwd"]])==0){ # quick fix, need to fix this bug
     ourstats[["fwd"]] = ourstats[["bwd"]][idx==1,]
@@ -172,15 +182,18 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
     ourstats[["fwd"]]$nrPos = 0
     ourstats[["fwd"]]$maxCover = NA
     ourstats[["fwd"]]$summitPos = NA
-    setkey(ourstats[["fwd"]],idx)
+    
   }
+  setkey(ourstats[["fwd"]],idx)
   extract_summary <- function(sumstats){
-    out = rep(NA,4)
+    out = rep(NA,6)
     if(nrow(sumstats) > 0){
       out[1] = sumstats[["depth"]]
       out[2] = sumstats[["nrPos"]]
       out[3] = sumstats[["maxCover"]]      
-      out[4] = sumstats[["summitPos"]]      
+      out[4] = sumstats[["summitPos"]]
+      out[5] = sumstats[["newstart"]]
+      out[6] = sumstats[["newend"]]
     }
     out[1:2] = ifelse(is.na(out[1:2]),0,out[1:2])
     return(out)    
@@ -191,24 +204,26 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
     depth = fwd[1] + bwd[1]
     nr_positions = fwd[2] + bwd[2]
     prob = fwd[1] / depth
-    diff = bwd[4] - fwd[4]    
-    out = c(fwd,bwd,depth,nr_positions,prob,diff)
+    diff = bwd[4] - fwd[4]
+    newstart = min(fwd[5],bwd[5],na.rm=TRUE)
+    newend = max(fwd[6],bwd[6],na.rm =TRUE)
+    out = c(fwd[1:4],bwd[1:4],depth,nr_positions,prob,diff,newstart,newend)
     names(out) = c("f","f_nrpos","f_maxcover","f_position",
            "r","r_nrpos","r_maxcover","r_position",
-           "depth","nr_pos","prob","diff")
+           "depth","nr_pos","prob","diff","newstart","newend")
     return(out)    
-  },ourstats,mc.cores =12)))
+  },ourstats,mc.cores =24)))
   return(ourStats)  
 }
 
 merge_stats <- function(paramDf,summaryStats,regions)
 {  
-  summaryStats = mclapply(summaryStats,function(x)do.call(rbind,x),mc.cores=12)
-  summaryStats = mclapply(summaryStats,function(x)data.table(x),mc.cores=12)
+  summaryStats = mclapply(summaryStats,function(x)do.call(rbind,x),mc.cores=24)
+  summaryStats = mclapply(summaryStats,function(x)data.table(x),mc.cores=24)
   setkey(paramDf,strand)
   subParamDf = paramDf[strand == "fwd"]
   subParamDf$idx = 1:nrow(subParamDf)
-  setkey(subParamDf,idx)
+  setkey(subParamDf,idx)  
   merged_stats = lapply(1:nrow(subParamDf),function(j){
     print(paste0(j,"/72"))
     ourparam = subParamDf[idx == j]
@@ -222,9 +237,9 @@ merged_stats1 = merge_stats(paramDf1,summaryStats1,regions)
 merged_stats2 = merge_stats(paramDf2,summaryStats2,regions)
 merged_stats3 = merge_stats(paramDf3,summaryStats3,regions)
 
-save(list = "merged_stats1",file = file.path(dr,"AY552_summary_merged_lw10.RData"))
-save(list = "merged_stats2",file = file.path(dr,"AY553_summary_merged_lw10.RData"))
-save(list = "merged_stats3",file = file.path(dr,"AY554_summary_merged_lw10.RData"))
+save(list = "merged_stats1",file = file.path(dr,"AY552_summary_merged_lw3.RData"))
+save(list = "merged_stats2",file = file.path(dr,"AY553_summary_merged_lw3.RData"))
+save(list = "merged_stats3",file = file.path(dr,"AY554_summary_merged_lw3.RData"))
 
 ## load(file = file.path(dr,"AY552_summary_merged.RData"))
 ## load(file = file.path(dr,"AY553_summary_merged.RData"))
@@ -243,17 +258,25 @@ merge_all <- function(merged_stats,paramDf,regions)
   }
   ourRegions = mclapply(1:nrow(paramDf),function(j){
     out = merge_one(sets[j],labels[j],chrs[j],merged_stats[[j]],regions)
-    return(out)},mc.cores= 12)
-  return(do.call(c,ourRegions))
+    return(out)},mc.cores= 24)
+  ourRegions = do.call(c,ourRegions)
+  start(ourRegions) = pmin(start(ourRegions),ourRegions$newstart,na.rm=TRUE)
+  end(ourRegions) = pmin(end(ourRegions),ourRegions$newend,na.rm=TRUE)
+  p  = length(elementMetadata(ourRegions))
+  elementMetadata(ourRegions) = elementMetadata(ourRegions)[1:(p-2)]
+  return(ourRegions)
 }
 
 AY552regions = merge_all(merged_stats1,paramDf1[strand == "fwd"],regions)
 AY553regions = merge_all(merged_stats2,paramDf2[strand == "fwd"],regions)
 AY554regions = merge_all(merged_stats3,paramDf3[strand == "fwd"],regions)
-                      
-save(list = "AY552regions",file = file.path(dr,"AY552_islandWsummary_lw10.RData"))
-save(list = "AY553regions",file = file.path(dr,"AY553_islandWsummary_lw10.RData"))
-save(list = "AY554regions",file = file.path(dr,"AY554_islandWsummary_lw10.RData"))
+
+
+
+
+save(list = "AY552regions",file = file.path(dr,"AY552_islandWsummary_lw3.RData"))
+save(list = "AY553regions",file = file.path(dr,"AY553_islandWsummary_lw3.RData"))
+save(list = "AY554regions",file = file.path(dr,"AY554_islandWsummary_lw3.RData"))
 
 
 
