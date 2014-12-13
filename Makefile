@@ -67,5 +67,8 @@ positions:
 vignettes/%.md:vignettes/%.Rmd
 	cd vignettes;R -e 'library(knitr);knit("$(<F)")';cd ..
 
-vignettes/%.pdf:vignettes/%.Rnw
+vignettes/%.pdf:vignettes/%.tex
+	cd vignettes;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
+
+vignettes/%.tex:vignettes/%.Rnw
 	cd vignettes;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
