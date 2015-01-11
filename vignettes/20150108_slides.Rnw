@@ -1,0 +1,119 @@
+\documentclass[table,xcolor=dvipsnames]{beamer}
+
+
+
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{/u/w/e/welch/R-3.1.0/share/texmf/tex/latex/Sweave}
+
+
+
+\usetheme{Szeged}
+\usecolortheme[named=RoyalBlue]{structure}
+
+
+%\usecolortheme[accent=blue]{solarized}
+
+
+% Personal Data
+\title{ChIP-exo quality control measures}
+\date{January 2015}
+\author{Rene Welch}
+\institute{University of Wisconsin - Madison}
+
+\begin{document}
+
+\begin{frame}
+  \maketitle
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data sets analyzed}
+
+Several data sets were analyzed:
+
+\begin{itemize}
+\item From \cite{Serandour}, we used two different data sets:
+  \begin{itemize}
+  \item Human MCF-7 cell lines, targeting ET Tf
+  \item Mouse liver tissue, targeting FoxA1 Tf
+  \end{itemize}
+\item From Ren's lab, human histone (H3K27ac and H3k4me1) samples from K562 cell line
+\item From Landick's lab, several E.Coli data set were obtained
+  \begin{itemize}
+  \item 2 replicates for $\sigma_{70}$ and $\sigma_S$ samples under
+    stationary and exponential growth conditions
+  \item 2 replicates for $\sigma_{70}$, $\beta$ and $\beta'_{flag}$
+    exposed to rif (for 0 and 20 min)
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview of the quality control}
+
+  The fundamental idea behind the quality control is to partition the
+  genome is a collection of regions and to visualize several atributes
+  as the lowest depth regions are filtered out.
+
+  The quanties observed where:
+
+  \begin{itemize}
+  \item Forward strand ratio
+  \item Depth - width ratio
+  \item Number of unique positions
+  \item etc.
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Forward strand ratio}
+
+  We are using this statistic to model the strand imbalance
+
+\color{RoyalBlue}
+  \begin{align}
+    \text{Forward strand ratio} = \frac{f}{f+r} \nonumber
+  \end{align}
+  \color{black}
+
+where
+
+\begin{itemize}
+\item \color{RoyalBlue}$f$ \color{black} is the number of forward
+  reads in a region
+\item \color{RoyalBlue}$r$ \color{black} is the number of reverse
+  reads in a region
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametittle{Depth width ratio}
+
+
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{References}
+  \bibliographystyle{plain}
+\bibliography{chipexo.bib}
+\end{frame}
+
+\end{document}
