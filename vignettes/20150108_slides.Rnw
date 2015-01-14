@@ -36,6 +36,12 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Outline}
+\tableofcontents
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Data sets analyzed}
 
 Several data sets were analyzed:
@@ -50,13 +56,16 @@ Several data sets were analyzed:
 \item From Landick's lab, several E.Coli data set were obtained
   \begin{itemize}
   \item 2 replicates for $\sigma_{70}$ and $\sigma_S$ samples under
-    stationary and exponential growth conditions
+    stationary and exponential growth conditions (this data is similar to the one used in \cite{dpeak})
   \item 2 replicates for $\sigma_{70}$, $\beta$ and $\beta'_{flag}$
     exposed to rif (for 0 and 20 min)
   \end{itemize}
 \end{itemize}
 
 \end{frame}
+
+\section{Overview}
+\label{sec:overview}
 
 \begin{frame}
   \frametitle{Overview of the quality control}
@@ -77,10 +86,14 @@ Several data sets were analyzed:
 \end{frame}
 
 
+\section{Strand imbalance}
+\label{sec:strand}
+
 \begin{frame}
   \frametitle{Forward strand ratio}
 
-  We are using this statistic to model the strand imbalance
+  We are using this statistic to model the strand imbalance, which is
+  the case when there are more reads from one strand than the other
 
 \color{RoyalBlue}
   \begin{align}
@@ -97,17 +110,121 @@ where
   reads in a region
 \end{itemize}
 
+% For this plots we can see a good data set is the one that is roughly
+% centered around .5 and the IQR to reduce quickly as we increase the
+% filtering depth
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{A good case}
+
+ER sample from MCF-7 human cells
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_bound_VS_fwd_strand_ratio.pdf}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{A bad case}
+Input sample from E. Coli 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Landick/stat-vs-exp/Input/figs/Input_bound_VS_fwd_strand_ratio.pdf}
+\end{figure}
+
 \end{frame}
 
 
 
 \begin{frame}
-  \frametittle{Depth width ratio}
+  \frametitle{A more realistic bad case}
 
+H3k27ac sample from K562 human cells
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Ren/H3k27ac/figs/H3k27ac_bound_VS_fwd_strand_ratio.pdf}
+\end{figure}
 
 
 \end{frame}
+
+
+\begin{frame}
+  \frametitle{Another case}
+
+FoxA1 from mouse liver tissue
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep2/figs/FoxA1-rep2_bound_VS_fwd_strand_ratio.pdf}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Summary}
+
+  \begin{itemize}
+  \item One would expect the IQR to reduce as we filter the lowest
+    depth regions. That's not always the case as seen in mouse liver
+    plot
+  \item For background reads, the IQR is very wide and the median is
+    above the expected value
+  \item One possible criterium is to consider good when the IQR
+    decrease rapidly, although is not going to reach 0.5 (which is the
+    mode of this plots for ChIPseq-PET)
+  \item A possible bias is when the median is different to 0.5
+  \end{itemize}
+\end{frame}
+
+
+\section{PCR amplification}
+\label{sec:pcr}
+
+\begin{frame}
+  \frametitle{PCR amplification}
+
+\begin{itemize}
+
+\item In ChIPseq data, is possible to have positions with a high
+  number of reads but no biological signal. In ChIPexo, since the
+  fragments are being digested, we can observe regions with a similar
+  behaviour but with biological signal \cite{Serandour}
+
+\item  To model this kind of artifacts we use:
+
+\end{itemize}
+
+\color{RoyalBlue}
+\begin{align}
+  \text{local PBC} = \frac{\text{Number of unique positions in region}}{\text{depth}} \nonumber
+\end{align}
+\color{black}  
+
+Lets notice that the experiment's {\color{RoyalBlue} PBC} defined by
+encode is a weighted average of the local PBC
+
+\end{frame}
+
+\begin{frame}
+\frametitle{A good case}
+
+
+
+  
+\end{frame}
+
+
 
 
 \begin{frame}
