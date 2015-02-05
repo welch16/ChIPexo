@@ -146,3 +146,20 @@ peaks_list = lapply(mosaics_peaks_list,function(x)data.table(x@peakList))
 
 save(peaks_list,file = file.path("/p/keles/ChIPexo/volume3/Analysis/Landick","peaks.RData"))
 
+    ## Created the script mosaics_analysis to call a conservative collection
+    ## of peaks for all Landick's data sets.
+    
+    ## All peaks were called using the "Input-Only" fit, using d = 0.75. This
+    ## parameter was selected by fiting all data sets with a mosaics model,
+    ## and selecting the best BIC from d in (.1,.5,.75,1)
+    
+    ## Then we selected the optimal d as the one that was the best for most datasets.
+    
+    ## The peaks were called using
+    ## thres = 1
+    ## FDR = .1
+    ## maxgap = binSize
+    
+    ## to obtain a conservative list of peaks
+
+
