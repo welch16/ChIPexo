@@ -18,9 +18,14 @@ extract_transform_save <- function(filecodename,filename,basedir)
 dir = "/p/keles/ChIPexo/volume3/Analysis/Carroll/human"
 datasets = paste0("ER-rep",1:3)
 
-files = c("jc1199_MCF7_ER_exo_repA_CRI01_hg19_MACS2_jc899_peaks.bed",
-          "jc1200_MCF7_ER_exo_repB_CRI01_hg19_MACS2_jc899_peaks.bed",  
-          "jc1201_MCF7_ER_exo_repC_CRI01_hg19_MACS2_jc899_peaks.bed")
+## files = c("jc1199_MCF7_ER_exo_repA_CRI01_hg19_MACS2_jc899_peaks.bed",
+##           "jc1200_MCF7_ER_exo_repB_CRI01_hg19_MACS2_jc899_peaks.bed",  
+##           "jc1201_MCF7_ER_exo_repC_CRI01_hg19_MACS2_jc899_peaks.bed")
+
+files = c("jc1202_MCF7_ER_ChIP-seq_repA_hg19_MACS2_jc899_peaks.bed",
+          "jc1203_MCF7_ER_ChIP-seq_repB_hg19_MACS2_jc899_peaks.bed",
+           "jc1204_MCF7_ER_ChIP-seq_repC_hg19_MACS2_jc899_peaks.bed")
+
 
   ## 37211 jc1199 rep 1 exo
   ## 43960 jc1200 rep 2 exo
