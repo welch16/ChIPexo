@@ -1,0 +1,780 @@
+%\VignetteEngine{knitr::knitr}
+\documentclass{article}
+
+<<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+  BiocStyle::latex()
+@ 
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{url}
+\usepackage{multicol}
+
+\title{A quality control and analysis pipeline for ChIP-exo data}
+\author{}
+\date{February 2015}
+
+
+\newenvironment{comment}
+{\color{red}\itshape}
+{\color{black}}
+
+\newenvironment{sunduz}
+{\color{blue}\itshape}
+{\color{black}}
+
+\begin{document}
+
+\maketitle
+
+\abstract
+
+ChIP-exo is a modification of the ChIP-seq protocol for high
+resolution mapping of transcription factor binding sites. Although
+many aspect of the ChIP-exo data analysis are similar to those of
+ChIP-seq, ChIP-exo presents a number of unique challenges. We present
+a quality control pipeline for data from ChIP-exo experiments. This
+automated pipeline evaluates the overall signal to noise level of a
+given experiment and investigates ChIP-exo data for artifacts such as
+(i) strand imbalance where one strand is digested more than the other;
+(ii) enzyme over-digestion where the 5’ ends of the forward strand
+reads are located after the 5’ ends of the reverse strand reads; and
+(iii) PCR amplification bias the reads of a candidate binding event
+are concentrated on an extremely small numbers of positions.
+Assessment of these biases and artifacts are facilitated through
+diagnostic plots and summary statistics that compare a large portion
+of the genome as partitioned into islands with regions of high
+depth. We also systematically compare multiple ChIP-seq and ChIP-exo
+datasets to quantify differences between these two protocols. Our
+analysis indicate that spatial resolution of ChIP-exo is comparable to
+that of paired-end ChIP-seq and both of them are significantly better
+than resolution of single-end ChIP-seq. Furthermore, for a given fixed
+sequencing depth, ChIP-exo provides higher sensitivity, specificity,
+and spatial resolution than paired-end ChIP-seq.
+
+\tableofcontents
+
+
+\listoffigures
+% \listoftables
+
+\section{Overview of ChIP-exo}
+\label{sec:exo}
+
+ChIP-exo is a new techonology which is claimmed to be more precise
+than ChIP-seq (both SET and PET) to detect the location of protein-DNA
+interactions.
+
+\begin{multicols}{2}
+
+\begin{figure}[H]
+  \includegraphics[width = .4\textwidth]{exo-protocol.png}
+  \caption{ChIP-exo protocol, the figure is from \cite{mendenhall}}
+  \label{fig:exo1}
+\end{figure}
+
+If we consider the coordinate system as being ordered from 5' to 3'
+then, we can think the diagram as:
+
+\begin{enumerate}
+\item The motif is ocurring at position $\mu$
+\item The \# 1 adaptors are being added at positions $\mu - \delta_2$
+  and $\mu + \delta_2 $
+\item The exonuclease digestion, digest the DNA starting at the 5'
+  ends, and digest until it reachs the positions $\mu - \delta_1 $ and
+  $\mu + \delta_1$
+\item[4 - 6.] This steps separate the transcription factor from the
+  DNA, make the DNA double stranded again and add the \#2
+  adaptors. This adaptors are at the positions $\mu \pm \delta_1$
+  respectively. From this step we can see that there are two types of
+  reads being sequenced, one for each adaptor. 
+\addtocounter{enumi}{3}
+\item To build this plot, the 5' ends of both sides are
+  sequenced. Thus the sequenced reads are going to occur approximately
+  around $\mu$. The forward strand is going to be in the interval
+  $(\mu - \delta_2 , \mu + \delta_1)$ and the backward strand is going
+  to be in $(\mu - \delta_1, \mu + \delta_2)$
+\end{enumerate}
+
+Thus, the data will consist of two sets of aligned reads, one for each
+adaptor. So far, we have analized the one that corresponds to the
+second adaptor, since is the one related to the digested ends.
+
+A brief remark is that in a SET ChIP-seq experiment, the exonuclease
+digestion step is ommited, therefore the sequenced reads are going to
+have limits $\mu \pm \delta_2$. In other words, the fragment length is
+equal to $2\delta_2$.
+
+\end{multicols}
+
+\begin{comment}
+  for the poster, it would be nice to make a pictorial description of the second column
+\end{comment}
+
+
+<<init,include=FALSE,echo=FALSE,eval=TRUE,results='hide'>>=
+
+  library(knitr)
+  library(data.table)
+  library(devtools)
+
+  load_all("/p/keles/ChIPexo/volume4/ChIPexoQual")
+
+
+@ 
+
+
+<<depth,include=FALSE,echo=FALSE,eval=TRUE,results='hide'>>=
+
+  datadir = "/p/keles/ChIPexo/volume3/Analysis"
+  rensamples = c("H3k27ac","H3k4me1-rep1","H3k4me1-rep2")
+  rendir = file.path(datadir,"Ren",rensamples,"data")
+  carrollsamples = c(paste0("ER-rep",1:3),paste0("FoxA1-rep",1:3))
+  carrolldir = file.path(datadir,"Carroll",rep(c("human","mouse"),each=3),
+    carrollsamples,"data")
+  rifsamples = paste0(rep(c("BetaPrimeFlag","Beta","Sig70"),each=4),"-rif",
+    rep(c(0,20),each=2),"-rep",1:2)
+  statsamples = c("Input",paste0(rep(c("Sig70","SigmaS"),each=4),rep(c("-exp-","-stat-"),each=2),
+    "rep",rep(1:2,4)))
+  landicksamples = c(rifsamples,statsamples)
+  landickdir = file.path(datadir,"Landick",c(rep("rif-treatment",12),rep("stat-vs-exp",9)),
+    landicksamples,"data")
+
+  load_depth <- function(direc,samp){
+    load(file.path(direc,paste0(samp,"_depth.RData")))
+    return(depth)}
+
+  rendepths = mapply(load_depth,rendir,rensamples)
+  names(rendepths) = rensamples
+
+  carrolldepths = mapply(load_depth,carrolldir,carrollsamples)
+  names(carrolldepths) = carrollsamples
+
+  landickdepths = mapply(load_depth,landickdir,landicksamples)
+  names(landickdepths) = landicksamples
+
+@ 
+
+
+<<pbc,include=FALSE,echo=FALSE,eval=TRUE,results='hide'>>=
+
+  load_PBC <- function(direc,samp){    
+    load(file.path(direc,paste0(samp,"_PBC.RData")))
+  return(pcr_coeff)}
+
+  renpbc= mapply(load_PBC,rendir,rensamples)
+  names(renpbc) = rensamples
+
+  carrollpbc = mapply(load_PBC,carrolldir,carrollsamples)
+  names(carrollpbc) = carrollsamples
+
+  landickpbc = mapply(load_PBC,landickdir,landicksamples)
+  names(landickpbc) = landicksamples
+
+
+@ 
+
+<<cross_corr,include=FALSE,echo=FALSE,eval=TRUE,results='hide'>>=
+  
+  load_cc <- function(direc,samp){
+    load(file.path(direc,paste0(samp,"_cross.corr.RData")))
+  return(cc)}
+
+  rencc= mapply(load_cc,rendir,rensamples,SIMPLIFY=FALSE)
+  names(rencc) = rensamples
+
+  carrollcc = mapply(load_cc,carrolldir,carrollsamples,SIMPLIFY=FALSE)
+  names(carrollcc) = carrollsamples
+
+  landickcc = mapply(load_cc,landickdir,landicksamples,SIMPLIFY=FALSE)
+  names(landickcc) = landicksamples
+
+  nsc <- function(cc)cc[,max(cross.corr)/min(cross.corr)]
+
+  rennsc = sapply(rencc,nsc)
+  carrollnsc = sapply(carrollcc,nsc)
+  landicknsc = sapply(landickcc,nsc)
+
+  create_table <- function(samples,depth,pbc,nsc)
+  {
+    return(data.table(dataset =samples,depth = as.character(depth) , pbc = pbc,
+                      nsc = nsc))
+  }
+ 
+  landicksamples = gsub("PrimeFlag","Pf",landicksamples)
+  landick = create_table(landicksamples,landickdepths,landickpbc,landicknsc)
+  ren = create_table(rensamples,rendepths,renpbc,rennsc)
+  carroll = create_table(carrollsamples,carrolldepths,carrollpbc,carrollnsc)
+
+  kkable <- function(dt)
+  {
+    out = dt[,(c("depth","pbc","nsc")):=
+      list(prettyNum(depth,big.mark=","),
+           round(pbc,3) , round(nsc,3)),
+      by = dataset]
+    return(kable(as.data.frame(out)))
+  }
+
+@ 
+
+
+\section{ENCODE's quality metrics on ChIP-exo datasets}
+
+\begin{comment}
+ the point here is that classical ChIP-seq quality metrics may not
+ work with ChIP-exo datasets
+\end{comment}
+
+
+We are considering a diverse collection of datasets, where the genomes
+range among organisms such as human, mouse and e.coli. To review the
+current ENCODE metrics efficacy to asses the quality of a dataset, we
+calculated some of the current metrics:
+
+\begin{table}[H]
+\centering
+\begin{minipage}{.45\linewidth}
+<<include=TRUE,echo=FALSE,eval=TRUE,results='asis'>>=
+  kkable(landick[grep("rif",dataset,invert=TRUE)][-1])
+@ 
+<<include=TRUE,echo=FALSE,eval=TRUE,results='asis'>>=
+  kkable(landick[grep("rif",dataset)])
+@ 
+\end{minipage}
+\quad
+\begin{minipage}{.45\linewidth}
+<<include=TRUE,echo=FALSE,eval=TRUE,results='asis'>>=
+  kkable(carroll[grep("Fox",dataset)])
+@ 
+<<include=TRUE,echo=FALSE,eval=TRUE,results ='asis'>>=
+  kkable(carroll[grep("Fox",dataset,invert=TRUE)])
+@ 
+<<include=TRUE,echo=FALSE,eval=TRUE,results='asis'>>=
+  kkable(ren)
+@ 
+\end{minipage}
+\label{table:2}  
+\end{table}
+
+
+For the ChIP-exo datasets, some of ENCODE's current quality metrics
+were evaluated showing that current metrics aren't adequate for
+ChIP-exo datasets. The metrics evaluated were:
+
+\begin{itemize}
+\item PCR bottleneck coefficient 
+\item Strand cross-correlation 
+\item Normalized strand cross-correlation 
+\end{itemize}
+
+\subsection{PCR bottleneck coefficient}
+
+ENCODE's sugest the following classification of the PBC:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c}
+\hline
+PBC range & Bottleneck \\
+\hline
+0 - 0.5  &  Severe    \\
+0.5 - 0.8  &  Moderate \\
+0.8 - 0.9 &  Mild    \\
+0.9 - 1   & Non-existant   \\
+\hline
+\end{tabular}
+\end{table}
+
+In general, the calculated PBC values for ChIP-exo data sets are very
+low due to the nature of the experiment: An exonuclease enzyme is
+applied to the inmunoprecitate, and as a result if will trim the 5'
+end of each DNA fragment. After being aligned, several fragments are
+going to be mapped to the same 5' starting positions, resulting in an
+effect that may be confounded with PCR artifacts.
+
+\begin{comment}
+  Right now we have this plot for Landick's data sets, but I am
+  considering in make a table with columns: dataset, organism, depth,
+  pbc,
+  that reflect the same information as the figure
+\end{comment}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/inst/figs/pbc/PBCboxplot.pdf}
+  \caption{PBC comparison among protocols}
+  \label{fig:pbcLandick}
+\end{figure}
+
+\subsection{Strand cross-correlation}
+
+The strand cross-correlation is calculated by shifting both strands
+and calculating the correlation between both coverages. For ChIP-seq
+data, it is shown that the fragment length of the reads can be
+estimated by the shift where the cross correlation curve is maximized,
+since the forward and reverse reads might construct peak pais around
+the protein it is often assumed that both peaks present the same
+height. 
+
+The normalized strand cross-correlation was calculated as the ratio
+between the maximal and minimal values of the cross-correlation
+function. Higher values indicates more enrichment, while the minimum
+possible value is 1. 
+
+\begin{figure}[H]
+<<echo=FALSE,out.width='5cm',fig.show='hold'>>=
+ggplot(rencc[[1]],aes(shift,cross.corr))+geom_line()+geom_abline(slope=0,intercept=0,linetype=2)+scale_y_continuous(limits = c(0,1))+geom_vline(xintercept=0,linetype=2)
+ggplot(carrollcc[[1]],aes(shift,cross.corr))+geom_line()+geom_abline(slope=0,intercept=0,linetype=2)+scale_y_continuous(limits = c(0,1))+geom_vline(xintercept=0,linetype=2)
+ggplot(carrollcc[[6]],aes(shift,cross.corr))+geom_line()+geom_abline(slope=0,intercept=0,linetype=2)+scale_y_continuous(limits = c(0,1))+geom_vline(xintercept=0,linetype=2)
+@ 
+\caption[Strand cross-correlation for ChIP-exo]{Different examples of ChIP-exo cross-correlations}
+\begin{comment}
+  this is a place holder, until I plot all cross-corr. together by group
+\end{comment}
+\label{fig:cross.cor}
+\end{figure}
+
+After calculating this curves we can see:
+
+\begin{itemize}
+\item The cc function was calculated for the $[-S,S]$ range where
+  $S=100$ is the maximum shift . In the extremes this function is
+  still decreasing, thus if a larger $S$ is choosen it is possible to
+  for the cc-function to show non-positive values.
+\item The maximum shift is obtained at a non-positive shift; therefore
+  the fragment length can't be estimated as the shift where the cc
+  curve is maximized
+\item Since several reads are digested, the minimal values of the
+  cc-function may be very small and therefore the nsc very high. This
+  may be misleading as a quality indicator.
+\item Another interpretation may arise from ENCODE's description since
+  it is mentioned that this score is sensitive to technical effects,
+  and in the ChIP-exo case it is not well studied the exonuclease
+  enzyme digestion.
+\item The nsc calculated values are shown in table \ref{table:2}
+\end{itemize}
+
+\begin{sunduz}
+  use a longer (more typical) range to show how this measure would
+  behave under normal circumstances
+\end{sunduz}
+
+
+\begin{comment}
+  have chip-seq vs chip-exo data sets for, perhaps calculate the
+  cross-correlation curves (and measures ) for the ChIP-seq data sets.
+ \begin{enumerate}
+   \item Ren's histone datasets
+   \item Carroll's human ER datasets
+   \item Landick chip-seq set sampled data sets
+ \end{enumerate}
+\end{comment}
+
+\section{Methodology description}
+
+Using \Biocpkg{IRanges}, the coverage of the genome is calculated and
+partitioned into a set of regions. For each region, the following
+statistics were calculated:
+
+\begin{itemize}
+\item Forward strand ratio
+\item Depth
+\item Depth/width
+\item Number of unique positions (npos)
+\item npos/depth (Ratio between number of unique positions in region
+  and depth)
+\end{itemize}
+
+An alternative was to partition the genome into fixed length bins and
+calculate the same statistics.
+
+In general several plots were designed in order to asses a datasets
+quality.
+
+\subsection{Strand imbalance}
+
+A unique challenge in ChIP-exo data is to model the strand imbalance,
+where one strand is more diggested than the other. To asses for this
+effect we calculated the forward strand ratio, which is defined as:
+
+\begin{align}
+  \text{fwd strand ratio} = \frac{f}{f + r} \nonumber
+\end{align}
+
+where 
+\begin{itemize}
+\item $f$ number of forward reads in region
+\item $r$ number of reverse reads in region
+\end{itemize}
+
+At first, the genome was partitioned into fixed length bins. And for
+each bin, both the ChIP-exo and ChIP-seq forward strand ratio were
+calculated. We found that strands of reads were much less balanced in
+ChIP-exo data than in ChIP-seq data.
+
+\begin{comment}
+  Need to make again this plots. proteins with both chip-exo and
+  chip-seq data sets are:
+  \begin{itemize}
+  \item landick, both rif-treatment and stat-vs-exp
+  \item carroll, human samples
+  \item ren, histones samples, comparing vs encode
+  \end{itemize}
+\end{comment}
+
+\begin{figure}[H]
+  \centering
+  \begin{comment}
+    need to re do this figures, this is our version of figure 3b. in
+    that figure only significant regions were used and the fragment
+    reads were extended, therefore the extreme values $\{0,1\}$ are
+    not a heavy
+  \end{comment}
+  \caption{ChIP-exo vs ChIP-seq forward strand ratio comparison}
+  \label{fig:fsrbin}
+\end{figure}
+
+However, the objective is to asses the quality of a ChIP-exo
+experiment without a ChIP-seq one. For which, we analyzed the
+relationship the islands forward strand ratio and the region's
+depth.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_bound_VS_fwd_strand_ratio.png}
+  \includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Ren/H3k27ac/figs/H3k27ac_bound_VS_fwd_strand_ratio.png}
+\caption[Forward strand ratio boxplots]{Forward strand ratio boxplot of all regions with depth greater than the x label: On top, ER transcription factor from MCF-7 cell line, generated in \cite{Serandour}; On bottom, H3k27ac histone from K562 cell line, provided by Ren's lab}
+\label{fig:fsr1}
+\begin{comment}
+Re do plot:
+  \begin{itemize}
+  \item Change the ylabel is f / (f + r) and being consistent with
+    equation above 
+  \item also change xlabel to something more descriptive
+  \item possibly add the case of depth $> 0$ (still is the same as $>1$)
+  \item decide about keeping or removing the outliers in the plot, if
+    I am not going to mention them then remove them
+  \end{itemize}
+\end{comment}
+\end{figure}
+
+In both panels of figure \ref{fig:fsr1}, it is possible to see that as
+the number of reads in each region increases then the forward strand
+ratio tend to stabilize around $0.5$. We observed that usually better
+quality datasets show a higher stabilization rate. The presence of
+``full'' boxplots in both panels suggests the existence of strand
+specific regions. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_bound_VS_label_area.png}
+  \includegraphics[width=.45\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Ren/H3k27ac/figs/H3k27ac_bound_VS_label_area.png}  
+  \caption[Strand composition proportion plots]{Strand specific proportion of all regions with depth greater than the x label: On left, ER transcription factor from MCF-7 cell line, generated in \cite{Serandour}; On right, H3k27ac histone from K562 cell line, provided by Ren's lab}
+  \begin{comment}
+    again, change the x-lab to be more descriptive, perhaps y-axis
+    should be strand specific proportion, it would be nice if we
+    represent the total number of regions by depth
+  \end{comment}
+  \label{fig:label1}
+\end{figure}
+
+Figure \ref{fig:label1} may be used to explain why the stabilization
+rate in the bottom case of \ref{fig:fsr1} is low, since there are a
+considerable amount of strand specific regions.
+
+To evaluate that the forward strand ratio is indeed a meaningful
+statistic to asses the quality of a dataset, we considered a
+conservative list of peaks called from a ChIP-seq experiment under the
+same conditions and separate them using the rule (as seen in
+\ref{fig:fsrcomp1}):
+
+\begin{align}
+  z_i =
+  \begin{cases}
+    1 & \text{if overlaps any of the peaks} \\
+    0 & \text{otherwise}
+  \end{cases}
+\nonumber
+\end{align}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width =.45\textwidth,page = 1]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_peaks_comp_hist.pdf}
+  \includegraphics[width =.45\textwidth,page = 1]{/p/keles/ChIPexo/volume3/Analysis/Ren/H3k27ac/figs/H3k27ac_peaks_comp_hist.pdf}
+  % \includegraphics[width =.45\textwidth,page = 1]{/p/keles/ChIPexo/volume3/Analysis/Landick/stat-vs-exp/Sig70-stat-rep1/figs/Sig70-stat-rep1_peaks_comp_hist.pdf}
+  % \includegraphics[width =.45\textwidth,page = 1]{/p/keles/ChIPexo/volume3/Analysis/Landick/stat-vs-exp/Sig70-exp-rep1/figs/Sig70-exp-rep1_peaks_comp_hist.pdf}
+  \caption[Fwd strand ratio evaluation]{Same datasets as before. For the left case: the densities on top don't overlap any peaks, most of this regions are strand specific, in contrast with the bottom panels where most of the mass is around the $0.5$, while for the right case both are very similar}
+  \label{fig:fsrcomp1}
+\end{figure}
+
+  \begin{comment}    
+    need to call peaks with landick's chip-seq data, this figure is a
+    place holder until I make the analogous plot with the e.coli data
+    the data was generated as in \cite{dpeak}
+  \end{comment}
+
+To further study the relationship between depth and strand imbalance,
+we used MA-plots where the ``green'' and ``red'' are the forward and
+reverse reads in each region normalized by the region's width ($w$). That
+way we are plotting in figure \ref{fig:ma1}:
+
+\begin{align}
+  A &:= \log_2 f + \log_2 r - 2 \log_2 w \nonumber \\
+  M &:= \log_2 f  - \log_2 r \nonumber
+\end{align}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width =.85\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_MA_plots.pdf}
+  \caption{ER-rep1. Each panel consists of the MA plot as defined above, using all regions with depth higher than it's title.}
+  \label{fig:ma1}
+\end{figure}
+
+\begin{comment}
+  perhaps remove bottom line ... not sure if top
+\end{comment}
+
+
+\begin{sunduz}
+  this last plot is a bit of an overkill since we are still showing the same information
+\end{sunduz}
+
+From figure \ref{fig:ma1} we can consider that as the depth increases
+the signal becames more localized around the x-axis. This strong arm
+accross the horizontal axis indicates that there are several regions
+such that they show both: high depth and similar number of forward and
+reverse fragments.
+
+\subsection{Signal to noise extraction and PCR amplification bias}
+
+Usually for this topic, the problem would be to find the enriched
+regions. For this case, we are not attempting to find the enriched
+regions but to asses the possibility of finding enriched regions in a
+certain dataset. To do so, we are considering for a given region, the
+following characteristics:
+
+\begin{itemize}
+\item Width
+\item Depth
+\item Number of unique positions
+\end{itemize}
+
+Not surprisingly all threee quantities are correlated between each
+other. Therefore is is necessary to adjust them in order to find more
+meaningful relationships in the data. 
+
+In order to understand the relationship among this quantities, we
+plotted the ratio of depth and width against the ratio of the number
+of unique positions and the depth of a region:
+
+\begin{figure}[H]
+  \centering
+\includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep1/figs/FoxA1-rep1_dwRatio_VS_nposDepthRatio_plot.pdf}
+\includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep2/figs/FoxA1-rep2_dwRatio_VS_nposDepthRatio_plot.pdf}
+\includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep3/figs/FoxA1-rep3_dwRatio_VS_nposDepthRatio_plot.pdf}
+  \caption[depth/width vs npos/depth plots]{The three plots are biological replicates from FoxA1 transcription factor in mouse liver tissue (from \cite{Serandour})}
+  \label{fig:npos1}
+\end{figure}
+
+Some observations about figure \ref{fig:npos1}:
+\begin{itemize}
+\item The x-axis is the ratio of depth and width. This statistic is
+  going to be large in enriched regions, since in those regions the
+  signal it is likely to be more localized. However, it can be small
+  when either the region is wide or the depth is low
+\item The y-axis is the ratio between the number of unique positions
+  in the region and it's depth. Clealy the number of positions is less
+  or equal than it's depth, thus it is always positive and $\leq
+  1$.
+\item When npos is low and the depth is high, this are the regions
+  where there is some sort of PCR-artifact like behaviour.
+\item When npos is high and depth is low then the region is going to
+  be a dispersed region, such as the input in a ChIP-seq experiment
+\item Since usually depth $>>$ npos, then it is possible for the dataset
+  to show and adequate quality and the npos / depth ratio to be low.
+\item In the left figure we can see two strong arms: One is a vertical
+  arm close to the y-axis, usually those regions come from not
+  enriched regions and another arm which decreases as depth increases. 
+
+\end{itemize}
+
+\begin{comment}
+  for this datasets, the order of max number of position is rep1 $>$
+  rep2 $>$ rep3. Therefore an idea to separate this two arms, I can
+  stratify by npos 
+\end{comment}
+
+
+
+\begin{figure}[H]
+  \centering
+\includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep1/figs/FoxA1-rep1_npos_VS_depth_map.pdf}
+\includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep2/figs/FoxA1-rep2_npos_VS_depth_map.pdf}
+\includegraphics[width=.8\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep3/figs/FoxA1-rep3_npos_VS_depth_map.pdf}
+  \caption[Number of unique positions vs depth]{The three plots are biological replicates from FoxA1 transcription factor in mouse liver tissue (from \cite{Serandour})}
+  \label{fig:npos2}
+\end{figure}
+
+\begin{comment}
+  \begin{enumerate}
+  \item need to make a better scale of this plot
+  \item the scale of y-axis for the 3rd plot is little bit missleading
+  \item perhaps to bound the number of positions by 70 and the depth
+    by 200 
+  \end{enumerate}
+\end{comment}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.85\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_dwRatio_vs_nposDepthRatio_plots.pdf}
+  \caption[depth/width vs npos depth plot, filtered by depth]{depth/width vs npos/depth plot. The panel title indicates that this plot shows only the regions with depth greater than the title}
+  \label{fig:npos3}
+\end{figure}
+
+
+
+\begin{comment}
+the idea here was to study npos $/$ depth npos $\leq$ depth , thus 0 $\leq$  npos
+$/$ depth $\leq$ 1 by itself can't find it by joining with depth $/$ width can
+find those regions
+\end{comment}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.3\textwidth,page=1]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_peaks_depth_width_npos_plots.pdf}
+  \includegraphics[width=.3\textwidth,page=6]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_peaks_depth_width_npos_plots.pdf}
+  \includegraphics[width=.3\textwidth,page=12]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_peaks_depth_width_npos_plots.pdf}
+  \includegraphics[width=.3\textwidth,page=15]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_peaks_depth_width_npos_plots.pdf}
+  \includegraphics[width=.3\textwidth,page=16]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_peaks_depth_width_npos_plots.pdf}
+  \includegraphics[width=.3\textwidth,page=17]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1_peaks_depth_width_npos_plots.pdf}
+
+  \label{fig:npos4}
+\end{figure}
+
+
+
+\begin{comment}
+  also, for pcr amplification there is the concept of mesa and we have
+  at least 6 chip-exo datasets with a set of mesas. It would be
+  interesting to see the comparison of mesas vs not- mesas for the
+  human samples since their collection of mesas are much bigger than
+  the case for mouse
+\end{comment}
+
+\subsection{Enzyme overdigestion}
+
+
+For ChIP-exo, we are expecting to see the mode (or modes) of the
+distribution to have a small positive values. Also, we expect it to
+have only non-negative values (which is not the case, however this
+plot considers all the regions and not only the ones where there is a
+binding event). A promising feature is that the density for the
+``both'' label seem to be lower than the densities of the other
+labels. Perhaps by considering peaks, we can trim this density.
+
+Finally we can see figure \ref{dens-both} which show the density of
+all the sequencing procedures for the ``both'' label:
+
+
+\begin{figure}[H]
+  \centering 
+\includegraphics[width=0.85\textwidth,page=1]{/p/keles/ChIPexo/volume3/ChIPexo/inst/figs/summaryStats/SummitPosDiffSlice.pdf}
+\caption{Density of difference in summit positions separated
+    by sequencing for ``both'' label}
+  \begin{comment}
+    it would be nice to update this plots with the new partitions,
+    also there are chip-seq and chip-exo data for human samples (not
+    only e.coli). right now this works as a placeholder
+  \end{comment}
+\label{dens-both}
+\end{figure}
+
+Figure \ref{dens-both} looks very promising since, by considering a
+very simple classification we are seeing that the difference for the
+ChIP-exo data set is lower than the difference for the ChIP-seq
+cases. There are a large amount of cases where the difference is
+negative, which may be filtered by considering them in an case by case
+basis.
+
+
+
+\begin{comment}
+ to do this I tried to calculate local cross - correlation for all
+ islands, we have examples of local islands where is more or less can
+ estimate the difference 
+\end{comment}
+
+\begin{comment}
+  for this part I may use the densities of summit\_diff. 
+  perhaps can re
+  do it using localMaxima + smoothing ... the issue with this
+  indicator is gonna be that calculating the coverage for each region
+  is very time consumming
+\end{comment}
+
+
+\begin{comment}
+  make an histogram comparison of npos, perhaps strand specific vs
+  both stranded regions
+\end{comment}
+
+
+
+% \section{Identifying what a good dataset should look like}
+
+% In order to asses the quality of a data set, a set of conservative
+% ChIP-seq peaks was considered. For each region, an indicator was
+% assigned as 1 if it overlaps any of the ChIP-seq peaks and 0
+% otherwise. Then we proceed to compare the behaviour of our quality
+% devices comparing the regions that overlapped a peak vs the rest.
+
+% \begin{comment}
+%   need to re-do the analysis considering the Landick's peaks comming
+%   from chip-seq rather than chip-exo
+
+%   also, would be interesting to make:
+%   \begin{itemize}
+%   \item take all regions after partions
+%   \item filter them, by depth and npos.. .
+%   \item make a venn diagram between peaks and regions
+%   \end{itemize}
+
+% \end{comment}
+
+\section{Comparison among replicates}
+
+\begin{comment}
+  this section may be useful but perhaps for future work. so far, we
+  have seen cases where islands with high number of positions are
+  repeated in all replicates of the experiment
+
+  this suggests to use number of unique positions as a ranking system,
+  maybe -log(npos) (this to flip the order) and apply idr 
+\end{comment}
+
+
+\begin{comment}
+  need to build this section, one possible idea would be to rank by
+  the use of number of positions and then apply the algorithm
+\end{comment}
+
+
+\begin{sunduz}
+
+example of raw data, to show the quality of good vs bad data sets
+
+\end{sunduz}
+
+
+\bibliographystyle{plain}
+\bibliography{chipexo.bib}
+
+
+\end{document}
