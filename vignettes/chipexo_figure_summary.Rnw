@@ -5,7 +5,6 @@
   BiocStyle::latex()
 @ 
 
-
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{float}
@@ -14,6 +13,7 @@
 \usetikzlibrary{shapes,arrows}
 \usepackage{url}
 \usepackage{multicol}
+% \usepackage{underscore}
 
 \title{A quality control and analysis pipeline for ChIP-exo data}
 \author{}
@@ -58,6 +58,7 @@ sequencing depth, ChIP-exo provides higher sensitivity, specificity,
 and spatial resolution than paired-end ChIP-seq.
 
 \tableofcontents
+
 
 
 \listoffigures
@@ -132,6 +133,8 @@ equal to $2\delta_2$.
 <<depth,include=FALSE,echo=FALSE,eval=TRUE,results='hide'>>=
 
   datadir = "/p/keles/ChIPexo/volume3/Analysis"
+  pughsamples = "CTCF"
+  pughdir = file.path(datadir,"Pugh",pughsamples,"data")
   rensamples = c("H3k27ac","H3k4me1-rep1","H3k4me1-rep2")
   rendir = file.path(datadir,"Ren",rensamples,"data")
   carrollsamples = c(paste0("ER-rep",1:3),paste0("FoxA1-rep",1:3))
@@ -148,6 +151,9 @@ equal to $2\delta_2$.
   load_depth <- function(direc,samp){
     load(file.path(direc,paste0(samp,"_depth.RData")))
     return(depth)}
+
+  pughdepths = mapply(load_depth,pughdir,pughsamples)
+  names(pughdepths) = pughsamples
 
   rendepths = mapply(load_depth,rendir,rensamples)
   names(rendepths) = rensamples
@@ -167,6 +173,9 @@ equal to $2\delta_2$.
     load(file.path(direc,paste0(samp,"_PBC.RData")))
   return(pcr_coeff)}
 
+  pughpbc = mapply(load_PBC,pughdir,pughsamples)
+  names(pughpbc) =pughsamples
+
   renpbc= mapply(load_PBC,rendir,rensamples)
   names(renpbc) = rensamples
 
@@ -185,6 +194,9 @@ equal to $2\delta_2$.
     load(file.path(direc,paste0(samp,"_cross.corr.RData")))
   return(cc)}
 
+  pughcc = mapply(load_cc,pughdir,pughsamples,SIMPLIFY=FALSE)
+  names(pughcc) = pughsamples
+
   rencc= mapply(load_cc,rendir,rensamples,SIMPLIFY=FALSE)
   names(rencc) = rensamples
 
@@ -194,8 +206,9 @@ equal to $2\delta_2$.
   landickcc = mapply(load_cc,landickdir,landicksamples,SIMPLIFY=FALSE)
   names(landickcc) = landicksamples
 
-  nsc <- function(cc)cc[,max(cross.corr)/min(cross.corr)]
+  nsc <- function(cc)cc[between(shift,1,300),max(cross.corr)/min(cross.corr)]
 
+  pughnsc = sapply(pughcc,nsc)
   rennsc = sapply(rencc,nsc)
   carrollnsc = sapply(carrollcc,nsc)
   landicknsc = sapply(landickcc,nsc)
@@ -205,11 +218,12 @@ equal to $2\delta_2$.
     return(data.table(dataset =samples,depth = as.character(depth) , pbc = pbc,
                       nsc = nsc))
   }
- 
+
   landicksamples = gsub("PrimeFlag","Pf",landicksamples)
   landick = create_table(landicksamples,landickdepths,landickpbc,landicknsc)
   ren = create_table(rensamples,rendepths,renpbc,rennsc)
   carroll = create_table(carrollsamples,carrolldepths,carrollpbc,carrollnsc)
+  pugh = create_table(pughsamples,pughdepths,pughpbc,pughnsc)
 
   kkable <- function(dt)
   {
@@ -248,6 +262,9 @@ calculated some of the current metrics:
 \end{minipage}
 \quad
 \begin{minipage}{.45\linewidth}
+<<include = TRUE,echo=FALSE,eval =TRUE,results ='asis'>>=\
+  kkable(pugh)
+@ 
 <<include=TRUE,echo=FALSE,eval=TRUE,results='asis'>>=
   kkable(carroll[grep("Fox",dataset)])
 @ 
@@ -290,6 +307,7 @@ PBC range & Bottleneck \\
 \end{tabular}
 \end{table}
 
+
 In general, the calculated PBC values for ChIP-exo data sets are very
 low due to the nature of the experiment: An exonuclease enzyme is
 applied to the inmunoprecitate, and as a result if will trim the 5'
@@ -326,11 +344,72 @@ between the maximal and minimal values of the cross-correlation
 function. Higher values indicates more enrichment, while the minimum
 possible value is 1. 
 
+<<include=FALSE,echo=FALSE,eval=TRUE,results='hide'>>=
+
+stack_cc = function(cc_list)
+{
+  nms = names(cc_list)
+  if(is.null(nms)){
+    nms = 1:length(cc_list)
+  }
+  cc_list= mapply(function(cc,nm){
+    cc[,name:=nm]
+    return(cc)
+  },cc_list,nms,SIMPLIFY = FALSE)
+  return(do.call(rbind,cc_list))  
+}
+
+allrencc = stack_cc(rencc)
+allhumantf = stack_cc(c(carrollcc[1:3],pughcc))
+allmouse = stack_cc(carrollcc[4:6])
+landick1 = stack_cc(landickcc[14:17])
+landick2 = stack_cc(landickcc[5:8])
+landick3 = stack_cc(landickcc[1:4])
+
+@ 
+
+
 \begin{figure}[H]
-<<echo=FALSE,out.width='5cm',fig.show='hold'>>=
-ggplot(rencc[[1]],aes(shift,cross.corr))+geom_line()+geom_abline(slope=0,intercept=0,linetype=2)+scale_y_continuous(limits = c(0,1))+geom_vline(xintercept=0,linetype=2)
-ggplot(carrollcc[[1]],aes(shift,cross.corr))+geom_line()+geom_abline(slope=0,intercept=0,linetype=2)+scale_y_continuous(limits = c(0,1))+geom_vline(xintercept=0,linetype=2)
-ggplot(carrollcc[[6]],aes(shift,cross.corr))+geom_line()+geom_abline(slope=0,intercept=0,linetype=2)+scale_y_continuous(limits = c(0,1))+geom_vline(xintercept=0,linetype=2)
+<<echo=FALSE,out.width='5cm',fig.show='hold',warning=FALSE>>=
+ggplot(allrencc,aes(shift,cross.corr,colour = name))+geom_line()+
+  geom_abline(slope=0,intercept=0,linetype=2)+
+  scale_y_continuous(limits = c(0,.01))+geom_vline(xintercept=0,linetype=2)+
+  theme(legend.position = "top") +
+  scale_x_continuous(limits = c(0,300))
+
+ggplot(allhumantf,aes(shift,cross.corr,colour = name))+geom_line()+
+  geom_abline(slope=0,intercept=0,linetype=2)+
+  scale_y_continuous(limits = c(0,.5))+geom_vline(xintercept=0,linetype=2)+
+  theme(legend.position = "top")+
+  scale_x_continuous(limits = c(0,300))
+
+ggplot(allmouse,aes(shift,cross.corr,colour = name))+geom_line()+
+  geom_abline(slope=0,intercept=0,linetype=2)+
+  scale_y_continuous(limits = c(0,.25))+geom_vline(xintercept=0,linetype=2)+
+  theme(legend.position = "top") +
+  scale_x_continuous(limits = c(0,300))
+     
+@ 
+<<echo=FALSE,out.width='5cm',fig.show='hold',warning=FALSE>>=
+  ggplot(landick1,aes(shift,cross.corr,colour = name))+geom_line()+
+  geom_abline(slope=0,intercept=0,linetype=2)+
+  geom_vline(xintercept=0,linetype=2)+
+  theme(legend.position = "top") +
+  scale_x_continuous(limits = c(0,300))+scale_y_continuous(limits = c(0,.35))
+
+
+ggplot(landick2,aes(shift,cross.corr,colour = name))+geom_line()+
+  geom_abline(slope=0,intercept=0,linetype=2)+
+  geom_vline(xintercept=0,linetype=2)+
+  theme(legend.position = "top") +
+  scale_x_continuous(limits = c(0,300))+scale_y_continuous(limits = c(0,.2))
+
+
+ggplot(landick3,aes(shift,cross.corr,colour = name))+geom_line()+
+  geom_abline(slope=0,intercept=0,linetype=2)+
+  geom_vline(xintercept=0,linetype=2)+
+  theme(legend.position = "top") +
+  scale_x_continuous(limits = c(0,300))+scale_y_continuous(limits = c(0,.15))               
 @ 
 \caption[Strand cross-correlation for ChIP-exo]{Different examples of ChIP-exo cross-correlations}
 \begin{comment}
@@ -359,10 +438,10 @@ After calculating this curves we can see:
 \item The nsc calculated values are shown in table \ref{table:2}
 \end{itemize}
 
-\begin{sunduz}
-  use a longer (more typical) range to show how this measure would
-  behave under normal circumstances
-\end{sunduz}
+% \begin{sunduz}
+%   use a longer (more typical) range to show how this measure would
+%   behave under normal circumstances
+% \end{sunduz}
 
 
 \begin{comment}
@@ -518,6 +597,8 @@ same conditions and separate them using the rule (as seen in
     the data was generated as in \cite{dpeak}
   \end{comment}
 
+\begin{comment}
+
 To further study the relationship between depth and strand imbalance,
 we used MA-plots where the ``green'' and ``red'' are the forward and
 reverse reads in each region normalized by the region's width ($w$). That
@@ -550,6 +631,8 @@ accross the horizontal axis indicates that there are several regions
 such that they show both: high depth and similar number of forward and
 reverse fragments.
 
+\end{comment}
+
 \subsection{Signal to noise extraction and PCR amplification bias}
 
 Usually for this topic, the problem would be to find the enriched
@@ -575,39 +658,243 @@ of unique positions and the depth of a region:
 \begin{figure}[H]
   \centering
 \includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep1/figs/FoxA1-rep1_dwRatio_VS_nposDepthRatio_plot.pdf}
-\includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep2/figs/FoxA1-rep2_dwRatio_VS_nposDepthRatio_plot.pdf}
-\includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep3/figs/FoxA1-rep3_dwRatio_VS_nposDepthRatio_plot.pdf}
-  \caption[depth/width vs npos/depth plots]{The three plots are biological replicates from FoxA1 transcription factor in mouse liver tissue (from \cite{Serandour})}
+\includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep3/figs/ER-rep3_dwRatio_VS_nposDepthRatio_plot.pdf}
+\includegraphics[width=.3\textwidth]{/p/keles/ChIPexo/volume3/Analysis/Ren/H3k27ac/figs/H3k27ac_dwRatio_VS_nposDepthRatio_plot.pdf}
+\caption[depth/width vs npos/depth plots]{3 different examples of the
+  signal to noise plot: On left FoxA1 on mouse liver tissue; at the
+  center ER in MCF-7 cell line (both from \cite{Serandour}; At right
+  H3k27ac in K562 provided by Ren's lab ENCODE3}
   \label{fig:npos1}
 \end{figure}
 
-Some observations about figure \ref{fig:npos1}:
-\begin{itemize}
-\item The x-axis is the ratio of depth and width. This statistic is
-  going to be large in enriched regions, since in those regions the
-  signal it is likely to be more localized. However, it can be small
-  when either the region is wide or the depth is low
-\item The y-axis is the ratio between the number of unique positions
-  in the region and it's depth. Clealy the number of positions is less
-  or equal than it's depth, thus it is always positive and $\leq
-  1$.
-\item When npos is low and the depth is high, this are the regions
-  where there is some sort of PCR-artifact like behaviour.
-\item When npos is high and depth is low then the region is going to
-  be a dispersed region, such as the input in a ChIP-seq experiment
-\item Since usually depth $>>$ npos, then it is possible for the dataset
-  to show and adequate quality and the npos / depth ratio to be low.
-\item In the left figure we can see two strong arms: One is a vertical
-  arm close to the y-axis, usually those regions come from not
-  enriched regions and another arm which decreases as depth increases. 
+In both the left and center panels of figure \ref{fig:npos1}, it is
+possible to see two strong arms: One is a vertical arm close to the
+unique read coverage rate axis, which shows regions with small average
+read coverage, these regions como not from enriched regions but from
+regions with low depth and may be part of the background. The other,
+is an arm which shows the contrast between the average read coverage
+and the unique read coverage rate. In the right panel of figure
+\ref{fig:npos1} we are observing a low quality dataset since several
+of its regions present either low average read coverage or low unique
+read coverage rate.
 
+For this figure we are plotting:
+
+  \begin{align}
+    \text{Average read coverage} &= \frac{\text{Region's depth}}{\text{Region's width}} \nonumber  \\
+    \text{Unique read coverage rate} &= \frac{\text{Number of unique 5' positions in region}}{\text{Region's depth}} \nonumber
+  \end{align}
+\begin{itemize}
+
+\item Average read coverage, which is usually higher in enriched
+  regions than in non-enriched ones.
+\item Unique read coverage rate ($Z$). This rate is non-negative and it's
+  maximum is obtained at one. The statistic denotes a contrast between
+  two extreme behaviuors:
+  \begin{itemize}
+  \item When $Z =1$, in this regions we can see a different read
+    fragment for each 5' position.
+  \item When $Z\rightarrow 0$, then either the region's depth is very
+    high or the number of unique positions that form the region is
+    very low. In this case, then this regions coverage is a step-wise
+    function with ``larger'' jumps, which may resemble PCR artifacts.
+  \end{itemize}
 \end{itemize}
 
+
+\subsection{Signal to noise examples}
+
 \begin{comment}
-  for this datasets, the order of max number of position is rep1 $>$
-  rep2 $>$ rep3. Therefore an idea to separate this two arms, I can
-  stratify by npos 
+  
+  re do peak plots. for the annotation need to remove MA
+  values. Denote prob as fsr (forward strand ratio) and pbc as urcr
+  (unique read coverage rate) and dw\_Ratio as arc (average read
+  coverage)
+
 \end{comment}
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.3\textwidth,page=2]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr1_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page=1]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr1_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page=10]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr1_peaks.pdf}
+  \caption{High quality regions of ER in MCF-7 human cell lines (rep
+    1) showing the contrast between average read coverage and unique
+    read coverage rate}
+  \label{fig:regions1}
+\end{figure}
+
+In figure \ref{fig:regions1} we can see three different cases of good
+regions, which are sorted decreasingly according to its unique read
+coverage rate or increasingly according to its average reads
+coverage. This, shows the existentn contrast between both statistics
+since the values of both are highly different between the three
+examples but all regions shown possibly enriched regions.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.3\textwidth,page = 3]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep3/figs/FoxA1-rep3-chr1_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page = 19]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep3/figs/FoxA1-rep3-chr1_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page = 20]{/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse/FoxA1-rep3/figs/FoxA1-rep3-chr1_peaks.pdf}
+  \caption{Regions of Fox-A1 in mouse liver tissue (rep 3) showing low
+    unique read coverage rate but high average read coverage}
+  \label{fig:regions2}
+\end{figure}
+
+In figure \ref{fig:regions2} we are observing three examples of
+regions where the average read coverage is high but the unique read
+coverage rate is low. This regions are characterized by being
+constructed with a lower number of unique positions and usually show
+certain degreee of strand imbalance. In a ChIP-seq experiment this
+patterns may be occurring due to PCR artifact, in which certain
+position is being sequenced exponentially, but for ChIP-exo this
+regions may be appearing due to the exonuclease diggestion, which trim
+the fragments starting from the 5' end until it reached the protein
+binding site. 
+
+% low dw_ratio but high pbc
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.3\textwidth,page = 21]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr2_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page = 52]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr2_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page = 100]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr2_peaks.pdf}
+
+  \caption{Regions of ER in human MCF-7 cell lines (rep 1) showing low
+    average read coverage but high unique read coverage rate}
+  \label{fig:regions3}
+\end{figure}
+
+In figure \ref{fig:regions3} we are observing examples where the
+average read coverage is low but the unique read coverage rate is
+high. In this examples, it is noticeable that the average read
+coverage is decreasing due to the decreasing depth (from left to
+right), since all three regions show roughly the same width. It is
+also possible to notice that the signal is not as defined as in figures
+\ref{fig:regions1} or \ref{fig:regions2}.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.3\textwidth,page = 1894]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr2_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page = 2916]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr2_peaks.pdf}
+  \includegraphics[width=.3\textwidth,page = 4134]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/ER-rep1/figs/ER-rep1-chr2_peaks.pdf}
+  
+  \caption{Regions of ER in human MCF-7 cell line (rep 1) showing the very low average read coverage and high uniique coverage rate}
+  \label{fig:regionsbad}
+\end{figure}
+
+In figure \ref{fig:regionsbad} we are observing several examples of
+low quality regions. This regions correspond to the strong arms close
+to the unique read coverage rate axis in the left and middle panels of
+figure \ref{fig:npos1}. In this case the average read coverage is very
+low due to very low depth, which may be formed by few background
+fragment reads that weren't diggested by the enzyme.
+
+
+
+\subsection{Signal to noise replicability}
+
+\begin{sunduz}
+ 9a) reminds of ChIP vs input plots, which are the key plots I
+  look at before starting to analyze a ChIP-seq dataset.
+
+  This plot definitely needs more characterization and documenting
+  typical behavior across multiple datasets. We might want to look at
+  this plot for peaks that are reproducible.
+
+  Actually, for any of these metrics, we can define gold standard peak
+  set (reproducible) and justify the metrics that way.
+
+\end{sunduz}
+
+To assess the replicabiliy among samples of the same experiment we
+built the old standard peak set by considering the intersection among
+the estimated regions for each data set, and removing peaks with a
+width smaller than the experiment's average read length.
+
+Then for each region we extracted the reads that overlapped it for all
+samples, and recalculate the average read coverage and unique read
+coverage rate for those regions.
+
+\begin{figure}[H]
+  \centering
+\includegraphics[width = .85\textwidth,page = 1]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/Carroll_human_gold_std_comp.pdf}
+\includegraphics[width = .85\textwidth,page = 10]{/p/keles/ChIPexo/volume3/Analysis/Carroll/human/Carroll_human_gold_std_comp.pdf}
+\caption{Comparison of the arc vs urcr plot among all three replicates
+  of ER tf in MCF-7 cell. In the top panel, we are considering all
+  region in gold standard peak set and in the bottom all region with
+  number of unique 5' positions greater than 25}
+  \label{fig:gold1}
+\end{figure}
+
+
+
+\begin{figure}[H]
+  \centering
+\includegraphics[width = .6\textwidth,page = 1]{/p/keles/ChIPexo/volume3/Analysis/Ren/Ren_H3k4me1_gold_std_comp.pdf}
+\includegraphics[width = .6\textwidth,page = 6]{/p/keles/ChIPexo/volume3/Analysis/Ren/Ren_H3k4me1_gold_std_comp.pdf}
+\includegraphics[width = .6\textwidth,page = 10]{/p/keles/ChIPexo/volume3/Analysis/Ren/Ren_H3k4me1_gold_std_comp.pdf}
+\caption{Comparison of the arc vs urcr plot among both replicates of
+  H3k4me1 in K562 cell. In the top panel, we are considering all
+  region in gold standard peak set and in the middle and bottom the
+  regions with number of unique 5' positions greater than 5 and 25
+  respectively}
+  \label{fig:gold2}
+\end{figure}
+
+
+In figure \ref{fig:gold1} we can observe that the we are covering the
+same region in the arc vs urcr plot, which means that this plot is
+replicable by considering all three samples. On the other hand, by
+comparing top vs bottom, we are seeing that the region with low arc
+and varying urcr is filtered out, therefore that region of the plot
+consist of regions with low number of unique 5' positions. While in
+figure \ref{fig:gold2} we are observing i) most of the region have a
+low arc and low urcr for both replicates; ii) the number of unique
+position in each region is usually low, since most of the regions seem
+to be filtered out when the number of unique positions is larger than
+25; and iii)
+
+
+
+
+
+% \begin{sunduz}
+%   in the poster change the x-axis to average read coverage and the
+%   y-axis to 1 / average unique read coverage or unique read coverage
+%   rate
+% \end{sunduz}
+
+
+% Some observations about figure \ref{fig:npos1}:
+% \begin{itemize}
+% \item The x-axis is the ratio of depth and width. This statistic is
+%   going to be large in enriched regions, since in those regions the
+%   signal it is likely to be more localized. However, it can be small
+%   when either the region is wide or the depth is low
+% \item The y-axis is the ratio between the number of unique positions
+%   in the region and it's depth. Clealy the number of positions is less
+%   or equal than it's depth, thus it is always positive and $\leq
+%   1$.
+% \item When npos is low and the depth is high, this are the regions
+%   where there is some sort of PCR-artifact like behaviour.
+% \item When npos is high and depth is low then the region is going to
+%   be a dispersed region, such as the input in a ChIP-seq experiment
+% \item Since usually depth $>>$ npos, then it is possible for the dataset
+%   to show and adequate quality and the npos / depth ratio to be low.
+
+% \end{itemize}
+
+% \begin{comment}
+%   for this datasets, the order of max number of position is rep1 $>$
+%   rep2 $>$ rep3. Therefore an idea to separate this two arms, I can
+%   stratify by npos 
+
+%   i did some of this analysis but didn't look promissing
+
+% \end{comment}
 
 
 
@@ -770,6 +1057,59 @@ basis.
 
 example of raw data, to show the quality of good vs bad data sets
 
+\end{sunduz}
+
+\begin{sunduz}
+Rene,
+
+I went over your document and have the following comments.
+\begin{enumerate}
+
+\item We need to generate raw data example raw data plots of
+  ``perfect'', ``typical'', ``noisy'' ChIP-exo and their corresponding
+  ChIP-seq (possibly from multiple organisms) and at the replicate
+  level. This will set the stage for what we are trying to accomplish.
+
+  human and mouse data can also be uploaded to genome browser - once
+  we identify which regions to show through R plot, we may want
+  browser shots.
+
+\item When discussing ENCODE metrics, we should first make the case
+  whether or not they are applicable. Maybe illustrate whatwe expect
+  cross-correlation to reveal by a cartoon.
+
+  I am a bit confused why we have cross-correlations maximized at
+  zero. Shouldn't we expect them to be maximized at the read length?
+  Does the fact that they are maximized at zero indicate something
+  about the quality? Is this an artifact of smoothing on the
+  cross-correlation plot? Would it improve if we got rid of the
+  islands with severe strand imbalance?
+
+
+\item For the npos/depth vs depth/width plots, once we have these once
+  could have example peaks across different regions of this plot. This
+  plot in the middle and then we highlight peaks with this metric at
+  different coordinates of this plot.
+
+
+\item 9a) reminds of ChIP vs input plots, which are the key plots I
+  look at before starting to analyze a ChIP-seq dataset.
+
+  This plot definitely needs more characterization and documenting
+  typical behavior across multiple datasets. We might want to look at
+  this plot for peaks that are reproducible.
+
+  Actually, for any of these metrics, we can define gold standard peak
+  set (reproducible) and justify the metrics that way.
+
+
+\item It would also be useful to see an IDR run of ChIP-exo
+  datasets. This question will definitely come up but not sure if we
+  have time for this.
+ 
+\item You would probably need a pipeline diagram from reads to peaks.
+
+\end{enumerate}
 \end{sunduz}
 
 
