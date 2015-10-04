@@ -297,6 +297,13 @@ plot_keys <- function(keys,common,replicates)
 
 stats <- lapply(replicates,function(x)x$stats)
 
+reads <- lapply(replicates,function(x)x$reads)
+setkey(reads[[1]],match)
+setkey(reads[[2]],match)
+setkey(reads[[3]],match)
+
+
+
 
 keys <- replicates[[1]]$stats[dw_ratio > 2,(match)]
 pdf(file = file.path(figs_dir,"dw_ratio_gr_2.pdf"),width = 6,height = 9)
@@ -442,10 +449,54 @@ plot_keys(keys,common,replicates)
 dev.off()
 
 
+### try to build a signal - to - noise measure
+stats <- lapply(replicates,function(x)x$stats)
+
 reads <- lapply(replicates,function(x)x$reads)
 setkey(reads[[1]],match)
 setkey(reads[[2]],match)
 setkey(reads[[3]],match)
+
+keys <- stats[[1]][dw_ratio > 2,(match)]
+kk <- sample(keys,1)
+
+### get reads
+
+
+snr <- function(key,stats,reads,repl = 1)
+{
+  browser()
+  repl_key <- stats[[repl]][key,(rmatch)]
+  peak_reads <- copy(reads[[repl]][repl_key])
+  setkey(peak_reads,strand)
+  fwd <- peak_reads["+"]
+  bwd <- peak_reads["-"]
+  
+
+}
+
+
+par(mfrow = c(2,1))
+plot(table(fwd[,sort(start)]))
+##plot(acf(table(fwd[,sort(start)])))
+plot(table(bwd[,sort(end)]))
+##plot(acf(table(bwd[,sort(end)])))
+dev.off()
+
+ma <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
+
+
+
+snr(kk,stats,reads,1)
+
+stats <- lapply(replicates,function(x)x$stats)
+
+reads <- lapply(replicates,function(x)x$reads)
+setkey(reads[[1]],match)
+setkey(reads[[2]],match)
+setkey(reads[[3]],match)
+
+
 
 
 keys <- stats[[1]][seqnames != "chrM" & npos > 100 ,(match)]
