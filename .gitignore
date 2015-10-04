@@ -9,3 +9,4 @@ vignettes/*
 data/*
 .Rbuildignore
 .Rinstignore
+figs/*
