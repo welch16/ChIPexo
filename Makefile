@@ -75,3 +75,6 @@ vignettes/%.tex:vignettes/%.Rnw
 
 sample_saturation:
 	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/sample_chip.R
+
+bins:
+	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_construct_bins.R
