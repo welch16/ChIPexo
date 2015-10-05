@@ -62,10 +62,10 @@ dir = "/p/keles/ChIPexo/volume3/Analysis/Landick"
 load(file.path(dir,"peaks.RData"))
 
 dt1 = peaks_list[1:4]
-dt2 = peaks_list[5:8]
+## dt2 = peaks_list[5:8]
 
-dir1 = file.path(dir,"stat-vs-exp")
-dir2 = file.path(dir,"rif-treatment")
+## dir1 = file.path(dir,"stat-vs-exp")
+dir1 = file.path(dir,"rif-treatment")
 
 
 filenames1 = names(dt1)

@@ -11,8 +11,8 @@ library(RColorBrewer)
 library(hexbin)
 library(scales)
 
-filesdir = "/p/keles/ChIPexo/volume3/LandickData/ChIPexo/bed"
-outdir = "/p/keles/ChIPexo/volume3/LandickData/ChIPexo/bins"
+filesdir = "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET/sam"
+outdir = "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET/bins"
 figsdir = "/p/keles/ChIPexo/volume3/ChIPexo/inst/figs/Landick/mosaics"
 
 # sig 70
@@ -26,17 +26,22 @@ figsdir = "/p/keles/ChIPexo/volume3/ChIPexo/inst/figs/Landick/mosaics"
 ## edsn1317_042814_qc.sorted.bed rif0 rep2
 ## edsn1320_042814_qc.sorted.bed rif20 rep2
 
+# sig 70
+## edsn1369_042814_qc.sorted.bed seq-input
+## edsn1396_042814_qc.sorted.bed rif0 rep1
+## edsn1398_042814_qc.sorted.bed rif20 rep1
+## edsn1400_042814_qc.sorted.bed rif0 rep2
+## edsn1402_042814_qc.sorted.bed rif20 rep2
+
+
+
 # Construct bins
 files = c(
-  "edsn930_042814_qc.sorted.bed",
-  "edsn931_042814_qc.sorted.bed",
-  "edsn933_042814_qc.sorted.bed",
-  "edsn935_042814_qc.sorted.bed",
-  "edsn937_042814_qc.sorted.bed",
-  "edsn1311_042814_qc.sorted.bed",
-  "edsn1314_042814_qc.sorted.bed",
-  "edsn1317_042814_qc.sorted.bed",
-  "edsn1320_042814_qc.sorted.bed")
+  "edsn1369_042814_qc.sorted.sam",
+  "edsn1396_042814_qc.sorted.sam",
+  "edsn1398_042814_qc.sorted.sam",
+  "edsn1400_042814_qc.sorted.sam",
+  "edsn1402_042814_qc.sorted.sam")
 
 infiles = file.path(filesdir,files)
 
@@ -51,26 +56,25 @@ binSize = 150
 doBins = TRUE
 if(doBins)
 {
-  mclapply(infiles, function(x){
+  u =mclapply(infiles, function(x){
     constructBins(infile = x,
-      fileFormat = "bed",
+      fileFormat = "sam",
       outfileLoc = outdir,
       byChr = FALSE,
       useChrfile = TRUE,
       chrfile = file.path(filesdir,"ecoli_size.txt"),
-      PET = FALSE,
+      PET = TRUE,
       fragLen = fragLen,
       binSize = binSize,
       capping = 0,
-      perl = "perl")},mc.cores = 9)                
+      perl = "perl")},mc.cores = 5)                
 }
 
 # enrichment plots
 
 # read data
 binfiles = file.path(outdir,
-  paste0(files,"_fragL",fragLen,
-  "_bin",binSize,".txt"))
+  paste0(files,"_bin",binSize,".txt"))
 
 bins = mclapply(binfiles,function(x){
   dt = data.table(read.table(x,stringsAsFactors=FALSE))
@@ -115,12 +119,12 @@ mos_fit <- function(chip,input,d)
   return(fit)
 }
 
-d = 0.75
+d = .75
 mosaics_fit_list = mclapply(binfiles[-1],function(x)mos_fit(x,binfiles[1],d),mc.cores = 9)
 # length = 8 , 4 of the stat-vs-exp experiment and 4 of the rif-treatment experiment
 
 ## to plot gof
-## lapply(mosaics_fit_list,function(x){x11();plot(x)})
+lapply(mosaics_fit_list,function(x){x11();plot(x)})
 
 
 ## parameters

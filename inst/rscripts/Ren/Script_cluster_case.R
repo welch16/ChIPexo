@@ -112,6 +112,9 @@ strand_statistics <- function(region_reads,param,idx)
   newEnd = max(end(ranges))
   # Summit position
   cover = coverage(ranges)
+  mean = mean(window(cover,start=newStart,end =newEnd))
+  sd = sd(window(cover,start=newStart,end =newEnd))
+  snr = mean / sd
   if(nrun(cover) > 1){
     maxCover = max(cover)
     if(identical(param$strand,"bwd")){
@@ -123,7 +126,9 @@ strand_statistics <- function(region_reads,param,idx)
     maxCover = NA
     summitPos = NA
   }
-  return(c(idx=idx,depth=depth,nrPos =nrPos,maxCover=maxCover,summitPos=summitPos,newstart  =newStart, newend = newEnd))
+  return(c(idx=idx,depth=depth,nrPos =nrPos,maxCover=maxCover,
+           summitPos=summitPos,mean = mean,sd = sd,snr = snr,
+           newstart  =newStart, newend = newEnd))
 }
 
 summaryStats1 = lapply(1:nrow(paramDf1),function(j){
@@ -173,7 +178,9 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
     ourstats[["bwd"]]$nrPos = 0
     ourstats[["bwd"]]$maxCover = NA
     ourstats[["bwd"]]$summitPos = NA
-    
+    ourstats[["bwd"]]$mean = NA
+    ourstats[["bwd"]]$sd = NA
+    ourstats[["bwd"]]$snr = NA
   }
   setkey(ourstats[["bwd"]],idx)
   if(nrow(ourstats[["fwd"]])==0){ # quick fix, need to fix this bug
@@ -182,7 +189,9 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
     ourstats[["fwd"]]$nrPos = 0
     ourstats[["fwd"]]$maxCover = NA
     ourstats[["fwd"]]$summitPos = NA
-    
+    ourstats[["fwd"]]$mean = NA
+    ourstats[["fwd"]]$sd = NA
+    ourstats[["fwd"]]$snr = NA    
   }
   setkey(ourstats[["fwd"]],idx)
   extract_summary <- function(sumstats){
@@ -194,6 +203,9 @@ merge_case <- function(ourset,ourlabel,ourchr,summaryStats,paramDf,regions)
       out[4] = sumstats[["summitPos"]]
       out[5] = sumstats[["newstart"]]
       out[6] = sumstats[["newend"]]
+      out[7] = sumstats[["mean"]]
+      out[8] = sumstats[["sd"]]
+      out[9] = sumstats[["snr"]]
     }
     out[1:2] = ifelse(is.na(out[1:2]),0,out[1:2])
     return(out)    

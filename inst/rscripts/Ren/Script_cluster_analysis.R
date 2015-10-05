@@ -25,7 +25,7 @@ cover_bwd = mclapply(reads_bwd,coverage,mc.cores = 3)
 slice_all <- function(cover,lw)
 {
   #lw = quantile(runValue(cover),q)
-  slice_list= mcmapply(slice,cover,lw,MoreArgs = list(rangesOnly=TRUE),SIMPLIFY=FALSE,mc.cores=12)
+  slice_list= mcmapply(slice,cover,lw,MoreArgs = list(rangesOnly=FALSE),SIMPLIFY=FALSE,mc.cores=12)
   slice_list = GRangesList(mcmapply(function(x,y)GRanges(seqnames = y,ranges = x,strand = "*"),slice_list,names(slice_list),
     SIMPLIFY= FALSE,mc.cores = 8))
   return(unlist(slice_list))

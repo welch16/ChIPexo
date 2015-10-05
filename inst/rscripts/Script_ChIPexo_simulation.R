@@ -30,6 +30,9 @@ binding_sim <- function(nreads,mu,p,delta,sigma2,readlength)
 }
 
 
+
+
+
 data.table2IRanges <- function(DT){
   ranges = IRanges(start = DT$start,
       end = DT$end)
@@ -158,14 +161,19 @@ summary_statistics <- function(peak)
 
 p = 0.5
 delta = 40
-sigma2 = 1e4
-nreads = 50
+sigma2 = 10
+nreads = 100
 mu = 500
 rl = 51
 ext=10
+alpha = 12
 
-peak = mclapply(1:1000,function(i)binding_sim(nreads = nreads,mu = mu , p = p,delta = delta,
+peak = mclapply(1:1000,function(i)binding_sim(nreads = sample(nreads,1),mu = mu , p = rbeta(1,alpha,alpha),delta = delta,
   sigma2 = sigma2,readlength = rl),mc.cores =12)
+
+x11(width =12,height = 6)
+plotpeaks(peak[sample(1000,4)],ext= 10,mu=500,mfrow = c(2,2))
+ 
 
 
 plotpeaks <- function(...,ext=10,mu=NULL,mfrow = c(length(...),1))
@@ -184,9 +192,7 @@ plotpeaks <- function(...,ext=10,mu=NULL,mfrow = c(length(...),1))
   }  
 }
 
-x11(width =12,height = 6)
-plotpeaks(peak[sample(1000,4)],ext= 10,mu=500,mfrow = c(2,2))
-                      
+                     
 
 
 

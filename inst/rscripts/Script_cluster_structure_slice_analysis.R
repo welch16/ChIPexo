@@ -3,6 +3,7 @@ rm(list = ls())
 library(GenomicAlignments)
 library(reshape2)
 library(ggplot2)
+library(data.table)
 
 datadir = "data"
 files = c("outputSig70_0min_sep_reads.RData",
@@ -112,16 +113,27 @@ dev.off()
 
 d = levels(df$dataset)
 
+df = data.table(df)
+setkey(df,label,ip,rif,seq,statistic,rep,dataset)
 
 build_hexbin <- function(dataset,df)
 {
-  df1 = subset(df,dataset == dataset & seq == "exo")
-  width_df = subset(df1,statistic == "width")
-  ratio_df = subset(df1,statistic == "readsPos_ratio")
-  cols = c("label","dataset","rep","value")
-  df1 = width_df[,names(width_df) %in% cols]
-  df1$posreads_ratio = ratio_df$value
-  names(df1)[2] = "width"
+  df1 = df[dataset == dataset & seq == "exo"]
+  width_df = df1[statistic == "width"]
+  ratio = df1[statistic == "readsPos_ratio"]$value
+  prob = df1[statistic == "prob"]$value
+  depth = df1[statistic == "f"]$value + df1[statistic =="r"]$value
+  summitDiff = df1[statistic == "diff"]$value
+  cols = c("label","dataset","rep","width")
+  df1 = width_df[,list(label,dataset,rep,value)]
+  setnames(df1,colnames(df1),cols)
+  df1$posreads_ratio = ratio
+  df1$depth = depth
+  group = factor(colSums(do.call(rbind,lapply(seq(0.2,1,by=.2),function(x,prob)prob <= x,prob))))
+  group = mapvalues(group,from=as.character(1:5),to=paste0(seq(0.8,0,by=-.2),"-",seq(1,.2,by=-.2)))
+  df1$prob = prob
+  df1$group = group
+  df1$summitDiff = summitDiff   
   return(df1)
 }
 
@@ -148,7 +160,6 @@ nrbins = 60
 readsLen = 51
 
 
-pdf(file = file.path(figsdir,"exoWidthVSReadsPosRatiohexbin.pdf"))
 q1 = ggplot(subset(hb,rep == 1 & label == "both") ,aes(width,posreads_ratio))+stat_binhex(bins = nrbins)+
   theme(legend.position = "bottom")+
   scale_fill_gradientn(colours=r, trans='log10')+
@@ -185,7 +196,127 @@ q3 = ggplot(subset(hb,rep == 2 & label == "bwd") ,aes(width,posreads_ratio))+sta
   facet_wrap(~dataset)+scale_x_continuous(limits= c(0,maxwidth))+scale_y_continuous(limits = c(0,maxratio))+
   ggtitle("exo - rep 2 (bwd)")+geom_vline(xintercept = readsLen,linetype = "dashed")+ylab("Nr. reads / Nr. positions")
 print(q3)
+
+
+
+pdf(file = file.path(figsdir,"summaryhexbin.pdf"))
+nrbins = 60
+q5 = ggplot(hb[label=="both"],aes(depth,summitDiff))+stat_binhex(bins=nrbins)+
+  stat_binhex(bins = nrbins)+
+  theme(legend.position = "bottom")+ scale_fill_gradientn(colours=r,
+  trans='log10')+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+    
+  geom_abline(intercept =51,slope = 0,linetype = 3,size =.8)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =.8)+
+  scale_x_continuous(limits = c(0,500))+
+  scale_y_continuous(limits  = 250* c(-1,1))+ggtitle("both")
+print(q5)
+q6 = ggplot(hb[label=="both"],aes(depth,summitDiff))+stat_binhex(bins=nrbins)+
+  stat_binhex(bins = nrbins)+
+  theme(legend.position = "bottom")+ scale_fill_gradientn(colours=r,
+  trans='log10')+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+    
+  geom_abline(intercept =51,slope = 0,linetype = 3,size =.8)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =.8)+
+  scale_x_continuous(limits = c(0,150))+
+  scale_y_continuous(limits  = 250* c(-1,1))+ggtitle("both")
+print(q6)
+
+q5 =  ggplot(hb[label=="fwd"],aes(depth,summitDiff))+stat_binhex(bins=nrbins)+
+  stat_binhex(bins = nrbins)+ theme(legend.position = "bottom")+
+  scale_fill_gradientn(colours=r, trans='log10')+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size =   .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+
+  geom_abline(intercept =51,slope = 0,linetype = 3,size =.8)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =.8)+
+  scale_x_continuous(limits = c(0,500))+
+  scale_y_continuous(limits =
+  250* c(-1,1))+ggtitle("fwd")
+print(q5)
+q6 = ggplot(hb[label=="fwd"],aes(depth,summitDiff))+stat_binhex(bins=nrbins)+
+  stat_binhex(bins = nrbins)+ theme(legend.position = "bottom")+
+  scale_fill_gradientn(colours=r, trans='log10')+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+
+  geom_abline(intercept =51,slope = 0,linetype = 3,size =.8)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =.8)+
+  scale_x_continuous(limits = c(0,150))+ scale_y_continuous(limits =
+  250* c(-1,1))+ggtitle("fwd")
+print(q6)
+
+q5 =  ggplot(hb[label=="bwd"],aes(depth,summitDiff))+stat_binhex(bins=nrbins)+
+  stat_binhex(bins = nrbins)+ theme(legend.position = "bottom")+
+  scale_fill_gradientn(colours=r, trans='log10')+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size =   .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+
+  geom_abline(intercept =51,slope = 0,linetype = 3,size =.8)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =.8)+
+  scale_x_continuous(limits = c(0,500))+
+  scale_y_continuous(limits =
+  250* c(-1,1))+ggtitle("bwd")
+print(q5)
+q6 = ggplot(hb[label=="bwd"],aes(depth,summitDiff))+stat_binhex(bins=nrbins)+
+  stat_binhex(bins = nrbins)+ theme(legend.position = "bottom")+
+  scale_fill_gradientn(colours=r, trans='log10')+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+
+  geom_abline(intercept =51,slope = 0,linetype = 3,size =.8)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =.8)+
+  scale_x_continuous(limits = c(0,150))+ scale_y_continuous(limits =
+  250* c(-1,1))+ggtitle("bwd")
+print(q6)
+
+
 dev.off()
+
+
+
+q7 = ggplot(hb[label!="both"],aes(depth,summitDiff))+stat_binhex(bins=nrbins)+
+  stat_binhex(bins = nrbins)+
+  theme(legend.position = "bottom")+ scale_fill_gradientn(colours=r,
+  trans='log10')+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+    
+  geom_abline(intercept =51,slope = 0,linetype = 3,size =.8)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =.8)+
+  scale_x_continuous(limits = c(0,500))+
+  scale_y_continuous(limits  = 250* c(-1,1))
+print(q7)
+
+
+
+q7 = ggplot(hb[label!="both"],aes(depth,summitDiff,colour = group))+geom_point(alpha = I(.15),shape = 0)+
+  theme(legend.position = "bottom")+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+       
+  geom_abline(intercept =51,slope = 0,linetype = 2,size =1)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =1)+
+  scale_x_continuous(limits = c(0,500))+
+  scale_y_continuous(limits  = 250* c(-1,1))+scale_color_brewer(palette="Set1")
+q7
+
+q8 = ggplot(hb[label =="fwd"],aes(depth,summitDiff,colour = group))+geom_point(alpha = I(.15),shape = 0)+
+  theme(legend.position = "bottom")+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+       
+  geom_abline(intercept =51,slope = 0,linetype = 2,size =1)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =1)+
+  scale_x_continuous(limits = c(0,500))+
+  scale_y_continuous(limits  = 250* c(-1,1))+scale_color_brewer(palette="Set1")
+q8
+
+q9 = ggplot(hb[label=="bwd"],aes(depth,summitDiff,colour = group))+geom_point(alpha = I(.15),shape = 0)+
+  theme(legend.position = "bottom")+facet_wrap(~dataset)+
+  geom_smooth(se = FALSE,size = 1,aes(group=group,colour = group),method="loess")+scale_color_brewer(palette="Set1")+
+  geom_smooth(se = FALSE,size = .8,aes(group=1),colour=I("black"),linetype=2,method="loess")+       
+  geom_abline(intercept =51,slope = 0,linetype = 2,size =1)+
+  geom_abline(intercept =0,slope = 0,linetype = 3,size =1)+
+  scale_x_continuous(limits = c(0,500))+
+  scale_y_continuous(limits  = 250* c(-1,1))+scale_color_brewer(palette="Set1")
+q9
+
 
 
 
