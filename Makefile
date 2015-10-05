@@ -78,3 +78,6 @@ sample_saturation:
 
 bins:
 	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_construct_bins.R
+
+peaks:
+	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_call_peaks.R
