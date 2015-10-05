@@ -10,3 +10,6 @@ data/*
 .Rbuildignore
 .Rinstignore
 figs/*
+figures/*
+inst/extdata/*
+poster/*
