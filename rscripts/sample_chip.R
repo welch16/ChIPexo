@@ -19,7 +19,7 @@ get_files <- function(dr)
 }
 
 files <- lapply(input_dirs,get_files)
-nValues <- floor( seq(1e4,1e6,length.out = 25))
+nValues <- floor( seq(1e4,1e5,length.out = 20))
 
 filter_factory <- function(want){
   list(KeepQname = function(x) x$qname %in% want)
