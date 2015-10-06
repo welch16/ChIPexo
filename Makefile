@@ -45,7 +45,7 @@ cross:
 	R CMD BATCH inst/rscripts/Script_crossCorr_exploration.R
 
 # peak-plots
-peaks:
+peaks_plots:
 	R CMD BATCH inst/rscripts/Script_cluster_structure.R 
 
 peaks_slice:
@@ -81,3 +81,6 @@ bins:
 
 peaks:
 	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_call_peaks.R
+
+binding_sites:
+	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_call_bs.R

@@ -9,7 +9,7 @@ mc <- 24
 
 bin_dir <- "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPexo/bins"
 input_dir <- "/p/keles/genome_data/EColi_U00096.2/"
-ofigs_dir <- "figs/mosaics"
+figs_dir <- "figs/mosaics"
 
 binSize <- 150
 fragLen <- 150
@@ -76,7 +76,7 @@ out_dir <- "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPexo/peaks
 out_files <- gsub(".sorted.bam_fragL150_bin150.txt","_peaks.txt",files)
 
 for(i in 1:length(out_files)){
-  write.table(dt_list[[i]],file = file.path(out_dir,out_files[i]),col.names =  TRUE,row.names = FALSE,quote = FALSE)
+  write.table(dt_list[[i]],file = file.path(out_dir,out_files[i]),col.names =  FALSE,row.names = FALSE,quote = FALSE)
 }
 
 
