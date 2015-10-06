@@ -5,6 +5,8 @@ library(parallel)
 library(data.table)
 library(GenomicAlignments)
 
+## library(devtools)
+## load_all("~/Desktop/Docs/Code/dpeak")
 library(dpeak)
 
 mc <- 24
@@ -22,6 +24,7 @@ fragLen <- 150
 dpeak_read_wrap <- function(peak,read_files,peak_dir,read_dir,fragLen)
 {
   id <- strsplit(peak,"_")[[1]][1]
+  message(peak)
   readfile <- read_files[grep(id,read_files)]
   out <- dpeakRead(peakfile = file.path(peak_dir,peak),
                    readfile = file.path(read_dir,readfile),
