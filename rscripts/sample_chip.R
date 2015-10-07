@@ -10,15 +10,18 @@ input_dirs <- list()
 input_dirs[["landick_exo"]] <- file.path(base_dir,"LandickData/ChIPexo/")
 input_dirs[["landick_pet"]] <- file.path(base_dir,"LandickData/ChIPseq_PET")
 
-get_files <- function(dr)
+get_files <- function(dr,PET = FALSE)
 {
   files <- list.files(dr)
-  files <- files[grep("sort",files)]
+  files <- files[grep(ifelse(PET,"filter","sort"),files)]
   files <- files[grep("bai",files,invert = TRUE)]
   return(files)
 }
 
-files <- lapply(input_dirs,get_files)
+files <- list()
+files[[1]] <- get_files(input_dirs[[1]])
+files[[2]] <- get_files(input_dirs[[2]],TRUE)
+
 nValues <- floor( seq(1e4,1e5,length.out = 20))
 
 filter_factory <- function(want){
@@ -59,7 +62,7 @@ sample_pet <- function(file,in_dir,n_val,out_dir)
 
   ff_out <- file.path(out_dir,
        sapply(1:length(n_val),
-         function(x) gsub(".sorted.bam",paste0(".sample",x ,".bam"),file)))
+         function(x) gsub(".filter.bam",paste0(".sample",x ,".bam"),file)))
 
   param <- ScanBamParam(what = c("qname"))
   pairs <- readGAlignmentPairs(ff , param = param)
@@ -82,7 +85,7 @@ sample_set <- function(file,in_dir,n_val,out_dir)
 
   ff_out <- file.path(out_dir,
      sapply(1:length(n_val),
-         function(x) gsub(".sorted.bam",paste0(".sample",x ,".bam"),file)))
+         function(x) gsub(".filter.bam",paste0(".sample",x ,".bam"),file)))
 
   mate1 <- sapply(1:length(n_val),function(x) tempfile("reads",fileext= ".bam"))  
   mate2 <- sapply(1:length(n_val),function(x) tempfile("reads",fileext= ".bam"))
@@ -122,6 +125,8 @@ sample_set <- function(file,in_dir,n_val,out_dir)
   
   
 }
+
+set.seed(1234321)
 
 out_dir <- "/p/keles/ChIPexo/volume6/saturation/Landick/ChIPexo"
 exo <- lapply(files[[1]],sample_exo,input_dirs[[1]],nValues,out_dir)

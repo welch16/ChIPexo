@@ -84,3 +84,6 @@ peaks:
 
 binding_sites:
 	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_call_bs.R
+
+sample_SET:
+	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/create_ChIPseq_SET.R
