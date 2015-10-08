@@ -88,6 +88,12 @@ bins_set:
 peaks:
 	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_exo_call_peaks.R
 
+peaks_pet:
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_seq_pet_call_peaks.R
+
+peaks_set:
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_seq_set_call_peaks.R
+
 binding_sites:
 	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_exo_call_bs.R
 
