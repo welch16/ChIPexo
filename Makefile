@@ -74,16 +74,22 @@ vignettes/%.tex:vignettes/%.Rnw
 	cd vignettes;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
 
 sample_saturation:
-	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/sample_chip.R
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/sample_chip.R
 
 bins:
-	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_construct_bins.R
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_exo_construct_bins.R
+
+bins_pet:
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_seq_pet_construct_bins.R
+
+bins_set:
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_seq_set_construct_bins.R
 
 peaks:
-	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_call_peaks.R
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_exo_call_peaks.R
 
 binding_sites:
-	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/chip_exo_call_bs.R
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_exo_call_bs.R
 
 sample_SET:
-	/unsup/R-3.2.1/bin/R CMD BATCH rscripts/create_ChIPseq_SET.R
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/create_ChIPseq_SET.R
