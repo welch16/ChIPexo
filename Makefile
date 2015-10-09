@@ -97,5 +97,11 @@ peaks_set:
 binding_sites:
 	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_exo_call_bs.R
 
+binding_sites_set:
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_seq_set_call_bs.R
+
+binding_sites_pet:
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/chip_seq_pet_call_bs.R
+
 sample_SET:
 	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/create_ChIPseq_SET.R
