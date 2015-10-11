@@ -105,3 +105,6 @@ binding_sites_pet:
 
 sample_SET:
 	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/create_ChIPseq_SET.R
+
+resolution:
+	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/resolution_analysis.R
