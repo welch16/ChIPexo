@@ -11,37 +11,34 @@ library(dpeak)
 
 mc <- 24
 
-peak_dir <- "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPseq_SET/peaks"
+peak_dir <- "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPseq_PET/peaks"
 peak_files <- list.files(peak_dir)
 
-
-read_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_SET/"
+read_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET/"
 read_files <- list.files(read_dir)
 read_files <- read_files[grep("filter.bam",read_files)]
 read_files <- read_files[grep("bai",read_files,invert = TRUE)]
 read_files <- read_files[-1]
 
 
-fragLen <- 150
-
-dpeak_read_wrap <- function(peak,read_files,peak_dir,read_dir,fragLen)
+dpeak_read_wrap <- function(peak,read_files,peak_dir,read_dir)
 {
   id <- strsplit(peak,"_")[[1]][1]
   message(peak)
   readfile <- read_files[grep(id,read_files)]
   out <- dpeakRead(peakfile = file.path(peak_dir,peak),
                    readfile = file.path(read_dir,readfile),
-                   fileFormat = "bam",fragLen = fragLen)
+                   fileFormat = "bam",PET = TRUE)
   return(out)
 }
 
 
-dpeaks <- lapply(peak_files[1],dpeak_read_wrap,read_files,peak_dir,read_dir,fragLen)
+dpeaks <- lapply(peak_files,dpeak_read_wrap,read_files,peak_dir,read_dir)
 
-maxComp <- 1
+maxComp <- 3
 fits <- lapply(dpeaks,dpeakFit,maxComp = maxComp,nCore = mc)
 
-out_dir <- "/p/keles/ChIPexo/volume6/results/dpeak/Landick/ChIPseq_SET"
+out_dir <- "/p/keles/ChIPexo/volume6/results/dpeak/Landick/ChIPseq_PET"
 
 export_wrap <- function(peak_file,fit,out_dir)
 {

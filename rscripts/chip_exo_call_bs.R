@@ -35,7 +35,7 @@ dpeak_read_wrap <- function(peak,read_files,peak_dir,read_dir,fragLen)
 
 dpeaks <- lapply(peak_files,dpeak_read_wrap,read_files,peak_dir,read_dir,fragLen)
 
-maxComp <- 5
+maxComp <- 1
 fits <- lapply(dpeaks,dpeakFit,maxComp = maxComp,nCore = mc)
 
 out_dir <- "/p/keles/ChIPexo/volume6/results/dpeak/Landick/ChIPexo"
