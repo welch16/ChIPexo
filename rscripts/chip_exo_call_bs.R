@@ -9,7 +9,7 @@ library(GenomicAlignments)
 ## load_all("~/Desktop/Docs/Code/dpeak")
 library(dpeak)
 
-mc <- 24
+mc <- 12
 
 peak_dir <- "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPexo/peaks"
 peak_files <- list.files(peak_dir)
@@ -28,14 +28,14 @@ dpeak_read_wrap <- function(peak,read_files,peak_dir,read_dir,fragLen)
   readfile <- read_files[grep(id,read_files)]
   out <- dpeakRead(peakfile = file.path(peak_dir,peak),
                    readfile = file.path(read_dir,readfile),
-                   fileFormat = "bam",fragLen = fragLen)
+                   fileFormat = "bam",fragLen = fragLen,nCore = mc)
   return(out)
 }
 
 
-dpeaks <- lapply(peak_files,dpeak_read_wrap,read_files,peak_dir,read_dir,fragLen)
+dpeaks <- lapply(peak_files[1:11],dpeak_read_wrap,read_files,peak_dir,read_dir,fragLen)
 
-maxComp <- 1
+maxComp <- 5
 fits <- lapply(dpeaks,dpeakFit,maxComp = maxComp,nCore = mc)
 
 out_dir <- "/p/keles/ChIPexo/volume6/results/dpeak/Landick/ChIPexo"
@@ -47,4 +47,4 @@ export_wrap <- function(peak_file,fit,out_dir)
 
 }
 
-out <- mapply(export_wrap,peak_files,fits,MoreArgs = list(out_dir))
+out <- mapply(export_wrap,peak_files[1:11],fits,MoreArgs = list(out_dir))

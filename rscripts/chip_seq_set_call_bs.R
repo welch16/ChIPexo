@@ -9,7 +9,7 @@ library(GenomicAlignments)
 ## load_all("~/Desktop/Docs/Code/dpeak")
 library(dpeak)
 
-mc <- 24
+mc <- 12
 
 peak_dir <- "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPseq_SET/peaks"
 peak_files <- list.files(peak_dir)
@@ -38,7 +38,7 @@ dpeak_read_wrap <- function(peak,read_files,peak_dir,read_dir,fragLen)
 
 dpeaks <- lapply(peak_files[1],dpeak_read_wrap,read_files,peak_dir,read_dir,fragLen)
 
-maxComp <- 1
+maxComp <- 5
 fits <- lapply(dpeaks,dpeakFit,maxComp = maxComp,nCore = mc)
 
 out_dir <- "/p/keles/ChIPexo/volume6/results/dpeak/Landick/ChIPseq_SET"

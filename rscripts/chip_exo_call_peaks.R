@@ -54,7 +54,7 @@ pdf(file = file.path(figs_dir,"chip_exo_gof.pdf"))
 u <- lapply(fits,plot)
 dev.off()
     
-FDR <- .05
+FDR <- .25
 thresh <- 10
 
 mosaics_peak_wrap <- function(fit,FDR,binsize,thres)
