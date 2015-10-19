@@ -69,6 +69,8 @@ what <- c("exo","pet","set")
 bases <- lapply(what,function(x)file.path(base_dir,x))
 lapply(bases,function(x)if(!dir.exists(x))dir.create(x))
 
+######################################################################################
+
 ### build_bins
 exo_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPexo"
 pet_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET"
@@ -101,6 +103,8 @@ create_bins <- function(in_dir,out_dir,dt,bs,fl,pet)
 create_bins(exo_dir,bases[[1]],exo,bs,fl,FALSE)
 create_bins(pet_dir,bases[[2]],pet,bs,fl,TRUE)
 create_bins(set_dir,bases[[3]],set,bs,fl,FALSE)
+
+######################################################################################
 
 ## call peaks
 
@@ -191,6 +195,8 @@ mapply(write.table,
 rm(exo_bins,pet_bins,set_bins,exo_fits,pet_fits,set_fits,exo_peaks,set_peaks,pet_peaks,
    opt,input_dir,what,folder,base_dir)
 
+######################################################################################
+
 ## call binding events
 
 ### chip exo binding sites
@@ -239,3 +245,4 @@ for(i in 1:2){
   export(set_dpeak[[i]],type = "bed",filename = set_bs_loc[i])
 }
 
+######################################################################################
