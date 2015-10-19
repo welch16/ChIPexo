@@ -161,7 +161,6 @@ enrich <- function(data,main)
 
 
 gr2dt <- function(x)data.table(seqnames = as.character(seqnames(x)),start = start(x),end = end(x))
-
 common <- gr2dt(common)
 common[,match := paste(seqnames,1:length(start),sep = "_"),by = seqnames]
 

@@ -22,7 +22,7 @@ build_files <- function(folder,dir)
 }
 
 files <- lapply(folders,build_files,dir)
-mc <- detectCores()
+mc <- 8
 
 
 load_files <- function(files,folder,dir)
@@ -201,7 +201,7 @@ s1 <- do.call(c,mclapply(cc1,noise_est,mc.cores = mc))
 
 
 pdf(file  = file.path(figs_dir,"rep1_npos_gr_200.pdf"))
-u <- mcmapply(plot_cc,cc,keys,MoreArgs = list(stats[[1]]),mc.cores = mc,SIMPLIFY = FALSE)
+u <- mcmapply(plot_cc,cc1,keys,MoreArgs = list(stats[[1]]),mc.cores = mc,SIMPLIFY = FALSE)
 Z <- lapply(u,print)
 dev.off()
 
@@ -211,7 +211,9 @@ dev.off()
 ## rep1, npos between 100 and 200
 set.seed(123321)
 keys <- stats[[1]][ between(npos,100,200),sample(match,500)]
-cc <- mclapply(keys,loc_scc_wrap,replicates[[1]],shift = 1:200,mc.cores = mc)
+cc2 <- mclapply(keys,loc_scc_wrap,replicates[[1]],shift = 1:200,mc.cores = mc)
+s2 <- do.call(c,mclapply(cc2,noise_est,mc.cores = mc))
+
 
 pdf(file = file.path(figs_dir,"rep1_npos_bet_100_200.pdf"),width = 6 ,height = 9)
 u <- mcmapply(plot_cc,cc,keys,MoreArgs = list(stats[[1]]),mc.cores = mc,SIMPLIFY = FALSE)
@@ -223,11 +225,18 @@ dev.off()
 ## rep1, npos between 50 and 100
 set.seed(123321)
 keys <- stats[[1]][ between(npos,50,100),sample(match,500)]
-cc <- list()
+cc3 <- list()
 for(k in keys){
-  cc[[k]] <- loc_scc_wrap(k,replicates[[1]],shift = 1:200)
-}
-  
+  if( stats[[1]][k , (label) ]!= "both"){
+    cc3[[k]] <- NA
+  }else{
+    cc3[[k]] <- loc_scc_wrap(k,replicates[[1]],shift = 1:200)
+  }
+}  
+s3 <- do.call(c,mclapply(cc3,noise_est,mc.cores = mc))
+
+
+
 
 pdf(file = file.path(figs_dir,"rep1_npos_bet_50_100.pdf"),width = 6 ,height = 9)
 dev.off()
@@ -235,17 +244,61 @@ dev.off()
 ## rep1, npos between 25 and 50
 set.seed(123321)
 keys <- stats[[1]][ between(npos,25,50),sample(match,500)]
-cc <- list()
+cc4 <- list()
+
 for(k in keys){
-  cc[[k]] <- loc_scc_wrap(k,replicates[[1]],shift = 1:200)
+  if( stats[[1]][k, (label)] != "both"){
+    cc4[[k]] <- NA
+  }else{
+    cc4[[k]] <- loc_scc_wrap(k,replicates[[1]],shift = 1:200)
+  }
 }
 
+s4 <- do.call(c,mclapply(cc4,noise_est,mc.cores = mc))
 
+          
 pdf(file = file.path(figs_dir,"rep1_npos_bet_25_50.pdf"),width = 6 ,height = 9)
 u <- mcmapply(plot_cc,cc,keys,MoreArgs = list(stats[[1]]),mc.cores = mc,SIMPLIFY = FALSE)
 Z <- lapply(u,print)
 dev.off()
 
 
+## rep1, npos between 25 and 50
+set.seed(123321)
+keys <- stats[[1]][ between(npos,10,25),sample(match,500)]
+cc5 <- list()
+for(k in keys){
+  if( stats[[1]][k, (label)] != "both"  | k == "chr18_200606"){
+    cc5[[k]] <- NA
+  }else{
+    cc5[[k]] <- loc_scc_wrap(k,replicates[[1]],shift = 1:200)
+  }
+}
 
-ss <-rbind(data.table(s = s1 , g = 1),data.table(s = s2,g = 2))
+s5 <- do.call(c,mclapply(cc5,noise_est,mc.cores = mc))
+
+
+set.seed(123321)
+keys <- stats[[1]][ between(npos,5,10),sample(match,500)]
+cc6 <- list()
+
+for(k in keys){
+  if( stats[[1]][k, (label)] != "both"){
+    cc6[[k]] <- NA
+  }else{
+    cc6[[k]] <- loc_scc_wrap(k,replicates[[1]],shift = 1:200)
+  }
+}
+
+s6 <- do.call(c,mclapply(cc6,noise_est,mc.cores = mc))
+
+
+
+ss <-rbind(data.table(s = s1 , g = 1),data.table(s = s2,g = 2),data.table(s = s3,g = 3),
+           data.table(s  = s4, g= 4),data.table(s = s5,g = 5),data.table(s = s6, g = 6))
+
+         
+
+ggplot(ss , aes(as.factor(g), s))+geom_boxplot()
+dev.off()
+
