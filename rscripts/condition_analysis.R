@@ -44,13 +44,13 @@ set_char <- edsn_tab("set")
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif0min"
+rif <- "rif20min"
 bs <- 150
 fl <- 150
 fdr <- .25
 thresh <- 10
 mc <- detectCores()
-g <- 3
+g <- 1
 
 exo <- exo_char[ip == tf & condition == rif ]
 pet <- pet_char[ip == tf & condition == rif ]
