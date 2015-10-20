@@ -23,7 +23,7 @@ build_files <- function(folder,dir)
 }
 
 files <- lapply(folders,build_files,dir)
-mc <- 12
+mc <- detectCores()
 
 load_files <- function(files,folder,dir)
 {
@@ -116,48 +116,6 @@ common <- as(common,"GRanges")
 
 ### subset replicates accross common peaks
 
-replicates <- lapply(replicates,function(x,common){
-  ov <- findOverlaps(dt2gr(x$stats),common)
-  x[["stats"]] <- x[["stats"]][queryHits(ov)]
-  setkey(x[["reads"]],match)
-  common_match <- x[["stats"]][,(match)]
-  x[["reads"]] <- x[["reads"]][common_match]
-  return(x)},common)
-
-library(gridExtra)
-library(RColorBrewer)
-library(hexbin)
-
-enrich <- function(data,main)
-{
- 
-  rf <- colorRampPalette(rev(brewer.pal(11,"Spectral")))
-  r <- rf(16)
-  
-  p1 <- ggplot(data,aes(npos,depth))+stat_binhex(bins = 70)+
-    scale_fill_gradientn(colours = r,trans = 'log10')+theme(legend.position = "top")+
-    ylim(0,3e3)+xlim(0,500)+xlab("number of unique 5' positions per region")+
-    ylab("nr of reads per region")
-
-  p2 <- ggplot(data,aes(dw_ratio,pbc))+stat_binhex(bins = 70)+
-    scale_fill_gradientn(colours = r,trans = 'log10')+theme(legend.position = "top")+
-    xlim(0,6)+xlab("average read coverage")+ylab("unique read coverage rate")+ylim(0,1)
-  
-  p3 <- ggplot(data,aes(npos,width))+stat_binhex(bins = 70)+
-    scale_fill_gradientn(colours = r,trans = 'log10')+theme(legend.position = "top")+
-    xlim(0,500)+ylim(0,1250)+xlab("number of unique 5' position per region")+
-    ylab("width of region")
-
-    
-
-  p4 <- ggplot(data,aes(depth,width))+stat_binhex(bins = 70)+
-    scale_fill_gradientn(colours = r,trans = 'log10')+theme(legend.position = "top")+
-    xlim(0,3e3)+ylim(0,1250)+ylab("width of region")+
-    xlab("nr of reads per region")
-
-  grid.arrange(p1,p2,p3,p4,nrow = 2, ncol = 2,top = main)
-  
-}
 
 
 gr2dt <- function(x)data.table(seqnames = as.character(seqnames(x)),start = start(x),end = end(x))
@@ -172,16 +130,6 @@ replicates <- lapply(replicates,function(x,common){
   x$stats[,match := plyr::mapvalues(match,from = from , to = to)]
   return(x)},common)
   
-
-
-pdf(file = file.path(figs_dir,"enrichment_common_peaks.pdf"))
-enrich(replicates[[1]]$stats,"FoxA1-rep1")
-enrich(replicates[[2]]$stats,"FoxA1-rep2")
-enrich(replicates[[3]]$stats,"FoxA1-rep3")
-dev.off()
-
-
-normalize.tagcounts <- function(counts,depth)return(counts*1e6 / depth)
 
 Rle2dt <- function(rle_data)
 {
@@ -201,35 +149,6 @@ setkey(replicates[[2]]$reads,match)
 setkey(replicates[[3]]$reads,match)
 
 
-
-cover_dt <- function(reads,key,depth,st,fl)
-{
-  cover <- coverage(resize(dt2ir(reads[key][strand == st]),fl))
-  out <- Rle2dt(cover)
-  out[,strand := st]
-  if(st == "+"){
-    sgn <- 1
-  }else{
-    sgn <- -1
-  }
-  out[,counts := sgn * normalize.tagcounts(counts,depth)]
-  return(out)
-}
-
-fill_cover_dt <- function(repl,covers,base)
-{
-  cover <- covers[[repl]]
-  base2 <- copy(base)
-  if(nrow(cover) > 0){
-    base2[ between(coord,cover[,min(coord)],cover[,max(coord)]),
-      counts := approxfun(x = cover[,(coord)],y = cover[,(counts)],
-        method = "constant")(coord)]
-  }
-  base2[,rep := repl]
-  return(base2)
-}
-
-
 ## we think that the best quality set comes from rep1
 ## therefore we are going to look by their characteristics
 
@@ -242,6 +161,19 @@ setkey(reads[[1]],match)
 setkey(reads[[2]],match)
 setkey(reads[[3]],match)
 
+
+library(devtools)
+load_all("~/Desktop/Docs/Code/ChIPUtils")
+
+N <- 300
+set.seed(123321)
+keys1 <- stats[[1]][ npos > 200,sample(match,N)]
+set.seed(123321)
+keys2 <- stats[[1]][ between(npos,100,200),sample(match,N)]
+set.seed(123321)
+keys3 <- stats[[1]][ between(npos,50,100),sample(match,N)]
+set.seed(123321)
+keys4 <- stats[[1]][ between(npos,25,50),sample(match,N)]
 
 create_reads <- function(rr)
 {
@@ -260,267 +192,176 @@ create_reads <- function(rr)
 }
 
 
-
-get_scc <- function(key,common,replicates,shift = 1:200)
+build_reads <- function(key,common,reads)
 {
 
-  chr <- common[key,(seqnames)]
-  start <- common[key,(start)]
-  end <- common[key,(end)]
-
-  
   rkeys <- lapply(replicates,function(x,key)x$stats[key,(rmatch)],key)
   reads <- lapply(replicates,function(x)x$reads)
 
   for(k in 1:length(reads)){
     setkey(reads[[k]],match)
   }
-
  
   subreads <- mapply(function(x,r)x[r,nomatch = 0],reads,rkeys,SIMPLIFY = FALSE)
   subreads <- lapply(subreads,create_reads)
 
+  return(subreads)
 
-  
+}
+
+reads1 <- mclapply(keys1,build_reads,common,reads,mc.cores = mc)
+reads2 <- mclapply(keys2,build_reads,common,reads,mc.cores = mc)
+reads3 <- mclapply(keys3,build_reads,common,reads,mc.cores = mc)
+
+get_local_scc <- function(key,rr,common,shift)
+{
+
   reg <- dt2gr(common[key])
 
-  idx <- !is.na(subreads)
-  cross_corr <- lapply(subreads[idx],local_strand_cross_corr,reg,shift)
-  ## cross_corr <- lapply(subreads[2],local_strand_cross_corr,reg,shift)
+  idx <- !is.na(rr)
+  cross_corr <- lapply(rr[idx],local_strand_cross_corr,reg,shift)
+
   if( any(!idx)){
     cross_corr[[names(which(!idx))]] <- data.table(shift,cross.corr = NA)
   }
+  
   cross_corr <- mapply(function(x,y)x[,sample:= y],cross_corr,names(cross_corr),
     SIMPLIFY = FALSE)
   cross_corr <- do.call(rbind,cross_corr)
-
-  p <- ggplot(cross_corr,aes(shift, cross.corr))+geom_point(size = 1.2)+geom_line(size = .3,linetype = 2)+
-      geom_smooth(method = "loess",se = FALSE)+facet_grid(sample ~ . )+
-      ggtitle(paste(chr,":",prettyNum(start,big.mark = ","),"-",prettyNum(end,big.mark = ",")))+
-      geom_abline(slope = 0, intercept = 0 , linetype = 4,size = .5)
   
+  return(cross_corr)
+
+}
+
+shift <- 1:200
+cc1 <- mcmapply(get_local_scc,keys1,reads1,MoreArgs = list(common,shift),SIMPLIFY = FALSE,
+         mc.cores = mc,mc.preschedule = TRUE)
+
+cc2 <- mcmapply(get_local_scc,keys2,reads2,MoreArgs = list(common,shift),SIMPLIFY = FALSE,
+         mc.cores = mc,mc.preschedule = TRUE)
+cc3 <- mcmapply(get_local_scc,keys3,reads3,MoreArgs = list(common,shift),SIMPLIFY = FALSE,
+         mc.cores = mc,mc.preschedule = TRUE)
+
+get_plot <- function(cc)
+{
+  p <- ggplot(cc,aes(shift,cross.corr))+geom_point(size = 1.3)+
+    geom_line(linetype = 3,size = .25)+
+    geom_smooth(method = "loess",se = FALSE)+
+    facet_grid(sample ~ . )
   return(p)
 }
 
+plots1 <- mclapply(cc1,get_plot,mc.cores = mc)
+plots2 <- mclapply(cc2,get_plot,mc.cores = mc)
+plots3 <- mclapply(cc3,get_plot,mc.cores = mc)
+
+## rep1, npos > 200
+pdf(file = file.path(figs_dir,"rep1_npos_gr_200_cc.pdf"),width = 6 ,height = 9)
+u <- lapply(plots1,print)
+dev.off()
 
 
-plot_keys <- function(keys,common,replicates)
+## rep1, npos between 100 and 200
+pdf(file = file.path(figs_dir,"rep1_npos_bet_100_200_cc.pdf"),width = 6 ,height = 9)
+u <- lapply(plots2,print)
+dev.off()
+
+
+
+## rep1, npos between 50 and 100
+pdf(file = file.path(figs_dir,"rep1_npos_bet_50_100_cc.pdf"),width = 6 ,height = 9)
+u <- lapply(plots3,print)
+dev.off()
+
+noise <- function(shift,cross.corr)
 {
-  for(k in 1:length(keys)){
-    message(k)
-    p <- get_scc(keys[k],common,replicates)
-    print(p)
+  if(all( is.na(cross.corr))){
+    out <- Inf
+  }else{
+    mod <- loess(cross.corr ~ shift)
+    out <- mod$s
   }
+  return(out)
 }
 
 
 
-library(devtools)
-load_all("~/Desktop/Docs/Code/ChIPUtils")
-
-## rep1, npos > 200
-pdf(file = file.path(figs_dir,"rep1_npos_gr_200.pdf"),width = 6 ,height = 9)
-set.seed(123321)
-keys <- stats[[1]][ npos > 200,sample(match,500)]
-plot_keys(keys,common,replicates)
-dev.off()
-
-
-## ## rep2, npos > 200
-## keys <- stats[[2]][ npos > 200,(match)]
-## pdf(file = file.path(figs_dir,"rep2_npos_gr_200.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-
-## ## rep3, npos > 200
-## keys <- stats[[3]][ npos > 200,(match)]
-## pdf(file = file.path(figs_dir,"rep3_npos_gr_200.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-
-set.seed(123321)
-
-## rep1, npos between 100 and 200
-keys <- stats[[1]][ between(npos,100,200),sample(match,500)]
-pdf(file = file.path(figs_dir,"rep1_npos_bet_100_200.pdf"),width = 6 ,height = 9)
-plot_keys(keys,common,replicates)
-dev.off()
-
-## rep1, npos between 100 and 200
-## keys <- stats[[2]][ between(npos,100,200),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep2_npos_bet_100_200.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-## ## rep3 npos between 100 and 200
-## okeys <- stats[[3]][ between(npos,100,200),(match)]
-## pdf(file = file.path(figs_dir,"rep3_npos_bet_100_200.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-
-set.seed(123321)
-
-## rep1, npos between 50 and 100
-keys <- stats[[1]][ between(npos,50,100),sample(match,500)]
-pdf(file = file.path(figs_dir,"rep1_npos_bet_50_100.pdf"),width = 6 ,height = 9)
-plot_keys(keys,common,replicates)
-dev.off()
-
-
-## keys <- stats[[2]][ between(npos,50,100),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep2_npos_bet_50_100.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-## keys <- stats[[3]][ between(npos,50,100),(match)]
-## pdf(file = file.path(figs_dir,"rep3_npos_bet_50_100.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-set.seed(123321)
-
-## rep1, npos between 25 and 50
-keys <- stats[[1]][ between(npos,25,50),sample(match,500)]
-pdf(file = file.path(figs_dir,"rep1_npos_bet_25_50.pdf"),width = 6 ,height = 9)
-plot_keys(keys,common,replicates)
-dev.off()
-
-
-## rep2, npos between 25 and 50
-keys <- stats[[2]][ between(npos,25,50),sample(match,500)]
-pdf(file = file.path(figs_dir,"rep2_npos_bet_25_50.pdf"),width = 6 ,height = 9)
-plot_keys(keys,common,replicates)
-dev.off()
-
-## rep3, npos between 25 and 50
-keys <- stats[[3]][ between(npos,25,50),sample(match,500)]
-pdf(file = file.path(figs_dir,"rep3_npos_bet_25_50.pdf"),width = 6 ,height = 9)
-plot_keys(keys,common,replicates)
-dev.off()
-
-
-## set.seed(123321)
-
-## ## rep1, npos between 10 and 25
-## keys <- stats[[1]][ between(npos,10,25),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep1_npos_bet_10_25.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-
-## ## rep2, npos between 10 and 25
-## keys <- stats[[2]][ between(npos,10,25),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep2_npos_bet_10_25.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-
-## dev.off()
-
-## ## rep3, npos between 10 and 25
-## keys <- stats[[3]][ between(npos,10,25),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep3_npos_bet_10_25.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-## set.seed(123321)
-
-## ## rep1, npos between 5 and 10
-## keys <- stats[[1]][ between(npos,5,10),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep1_npos_bet_5_10.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-## ## rep1, npos between 5 and 10
-## keys <- stats[[2]][ between(npos,5,10),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep2_npos_bet_5_10.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-## ## rep1, npos between 5 and 10
-## keys <- stats[[3]][ between(npos,5,10),sample(match,500)]
-## pdf(file = file.path(figs_dir,"rep3_npos_bet_5_10.pdf"),width = 6 ,height = 9)
-## plot_keys(keys,common,replicates)
-## dev.off()
-
-
-## ### try to build a signal - to - noise measure
-## stats <- lapply(replicates,function(x)x$stats)
-
-## reads <- lapply(replicates,function(x)x$reads)
-## setkey(reads[[1]],match)
-## setkey(reads[[2]],match)
-## setkey(reads[[3]],match)
-
-## keys <- stats[[1]][dw_ratio > 2,(match)]
-## kk <- sample(keys,1)
-
-## ### get reads
-
-
-## snr <- function(key,stats,reads,repl = 1)
-## {
-##   browser()
-##   repl_key <- stats[[repl]][key,(rmatch)]
-##   peak_reads <- copy(reads[[repl]][repl_key])
-##   setkey(peak_reads,strand)
-##   fwd <- peak_reads["+"]
-##   bwd <- peak_reads["-"]
+s1 <- lapply(cc1,function(x)x[,noise(shift,cross.corr),by = sample])
+s2 <- lapply(cc2,function(x)x[,noise(shift,cross.corr),by = sample])
+s3 <- lapply(cc3,function(x)x[,noise(shift,cross.corr),by = sample])
   
 
-## }
+s1 <- mapply(function(x,y){
+  x[,name := y]
+  return(x)},s1,names(s1),SIMPLIFY = FALSE)
+s1 <- do.call(rbind,s1)
+
+s2 <- mapply(function(x,y){
+  x[,name := y]
+  return(x)},s2,names(s2),SIMPLIFY = FALSE)
+s2 <- do.call(rbind,s2)
+
+s3 <- mapply(function(x,y){
+  x[,name := y]
+  return(x)},s3,names(s3),SIMPLIFY = FALSE)
+s3 <- do.call(rbind,s3)
+
+s1[,block := "npos > 200"]
+s2[,block := "100 < npos < 200"] 
+s3[,block := "50 < npos < 100"] 
+
+ss <- rbind(s1,s2,s3)
+ss[ , block := factor(block ,levels = rev(c("50 < npos < 100","100 < npos < 200","npos > 200")))]
+
+pdf(file = file.path(figs_dir,"SCC_loc_poly_reg_noise.pdf"))
+ggplot(ss , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+ylim(0.02,.1)+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("noise")+xlab("")
+dev.off()
+
+## can we approximate nsc as cc[fl] / noise ?
+
+nsc1 <- lapply(cc1,function(x)x[,max(cross.corr),by = sample])
+nsc2 <- lapply(cc2,function(x)x[,max(cross.corr),by = sample])
+nsc3 <- lapply(cc3,function(x)x[,max(cross.corr),by = sample])
 
 
-## par(mfrow = c(2,1))
-## plot(table(fwd[,sort(start)]))
-## ##plot(acf(table(fwd[,sort(start)])))
-## plot(table(bwd[,sort(end)]))
-## ##plot(acf(table(bwd[,sort(end)])))
-## dev.off()
+nsc1 <- mapply(function(x,y){
+  x[,name := y]
+  return(x)},nsc1,names(nsc1),SIMPLIFY = FALSE)
+nsc1 <- do.call(rbind,nsc1)
 
-## ma <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
+nsc2 <- mapply(function(x,y){
+  x[,name := y]
+  return(x)},nsc2,names(nsc2),SIMPLIFY = FALSE)
+nsc2 <- do.call(rbind,nsc2)
 
+nsc3 <- mapply(function(x,y){
+  x[,name := y]
+  return(x)},nsc3,names(nsc3),SIMPLIFY = FALSE)
+nsc3 <- do.call(rbind,nsc3)
 
+nsc1[,block := "npos > 200"]
+nsc2[,block := "100 < npos < 200"] 
+nsc3[,block := "50 < npos < 100"] 
 
-## snr(kk,stats,reads,1)
+nsc <- rbind(nsc1,nsc2,nsc3)
 
-## stats <- lapply(replicates,function(x)x$stats)
+pdf(file = file.path(figs_dir,"argmax_scc.pdf"))
+ggplot(nsc , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("max scc")+xlab("")
+dev.off()
 
-## reads <- lapply(replicates,function(x)x$reads)
-## setkey(reads[[1]],match)
-## setkey(reads[[2]],match)
-## setkey(reads[[3]],match)
+nsc <- nsc[, s := ss[,(V1)]]
+nsc <- nsc[, NSC := V1 / sqrt(s)]
 
+pdf(file = file.path(figs_dir,"argmax_scc.pdf"))
 
-
-
-## keys <- stats[[1]][seqnames != "chrM" & npos > 100 ,(match)]
-## kk <- sample(keys,1)
-
-## pdf(file = "example2.pdf")
-## reads1 <- copy(reads[[1]][ stats[[1]][kk,(rmatch)]])
-## reads1[,end := end - min(start)]
-## reads1[,start := start - min(start)]
-## reads2 <- copy(reads[[2]][ stats[[2]][kk,(rmatch)]])
-## reads2[,end := end - min(start)]
-## reads2[,start := start - min(start)]
-## reads3 <- copy(reads[[3]][ stats[[3]][kk,(rmatch)]])
-## reads3[,end := end - min(start)]
-## reads3[,start := start - min(start)]
-## get_profile(kk,common,replicates,depth = TRUE)
-## cc1 <- as.numeric(coverage(dt2ir(reads1)))
-## cc2 <- as.numeric(coverage(dt2ir(reads2)))
-## cc3 <- as.numeric(coverage(dt2ir(reads3)))
-## plot(cc1,type = "l")
-## hist(cc1,breaks = 100)
-## plot(cc2,type = "l")
-## hist(cc2,breaks = 100)
-## plot(cc3,type = "l")
-## hist(cc3,breaks = 100)
-## dev.off()
-
-
-
-
-
+ggplot(nsc , aes(block, NSC,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+ylim(0,5)+
+  scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
+dev.off()

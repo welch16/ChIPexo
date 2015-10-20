@@ -44,13 +44,13 @@ set_char <- edsn_tab("set")
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif20min"
+rif <- "rif0min"
 bs <- 150
 fl <- 150
 fdr <- .25
 thresh <- 10
 mc <- detectCores()
-g <- 5
+g <- 3
 
 exo <- exo_char[ip == tf & condition == rif ]
 pet <- pet_char[ip == tf & condition == rif ]
@@ -111,6 +111,7 @@ create_bins(set_dir,bases[[3]],set,bs,fl,FALSE)
 ### chip exo
 
 exo_bins <- list.files(bases[[1]])
+exo_bins <- exo_bins[grep("txt",exo_bins)]
 input_dir <- "/p/keles/genome_data/EColi_U00096.2/"
 
 read_bins_wrap <- function(file,map_file,gc_file,n_file,opt)
@@ -137,7 +138,7 @@ exo_bins <- lapply(file.path(bases[[1]],exo_bins),
   n_file = file.path(input_dir,
     "N/bin/fragL150_bin150/E.coli_K-12_MG1655_GENOME_N_fragL150_bin150.txt"),
   opt = c("chip","M","GC","N"))
-                             
+                           
 exo_fits <- mclapply(exo_bins,mosaicsFit,mc.cores = 2)
 exo_peaks <- mclapply(exo_fits,mosaics_peak_wrap,
                         fdr,bs,thresh,mc.cores = 2)
@@ -151,6 +152,7 @@ mapply(write.table,
 ### chip seq pet
 
 pet_bins <- list.files(bases[[2]])
+pet_bins <- pet_bins[grep("txt",pet_bins)]
 
 read_bins_wrap <- function(file,input_file,opt)
 {
@@ -176,6 +178,8 @@ mapply(write.table,
 ### chip seq set
 
 set_bins <- list.files(bases[[3]])
+set_bins <- set_bins[grep("txt",set_bins)]
+
 
 set_bins <- lapply(file.path(bases[[3]],set_bins),
   read_bins_wrap,
