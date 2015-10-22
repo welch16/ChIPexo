@@ -1,0 +1,85 @@
+---
+title: "High Resolution Identification of Protein-DNA Binding Events using ChIP-exo and dPeak"
+author: "Rene Welch"
+output: html_document
+---
+
+The idea of this, is to list the figures that we currently have in the manuscript and try to figure it out the idea behind each figure.
+
+# Abstract
+
+- Background in different in ChIPseq from ChIPexo, but sequence biases exists in ChIPseq and they exists also in ChIPexo
+
+- In ChIPexo reads are allocated more tightly around binding sites and hence, it has more potential for high resolution
+
+- Peak pair assumption does not hold well in ChIPexo
+
+- dPeak makes a striking balance between sensitivity, specificity and spatial resolution for ChIPexo
+
+- Spatial resolution is comparable to ChIPseq PET and it is significantly better than resolution of ChIPseq SET
+
+- ChIPexo provides higher sensitivity, specificity and spatial resolution any fixed depth
+
+## List of figures
+
+### Figure 1 - Comparison of resolution between ChIPexo and ChIPseq data
+
+A. This figure compares the sensitivity of all three protocols. For peaks with more than one binding site, the average distance between binding sites is calculated and plotted again the proportion of binding sites that is finding in each peak.
+It is expected to see that as the average distance is increased, the methods is going to be more sensitive i.e. is gonna be more capable of differentiating all the binding events.
+
+B. Peak resolution by dataset. For each peak, the resolution is defined as the distance between a regulonDB annotation and its closed prediction. Two points: The mean resolution value is ordered as exo < pet < set and the resolution's range is ordered as pet < exo < set. In both cases, ChIPseq SET shows a higher resolution in both moments.
+
+### Figure 2 - Recommendations for the design of ChIPexo experiments
+
+In all this four figures we are sampling  $N$ reads (or $N$ pairs for the case of ChIPseq PET) and running those sampled datasets across the whole pipeline (i.e. binning, call peaks and then estimate binding events). Using those outputs (both peaks and binding sites) we compare the average behaviour as the $N$ is increasing and between the different technologies.
+
+A. Candidate regions. Overall in this plot as the number of fragments increase, the number of regions is increasing too. With both ChIPseq methods, the number of regions is roughly the same and in higher than with ChIPexo. This implies that with ChIPexo it may be necessary to generate datasets with higher depth.
+
+B. Predicted events. The conclussion of this plot is analogous to the one before, with a fixed depth more targets are being identified by the ChIPseq protocols. Therefore it seems that ChIPexo experiments need to be more deeply sequenced to be able to predict more events.
+
+C. Number of identified targets. With a fixed depth ChIPexo datasets, the number of identified targets is always higher than with both ChIPseq methods. This means, that even with the fact that less candidate regions are being obtained we are identifying more targets with ChIPexo, therefore the FDR may be lower with ChIPexo.
+
+D. Resolution. ChIPexo's resolution is much smaller than ChIPseq resolution's for any given depth.
+
+### Figure 3 - Comparison of signal, balance of read strands, and peak shape betwen ChIPexo and ChIPseq
+
+A. ChIPexo tagcounts vs ChIPseq PET tagcounts. For this plot, the genome was partitioned into bins and the number of fragments that overlap each bin was calculated. Overall for high count regions, it seems that both protocols are linearly related but in the case for low count regions it seems that ChIPexo's background is mucho lower than ChIPseq.
+
+B. Foward strand ratio. When comparing the forward strand ratio between both single end protocols (ChIPexo and ChIPseq), it seems that both densities are centered around $0.5$. However for the ChIPexo case, the tails seem to be heavier, therefore several regions are going to show a degree of strand imbalance which may bias the binding event estimation. However, the density seems to be symmetric, therefore it seems that the $\lambda$ exonuclease enzyme doesn't show preference to diggest one side more than the other. Also, for ChIPseq, the density is tighly concentrated around the mode, which may makes the pair assumption suitable for ChIPseq, which is not the case for ChIPexo.
+
+C. $\delta$ comparison. The $\delta$ parameter of dPeak is being compared between the estimation of binding events for ChIPexo and a ChIPseq SET dataset. This plot shows that the distance to the binding events is higher for the SET case , therefore for datasets where the TF's are more tighly concentrated this may make the model to confuse binding events that are close among each other.
+
+D. $\sigma$ comparison. The $\sigma$ parameter of dPeak's model is being compared among SET methods. ChIPexo's variance seems to be smaller than ChIPseq SET's. This agrees with the previous conclusion and also shows that for ChIPexo reads are less scattered around their binding sites compared to ChIPseq SET's case.
+
+### Figure 4 -  Mappability and GC content biases in CTCF ChIPexo data
+
+For this figure, the genome was binned and for each bins the following quantities were calculated:
+
+- TagCounts. Number of fragments that overlap each bin
+- Mappability score. How mappable is the bin by following Kharchenko et al.
+- GC content. Proportion of bases that are G or C
+
+A. Mappability score vs tagCounts. It seems to be an increasing trend of the ChIPseq counts as a function of the mappability score.
+
+B. GC content vs tagCounts. The average ChIPcount increases until GC content is $0.6$ and then decreases.
+
+### Figure 5 - Resolution by algorithm.
+
+A. Resolution. The resolution is calculated as the minimun distance between a gold stanrd event and a prediction. Roughly speaking  dpeak improves over GEM and it seems to perform equally good as Apex.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
