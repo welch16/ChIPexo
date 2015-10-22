@@ -10,7 +10,6 @@ library(dpeak)
 
 ## Condition table
 
-
 edsn_tab <- function(what){
   stopifnot(what %in% c("exo","pet","set"))
   if(what == "exo"){
@@ -39,7 +38,7 @@ exo_char <- edsn_tab("exo")
 pet_char <- edsn_tab("pet")
 set_char <- edsn_tab("set")
 
-######################################################################################
+#############1#########################################################################
 
 ## Initial parameters
 
@@ -47,40 +46,67 @@ tf <- "Sig70"
 rif <- "rif20min"
 bs <- 150
 fl <- 150
-fdr <- .25
+fdr <- .05
 thresh <- 10
-mc <- detectCores()
+mc <- 16
 g <- 1
+
+flag_sample <- TRUE
+flag_bins <- TRUE
+flag_peaks <- TRUE
+flag_binding <- TRUE
+flag_input <- FALSE
 
 exo <- exo_char[ip == tf & condition == rif ]
 pet <- pet_char[ip == tf & condition == rif ]
 set <- set_char[ip == tf & condition == rif ]
 
+check_create <- function(dr)if(!dir.exists(dr))dir.create(dr)
+
 base_dir <- "/p/keles/ChIPexo/volume6/condition"
 folder <- paste(tf,rif,sep = "_")
+what <- c("exo","pet","set")
 
 base_dir <- file.path(base_dir,folder)
+check_create(base_dir)
 
-if(!dir.exists(base_dir)){
-  dir.create(base_dir)
+##################################h####################################################
+
+## Input data bins for ChIPseq (PET and SET)
+
+inputs_dir <- "/p/keles/ChIPexo/volume6/inputs"
+inputs_dirs <- lapply(what[-1],function(x)file.path(inputs_dir,x))
+  
+if(flag_input){
+  lapply(inputs_dirs,check_create)
+  constructBins(file.path(pet_dir,"edsn1369_042814_qc.filter.bam"),
+    fileFormat = "bam",outfileLoc = inputs_dirs[[1]],
+    PET = TRUE,fragLen = fl,binSize = bs)
+  constructBins(file.path(set_dir,"edsn1369_042814_qc.filter.bam"),
+    fileFormat = "bam",outfileLoc = inputs_dirs[[2]],
+    PET = FALSE,fragLen = fl,binSize = bs)                              
 }
-
-what <- c("exo","pet","set")
-bases <- lapply(what,function(x)file.path(base_dir,x))
-lapply(bases,function(x)if(!dir.exists(x))dir.create(x))
 
 ######################################################################################
 
 ### build_bins
-exo_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPexo"
-pet_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET"
-set_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_SET"
 
-read_files <- function(in_dir,dt,pet)
+chip_dirs <- list()
+chip_dirs[["exo"]] <- "/p/keles/ChIPexo/volume3/LandickData/ChIPexo"
+chip_dirs[["pet"]] <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET"
+chip_dirs[["set"]] <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_SET"
+
+bin_dir <- file.path(base_dir,"bins")
+check_create(bin_dir)
+
+bin_dirs <- lapply(what,function(x)file.path(bin_dir,x))
+lapply(bin_dirs,check_create)
+
+sample_read_files <- function(in_dir,dt,pet)
 {
   files <- list.files(in_dir)
-  edsn <- dt[,(edsn)]    
-  files <- sapply(edsn,function(x,files)files[grep(x,files)],files)
+  edsn <- dt[,(edsn)]
+  files <- files[sapply(edsn,function(x)grep(x,files))]
   if(pet){
     files <- files[grep("filter",files)]
   }
@@ -88,10 +114,9 @@ read_files <- function(in_dir,dt,pet)
   return(files)
 }
 
-
-create_bins <- function(in_dir,out_dir,dt,bs,fl,pet)
+create_bins <- function(in_dir,out_dir,dt,pet,bs,fl)
 {
-  files <- read_files(in_dir,dt,pet)
+  files <- sample_read_files(in_dir,dt,pet)
   lapply(file.path(in_dir,files),constructBins,
          fileFormat = "bam",
          outfileLoc = out_dir,
@@ -100,153 +125,132 @@ create_bins <- function(in_dir,out_dir,dt,bs,fl,pet)
          binSize = bs)                  
 }
 
-create_bins(exo_dir,bases[[1]],exo,bs,fl,FALSE)
-create_bins(pet_dir,bases[[2]],pet,bs,fl,TRUE)
-create_bins(set_dir,bases[[3]],set,bs,fl,FALSE)
+if(flag_bins){
+  mapply(create_bins,chip_dirs,bin_dirs,list(exo,pet,set),list(FALSE,TRUE,FALSE),
+    MoreArgs = list(bs,fl),SIMPLIFY = FALSE)
+}
 
 ######################################################################################
 
 ## call peaks
 
-### chip exo
+peak_dir <- file.path(base_dir,"peaks")
+check_create(peak_dir)
 
-exo_bins <- list.files(bases[[1]])
-exo_bins <- exo_bins[grep("txt",exo_bins)]
-input_dir <- "/p/keles/genome_data/EColi_U00096.2/"
+peak_dirs <- lapply(what,function(x)file.path(peak_dir,x))
+lapply(peak_dirs,check_create)
 
-read_bins_wrap <- function(file,map_file,gc_file,n_file,opt)
+peak_dirs <- file.path(peak_dirs,paste0("FDR",fdr*100))
+lapply(peak_dirs,check_create)
+
+extra <- list()
+extra[["exo"]] <- file.path("/p/keles/genome_data/EColi_U00096.2",
+  c("mappability","GC","N"),"bin",
+  c("fragL150_bin150_32mer_single/E.coli_K-12_MG1655_GENOME_fragL150_bin150.txt",
+    "fragL150_bin150/E.coli_K-12_MG1655_GENOME_GC_fragL150_bin150.txt",
+    "fragL150_bin150/E.coli_K-12_MG1655_GENOME_N_fragL150_bin150.txt"))
+extra[["pet"]] <- "/p/keles/ChIPexo/volume6/inputs/pet/edsn1369_042814_qc.filter.bam_bin150.txt"
+extra[["set"]] <- "/p/keles/ChIPexo/volume6/inputs/set/edsn1369_042814_qc.filter.bam_fragL150_bin150.txt"
+
+call_peaks <- function(file,opt,extra,fdr,bs,thresh)
 {
-  readBins(opt,c(file, map_file,gc_file,n_file))
-}
-
-mosaics_peak_wrap <- function(fit,FDR,binsize,thres)
-{
-  if ( fit@bic2S <= fit@bic1S ) {
-    peak <- mosaicsPeak( fit, signalModel="2S", FDR=FDR, maxgap=binsize, thres=thres )
-  } else {
-    peak <- mosaicsPeak( fit, signalModel="1S", FDR=FDR, maxgap=binsize, thres=thres )
+##  message(file)
+  bins <- readBins(opt, c(file,extra))
+  fit <- mosaicsFit(bins)
+  if(fit@bic2S <= fit@bic1S){
+    peak <- mosaicsPeak( fit, signalModel="2S", FDR= fdr, maxgap=bs, thres=thresh )
+  }else{
+    peak <- mosaicsPeak( fit, signalModel="1S", FDR= fdr, maxgap=bs, thres=thresh )
   }
+  peak <- data.table(peak@peakList)
   return(peak)
 }
 
-exo_bins <- lapply(file.path(bases[[1]],exo_bins),
-  read_bins_wrap,
-  map_file = file.path(input_dir,
-    "mappability/bin/fragL150_bin150_32mer_single/E.coli_K-12_MG1655_GENOME_fragL150_bin150.txt"),
-  gc_file = file.path(input_dir,
-    "GC/bin/fragL150_bin150/E.coli_K-12_MG1655_GENOME_GC_fragL150_bin150.txt"),
-  n_file = file.path(input_dir,
-    "N/bin/fragL150_bin150/E.coli_K-12_MG1655_GENOME_N_fragL150_bin150.txt"),
-  opt = c("chip","M","GC","N"))
-                           
-exo_fits <- mclapply(exo_bins,mosaicsFit,mc.cores = 2)
-exo_peaks <- mclapply(exo_fits,mosaics_peak_wrap,
-                        fdr,bs,thresh,mc.cores = 2)
-exo_peaks <- lapply(exo_peaks,function(x)data.table(x@peakList))
-
-exo_peaks_loc <- file.path(bases[[1]],paste0("exo_peaks_",1:2,".txt"))
-mapply(write.table,
-       exo_peaks,exo_peaks_loc,
-       MoreArgs = list(col.names =FALSE,row.names = FALSE,quote = FALSE))
-
-### chip seq pet
-
-pet_bins <- list.files(bases[[2]])
-pet_bins <- pet_bins[grep("txt",pet_bins)]
-
-read_bins_wrap <- function(file,input_file,opt)
+mosaics_peaks_wrap <- function(in_dir,out_dir,what,extra,fdr,thresh,bs,mc)
 {
-  readBins(opt,c(file, input_file))
+  if(what == "exo"){
+    opt <- c("chip","M","GC","N")
+  }else{
+    opt <- c("chip","input")
+  }
+
+  files <- file.path(in_dir,list.files(in_dir))
+  peaks <- mclapply(files,call_peaks,opt,extra,fdr,bs,thresh,mc.cores = mc)
+
+  files <- list.files(in_dir)
+  files <- sapply(strsplit(files,".",fixed = TRUE),function(x)x[1])
+  files <- file.path(out_dir,paste0(files,"_peaks.txt"))
+
+  out <- mcmapply(write.table,peaks,files,MoreArgs = list(
+    sep = "\t",quote = FALSE,row.names = FALSE,col.names = FALSE),SIMPLIFY = FALSE,mc.cores = mc)  
+
+  return(out)
+
 }
 
+if(flag_peaks){
+  z <- mapply(mosaics_peaks_wrap,bin_dirs,peak_dirs,what,extra,
+    MoreArgs = list(fdr,thresh,bs,mc),SIMPLIFY = FALSE)
+}
 
-pet_bins <- lapply(file.path(bases[[2]],pet_bins),
-  read_bins_wrap,
-  input_file = "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPseq_PET/bins/edsn1369_042814_qc.filter.bam_bin150.txt",
-  opt = c("chip","input"))
-                             
-pet_fits <- mclapply(pet_bins,mosaicsFit,mc.cores = 2)
-pet_peaks <- mclapply(pet_fits,mosaics_peak_wrap,
-                        fdr,bs,thresh,mc.cores = 2)
-pet_peaks <- lapply(pet_peaks,function(x)data.table(x@peakList))
-
-pet_peaks_loc <- file.path(bases[[2]],paste0("pet_peaks_",1:2,".txt"))
-mapply(write.table,
-       pet_peaks,pet_peaks_loc,
-       MoreArgs = list(col.names =FALSE,row.names = FALSE,quote = FALSE))
-
-### chip seq set
-
-set_bins <- list.files(bases[[3]])
-set_bins <- set_bins[grep("txt",set_bins)]
-
-
-set_bins <- lapply(file.path(bases[[3]],set_bins),
-  read_bins_wrap,
-  input_file = "/p/keles/ChIPexo/volume6/results/mosaics_peaks/Landick/ChIPseq_SET/bins/edsn1369_042814_qc.filter.bam_fragL150_bin150.txt",
-  opt = c("chip","input"))
-                             
-set_fits <- mclapply(set_bins,mosaicsFit,mc.cores = 2)
-set_peaks <- mclapply(set_fits,mosaics_peak_wrap,
-                        fdr,bs,thresh,mc.cores = 2)
-set_peaks <- lapply(set_peaks,function(x)data.table(x@peakList))
-
-set_peaks_loc <- file.path(bases[[3]],paste0("set_peaks_",1:2,".txt"))
-mapply(write.table,
-       set_peaks,set_peaks_loc,
-       MoreArgs = list(col.names =FALSE,row.names = FALSE,quote = FALSE))
-
-rm(exo_bins,pet_bins,set_bins,exo_fits,pet_fits,set_fits,exo_peaks,set_peaks,pet_peaks,
-   opt,input_dir,what,folder,base_dir)
+rm(z)
 
 ######################################################################################
 
 ## call binding events
 
-### chip exo binding sites
+bs_dir <- file.path(base_dir,"binding")
+check_create(bs_dir)
 
-exo_read_loc <- file.path(exo_dir,read_files(exo_dir,exo,FALSE))
+bs_dirs <- lapply(what,function(x)file.path(bs_dir,x))
+lapply(bs_dirs,check_create)
 
-exo_dpeak <- mapply(dpeakRead,exo_peaks_loc,exo_read_loc,
-  MoreArgs = list(fileFormat = "bam",PET = FALSE,fragLen = fl,parallel = TRUE,nCore = mc),SIMPLIFY =FALSE)
+bs_dirs <- file.path(bs_dirs,paste0("FDR",fdr * 100))
+lapply(bs_dirs,check_create)
 
-exo_dpeak <- lapply(exo_dpeak,dpeakFit,maxComp = g,nCore = mc)
+bs_dirs <- file.path(bs_dirs,paste0("G_",g))
+lapply(bs_dirs,check_create)
 
-exo_bs_loc <- file.path(bases[[1]],paste0("exo_bs_g",g,"_",1:2,".bed"))
 
-for(i in 1:2){
-  export(exo_dpeak[[i]],type = "bed",filename = exo_bs_loc[i])
+call_sites <- function(peak_file,read_file,out_file,fl,g,pet,mc)
+{
+  dp <- dpeakRead(peakfile = peak_file,readfile = read_file, fileFormat = "bam",
+    PET = pet, fragLen = fl,parallel = TRUE, nCore = mc)
+  dp <- dpeakFit(dp)
+  export(dp,type = "bed",filename = out_file)
 }
 
-## chip set pet binding sites
+dpeak_sites_wrap <- function(peak_dir,read_dir,out_dir,dt,what,fl,g,mc)
+{
+  if(what == "pet"){
+    pet = TRUE
+  }else{
+    pet = FALSE
+  }
 
-pet_read_loc <- file.path(pet_dir,read_files(pet_dir,pet,TRUE))
+  peaks <- list.files(peak_dir)
+  reads <- sample_read_files(read_dir,dt,pet)
 
-pet_dpeak <- mapply(dpeakRead,pet_peaks_loc,pet_read_loc,
-  MoreArgs = list(fileFormat = "bam",PET = TRUE,fragLen = fl,parallel = TRUE,nCore = mc),SIMPLIFY =FALSE)
+  if(is.unsorted(peaks))peaks <- sort(peaks)
+  if(is.unsorted(reads))reads <- sort(reads)
 
-pet_dpeak <- lapply(pet_dpeak,dpeakFit,maxComp = g,nCore = mc)
+  outs <- sapply(strsplit(reads,".",fixed = TRUE),function(x)x[1])
+  outs <- file.path(out_dir,paste0(outs,".bed"))
+                        
+  peaks <- file.path(peak_dir,peaks)
+  reads <- file.path(read_dir,reads)
+  
+  sites <- mapply(call_sites,
+    peaks,reads,outs,MoreArgs = list(fl,g,pet,mc),SIMPLIFY = FALSE)
 
-pet_bs_loc <- file.path(bases[[2]],paste0("pet_bs_g",g,"_",1:2,".bed"))
-
-for(i in 1:2){
-  export(pet_dpeak[[i]],type = "bed",filename = pet_bs_loc[i])
+  u <- gc()
 }
 
-
-## chip set pet binding sites
-
-set_read_loc <- file.path(set_dir,read_files(set_dir,set,FALSE))
-
-set_dpeak <- mapply(dpeakRead,set_peaks_loc,set_read_loc,
-  MoreArgs = list(fileFormat = "bam",PET = FALSE,fragLen = fl,parallel = TRUE,nCore = mc),SIMPLIFY =FALSE)
-
-set_dpeak <- lapply(set_dpeak,dpeakFit,maxComp = g,nCore = mc)
-
-set_bs_loc <- file.path(bases[[3]],paste0("set_bs_g",g,"_",1:2,".bed"))
-
-for(i in 1:2){
-  export(set_dpeak[[i]],type = "bed",filename = set_bs_loc[i])
+if(flag_binding){
+  z <- mapply(dpeak_sites_wrap,peak_dirs,chip_dirs,bs_dirs,list(exo,pet,set),c("exo","pet","set"),
+    MoreArgs = list(fl,g,mc),SIMPLIFY = FALSE)
 }
+
+rm(z)
 
 ######################################################################################

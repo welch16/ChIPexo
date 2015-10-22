@@ -10,7 +10,6 @@ library(dpeak)
 
 ## Condition table
 
-
 edsn_tab <- function(what){
   stopifnot(what %in% c("exo","pet","set"))
   if(what == "exo"){
@@ -49,9 +48,17 @@ bs <- 150
 fl <- 150
 fdr <- .05
 thresh <- 10
-mc <- detectCores()
+mc <- 16
 g <- 1
 seedset <- c( 23456, 34567, 45678, 56789,45987 )
+
+### we have 5 different seeds
+k <- 1
+flag_sample <- TRUE
+flag_bins <- TRUE
+flag_peaks <- TRUE
+flag_binding <- TRUE
+
 
 ## notes on seeds:
 ##
@@ -65,25 +72,15 @@ set <- set_char[ip == tf & condition == rif ]
 
 n_val <- seq(5e4,2e5,by = 1e4)
 
-## 4e4
-
 base_dir <- "/p/keles/ChIPexo/volume6/saturation"
 folder <- paste(tf,rif,sep = "_")
 what <- c("exo","pet","set")
-
-### we have 5 different seeds
-k <- 1
 
 base_dir <- file.path(base_dir,folder)
 if(!dir.exists(base_dir))dir.create(base_dir)
 
 base_dir <- file.path(base_dir,paste0("seed",k))
 if(!dir.exists(base_dir))dir.create(base_dir)
-
-flag_sample <- TRUE
-flag_bins <- TRUE
-flag_peaks <- TRUE
-flag_binding <- TRUE
 
 ##################################h####################################################
 
@@ -274,10 +271,12 @@ bs_dirs <- file.path(bs_dirs,paste0("G_",g))
 lapply(bs_dirs,function(x)if(!dir.exists(x))dir.create(x))
 
 
-call_sites <- function(peak_file,read_file,fl,g,pet,mc)
+call_sites <- function(peak_file,read_file,out_file,fl,g,pet,mc)
 {
-  browser()
-
+  dp <- dpeakRead(peakfile = peak_file,readfile = read_file, fileFormat = "bam",
+    PET = pet, fragLen = fl,parallel = TRUE, nCore = mc)
+  dp <- dpeakFit(dp)
+  export(dp,type = "bed",filename = out_file)
 }
 
 dpeak_sites_wrap <- function(peak_dir,read_dir,out_dir,what,fl,g,mc)
@@ -288,34 +287,23 @@ dpeak_sites_wrap <- function(peak_dir,read_dir,out_dir,what,fl,g,mc)
     pet = FALSE
   }
 
-  peaks <- file.path(peak_dir,peaks)
-  reads <- file.path(read_dir,reads)
-
-  if(is.unsorted(peaks))peaks <- sort(peaks)
-  if(is.unsorted(reads))reads <- sort(reads)
-  
-      browser()
-
-  sites <- mapply(call_sites,
-    peaks,reads,MoreArgs = list(fl,g,pet,mc),SIMPLIFY = FALSE)
-  
-
   peaks <- list.files(peak_dir)
   reads <- list.files(read_dir)
   reads <- reads[grep("bai",reads,invert =TRUE)]
+
+  if(is.unsorted(peaks))peaks <- sort(peaks)
+  if(is.unsorted(reads))reads <- sort(reads)
+
+  outs <- sapply(strsplit(reads,".",fixed = TRUE),function(x)x[1])
+  outs <- file.path(out_dir,paste0(outs,".bed"))
+                        
+  peaks <- file.path(peak_dir,peaks)
+  reads <- file.path(read_dir,reads)
   
-  files <- file.path(in_dir,list.files(in_dir))
-  peaks <- mclapply(files,call_peaks,opt,extra,fdr,bs,thresh,mc.cores = mc)
+  sites <- mapply(call_sites,
+    peaks,reads,outs,MoreArgs = list(fl,g,pet,mc),SIMPLIFY = FALSE)
 
-  files <- list.files(in_dir)
-  files <- sapply(strsplit(files,".",fixed = TRUE),function(x)x[1])
-  files <- file.path(out_dir,paste0(files,"_peaks.txt"))
-
-  out <- mcmapply(write.table,peaks,files,MoreArgs = list(
-    sep = "\t",quote = FALSE,row.names = FALSE,col.names = FALSE),SIMPLIFY = FALSE,mc.cores = mc)  
-
-  return(out)
-  
+  u <- gc()
 }
 
 if(flag_binding){
@@ -323,54 +311,6 @@ if(flag_binding){
     MoreArgs = list(fl,g,mc),SIMPLIFY = FALSE)
 }
 
-
 rm(z)
 
-
-## ### chip exo binding sites
-
-## exo_read_loc <- file.path(exo_dir,read_files(exo_dir,exo,FALSE))
-
-## exo_dpeak <- mapply(dpeakRead,exo_peaks_loc,exo_read_loc,
-##   MoreArgs = list(fileFormat = "bam",PET = FALSE,fragLen = fl,parallel = TRUE,nCore = mc),SIMPLIFY =FALSE)
-
-## exo_dpeak <- lapply(exo_dpeak,dpeakFit,maxComp = g,nCore = mc)
-
-## exo_bs_loc <- file.path(bases[[1]],paste0("exo_bs_g",g,"_",1:2,".bed"))
-
-## for(i in 1:2){
-##   export(exo_dpeak[[i]],type = "bed",filename = exo_bs_loc[i])
-## }
-
-## ## chip set pet binding sites
-
-## pet_read_loc <- file.path(pet_dir,read_files(pet_dir,pet,TRUE))
-
-## pet_dpeak <- mapply(dpeakRead,pet_peaks_loc,pet_read_loc,
-##   MoreArgs = list(fileFormat = "bam",PET = TRUE,fragLen = fl,parallel = TRUE,nCore = mc),SIMPLIFY =FALSE)
-
-## pet_dpeak <- lapply(pet_dpeak,dpeakFit,maxComp = g,nCore = mc)
-
-## pet_bs_loc <- file.path(bases[[2]],paste0("pet_bs_g",g,"_",1:2,".bed"))
-
-## for(i in 1:2){
-##   export(pet_dpeak[[i]],type = "bed",filename = pet_bs_loc[i])
-## }
-
-
-## ## chip set pet binding sites
-
-## set_read_loc <- file.path(set_dir,read_files(set_dir,set,FALSE))
-
-## set_dpeak <- mapply(dpeakRead,set_peaks_loc,set_read_loc,
-##   MoreArgs = list(fileFormat = "bam",PET = FALSE,fragLen = fl,parallel = TRUE,nCore = mc),SIMPLIFY =FALSE)
-
-## set_dpeak <- lapply(set_dpeak,dpeakFit,maxComp = g,nCore = mc)
-
-## set_bs_loc <- file.path(bases[[3]],paste0("set_bs_g",g,"_",1:2,".bed"))
-
-## for(i in 1:2){
-##   export(set_dpeak[[i]],type = "bed",filename = set_bs_loc[i])
-## }
-
-## ######################################################################################
+######################################################################################
