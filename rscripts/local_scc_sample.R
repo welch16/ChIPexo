@@ -419,15 +419,15 @@ nsc_correction[, NSC := V1 / sqrt(s)]
 pdf(file = file.path(figs_dir,"NSC_idea_corr.pdf"))
 ggplot(nsc[block != "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+    axis.text.x = element_text(angle = 90))+ylim(0,2)+
   scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 ggplot(nsc[block == "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+    axis.text.x = element_text(angle = 90))+ylim(0,2)+
   scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 ggplot(nsc , aes(block, NSC,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+    axis.text.x = element_text(angle = 90))+ylim(0,2)+
   scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 dev.off()
 
@@ -436,14 +436,14 @@ dev.off()
 pdf(file = file.path(figs_dir,"NSC_idea_corr.pdf"))
 ggplot(nsc_correction[block != "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+    axis.text.x = element_text(angle = 90))+ylim(0,2)+
   scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 ggplot(nsc_correction[block == "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+    axis.text.x = element_text(angle = 90))+ylim(0,2)+
   scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 ggplot(nsc_correction, aes(block, NSC,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+    axis.text.x = element_text(angle = 90))+ylim(0,2)+
   scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 dev.off()
