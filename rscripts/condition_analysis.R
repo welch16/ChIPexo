@@ -43,16 +43,15 @@ set_char <- edsn_tab("set")
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif20min"
+rif <- "rif0min"
 bs <- 150
 fl <- 150
-fdr <- .05
+fdr <- .01
 thresh <- 10
 mc <- 16
-g <- 1
+maxComp <- 1
 
-flag_sample <- TRUE
-flag_bins <- TRUE
+flag_bins <- FALSE
 flag_peaks <- TRUE
 flag_binding <- TRUE
 flag_input <- FALSE
@@ -208,7 +207,7 @@ lapply(bs_dirs,check_create)
 bs_dirs <- file.path(bs_dirs,paste0("FDR",fdr * 100))
 lapply(bs_dirs,check_create)
 
-bs_dirs <- file.path(bs_dirs,paste0("G_",g))
+bs_dirs <- file.path(bs_dirs,paste0("G_",maxComp))
 lapply(bs_dirs,check_create)
 
 
@@ -216,7 +215,7 @@ call_sites <- function(peak_file,read_file,out_file,fl,g,pet,mc)
 {
   dp <- dpeakRead(peakfile = peak_file,readfile = read_file, fileFormat = "bam",
     PET = pet, fragLen = fl,parallel = TRUE, nCore = mc)
-  dp <- dpeakFit(dp)
+  dp <- dpeakFit(dp,nCore = mc)
   export(dp,type = "bed",filename = out_file)
 }
 
@@ -248,7 +247,7 @@ dpeak_sites_wrap <- function(peak_dir,read_dir,out_dir,dt,what,fl,g,mc)
 
 if(flag_binding){
   z <- mapply(dpeak_sites_wrap,peak_dirs,chip_dirs,bs_dirs,list(exo,pet,set),c("exo","pet","set"),
-    MoreArgs = list(fl,g,mc),SIMPLIFY = FALSE)
+    MoreArgs = list(fl,maxComp,mc),SIMPLIFY = FALSE)
 }
 
 rm(z)

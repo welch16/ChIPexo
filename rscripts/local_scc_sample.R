@@ -165,14 +165,17 @@ setkey(reads[[3]],match)
 library(devtools)
 load_all("~/Desktop/Docs/Code/ChIPUtils")
 
+seed1 <- 123321
+seed2 <- 128452
+
 N <- 300
-set.seed(123321)
+set.seed(seed2)
 keys1 <- stats[[1]][ npos > 200,sample(match,N)]
-set.seed(123321)
+set.seed(seed2)
 keys2 <- stats[[1]][ between(npos,100,200),sample(match,N)]
-set.seed(123321)
+set.seed(seed2)
 keys3 <- stats[[1]][ between(npos,50,100),sample(match,N)]
-set.seed(123321)
+set.seed(seed2)
 keys4 <- stats[[1]][ between(npos,25,50),sample(match,N)]
 
 create_reads <- function(rr)
@@ -213,6 +216,9 @@ reads1 <- mclapply(keys1,build_reads,common,reads,mc.cores = mc)
 reads2 <- mclapply(keys2,build_reads,common,reads,mc.cores = mc)
 reads3 <- mclapply(keys3,build_reads,common,reads,mc.cores = mc)
 
+reads4 <- mclapply(keys4,build_reads,common,reads,mc.cores = mc)
+
+
 get_local_scc <- function(key,rr,common,shift)
 {
 
@@ -239,8 +245,13 @@ cc1 <- mcmapply(get_local_scc,keys1,reads1,MoreArgs = list(common,shift),SIMPLIF
 
 cc2 <- mcmapply(get_local_scc,keys2,reads2,MoreArgs = list(common,shift),SIMPLIFY = FALSE,
          mc.cores = mc,mc.preschedule = TRUE)
+
 cc3 <- mcmapply(get_local_scc,keys3,reads3,MoreArgs = list(common,shift),SIMPLIFY = FALSE,
          mc.cores = mc,mc.preschedule = TRUE)
+
+cc4 <- mcmapply(get_local_scc,keys4,reads4,MoreArgs = list(common,shift),SIMPLIFY = FALSE,
+         mc.cores = mc,mc.preschedule = TRUE)
+
 
 get_plot <- function(cc)
 {
@@ -284,84 +295,155 @@ noise <- function(shift,cross.corr)
   return(out)
 }
 
+cc_max <- function(shift,cross.corr)
+{
+  if(all(is.na(cross.corr))){
+    out <- Inf
+  }else{
+    mod <- loess(cross.corr ~ shift)
+    out <- max(predict(mod))
+  }
+  return(out)
+}
 
 
 s1 <- lapply(cc1,function(x)x[,noise(shift,cross.corr),by = sample])
 s2 <- lapply(cc2,function(x)x[,noise(shift,cross.corr),by = sample])
 s3 <- lapply(cc3,function(x)x[,noise(shift,cross.corr),by = sample])
-  
 
-s1 <- mapply(function(x,y){
-  x[,name := y]
-  return(x)},s1,names(s1),SIMPLIFY = FALSE)
-s1 <- do.call(rbind,s1)
-
-s2 <- mapply(function(x,y){
-  x[,name := y]
-  return(x)},s2,names(s2),SIMPLIFY = FALSE)
-s2 <- do.call(rbind,s2)
-
-s3 <- mapply(function(x,y){
-  x[,name := y]
-  return(x)},s3,names(s3),SIMPLIFY = FALSE)
-s3 <- do.call(rbind,s3)
-
-s1[,block := "npos > 200"]
-s2[,block := "100 < npos < 200"] 
-s3[,block := "50 < npos < 100"] 
-
-ss <- rbind(s1,s2,s3)
-ss[ , block := factor(block ,levels = rev(c("50 < npos < 100","100 < npos < 200","npos > 200")))]
-
-pdf(file = file.path(figs_dir,"SCC_loc_poly_reg_noise.pdf"))
-ggplot(ss , aes(block, V1,colour = sample))+geom_boxplot()+
-  facet_grid(. ~ sample  )+ylim(0.02,.1)+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+
-  scale_color_brewer(palette = "Set1")+ylab("noise")+xlab("")
-dev.off()
-
-## can we approximate nsc as cc[fl] / noise ?
+s11 <- lapply(cc1,function(x)x[,cc_max(shift,cross.corr),by = sample])
+s21 <- lapply(cc2,function(x)x[,cc_max(shift,cross.corr),by = sample])
+s31 <- lapply(cc3,function(x)x[,cc_max(shift,cross.corr),by = sample])
 
 nsc1 <- lapply(cc1,function(x)x[,max(cross.corr),by = sample])
 nsc2 <- lapply(cc2,function(x)x[,max(cross.corr),by = sample])
 nsc3 <- lapply(cc3,function(x)x[,max(cross.corr),by = sample])
 
 
-nsc1 <- mapply(function(x,y){
-  x[,name := y]
-  return(x)},nsc1,names(nsc1),SIMPLIFY = FALSE)
-nsc1 <- do.call(rbind,nsc1)
+mix <- function(a1,a2,a3,nms)
+{
+  stopifnot(length(nms) == 3)
+  aux <- function(a){
+    out <- mapply(function(x,y){
+      x[,name := y]
+      return(x)},a,names(a),SIMPLIFY = FALSE)
+    out <- do.call(rbind,out)
+    return(out)}
 
-nsc2 <- mapply(function(x,y){
-  x[,name := y]
-  return(x)},nsc2,names(nsc2),SIMPLIFY = FALSE)
-nsc2 <- do.call(rbind,nsc2)
+  a1 <- aux(a1)
+  a2 <- aux(a2)
+  a3 <- aux(a3)
 
-nsc3 <- mapply(function(x,y){
-  x[,name := y]
-  return(x)},nsc3,names(nsc3),SIMPLIFY = FALSE)
-nsc3 <- do.call(rbind,nsc3)
+  a1[,block := nms[1]]
+  a2[,block := nms[2]]
+  a3[,block := nms[3]]
 
-nsc1[,block := "npos > 200"]
-nsc2[,block := "100 < npos < 200"] 
-nsc3[,block := "50 < npos < 100"] 
+  out <- rbind(a1,a2,a3)
+  out1 <- copy(out)
 
-nsc <- rbind(nsc1,nsc2,nsc3)
+  out1[,block := "all"]
 
-pdf(file = file.path(figs_dir,"argmax_scc.pdf"))
+  out <- rbind(out,out1)
+
+  out[,block := factor(block,levels = rev(c(nms,"all")))]
+  return(out)
+  
+
+}
+
+nms <- c("npos > 200","100 < npos < 200","50 < npos < 100")
+nsc_correction <- mix(s11,s21,s31,nms)
+ss <- mix(s1,s2,s3,nms)
+nsc <- mix(nsc1,nsc2,nsc3,nms)
+
+
+            
+pdf(file = file.path(figs_dir,"SCC_loc_poly_reg_noise.pdf"))
+ggplot(ss[block != "all"] , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+ylim(0.02,.1)+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("noise")+xlab("")
+ggplot(ss[block == "all"] , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+ylim(0.02,.1)+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("noise")+xlab("")
+ggplot(ss, aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+ylim(0.02,.1)+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("noise")+xlab("")
+dev.off()
+
+
+pdf(file = file.path(figs_dir,"Max_scc.pdf"))
+ggplot(nsc[block != "all"] , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("max scc")+xlab("")
+ggplot(nsc[block == "all"] , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("max scc")+xlab("")
 ggplot(nsc , aes(block, V1,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
     axis.text.x = element_text(angle = 90))+
   scale_color_brewer(palette = "Set1")+ylab("max scc")+xlab("")
 dev.off()
 
-nsc <- nsc[, s := ss[,(V1)]]
-nsc <- nsc[, NSC := V1 / sqrt(s)]
 
-pdf(file = file.path(figs_dir,"argmax_scc.pdf"))
+pdf(file = file.path(figs_dir,"Max_scc_corr.pdf"))
+ggplot(nsc_correction[block != "all"] , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("max scc")+xlab("")
+ggplot(nsc_correction[block == "all"] , aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("max scc")+xlab("")
+ggplot(nsc_correction, aes(block, V1,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+
+  scale_color_brewer(palette = "Set1")+ylab("max scc")+xlab("")
+dev.off()
 
+
+
+nsc[, s := ss[,(V1)]]
+nsc[, NSC := V1 / sqrt(s)]
+
+nsc_correction[, s := ss[,(V1)]]
+nsc_correction[, NSC := V1 / sqrt(s)]
+
+
+
+
+pdf(file = file.path(figs_dir,"NSC_idea_corr.pdf"))
+ggplot(nsc[block != "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+  scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
+ggplot(nsc[block == "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+  scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 ggplot(nsc , aes(block, NSC,colour = sample))+geom_boxplot()+
   facet_grid(. ~ sample  )+theme(legend.position = "none",
-    axis.text.x = element_text(angle = 90))+ylim(0,5)+
+    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+  scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
+dev.off()
+
+
+
+pdf(file = file.path(figs_dir,"NSC_idea_corr.pdf"))
+ggplot(nsc_correction[block != "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+  scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
+ggplot(nsc_correction[block == "all"] , aes(block, NSC,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+ylim(0,4)+
+  scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
+ggplot(nsc_correction, aes(block, NSC,colour = sample))+geom_boxplot()+
+  facet_grid(. ~ sample  )+theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90))+ylim(0,4)+
   scale_color_brewer(palette = "Set1")+ylab("NSC")+xlab("")
 dev.off()

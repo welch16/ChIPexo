@@ -82,4 +82,3 @@ A. Resolution. The resolution is calculated as the minimun distance between a go
 
 
 
-

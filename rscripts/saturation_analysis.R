@@ -5,6 +5,9 @@ library(mosaics)
 library(data.table)
 library(GenomicAlignments)
 library(dpeak)
+## library(devtools)
+## load_all("~/Desktop/Docs/Code/dpeak")
+
 
 ######################################################################################
 
@@ -46,19 +49,18 @@ tf <- "Sig70"
 rif <- "rif20min"
 bs <- 150
 fl <- 150
-fdr <- .05
+fdr <- .001
 thresh <- 10
 mc <- 16
-g <- 1
+maxComp <- 3
 seedset <- c( 23456, 34567, 45678, 56789,45987 )
 
 ### we have 5 different seeds
 k <- 1
-flag_sample <- TRUE
-flag_bins <- TRUE
-flag_peaks <- TRUE
+flag_sample <- FALSE
+flag_bins <- FALSE
+flag_peaks <- FALSE
 flag_binding <- TRUE
-
 
 ## notes on seeds:
 ##
@@ -142,7 +144,7 @@ sample_reads <- function(reads_file,in_dir,out_dir,n_val,pet)
   return(out)
 }
 
-sample_dirs <- lapply(what,function(x)file.path(sample_dir,x))
+sample_dirs <- sapply(what,function(x)file.path(sample_dir,x))
 lapply(sample_dirs,function(x)if(!dir.exists(x))dir.create(x))
 
 if(flag_sample){
@@ -184,8 +186,6 @@ create_bins <- function(in_dir,out_dir,dt,pet,bs,fl)
          fragLen = fl,
          binSize = bs)                  
 }
-
-## create_bins(sample_dirs[[2]],bin_dirs[[2]],pet,TRUE,bs,fl)
 
 if(flag_bins){
   mapply(create_bins,sample_dirs,bin_dirs,list(exo,pet,set),list(FALSE,TRUE,FALSE),
@@ -267,7 +267,7 @@ if(!dir.exists(bs_dir))dir.create(bs_dir)
 bs_dirs <- lapply(what,function(x)file.path(bs_dir,x))
 lapply(bs_dirs,function(x)if(!dir.exists(x))dir.create(x))
 
-bs_dirs <- file.path(bs_dirs,paste0("G_",g))
+bs_dirs <- file.path(bs_dirs,paste0("G_",maxComp))
 lapply(bs_dirs,function(x)if(!dir.exists(x))dir.create(x))
 
 
@@ -275,7 +275,7 @@ call_sites <- function(peak_file,read_file,out_file,fl,g,pet,mc)
 {
   dp <- dpeakRead(peakfile = peak_file,readfile = read_file, fileFormat = "bam",
     PET = pet, fragLen = fl,parallel = TRUE, nCore = mc)
-  dp <- dpeakFit(dp)
+  dp <- dpeakFit(dp,nCore = mc,maxComp = g)
   export(dp,type = "bed",filename = out_file)
 }
 
@@ -306,9 +306,11 @@ dpeak_sites_wrap <- function(peak_dir,read_dir,out_dir,what,fl,g,mc)
   u <- gc()
 }
 
+##dpeak_sites_wrap(peak_dirs[2],sample_dirs[2],bs_dirs[2],"pet",fl,maxComp,mc)
+
 if(flag_binding){
   z <- mapply(dpeak_sites_wrap,peak_dirs,sample_dirs,bs_dirs,c("exo","pet","set"),
-    MoreArgs = list(fl,g,mc),SIMPLIFY = FALSE)
+    MoreArgs = list(fl,maxComp,mc),SIMPLIFY = FALSE)
 }
 
 rm(z)
