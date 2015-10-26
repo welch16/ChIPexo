@@ -131,7 +131,7 @@ load_binding <- function(dir,what,fdr,G,char)
   return(bs)
 }
 
-bs <- lapply(what[2],function(x)load_binding(base_dir,x,fdr,G,char))
+bs <- lapply(what,function(x)load_binding(base_dir,x,fdr,G,char))
 names(bs) <- what
 
 ######################################################################################
