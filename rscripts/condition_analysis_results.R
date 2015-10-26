@@ -34,10 +34,10 @@ edsn_tab <- function(what){
   }
   return(dt)
 }
-  
-exo_char <- edsn_tab("exo")
-pet_char <- edsn_tab("pet")
-set_char <- edsn_tab("set")
+
+what <- c("exo","pet","set")
+char <- lapply(what,edsn_tab)
+names(char) <- what
 
 ######################################################################################
 
@@ -47,30 +47,25 @@ tf <- "Sig70"
 rif <- "rif20min"
 bs <- 150
 fl <- 150
-## fdr <- .25
-## thresh <- 10
 mc <- detectCores()
-## g <- 5
 figs_dir <- "figs/condition"
+fdr <- .01
+G <- 1
 
-exo <- exo_char[ip == tf & condition == rif ]
-pet <- pet_char[ip == tf & condition == rif ]
-set <- set_char[ip == tf & condition == rif ]
+char <- lapply(char,function(x)x[ip ==tf & condition == rif])
 
 base_dir <- "/p/keles/ChIPexo/volume6/condition"
 folder <- paste(tf,rif,sep = "_")
 
-figs_dir <- file.path(figs_dir,folder)
-if(!dir.exists(figs_dir))dir.create(figs_dir)
+check_create <- function(dr)if(!dir.exists(dr))dir.create(dr)
+
+figs_dir <- file.path(figs_dir,folder,paste0("FDR",fdr*100))
+check_create(figs_dir)
+
+figs_dir <- file.path(figs_dir,paste0("G_",G))
+check_create(figs_dir)
 
 base_dir <- file.path(base_dir,folder)
-
-if(!dir.exists(base_dir)){
-  dir.create(base_dir)
-}
-
-what <- c("exo","pet","set")
-bases <- lapply(what,function(x)file.path(base_dir,x))
 
 ######################################################################################
 
@@ -92,46 +87,52 @@ setnames(sites,names(sites),c("seqnames","start","end","strand","id"))
 sites[,seqnames := "U00096"]
 sites[,strand := ifelse(strand == "F","+","-")]
 
-
 ######################################################################################
 
 ## load peaks
 
-load_peaks <- function(dir)
+load_peaks <- function(dir,what,fdr,char)
 {
+  dir <- file.path(dir,"peaks",what,paste0("FDR",fdr*100))
   files <- list.files(dir)
-  files <- files[grep("peaks",files)]
-  peaks <- lapply(file.path(dir,files),read.table)
+  edsn <- char[[what]][,(edsn)]
+  peaks <- sapply(edsn,function(x)files[grep(x,files)])
+  peaks <- file.path(dir,peaks)
+  peaks <- lapply(peaks,read.table)
   peaks <- lapply(peaks,data.table)
   peaks <- lapply(peaks,function(x){
     x[,peakId := paste0(V1,":",V2,"-",V3)]
     return(x)})
+  names(peaks) <- edsn
   return(peaks)
 }
 
-exo_peaks <- load_peaks(bases[[1]])
-pet_peaks <- load_peaks(bases[[2]])
-set_peaks <- load_peaks(bases[[3]])
+peaks <- lapply(what,function(x)load_peaks(base_dir,x,fdr,char))
+names(peaks) <- what
 
 ######################################################################################
 
 ## load binding sites
 
-load_binding <- function(dir)
+load_binding <- function(dir,what,fdr,G,char)
 {
+  browser()
+  dir <- file.path(dir,"binding",what,paste0("FDR",fdr*100),paste0("G_",G))
   files <- list.files(dir)
-  files <- files[grep("bs",files)]
-  bs <- lapply(file.path(dir,files),read.table,skip = 1)
+  edsn <- char[[what]][,(edsn)]
+  bs <- sapply(edsn,function(x)files[grep(x,files)])
+  bs <- file.path(dir,bs)  
+  bs <- lapply(bs,read.table,skip = 1)
   bs <- lapply(bs,data.table)
   bs <- lapply(bs,function(x){
     setnames(x,names(x),c("seqnames","start","end","peakId","strength"))
     return(x)})
+  names(bs) <- edsn
   return(bs)
 }
 
-exo_bs <- load_binding(bases[[1]])
-pet_bs <- load_binding(bases[[2]])
-set_bs <- load_binding(bases[[3]])
+bs <- lapply(what[2],function(x)load_binding(base_dir,x,fdr,G,char))
+names(bs) <- what
 
 ######################################################################################
 
@@ -165,9 +166,11 @@ merge_peak_sites <- function(peaks,bs,sites,what)
   return(bs)
 }
 
-exo_results <- mapply(merge_peak_sites, exo_peaks,exo_bs,MoreArgs = list(sites , "exo"),SIMPLIFY = FALSE)
-pet_results <- mapply(merge_peak_sites, pet_peaks,pet_bs,MoreArgs = list(sites , "pet"),SIMPLIFY = FALSE)
-set_results <- mapply(merge_peak_sites, set_peaks,set_bs,MoreArgs = list(sites , "set"),SIMPLIFY = FALSE)
+
+results <- lapply(what,function(x){
+  out <- mapply(merge_peak_sites,peaks[[x]],bs[[x]],MoreArgs = list(sites,x),SIMPLIFY = FALSE)
+  return(out)})
+names(results) <- what
 
 ######################################################################################
 
@@ -187,7 +190,8 @@ resolution <- function(exo,pet,set,repl)
   return(res)
 }
 
-reso <- mapply(resolution , exo_results,pet_results,set_results,1:2,SIMPLIFY = FALSE)
+reso <- mapply(resolution,
+              results[["exo"]],results[["pet"]],results[["set"]],1:2,SIMPLIFY = FALSE)
 reso <- do.call(rbind,reso)
 
 
@@ -231,11 +235,6 @@ sens1 <- function(samp,what,ext)
   return(out)
 }
 
-
-k <- "U00096:1014450-1015949"
-k1 <- "U00096:0-449"
-k2 <- "U00096:4637850-4639499"
-
 sensitivity <- function(exo,pet,set,repl,ext)
 {
   sens <- rbind(sens1(exo,"exo",ext),sens1(pet,"pet",ext),sens1(set,"set",ext))
@@ -243,7 +242,10 @@ sensitivity <- function(exo,pet,set,repl,ext)
   return(sens)
 }
 
-sens <- mapply(sensitivity , exo_results,pet_results,set_results,1:2,MoreArgs = list(ext = 20),SIMPLIFY = FALSE)
+sens <- mapply(sensitivity ,
+           results[["exo"]],
+           results[["pet"]],
+           results[["set"]],1:2,MoreArgs = list(ext = 20),SIMPLIFY = FALSE)
 sens <- do.call(rbind,sens)
 
 xl <- 500
@@ -256,8 +258,4 @@ ggplot(sens[nAnnot > 1 & between(aveDist,0, xl,incbounds = FALSE) ],
   xlab("Average distance between annotated binding sites")+
   ylab("Sensitivity")
 dev.off()
-
-## ggplot(sens[nAnnot > 1 & nIdBS > 1],aes(aveDist,frac,colour = seq))+geom_point()+
-##   geom_smooth(method = "rlm",se =FALSE,size = 1)+ scale_color_brewer(palette = "Set1")+
-##   theme(legend.position = "top")+ggtitle("pooled")+xlim(0,500)
 

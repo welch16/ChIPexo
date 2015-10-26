@@ -46,20 +46,20 @@ set_char <- edsn_tab("set")
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif20min"
+rif <- "rif0min"
 bs <- 150
 fl <- 150
 fdr <- .001
 thresh <- 10
 mc <- 16
-maxComp <- 3
+maxComp <- 1
 seedset <- c( 23456, 34567, 45678, 56789,45987 )
 
 ### we have 5 different seeds
 k <- 1
-flag_sample <- FALSE
-flag_bins <- FALSE
-flag_peaks <- FALSE
+flag_sample <- TRUE
+flag_bins <- TRUE
+flag_peaks <- TRUE
 flag_binding <- TRUE
 
 ## notes on seeds:
