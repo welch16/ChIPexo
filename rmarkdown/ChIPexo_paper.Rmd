@@ -1,0 +1,75 @@
+---
+title: "A quality control pipeline for ChIP-exo"
+author: "Rene Welch"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+	html document:
+		fig_caption: yes
+		number_sections: yes
+	md document:
+		variant: markdown_github
+	pdf document:
+		fig_caption: yes
+		number_sections: yes
+		toc: yes
+---
+
+# Introduction
+
+  
+
+
+## What is ChIPexo ?
+
+<!-- Here I am thinking to write the first section of the poster, which was -->
+<!-- based on the Mendenhall and Bernstein note on Genome Biology -->
+
+<!-- this paper need to include the analysis of the paper that dongjun made -->
+
+
+
+### Literature review
+
+
+
+#### ChIPexo related methods
+
+<!-- About ChIPexo, there are: -->
+<!-- CexoR -->
+<!-- MACE -->
+<!-- GEM (I think this two are the same) -->
+
+
+#### ChIPseq methods used with ChIPexo
+
+<!-- Some ChIPseq peak callers are used with ChIPexo regardless of they -->
+<!-- work or not. Need to check which ones, if they work and if not perhaps -->
+<!-- propose -->
+
+
+### Biases present in ChIPexo data
+
+#### Strand imbalance
+
+#### Sequence digestion bias
+
+
+
+### Reproducibility analysis
+
+### Between protocols (ChIPseq vs ChIPexo)
+### Between biological replicates
+
+
+
+
+### Discussion
+
+<!-- Here we are supposed to write the analysis that we made, the quality -->
+<!-- control pipeline and how our claims were validated -->
+
+
+### Conclusions
+
+
+### Bibliography

@@ -1,0 +1,21 @@
+---
+title: "ChIPexo QC figures"
+author: "Rene Welch"
+output: html_document
+---
+
+## Outline and ideas
+
+The objective of the project was to develop a quality control pipeline for ChIPexo data. Therefore we want to:
+
+1. Why did we decided to make a pipeline specific for ChIPexo, how does the current quality guidelines for ChIPseq behave in ChIPexo. Here we are going to show that those are not enough to asses the quality of ChIPexo data
+
+2. Show how the pipeline works. The first part is to explain what do we want to detect and why, then we need to show how are we detecting those and finally how did we evaluated that we are effectively finding or illustrating those effects
+
+## About ChIPexo data in general
+
+1. Show how does it compare respect to chipseq (PET) and (SET)
+
+2. Show how does the biases of ChIPseq data are behaving in ChIPexo 
+
+3. We want to 
