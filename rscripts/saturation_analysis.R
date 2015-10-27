@@ -34,10 +34,10 @@ maxComp <- 5
 seedset <- c( 23456, 34567, 45678, 56789,45987 )
 
 ### we have 5 different seeds
-k <- 2
-flag_sample <- FALSE
-flag_bins <- FALSE
-flag_peaks <- FALSE
+k <- 3
+flag_sample <- TRUE
+flag_bins <- TRUE
+flag_peaks <- TRUE
 flag_binding <- TRUE
 
 ## notes on seeds:

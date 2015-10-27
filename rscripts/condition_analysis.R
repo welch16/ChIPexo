@@ -21,7 +21,7 @@ set_char <- edsn_tab("set")
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif0min"
+rif <- "rif20min"
 bs <- 150
 fl <- 150
 fdr <- .1
@@ -30,7 +30,7 @@ mc <- 16
 maxComp <- 1
 
 flag_bins <- FALSE
-flag_peaks <- FALSE
+flag_peaks <- TRUE
 flag_binding <- TRUE
 flag_input <- FALSE
 
