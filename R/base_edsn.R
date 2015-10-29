@@ -6,17 +6,11 @@
 edsn_tab <- function(what){
   stopifnot(what %in% c("exo","pet","set"))
   if(what == "exo"){
-    edsn <- as.character(931:938)
-    ip <- rep(c("Sig70","SigmaS"),4)
-    condition <- rep(c("exp","stat"),each = 4)
-    repl <- rep( rep(1:2,each =2),2)
-    dt1 <- data.table(edsn,ip,condition,repl)
     edsn <- as.character(1310:1321)
     ip <- rep(c("Beta","Sig70","BetaPF"),4)
     condition <- rep( rep(c("rif0min","rif20min"),each = 3),2)
     repl <- rep(rep(1:2,each = 6))
-    dt2 <- data.table(edsn,ip,condition,repl)
-    dt <- rbind(dt1,dt2)    
+    dt <- data.table(edsn,ip,condition,repl)
   }else{
     edsn <- as.character(1396:1403)
     ip <- rep(c("Sig70","BetaPF"),4)
@@ -26,3 +20,37 @@ edsn_tab <- function(what){
   }
   return(dt)
 }
+
+
+edsn_tab_old <- function(what){
+  stopifnot(what %in% c("exo","pet","set"))
+  if(what == "exo"){
+    ## exo
+    edsn <- as.character(c("931","933"))
+    ip <- rep("Sig70",2)
+    condition <- rep("aerobic",2)
+    growth <- rep("exp",2)
+    repl <- 1:2
+    dt <- data.table(edsn,ip,condition,growth,repl)    
+  }else if(what == "pet"){    
+    ## pet
+    edsn <- "788"
+    ip <- "Sig70"
+    condition <- "aerobic"
+    growth <- "exp"
+    repl <- 1
+    dt <- data.table(edsn,ip,condition,growth,repl)    
+  }else{
+    ## set
+    edsn <- "80"
+    ip <- "Sig70"
+    condition <- "aerobic"
+    growth <- "exp"
+    repl <- 1
+    dt <- data.table(edsn,ip,condition,growth,repl)        
+  }
+  return(dt)
+
+}
+
+  

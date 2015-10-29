@@ -11,6 +11,9 @@ The objective of the project was to develop a quality control pipeline for ChIPe
 1. Why did we decided to make a pipeline specific for ChIPexo, how does the current quality guidelines for ChIPseq behave in ChIPexo. Here we are going to show that current guidelines for ChIPseq are not enough for ChIPexo, and that our ideas are useful to asses the quality of this datasets.
 
     a. Diagram of how the pipeline works, rough explanation of biases and effects that are being measured
+        
+        a1. The diagram may consist of 3 parts: Coverage plot, vector of stats per island, summary measures
+        
     b. Comparison of all datasets under current quality measures and comparison with the measures for the respective chipseq datasets. For the case of strand cross correlation it may be necessary to emphasize the absence of input reads for chipexo, which makes measures as RSC and NSC unavailable.
     
 2. Show how the pipeline works. The first part is to explain what do we want to detect and why, then we need to show how are we detecting those and finally how did we evaluated that we are effectively finding or illustrating those effects
@@ -32,10 +35,7 @@ The objective of the project was to develop a quality control pipeline for ChIPe
     
 ## Algorithmic issues... 
 
-I haven't paid to much attention to this, are we going to make comparisons with more datasets or only use the one that we have ?
-
-
-
+1. Since we only published this comparison for ChIPseq PET and SET, it is gonna be necessary to make comparisons of ChIPexo. We already have the one speaking about resolution, but it may be worth look at different measures.
 
 
 3. We want to asses experimental design considerations by comparing all protocols against a gold standard set

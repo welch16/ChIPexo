@@ -22,14 +22,14 @@ names(char) <- what
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif20min"
+rif <- "rif0min"
 bs <- 150
 fl <- 150
 mc <- 8
 figs_dir <- "figs/saturation"
 fdr <- .001
 G <- 5
-k <- 1
+k <- 3
 ext <- 20
 
 char <- lapply(char,function(x)x[ip ==tf & condition == rif])
@@ -197,12 +197,12 @@ nr_peaks_by_sample <- function(results)
 nr_cand_region <- nr_peaks_by_sample(results)
 
 pdf(file = file.path(figs_dir,"Nr_candidate_regions.pdf"),width = 6,height = 5)
-ggplot(nr_cand_region[,mean(nr_peaks),by = .(size,seq)],aes(size , V1,colour = seq))+
-  geom_line(size = 1)+theme(legend.position = "top")+ylim(140,400)+
+ggplot(nr_cand_region[!is.na(edsn),mean(nr_peaks),by = .(size,seq)],aes(size , V1,colour = seq))+
+  geom_line(size = 1)+theme(legend.position = "top")+
   scale_color_brewer(name = "",palette = "Set1")+ylab("Number of candidate regions")+xlab("Number of reads")
-ggplot(nr_cand_region,aes(size , nr_peaks,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
+ggplot(nr_cand_region[!is.na(edsn)],aes(size , nr_peaks,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
   scale_color_brewer(name = "",palette = "Set1",guide = "none")+scale_linetype_manual(values = c(1,2),name = "rep")+
-  ylab("Number of candidate regions")+xlab("Number of reads")+theme(legend.position = "top")+ylim(140,400)
+  ylab("Number of candidate regions")+xlab("Number of reads")+theme(legend.position = "top")
 dev.off()
 
 ######################################################################################
@@ -231,12 +231,12 @@ nr_predicted_events_by_sample <- function(results)
 nr_pred_events <- nr_predicted_events_by_sample(results)
 
 pdf(file = file.path(figs_dir,"Nr_predicted_events.pdf"),width = 6,height = 5)
-ggplot(nr_pred_events[,mean(nr_events),by = .(size,seq)],aes(size , V1,colour = seq))+
-  geom_line(size = 1)+theme(legend.position = "top")+ylim(250,1e3)+
+ggplot(nr_pred_events[!is.na(edsn),mean(nr_events),by = .(size,seq)],aes(size , V1,colour = seq))+
+  geom_line(size = 1)+theme(legend.position = "top")+
   scale_color_brewer(name = "",palette = "Set1")+ylab("Number of predicted events")+xlab("Number of reads")
-ggplot(nr_pred_events,aes(size , nr_events,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
+ggplot(nr_pred_events[!is.na(edsn)],aes(size , nr_events,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
   scale_color_brewer(name = "",palette = "Set1",guide = "none")+scale_linetype_manual(values = c(1,2),name = "rep")+
-  ylab("Number of predicted events")+xlab("Number of reads")+theme(legend.position = "top")+ylim(250,1e3)
+  ylab("Number of predicted events")+xlab("Number of reads")+theme(legend.position = "top")
 dev.off()
 
 ######################################################################################
@@ -267,12 +267,12 @@ nr_iden_target_by_sample <- function(results,ext)
 nr_iden_targets <- nr_iden_target_by_sample(results,ext)
 
 pdf(file = file.path(figs_dir,"Nr_iden_targets.pdf"),width = 6,height = 5)
-ggplot(nr_iden_targets[,mean(nr_id_target),by = .(size,seq)],aes(size , V1,colour = seq))+
-  geom_line(size = 1)+theme(legend.position = "top")+ylim(50,350)+
+ggplot(nr_iden_targets[!is.na(edsn),mean(nr_id_target),by = .(size,seq)],aes(size , V1,colour = seq))+
+  geom_line(size = 1)+theme(legend.position = "top")+
   scale_color_brewer(name = "",palette = "Set1")+ylab("Number of identified targets")+xlab("Number of reads")
-ggplot(nr_iden_targets,aes(size , nr_id_target,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
+ggplot(nr_iden_targets[!is.na(edsn)],aes(size , nr_id_target,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
   scale_color_brewer(name = "",palette = "Set1",guide = "none")+scale_linetype_manual(values = c(1,2),name = "rep")+
-  ylab("Number of identified targets")+xlab("Number of reads")+theme(legend.position = "top")+ylim(50,350)
+  ylab("Number of identified targets")+xlab("Number of reads")+theme(legend.position = "top")
 dev.off()
 
 
@@ -306,10 +306,10 @@ resolution_by_sample <- function(results)
 reso <- resolution_by_sample(results)
 
 pdf(file = file.path(figs_dir,"Resolution.pdf"),width = 6,height = 5)
-ggplot(reso[,mean(res),by = .(size,seq)],aes(size , V1,colour = seq))+
-  geom_line(size = 1)+theme(legend.position = "top")+ylim(0,25)+
+ggplot(reso[!is.na(edsn),mean(res),by = .(size,seq)],aes(size , V1,colour = seq))+
+  geom_line(size = 1)+theme(legend.position = "top")+
   scale_color_brewer(name = "",palette = "Set1")+ylab("Resolution")+xlab("Number of reads")
-ggplot(reso,aes(size , res,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
+ggplot(reso[!is.na(edsn)],aes(size , res,colour = seq,linetype = as.factor(repl)))+geom_line(size = 1)+
   scale_color_brewer(name = "",palette = "Set1",guide = "none")+scale_linetype_manual(values = c(1,2),name = "rep")+
-  ylab("Resolution")+xlab("Number of reads")+theme(legend.position = "top")+ylim(0,25)
+  ylab("Resolution")+xlab("Number of reads")+theme(legend.position = "top")
 dev.off()

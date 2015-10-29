@@ -30,14 +30,14 @@ fl <- 150
 fdr <- .001
 thresh <- 10
 mc <- 16
-maxComp <- 5
+maxComp <- 3
 seedset <- c( 23456, 34567, 45678, 56789,45987 )
 
 ### we have 5 different seeds
 k <- 3
 flag_sample <- FALSE
 flag_bins <- FALSE
-flag_peaks <- TRUE
+flag_peaks <- FALSE
 flag_binding <- TRUE
 
 ## notes on seeds:
@@ -213,19 +213,16 @@ mosaics_peaks_wrap <- function(in_dir,out_dir,what,extra,fdr,thresh,bs,mc)
   }else{
     opt <- c("chip","input")
   }
-  browser()
 
   files <- file.path(in_dir,list.files(in_dir))
-  peaks <- mclapply(files,call_peaks,opt,extra,fdr,bs,thresh,
-    mc.cores = mc,mc.preschedule = FALSE)
+  peaks <- mclapply(files,call_peaks,opt,extra,fdr,bs,thresh,mc.cores = mc)
 
   files <- list.files(in_dir)
   files <- sapply(strsplit(files,".",fixed = TRUE),function(x)x[1])
   files <- file.path(out_dir,paste0(files,"_peaks.txt"))
 
   out <- mcmapply(write.table,peaks,files,MoreArgs = list(
-    sep = "\t",quote = FALSE,row.names = FALSE,col.names = FALSE),
-    SIMPLIFY = FALSE,mc.cores = mc,mc.preschedule =FALSE)  
+    sep = "\t",quote = FALSE,row.names = FALSE,col.names = FALSE),SIMPLIFY = FALSE,mc.cores = mc)  
 
   return(out)
 

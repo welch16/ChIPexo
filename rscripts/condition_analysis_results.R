@@ -22,13 +22,13 @@ names(char) <- what
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif20min"
+rif <- "aerobic"
 bs <- 150
 fl <- 150
 mc <- detectCores()
 figs_dir <- "figs/condition"
-fdr <- .01
-G <- 1
+fdr <- .001
+G <- 5
 
 char <- lapply(char,function(x)x[ip ==tf & condition == rif])
 
@@ -37,7 +37,10 @@ folder <- paste(tf,rif,sep = "_")
 
 check_create <- function(dr)if(!dir.exists(dr))dir.create(dr)
 
-figs_dir <- file.path(figs_dir,folder,paste0("FDR",fdr*100))
+figs_dir <- file.path(figs_dir,folder)
+check_create(figs_dir)
+
+figs_dir <- file.path(figs_dir,paste0("FDR",fdr*100))
 check_create(figs_dir)
 
 figs_dir <- file.path(figs_dir,paste0("G_",G))
@@ -94,7 +97,6 @@ names(peaks) <- what
 
 load_binding <- function(dir,what,fdr,G,char)
 {
-  browser()
   dir <- file.path(dir,"binding",what,paste0("FDR",fdr*100),paste0("G_",G))
   files <- list.files(dir)
   edsn <- char[[what]][,(edsn)]
@@ -226,7 +228,7 @@ sens <- mapply(sensitivity ,
            results[["set"]],1:2,MoreArgs = list(ext = 20),SIMPLIFY = FALSE)
 sens <- do.call(rbind,sens)
 
-xl <- 500
+xl <- 400
 pdf(file = file.path(figs_dir,"sensitivity.pdf"))
 ggplot(sens[nAnnot > 1 & between(aveDist,0, xl,incbounds = FALSE) ],
        aes(aveDist,frac,colour = seq,shape = seq))+geom_point()+
