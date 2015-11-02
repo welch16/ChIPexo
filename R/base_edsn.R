@@ -54,4 +54,16 @@ edsn_tab_old <- function(what){
 
 }
 
-  
+## function that returns the right read files given a directory
+
+filter_reads <- function(dir,char,isPET)
+{
+  files <- list.files(dir)
+  files <- files[grep(char[,(edsn)],files)]
+  files <- files[grep("bai",files,invert = TRUE)]  
+  if(isPET){
+    files <- files[grep("filter",files)]
+  }
+  files <- files[grep("run",files,invert = TRUE)]
+  return(file.path(dir,files))
+}
