@@ -21,9 +21,8 @@ what <- c("exo","pet","set")
 char <- lapply(what,edsn_tab_old)
 names(char) <- what
 
-bin_size
 
-#############1#########################################################################
+#######################################################################################
 
 ### reads directories
 
@@ -36,17 +35,17 @@ chip_dirs[["set"]] <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_SET"
 
 ## get files
 
-filter_reads <- function(dir,char,isPET)
-{
-  files <- list.files(dir)
-  files <- files[grep(char[,(edsn)],files)]
-  files <- files[grep("bai",files,invert = TRUE)]  
-  if(isPET){
-    files <- files[grep("filter",files)]
-  }
-  files <- files[grep("run",files,invert = TRUE)]
-  return(file.path(dir,files))
-}
+## filter_reads <- function(dir,char,isPET)
+## {
+##   files <- list.files(dir)
+##   files <- files[grep(char[,(edsn)],files)]
+##   files <- files[grep("bai",files,invert = TRUE)]  
+##   if(isPET){
+##     files <- files[grep("filter",files)]
+##   }
+##   files <- files[grep("run",files,invert = TRUE)]
+##   return(file.path(dir,files))
+## }
 
 read_files <- mapply(filter_reads,
   chip_dirs,char,c(FALSE,TRUE,FALSE),SIMPLIFY = FALSE)
