@@ -26,11 +26,12 @@ edsn_tab_old <- function(what){
   stopifnot(what %in% c("exo","pet","set"))
   if(what == "exo"){
     ## exo
-    edsn <- as.character(c("931","933"))
-    ip <- rep("Sig70",2)
-    condition <- rep("aerobic",2)
-    growth <- rep("exp",2)
-    repl <- 1:2
+#    edsn <- as.character(c("931"),"933"))
+    edsn <- "931"
+    ip <- rep("Sig70",1)
+    condition <- rep("aerobic",1)
+    growth <- rep("exp",1)
+    repl <- 1
     dt <- data.table(edsn,ip,condition,growth,repl)    
   }else if(what == "pet"){    
     ## pet
