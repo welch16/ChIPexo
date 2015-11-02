@@ -18,4 +18,5 @@ rmarkdown/*aux
 rmarkdown/*log
 rmarkdown/*blg
 rmarkdown/*bbl
+rmarkdown/*toc
 rmarkdown/_region_.tex
