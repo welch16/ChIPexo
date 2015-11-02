@@ -14,3 +14,6 @@ figures/*
 inst/extdata/*
 poster/*
 rmarkdown/*html
+rmarkdown/*aux
+rmarkdown/*log
+

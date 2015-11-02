@@ -1,0 +1,16 @@
+%\VignetteEngine{knitr::knitr}
+\documentclass{article}
+
+\title{High Resolution Identification of Protein-DNA Binding Events
+  using ChIP-exo}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+
+\end{document}
