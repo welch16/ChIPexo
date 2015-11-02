@@ -16,4 +16,6 @@ poster/*
 rmarkdown/*html
 rmarkdown/*aux
 rmarkdown/*log
-
+rmarkdown/*blg
+rmarkdown/*bbl
+rmarkdown/_region_.tex
