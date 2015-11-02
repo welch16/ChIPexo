@@ -1,12 +1,14 @@
 
 rm(list = ls())
 
-library(mosaics)
 library(data.table)
 library(GenomicAlignments)
+library(mosaics)
 library(dpeak)
 ## library(devtools)
 ## load_all("~/Desktop/Docs/Code/dpeak")
+## load_all("~/Desktop/Docs/Code/mosaics")
+
 
 
 ######################################################################################
@@ -15,26 +17,27 @@ library(dpeak)
 
 source("R/base_edsn.R")
 
-exo_char <- edsn_tab("exo")
-pet_char <- edsn_tab("pet")
-set_char <- edsn_tab("set")
+what <- c("exo","pet","set")
+char <- lapply(what,edsn_tab_old)
+names(char) <- what
+
 
 ######################################################################################
 
 ## Initial parameters
 
 tf <- "Sig70"
-rif <- "rif20min"
+rif <- "aerobic"
 bs <- 150
 fl <- 150
 fdr <- .001
 thresh <- 10
-mc <- 16
-maxComp <- 3
-seedset <- c( 23456, 34567, 45678, 56789,45987 )
+mc <- 20
+maxComp <- 5
+seedset <- c( 23456, 34567, 45678, 56789,45987 ,521324)
 
 ### we have 5 different seeds
-k <- 3
+k <- 1
 flag_sample <- FALSE
 flag_bins <- FALSE
 flag_peaks <- FALSE
@@ -46,31 +49,32 @@ flag_binding <- TRUE
 ##
 ## 12345 dont 
 
-exo <- exo_char[ip == tf & condition == rif ]
-pet <- pet_char[ip == tf & condition == rif ]
-set <- set_char[ip == tf & condition == rif ]
+## n_val <- seq(1e4,2e5,by = 1e4)    
 
-n_val <- seq(5e4,2e5,by = 1e4)
+n_val <- seq(5e4,8e5,by = 5e4)
 
 base_dir <- "/p/keles/ChIPexo/volume6/saturation"
 folder <- paste(tf,rif,sep = "_")
-what <- c("exo","pet","set")
+
+check_create <- function(dir)if(!dir.exists(dir))dir.create(dir)
 
 base_dir <- file.path(base_dir,folder)
-if(!dir.exists(base_dir))dir.create(base_dir)
+check_create(base_dir)
 
-base_dir <- file.path(base_dir,paste0("seed",k))
-if(!dir.exists(base_dir))dir.create(base_dir)
+base_dir <- file.path(base_dir,paste0("seed_",seedset[k]))
+check_create(base_dir)
+
 
 ##################################h####################################################
 
 ## Sample
 
 dir1 <- "/p/keles/ChIPexo/volume3/LandickData"
-exo_reads_dir <- file.path(dir1,"ChIPexo")
-pet_reads_dir <- file.path(dir1,"ChIPseq_PET")
-set_reads_dir <- file.path(dir1,"ChIPseq_SET")
-
+reads_dir <- list()
+reads_dir[["exo"]] <- file.path(dir1,"ChIPexo")
+reads_dir[["pet"]] <- file.path(dir1,"ChIPseq_PET")
+reads_dir[["set"]] <- file.path(dir1,"ChIPseq_SET")
+ 
 get_reads_files <- function( dir,dt,pet)
 {
   edsn <- dt[,(edsn)]
@@ -80,22 +84,23 @@ get_reads_files <- function( dir,dt,pet)
     files <- files[grep("filter",files)]
   }
   files <- files[grep("bai",files,invert = TRUE)]
+  files <- files[grep("run",files,invert = TRUE)]
   return(files)
 }
 
-exo_reads_files <- get_reads_files(exo_reads_dir,exo,FALSE)
-pet_reads_files <- get_reads_files(pet_reads_dir,pet,TRUE)
-set_reads_files <- get_reads_files(set_reads_dir,set,FALSE)
+reads_files <- mapply(get_reads_files,reads_dir,char,c(FALSE,TRUE,FALSE),SIMPLIFY =FALSE)
 
 filter_factory <- function(want){
   list(KeepQname = function(x) x$qname %in% want)
 }
 
 sample_dir <- file.path(base_dir,"sample")
-if(!dir.exists(sample_dir))dir.create(sample_dir)
+check_create(sample_dir)
 
-sample_reads <- function(reads_file,in_dir,out_dir,n_val,pet)
+sample_reads <- function(reads_file,in_dir,out_dir,n_val,pet,seed)
 {
+  message(reads_file)
+  
   ff <- file.path(in_dir,reads_file)
   edsn <- strsplit(reads_file,"_")[[1]][1]
 
@@ -106,12 +111,19 @@ sample_reads <- function(reads_file,in_dir,out_dir,n_val,pet)
     param <- ScanBamParam(what = c("qname"))
     pairs <- readGAlignmentPairs(ff , param = param)
     qn <- mcols(left(pairs))$qname  ## since left's and right's qnames are identicall
-    want_list <- lapply(n_val,function(x)sample(qn,x))
+    message(length(qn))
+    want_list <- lapply(n_val,function(x){
+      set.seed(seed)
+      sample(qn,x)})
   }else{
     param <- ScanBamParam(what = "qname")
     reads <- readGAlignments(ff , param = param)
     qn <- mcols(reads)$qname
-    want_list <- lapply(n_val,function(x)sample(qn,x))
+    message(length(qn))
+    want_list <- lapply(n_val,function(x){
+      set.seed(seed)
+      sample(qn,x)})
+    
   }
     
   out <- mapply(function(want,dest,pp){
@@ -123,18 +135,12 @@ sample_reads <- function(reads_file,in_dir,out_dir,n_val,pet)
 }
 
 sample_dirs <- sapply(what,function(x)file.path(sample_dir,x))
-lapply(sample_dirs,function(x)if(!dir.exists(x))dir.create(x))
+lapply(sample_dirs,check_create)
 
 if(flag_sample){
-  set.seed(seedset[k])
-  lapply(exo_reads_files,sample_reads,exo_reads_dir,sample_dirs[[1]],n_val,FALSE)
-
-  set.seed(seedset[k])
-  lapply(pet_reads_files,sample_reads,pet_reads_dir,sample_dirs[[2]],n_val,TRUE)
-
-  set.seed(seedset[k])
-  lapply(set_reads_files,sample_reads,set_reads_dir,sample_dirs[[3]],n_val,FALSE)
-
+  lapply(reads_files[["exo"]],sample_reads,reads_dir[["exo"]],sample_dirs[["exo"]],n_val,FALSE,seedset[k])
+  lapply(reads_files[["pet"]],sample_reads,reads_dir[["pet"]],sample_dirs[["pet"]],n_val,TRUE,seedset[k])
+  lapply(reads_files[["set"]],sample_reads,reads_dir[["set"]],sample_dirs[["set"]],n_val,FALSE,seedset[k])
 }
 
 ######################################################################################
@@ -166,7 +172,7 @@ create_bins <- function(in_dir,out_dir,dt,pet,bs,fl)
 }
 
 if(flag_bins){
-  mapply(create_bins,sample_dirs,bin_dirs,list(exo,pet,set),list(FALSE,TRUE,FALSE),
+  mapply(create_bins,sample_dirs,bin_dirs,char,list(FALSE,TRUE,FALSE),
     MoreArgs = list(bs,fl),SIMPLIFY = FALSE)
 }
 
@@ -189,8 +195,9 @@ extra[["exo"]] <- file.path("/p/keles/genome_data/EColi_U00096.2",
   c("fragL150_bin150_32mer_single/E.coli_K-12_MG1655_GENOME_fragL150_bin150.txt",
     "fragL150_bin150/E.coli_K-12_MG1655_GENOME_GC_fragL150_bin150.txt",
     "fragL150_bin150/E.coli_K-12_MG1655_GENOME_N_fragL150_bin150.txt"))
-extra[["pet"]] <- "/p/keles/ChIPexo/volume6/inputs/pet/edsn1369_042814_qc.filter.bam_bin150.txt"
-extra[["set"]] <- "/p/keles/ChIPexo/volume6/inputs/set/edsn1369_042814_qc.filter.bam_fragL150_bin150.txt"
+extra[["pet"]] <- "/p/keles/ChIPexo/volume6/inputs/pet/edsn1416_042814_qc.filter.bam_bin150.txt"
+extra[["set"]] <- "/p/keles/ChIPexo/volume6/inputs/set/edsn101_042814_qc.sorted.bam_fragL150_bin150.txt"
+
 
 call_peaks <- function(file,opt,extra,fdr,bs,thresh)
 {
@@ -214,21 +221,27 @@ mosaics_peaks_wrap <- function(in_dir,out_dir,what,extra,fdr,thresh,bs,mc)
     opt <- c("chip","input")
   }
 
+  ## w <- c(2,7,15, 17, 19, 20, 22, 26, 27, 29, 33, 35, 36, 37, 39, 40)
+  
+  
   files <- file.path(in_dir,list.files(in_dir))
-  peaks <- mclapply(files,call_peaks,opt,extra,fdr,bs,thresh,mc.cores = mc)
+  peaks <- mclapply(files,call_peaks,opt,extra,fdr,bs,thresh,
+    mc.cores = mc,mc.preschedule = FALSE)
 
   files <- list.files(in_dir)
   files <- sapply(strsplit(files,".",fixed = TRUE),function(x)x[1])
   files <- file.path(out_dir,paste0(files,"_peaks.txt"))
 
+
   out <- mcmapply(write.table,peaks,files,MoreArgs = list(
-    sep = "\t",quote = FALSE,row.names = FALSE,col.names = FALSE),SIMPLIFY = FALSE,mc.cores = mc)  
+    sep = "\t",quote = FALSE,row.names = FALSE,col.names = FALSE),SIMPLIFY = FALSE,
+    mc.cores = mc,mc.preschedule = FALSE )  
 
   return(out)
 
 }
 
-if(flag_peaks){
+if(flag_peaks){  
   z <- mapply(mosaics_peaks_wrap,bin_dirs,peak_dirs,what,extra,
     MoreArgs = list(fdr,thresh,bs,mc),SIMPLIFY = FALSE)
 }
@@ -257,6 +270,16 @@ call_sites <- function(peak_file,read_file,out_file,fl,g,pet,mc)
   export(dp,type = "bed",filename = out_file)
 }
 
+match_peaks_reads <- function(peak,all_reads)
+{
+  peak_sep <- strsplit(peak,"_")[[1]]
+  my_reads <- all_reads
+  my_reads <- my_reads[grep(peak_sep[1],my_reads)] # match edsn
+  my_reads <- my_reads[grep(peak_sep[2],my_reads)] # sample
+  return(my_reads)
+
+}
+
 dpeak_sites_wrap <- function(peak_dir,read_dir,out_dir,what,fl,g,mc)
 {
   if(what == "pet"){
@@ -269,9 +292,13 @@ dpeak_sites_wrap <- function(peak_dir,read_dir,out_dir,what,fl,g,mc)
   reads <- list.files(read_dir)
   reads <- reads[grep("bai",reads,invert =TRUE)]
 
+  reads <- sapply(peaks,match_peaks_reads,reads)
+  names(reads) <- NULL
+  ## match peaks and reads
+
   if(is.unsorted(peaks))peaks <- sort(peaks)
   if(is.unsorted(reads))reads <- sort(reads)
-
+  
   outs <- sapply(strsplit(reads,".",fixed = TRUE),function(x)x[1])
   outs <- file.path(out_dir,paste0(outs,".bed"))
                         
