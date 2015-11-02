@@ -73,11 +73,17 @@ vignettest/%.pdf:vignettes/%.tex
 vignettes/%.tex:vignettes/%.Rnw
 	cd vignettes;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
 
-rmarkdown/%.pdf:rmarkdown/%.tex
+rmarkdown/chip_exo_paper.pdf:rmarkdown/chip_exo_paper.tex
 	cd rmarkdown;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
 
-rmarkdown/%.tex:rmarkdown/%.Rnw
+rmarkdown/chip_exo_paper.tex:rmarkdown/chip_exo_paper.Rnw
 	cd rmarkdown;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
+
+# rmarkdown/%.pdf:rmarkdown/%.tex
+# 	cd rmarkdown;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
+
+# rmarkdown/%.tex:rmarkdown/%.Rnw
+# 	cd rmarkdown;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
 
 sample_saturation:
 	/unsup/R-3.2.1/bin/R CMD BATCH --no-save rscripts/sample_chip.R
