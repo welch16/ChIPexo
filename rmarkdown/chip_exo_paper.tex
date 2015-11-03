@@ -73,8 +73,8 @@
 \begin{fmbox}
 \dochead{Draft}
 
-\title{High Resolution Identification of Protein-DNA Binding Events
-  using ChIP-exo}
+\title{ChIP-exo: High Resolution Identification of Protein-DNA Binding
+  Events and Quality Control}
 
 \author[
    addressref={aff6},                   % id's of addresses, e.g. {aff1,aff2}
@@ -104,12 +104,6 @@
 
 
 
-\address[id=aff6]{
-  \orgname{Department of Public Health Sciences, Medical University of South Carolina},
-  \street{135 Cannon Street},
-  \city{Charleston},
-  \cny{SC}
-}
 \address[id=aff1]{%                           % unique id
   \orgname{Department of Statistics, University of Wisconsin Madison}, % university, etc
   \street{1300 University Avenue},                     %
@@ -143,14 +137,18 @@
   \city{Madison},
   \cny{WI}
 }
+\address[id=aff6]{
+  \orgname{Department of Public Health Sciences, Medical University of South Carolina},
+  \street{135 Cannon Street},
+  \city{Charleston},
+  \cny{SC}
+}
 
 
 % \begin{artnotes}
 % %\note{Sample of title note}     % note to the article
 % \note[id=n1]{Equal contributor} % note, connected to author
 % \end{artnotes}
-
-
 
 
 \end{fmbox}
@@ -183,14 +181,16 @@
 
   In this article, we provide a quality control pipeline which
   visually asses ChIP-exo biases and calculates a signal-to-noise
-  measure. Also, we updated dPeak, which makes a striking
+  measure. Also, we updated dPeak \cite{dpeak}, which makes a striking
   balance in sensitivity, specificity, and spatial resolution for
   ChIP-exo data analysis.
 
 \end{abstract}
 \begin{keyword}
   \kwd{ChIP-exo}
-  \kwd{Quality control}
+  \kwd{QC}
+  % \kwd{Transcription Factor}
+  % \kwd{Binding Event}
 \end{keyword}
 
  
@@ -239,11 +239,26 @@ investigated yet, including issues of sequence biases inherent to
 ChIP-exo data, choice of optimal statistical methods, and
 determination of optimal sequencing deoth. However, currently, the
 number of available ChIP-exo data is still limited and their
-sequencing depths are still insufficient for such investigation.
+sequencing depths are still insufficient for such investigation. To
+address this limitation we gathered ChIP exo data from diverse
+organisms: CTCF factor in human \cite{exo1}; ER factor in human and
+FoxA1 factor in mouse from \cite{exo_illumnina}; and generated
+$\sigma^{70}$ factor in Escherichia coli (E. Coli) under aerobic ($ +
+O_2$) condition, and treated by rifampicin by 0 and 20 minutes.
+
+
 
 \section{Results and discussion}
 \label{sec:results}
 
+
+\subsection{Characteristics of ChIP exo data}
+\label{sec:charac}
+
+
+
+\subsection{ChIP exo Quality Control pipeline}
+\label{sec:QC}
 
 
 
@@ -257,10 +272,10 @@ sequencing depths are still insufficient for such investigation.
 
 
 
-
 \bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
 \bibliography{chip_exo_paper}
 
 \nocite{exo_gb}
+
 
 \end{document}
