@@ -1,5 +1,5 @@
 %\VignetteEngine{knitr::knitr}
-\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass{bmcart}\usepackage[]{graphicx}\usepackage[]{color}
 %% maxwidth is the original width if it is less than linewidth
 %% otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -61,39 +61,103 @@
 \usepackage{float}
 \usepackage{verbatim}
 
-\usepackage{authblk}
-
-
-\title{High Resolution Identification of Protein-DNA Binding Events
-  using ChIP-exo}
-\date{}
-\author[6]{Dongjun Chung}
-\author[1]{Ren\'e Welch}
-\author[3]{Irene Ong}
-\author[3,4]{Jeffrey Grass}
-\author[3,4,5]{Robert Landick}
-\author[1,2]{S\"und\"uz Kele\c{s}}
-
-\affil[1]{Department of Statistics, University of Wisconsin - Madison}
-\affil[2]{Department of Biostatistics and Medical Informatics, University of Wisconsin - Madison}
-\affil[3]{Great Lakes Bioenergy Research Center}
-\affil[4]{Department of Biochemistry, University of Wisconsin - Madison}
-\affil[5]{Department of Bacteriology, University of Wisconsin - Madison}
-\affil[6]{Department of Public Health Sciences, Medical University of South Carolina}
-
-
-\addtolength{\oddsidemargin}{-.875in}
-\addtolength{\evensidemargin}{-.875in}
-\addtolength{\textwidth}{1.75in}
-
-\addtolength{\topmargin}{-.875in}
-\addtolength{\textheight}{1.75in}
+% \usepackage{authblk}
+\usepackage[utf8]{inputenc} %unicode support
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
-\maketitle
+%\maketitle
 
-\begin{abstract}
+\begin{frontmatter}
+
+\begin{fmbox}
+\dochead{Draft}
+
+\title{High Resolution Identification of Protein-DNA Binding Events
+  using ChIP-exo}
+
+\author[
+   addressref={aff6},                   % id's of addresses, e.g. {aff1,aff2}
+   email={chungd@musc.edu}   % email address
+]{\inits{DC}\fnm{Dongjun} \snm{Chung}}
+\author[
+   addressref={aff1},
+   email={welch@stat.wisc.edu}
+]{\inits{RW}\fnm{Rene} \snm{Welch}}
+\author[
+   addressref={aff3},
+   email={ong@cs.wisc.edu}
+]{\inits{IO}\fnm{Irene} \snm{Ong}}
+\author[
+   addressref={aff3,aff4},
+   email={jagrass@wisc.edu}
+]{\inits{JG}\fnm{Jeffrey} \snm{Grass}}
+\author[
+   addressref={aff3,aff4,aff5},
+   email={landick@bact.wisc.edu}
+]{\inits{RL}\fnm{Robert} \snm{Landick}}
+\author[
+   addressref={aff1,aff2},
+   corref={aff1},
+   email={keles@stat.wisc.edu}
+]{\inits{SK}\fnm{S\"und\"uz} \snm{Kele\c{s}}}
+
+
+
+\address[id=aff6]{
+  \orgname{Department of Public Health Sciences, Medical University of South Carolina},
+  \street{135 Cannon Street},
+  \city{Charleston},
+  \cny{SC}
+}
+\address[id=aff1]{%                           % unique id
+  \orgname{Department of Statistics, University of Wisconsin Madison}, % university, etc
+  \street{1300 University Avenue},                     %
+  %\postcode{}                                % post or zip code
+  \city{Madison},                              % city
+  \cny{WI}                                    % country
+}
+
+\address[id=aff2]{%
+  \orgname{Department of Biostatistics and Medical Informatics, University of Wisconsin Madison},
+  \street{600 Highland Avenue},
+%  \postcode{24105}
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff3]{
+  \orgname{Great Lakes Bioenergy Research Center, University of Wisconsin Madison},
+  \street{1552 University Avenue},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff4]{
+  \orgname{Department of Biochemistry, University of Wisconsin Madison},
+  \street{433 Babcock Drive},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff5]{
+  \orgname{Department of Bacteriology, University of Wisconsin Madison},
+  \street{1550 Linden Drive},
+  \city{Madison},
+  \cny{WI}
+}
+
+
+% \begin{artnotes}
+% %\note{Sample of title note}     % note to the article
+% \note[id=n1]{Equal contributor} % note, connected to author
+% \end{artnotes}
+
+
+
+
+\end{fmbox}
+
+\begin{abstractbox}
+
+  \begin{abstract}
 
   Recently, ChIP-exo has been developed to investigate protein-DNA
   interaction in higher resolution compared to popularly used
@@ -115,7 +179,7 @@
   both of them are significantly better than resolution of SET
   ChIP-Seq. Finally, for given fixed sequencing depth, ChIP-exo
   provides higher sensitivity, specificity, and spatial resolution
-  than PET ChIP-seq.
+  than PET ChIP-Seq.
 
   In this article, we provide a quality control pipeline which
   visually asses ChIP-exo biases and calculates a signal-to-noise
@@ -124,18 +188,36 @@
   ChIP-exo data analysis.
 
 \end{abstract}
+\begin{keyword}
+  \kwd{ChIP-exo}
+  \kwd{Quality control}
+\end{keyword}
+
+ 
+\end{abstractbox}
+
+\end{frontmatter}
+
+\newpage
+
+* to remove later
+
+\tableofcontents
+
+
+
 
 \newpage
 
 
-\section{Introduction}
+\section{Background}
 \label{sec:intro}
 
 ChIP-exo (Chromatin Immunopecipitation followed by exonuclease
 digestion and next generation sequencing) Rhee and Pugh (\cite{exo1})
 is the state-of-the-art experiment developed to attain single
 base-pair resolution of protein binding site identification and it is
-considered as a powerful alternative to popularly used ChIP-seq
+considered as a powerful alternative to popularly used ChIP-Seq
 (Chromatin Immunoprecipitation coupled with next generation sequencing
 ) assay. ChIP-exo experiments first capture millions of DNA fragments
 (150 - 250 bp in length) that the protein under study interacts with
@@ -144,9 +226,9 @@ antibody. Then, exonuclease is introducted to trim 5' end of each DNA
 fragment to a fixed distance from the bound protein. As a result,
 boundaries around the protein of interest constructed with 5' ends of
 fragments are located much closed to bound protein compared to
-ChIP-seq. This is the step unique to ChIP-exo that could potentially
+ChIP-Seq. This is the step unique to ChIP-exo that could potentially
 provide significantly higher spatial resolution compared to
-ChIP-seq. Finally, high throughput sequencing of a small region (25 to
+ChIP-Seq. Finally, high throughput sequencing of a small region (25 to
 100 bp) at 5' end of each fragment generates millions of reads or
 tags.
 
@@ -159,13 +241,10 @@ determination of optimal sequencing deoth. However, currently, the
 number of available ChIP-exo data is still limited and their
 sequencing depths are still insufficient for such investigation.
 
-\section{Results}
+\section{Results and discussion}
 \label{sec:results}
 
 
-
-\section{Discussion}
-\label{sec:disc}
 
 
 
@@ -179,9 +258,8 @@ sequencing depths are still insufficient for such investigation.
 
 
 
-
+\bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
 \bibliography{chip_exo_paper}
-\bibliographystyle{plain}
 
 \nocite{exo_gb}
 
