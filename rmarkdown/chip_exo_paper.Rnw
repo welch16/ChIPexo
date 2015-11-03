@@ -194,9 +194,27 @@ number of available ChIP-exo data is still limited and their
 sequencing depths are still insufficient for such investigation. To
 address this limitation we gathered ChIP exo data from diverse
 organisms: CTCF factor in human \cite{exo1}; ER factor in human and
-FoxA1 factor in mouse from \cite{exo_illumnina}; and generated
+FoxA1 factor in mouse from \cite{exoillumina}; and generated
 $\sigma^{70}$ factor in Escherichia coli (E. Coli) under aerobic ($ +
 O_2$) condition, and treated by rifampicin by 0 and 20 minutes.
+
+In order to archieve potential benefits of ChIP exo on protein binding
+site identification, it is critical to understand which are the
+important characteristics of ChIP exo data and to use algorithms that
+could fully utilize information available in ChIP exo data. Rhee and
+Pugh \cite{exo1} discussed that reads in the forward and reverse
+strand might construct peak apirs around bound protein, of which
+heights were implicitly assumed to be symmetric. Hence, they used the
+``peak pair method'' taht preducts the midpoint of two modes of pak
+pairs as potential binding site. Apex, a recetly developed ChIP-exo
+data analysis method, is also based on this peak pair
+assumption. However, appropriatness of such assumption was not fully
+evaluated in the literature yet. Furthermore, it is still unknown
+which factors could affect protein binding site ientification using
+ChIP exo data. In order to address this problem, we investigated
+various aspects of ChIP exo data by contrasting them with their
+respective ChIP Seq experiments.
+ 
 
 
 

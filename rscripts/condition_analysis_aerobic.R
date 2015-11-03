@@ -23,13 +23,13 @@ tf <- "Sig70"
 cond <- "aerobic"
 bs <- 150
 fl <- 150
-fdr <- .001
+fdr <- .01
 thresh <- 10
-mc <- 16
+mc <- 24
 maxComp <- 1
 
 flag_bins <- FALSE
-flag_peaks <- FALSE
+flag_peaks <- TRUE
 flag_binding <- TRUE
 flag_input <- FALSE
 
