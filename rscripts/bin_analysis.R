@@ -57,8 +57,16 @@ p <- hexbin_plot(reads[[2]],reads[[1]],150,frag_len = 150)+xlab("ChIP-seq (PET) 
 dt <- copy(p$data)
 dt[,x := 1 + x]
 dt[,y := 1 + y]
-p    
-p + xlim(0,500)+ylim(0,500)+coord_fixed()
-p %+% dt +coord_fixed() + scale_x_log10() + scale_y_log10()
+print(p)    
+print(p + xlim(0,500)+ylim(0,500)+coord_fixed())
+z <- p %+% dt +coord_fixed() + scale_x_log10() + scale_y_log10()
+print(z)
 dev.off()
+
+plots <- list(p,z)
+
+save(plots,file = "data/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.RData")
+
+
+
 
