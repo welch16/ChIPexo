@@ -9,6 +9,7 @@ library(parallel)
 library(ggplot2)
 library(reshape2)
 library(RColorBrewer)
+library(scales)
 
 folders <- paste0("FoxA1-rep",1:3)
 dir <- "/p/keles/ChIPexo/volume3/Analysis/Carroll/mouse"
@@ -113,15 +114,58 @@ forward_strand_ratio_plot <- function(stat,probs = c(0,.25,.5,.75,1),values = 1:
   return(p)
 }
 
-pdf(file = "Rplots.pdf",width = 9,height = 5)
-forward_strand_ratio_plot(replicates[[1]]$stats,probs = c(0,1,.1,.9,.05,.25,.5,.75,.95),mc = 4)
-dev.off()
-
 stats <- lapply(replicates,function(x)x$stats)
 
-plots <- lapply(stats,forward_strand_ratio_plot,probs = c(.05,.95,.75,.25,.5),mc = 4)
+label_plot <- function(stat,values = 1:750,mc = 8,prop = FALSE)
+{
+  stopifnot(is.numeric(values))
+  stopifnot(length(values) > 1)
+
+  to_use <- stat[,.(depth,label)]
+  setkey(to_use,label)
+  fwd <- to_use["fwd"]
+  fwd <- do.call(c,mclapply(values,function(i)nrow(fwd[depth > i]),mc.cores = mc))
+  bwd <- to_use["bwd"]
+  bwd <- do.call(c,mclapply(values,function(i)nrow(bwd[depth > i]),mc.cores = mc))
+  both <- to_use["both"]
+  both <- do.call(c,mclapply(values,function(i)nrow(both[depth > i]),mc.cores = mc))
+  dt <- data.table(fwd,bwd,both)  
+  if(prop){
+    rs <- rowSums(dt)
+    dt <- dt / rs
+  }
+  ord <- c("both","fwd","bwd")
+  setcolorder(dt,ord)
+  dt <- cbind(values,dt)
+  dt <- melt(dt,id.vars = "values")
+  dt[ ,variable := factor(variable, levels = ord)]
+  p <- ggplot(dt , aes(values,value, fill = variable))+geom_bar(stat="identity")+
+    scale_fill_brewer(name = "Strand composition",palette = "Pastel1")+xlim(1,max(values))+theme_bw()+
+    theme(legend.position = "top")+
+    xlab("least amount of fragments in region")
+  if(prop){
+    p <- p + ylab("Cummulative proportion")+ylim(0,1)
+  }else{
+    p <- p + ylab("Cummulative nr. regions")+scale_y_log10(label = trans_format('log10',math_format(10^.x)))
+  }
+
+  return(p)
+}
+
+values <- seq(5,150,by = 5)
+plots <- lapply(stats,label_plot,values = values,prop = TRUE)
+pdf(file = "figs/fsr/draft_label_prop_plot.pdf",width = 9,height = 4)
+u <- lapply(plots,print)
+dev.off()
 
 
-pdf(file = "figs/fsr/draft_fsr_plot.pdf",width = 9,height= 5)
+plots <- lapply(stats,label_plot,values = values)
+pdf(file = "figs/fsr/draft_label_counts_plot.pdf",width = 9,height = 4)
+u <- lapply(plots,print)
+dev.off()
+
+
+plots <- lapply(stats,forward_strand_ratio_plot,probs = c(.05,.95,.75,.25,.5),values = values)
+pdf(file = "figs/fsr/draft_fsr_plot.pdf",width = 9,height= 4)
 u <- lapply(plots,print)
 dev.off()
