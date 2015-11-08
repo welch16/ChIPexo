@@ -8,6 +8,8 @@ library(GenomicAlignments)
 library(dpeak)
 library(ChIPUtils)
 library(viridis)
+library(scales)
+
 
 ## devtools::load_all("~/Desktop/Docs/Code/ChIPUtils")
 
@@ -75,16 +77,26 @@ strand_count <- lapply(reads,count_strand,bins)
 strand_count <- mapply(function(x,u)x[,what := u],strand_count,c("exo","pet","set"),SIMPLIFY = FALSE)
 strand_count <- do.call(rbind,strand_count)
 
+filter <- 100
+
+strand_count_filter <- copy(strand_count)
+strand_count_filter <- strand_count_filter[f + r > filter]
+
+strand_count[ , which := "all bins"]
+
+strand_count_filter[ , which := paste0("nr. reads > ",filter)]
+out <- rbind(strand_count,strand_count_filter)
+
 
 r <- viridis(100,option = "D")
 
-library(scales)
-
-pdf(file = file.path("figs/for_paper","MA_plot_fwd_bwd_by_seq.pdf"),width = 8,height = 4)
+pdf(file = file.path("figs/for_paper","MA_plot_fwd_bwd_by_seq.pdf"),width = 8,height = 5)
 ma <- ggplot(strand_count,aes(M , A))+stat_binhex(bins = 100)+
   scale_fill_gradientn(colours = r,trans = "log10",labels = trans_format("log10",math_format(10^.x)))+
-  facet_grid(. ~ what)+theme_bw()+theme(legend.position = "top")
+  facet_grid(which ~ what)+theme_bw()+theme(legend.position = "top")+coord_fixed(xlim = c(0,30), ylim = c(-12,12))
 print(ma)
+print(ma %+% strand_count_filter)
+print(ma %+% out)     
 dev.off()      
 
 
