@@ -348,7 +348,7 @@ Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 & -0.533\\
 
 
 
-\subsection{Recomendations for the desgin of ChIP-exo experiments}
+\subsection{Recomendations for the design of ChIP-exo experiments}
 \label{sec:reco}
 
 <<design_param , include = FALSE , echo = FALSE , eval = TRUE>>=
