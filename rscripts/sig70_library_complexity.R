@@ -79,6 +79,8 @@ SCC <- do.call(rbind,scc)
 
 exo[,which.max := SCC[,which.max(cross.corr),by = sample][,(V1)]]
 
+save(exo,file = "data/for_paper/sig70_summary.RData")
+
 
 pdf(file = "figs/for_paper/EColi_strand_cross_corr.pdf",width = 9 , height = 5)
 ggplot(SCC,aes(shift,cross.corr,colour = sample))+geom_line(size = .8)+
@@ -86,5 +88,20 @@ ggplot(SCC,aes(shift,cross.corr,colour = sample))+geom_line(size = .8)+
 dev.off()
 
 
+create_regions <- function(reads,lower,rangesOnly=TRUE)
+{
+  stopifnot(class(reads) == "GRanges")
+  stopifnot(lower > 0)
+  cover <- coverage(reads)
+  islands <- slice(cover,lower = lower,rangesOnly = rangesOnly)
+  return(islands)
+}
 
+gr <- lapply(reads,function(x)dt2gr(rbind(readsF(x)[[1]],readsR(x)[[1]])))
+
+regs <- lapply(gr,create_regions,lower  = 1)
+regs <- lapply(gr,as,"GRanges")
+
+## ovs <- mcmapply(findOverlaps,gr,regs,SIMPLIFY = FALSE,mc.cores = 6)
+ 
 

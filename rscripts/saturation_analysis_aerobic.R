@@ -34,10 +34,10 @@ fdr <- .001
 thresh <- 10
 mc <- 20
 maxComp <- 5
-seedset <- c( 23456, 34567, 45678, 56789,45987 ,521324)
+seedset <- c( 23456, 34567, 45678, 56789,45987 ,521324,712832,98212423,523231,987654)
 
-### we have 5 different seeds
-k <- 5
+### we have 10 different seeds
+k <- 10
 flag_sample <- TRUE
 flag_bins <- TRUE
 flag_peaks <- TRUE

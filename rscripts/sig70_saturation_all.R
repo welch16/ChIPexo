@@ -214,6 +214,12 @@ pdf(file = "figs/for_paper/Sig70_aerobic_resolution.pdf")
 print(p4)
 dev.off()
 
+
 pdf(file = "figs/for_paper/Sig70_aerobic_saturation.pdf")
 grid.arrange(p1,p2,p3,p4,nrow = 2)
 dev.off()
+
+plots <- list(p1,p2,p3,p4)
+
+save(plots,file = "data/for_paper/sig70_aerobic_saturation_plots.RData")
+
