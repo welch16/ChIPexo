@@ -166,16 +166,16 @@ npeaks <- summaries[,length(unique(peakId)), by = .(seed,what,sample)]
 npeaks[ ,sample := as.numeric(gsub("K","",sample)) ]
 p1 <- ggplot(npeaks,aes(sample,V1,colour = what))+geom_point(size = 1)+
   geom_smooth(method = "loess",se = FALSE,size = 1.5)+
-  ylim(150,375)+scale_color_brewer(palette = "Set1",name = "Protocol")+
-  theme_bw()+theme(legend.position = "top")+
+  ylim(150,375)+scale_color_brewer(palette = "Set1",name = "")+
+  theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Nr. reads (in thousands)")+ylab("Nr. of candidate peaks")
 
 npred <- summaries[,length(peakId),by = .(seed,what,sample)]
 npred[ ,sample := as.numeric(gsub("K","",sample)) ]
 p2 <- ggplot(npred,aes(sample,V1,colour = what))+geom_point(size = 1)+
   geom_smooth(method = "loess",se = FALSE,size = 1.5)+
-  scale_color_brewer(palette = "Set1",name = "Protocol")+
-  theme_bw()+theme(legend.position = "top")+ylim(300,1100)+
+  scale_color_brewer(palette = "Set1",name = "")+
+  theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+ylim(300,1100)+
   xlab("Nr. reads (in thousands)")+ylab("Nr. of predicted events")
 
 ext <- 15
@@ -183,8 +183,8 @@ niden <- summaries[ ,sum(dist <= ext),by = .(seed,what,sample)]
 niden[ ,sample := as.numeric(gsub("K","",sample)) ]
 p3 <- ggplot(niden,aes(sample,V1,colour = what))+geom_point(size = 1)+
   geom_smooth(method = "loess",se = FALSE,size = 1.5)+
-  scale_color_brewer(palette = "Set1",name = "Protocol")+
-  theme_bw()+theme(legend.position = "top")+
+  scale_color_brewer(palette = "Set1",name = "")+
+  theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Nr. reads (in thousands)")+ylab("Nr. of identificed targets")
 
 reso <- summaries[, min(dist), by = .(seed,what,sample,peakId)]
@@ -193,8 +193,8 @@ reso[ ,sample := as.numeric(gsub("K","",sample)) ]
 
 p4 <- ggplot(reso,aes(sample,V1,colour = what))+geom_point(size = 1)+
   geom_smooth(method = "loess",se = FALSE,size = 1.5)+
-  scale_color_brewer(palette = "Set1",name = "Protocol")+
-  theme_bw()+theme(legend.position = "top")+
+  scale_color_brewer(palette = "Set1",name = "")+
+  theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Nr. reads (in thousands)")+ylab("Resolution")
 
 
@@ -216,7 +216,10 @@ dev.off()
 
 
 pdf(file = "figs/for_paper/Sig70_aerobic_saturation.pdf")
-grid.arrange(p1,p2,p3,p4,nrow = 2)
+grid.arrange(p1 + ggtitle("A"),
+             p2 + ggtitle("B"),
+             p3 + ggtitle("C"),
+             p4 + ggtitle("D"),nrow = 2)
 dev.off()
 
 plots <- list(p1,p2,p3,p4)

@@ -73,8 +73,8 @@
 \begin{fmbox}
 \dochead{Draft}
 
-\title{ChIP-exo: High Resolution Identification of Protein-DNA Binding
-  Events and Quality Control}
+\title{High Resolution Identification of Protein-DNA Binding
+  Events and Quality Control for ChIP-exo data}
 
 \author[
    addressref={aff6},                   % id's of addresses, e.g. {aff1,aff2}
@@ -206,7 +206,6 @@
 
 \newpage
 
-
 \section{Background}
 \label{sec:intro}
 
@@ -237,7 +236,7 @@ ChIP-exo data, choice of optimal statistical methods, and
 determination of optimal sequencing deoth. However, currently, the
 number of available ChIP-exo data is still limited and their
 sequencing depths are still insufficient for such investigation. To
-address this limitation we gathered ChIP exo data from diverse
+address this limitation we gathered ChIP-exo data from diverse
 organisms: CTCF factor in human \cite{exo1}; ER factor in human and
 FoxA1 factor in mouse from \cite{exoillumina}; and generated
 $\sigma^{70}$ factor in Escherichia coli (E. Coli) under aerobic ($ +
@@ -261,8 +260,8 @@ the signal-to-noise ratio for a ChIP-exo sample.
 
 In order to archieve the potential benefits of ChIP-exo on protein
 binding site identification, it is critical to understand which are
-the important characteristics of ChIP exo data and to use algorithms
-that could fully utilize information available in ChIP exo data. Rhee
+the important characteristics of ChIP-exo data and to use algorithms
+that could fully utilize information available in ChIP-exo data. Rhee
 and Pugh \cite{exo1} discussed that reads in the forward and reverse
 strand might construct peak pairs around bound protein, of which
 heights were implicitly assumed to be symmetric. Hence, they used the
@@ -273,7 +272,7 @@ analysis methods, are also based on this peak pair
 assumption. However, appropriatness of such assumption was not fully
 evaluated in the literature yet.  Furthermore, it is still unknown
 which factors could affect protein binding site ientification using
-ChIP exo data. In order to address this problem, we investigated
+ChIP-exo data. In order to address this problem, we investigated
 various aspects of ChIP exo data by contrasting them with their
 respective ChIP Seq experiments.
 
@@ -318,11 +317,8 @@ the available methods.
 \section{Results and discussion}
 \label{sec:results}
 
-
-
 \subsection{Deeply sequenced E.Coli $\sigma^{70}$ ChIP-exo and ChIP-Seq data}
 \label{sec:ourdata}
-
 
 $\sigma^{70}$ factor is a transcription initiation factor of
 housekeeping genesin E. coli. In E. coli genomes, many promoters
@@ -335,11 +331,57 @@ ChIP-exo's potential for identification and differentiation of closely
 spaced binding sites are invaluable for elucidating the
 transcriptional networks of prokaryotic genomes.
 
-
-
 \subsection{Current guidelines and quality metrics}
 \label{sec:qcnow}
 
+To have a first view on the data, we calculated a series of the most
+commonly used quality indicators for ChIP-Seq data, which are listed
+in table \ref{tab:qcbase}. The PBC, NSC and RSC were calculated as
+defined in \cite{encode_qc} and the SSD was calculated as defined in
+\cite{htseq}. Additionally, we calculated the FSR to compare the
+number of fragments in each strand. A few conclussions that we may get
+by observing the PBC in table \ref{tab:qcbase} are all the samples
+have a quite low library complexity, hence it would be suggested to
+repeat the experiment. 
+
+\begin{table}[h]
+  \centering
+\begin{tabular}{l|r|r|r|r|r|r|r}
+\hline\hline
+Condition & Rep. & Nr. reads & PBC & SSD & FSR & NSC & RSC \\
+\hline\hline
+Aerobic & 1 & 1,454,566 & 0.2156 & 0.0830 & 0.5012 & 114.14 & -1.670\\
+\hline
+Aerobic & 2 & 864,714 & 0.2471 & 0.0488 & 0.4923 & 160.93 & -1.503 \\
+\hline
+Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 & 0.4998 & 10.29 & -0.092\\
+\hline
+Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091 & 0.5047 &  25.08 & -0.2279 \\
+\hline
+Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820 & 0.5054 & 17.69 & -0.450 \\
+\hline
+Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 & -0.533\\
+\hline
+\end{tabular}  
+\caption{Usual quality control indicators applied to our $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD for standarized standard deviation, FSR for forward strand ratio, NSC for normalized strand cross-correlation coefficient and RSC for relative strand cross-correlation coefficient.}
+  \label{tab:qcbase}
+\end{table}
+
+
+
+
+\subsection{ChIP exo Quality Control pipeline}
+\label{sec:QC}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .9\textwidth]{../figs/for_paper/coverage_diagram.pdf}
+  \caption{Diagram of the ChIP-exo Quality control pipeline(this is a
+    place-holder). The genome is partitioned into several regions by
+    removing the empty segments and for each regions we calculate a
+    collection of qc indicators.}
+  \label{fig:qcdiagram}
+\end{figure}
 
 \subsection{Characteristics of ChIP exo data}
 \label{sec:charac}
@@ -348,11 +390,43 @@ transcriptional networks of prokaryotic genomes.
 
 
 
-\subsection{ChIP exo Quality Control pipeline}
-\label{sec:QC}
+\subsection{Comparison with ChIP-Seq data}
+\label{sec:comp}
 
 
 
+
+\subsection{Recomendations for the desgin of ChIP-exo experiments}
+\label{sec:reco}
+
+
+
+We sampled a fixed amoung of fragments for each of the ChIP-exo, PET
+ChIP-Seq and SET ChIP-Seq datasets of the $\sigma^{70}$ sample in
+aerobic conditions. For each sampled dataset we applied our
+lower-to-higher resolution pipeline by calling peaks with MOSAiCS
+\cite{mosaics} and then deconvoling the binding events by using dPeak
+\cite{dpeak}. For the ChIP-exo datasets we called peaks by using
+GC-content and mappability with MOSAiCS, and for the ChIP-Seq datasets
+we used their respective Input samples.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_aerobic_saturation.pdf}
+  \caption{Comparison of the number of candidate regions (A),
+    predicted events (B), identified targets (C) and resolution (D)
+    among ChIP-exo, PET ChIP-Seq and SET ChIP-Seq. RegulonDB
+    annotations are considered as a gold standard. A gold standard was
+    considered identified if a BS was estimated inside a 15
+    bp window around it}
+  \label{fig:design}
+\end{figure}
+
+In figure \ref{fig:design} we compared the behaviour of each data type
+when their depth is fixed. 
+
+
+\newpage
 
 
 \section*{Methods}

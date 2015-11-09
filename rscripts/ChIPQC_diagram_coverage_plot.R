@@ -50,13 +50,13 @@ dt <- do.call(rbind,dt)
 p <- ggplot(dt,aes(coords,tagCounts,colour = what))+geom_line()+
   scale_colour_manual(values = c("black","blue","red"))+xlab("Genomic coordinates")+
   theme_bw()+theme(legend.position = "none",axis.text = element_text(size = 0),
-                   axis.ticks = element_blank())+
+                   axis.ticks = element_blank(),plot.title = element_text(hjust = 0))+
   geom_abline(slope = 0,intercept = 5,colour = "cornsilk4",linetype =2)+ylim(0,500)+
   ylab("Number of reads by position")
 
 
-pdf(file = "figs/for_paper/coverage_diagram.pdf",width = 12 ,height = 5)
-print(p)
+pdf(file = "figs/for_paper/coverage_diagram.pdf",width = 9 ,height = 4)
+print(p + ggtitle("A"))
 dev.off()
 
 
