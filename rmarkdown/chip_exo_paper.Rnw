@@ -359,19 +359,45 @@ both strands. However, as we can see in figure \ref{fig:fsr}
 
 
 
-\begin{figure}[h]
-  \centering
+% \begin{figure}[h]
+%   \centering
  
-  \caption{This is a place-holder figure by now. The idea of this segments it }
-  \label{fig:fsr}
-\end{figure}
+%   \caption{This is a place-holder figure by now. The idea of this segments it }
+%   \label{fig:fsr}
+% \end{figure}
 
 
 
 \subsection{Comparison with ChIP-Seq data}
 \label{sec:comp}
 
-We compared 
+<<comp_param,include = FALSE,echo = FALSE,eval = TRUE>>=
+
+  bin_size <- 150
+  frag_len <- 150
+  
+@ 
+
+We first compared various factors that could affect binding site
+identification between ChIP-exo and ChIP-Seq data. in order to compare
+distribution of signal and background between ChIP-exo and ChIP-Seq
+data, we calculated ChIP tag counts accross the genome by counting the
+number of reads mapping to each of \Sexpr{bin_size} non-overlapping
+window after extending reads by \Sexpr{frag_len} to their 3' end
+directions. ChIP tag counts in ChIP-exo data were linearly related to
+ChIP tag counts in ChIP-Seq data for the regions with high ChIP tag
+counts (Figure \ref{fig:comp}A). This implies that signals for
+pontential binding sites are well reproducible between ChIP-exo and
+ChIP-Seq data. On the other hand, there was clear difference in the
+background distribution between them. In CHIP-Seq datam reads were
+almost uniformly distributed over background (non-binding) regions and
+the ChIP tag counts in there regions were significantly larger than
+zero. In contrast, in ChIP-exo data, there was larger variation in
+ChIP tag counts among background regions and ChIP tag counts were much
+lower in these regions compared to ChIP-Seq data. There were also
+large proportion of regions without any read in ChIP-exo data. There
+results indicate that background distribution of CHIP-exo data is less
+homogeneous than that of ChIP-Seq data.
 
 \begin{figure}[h]
   \centering
