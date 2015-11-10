@@ -225,12 +225,12 @@ assumption. However, appropriatness of such assumption was not fully
 evaluated in the literature yet.  Furthermore, it is still unknown
 which factors could affect protein binding site ientification using
 ChIP-exo data. In order to address this problem, we investigated
-various aspects of ChIP exo data by contrasting them with their
-respective ChIP Seq experiments.
+various aspects of ChIP-exo data by contrasting them with their
+respective ChIP-Seq experiments.
 
 Currently, research on statistical methods for ChIP-exo data is still
 in its very early stage. Although many methods have been proposed to
-identify protein binding sites from ChIP Seq data (reviewed in
+identify protein binding sites from ChIP-Seq data (reviewed in
 \cite{evaluation} and \cite{computation}), such as MACS \cite{macs},
 CisGenome \cite{cisgenome} and MOSAiCS \cite{mosaics}, these
 approaches reveal protein binding sites in lower resolution, i.e., at
@@ -321,9 +321,15 @@ Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 & -0.533\\
 
 
 
-
-\subsection{ChIP exo Quality Control pipeline}
+\subsection{ChIP-exo Quality Control pipeline}
 \label{sec:QC}
+
+Figure \ref{fig:qcdiagram} shows a flowchart for the ChIPexoQC
+pipeline. Which basically partitions genome by keeping the
+non-diggested ChIP-exo regions. Then, for each region it calculates a
+series of independent statistics. Finally, it creates several
+visualizations that were designed to asses the overall quality levels
+of A ChIP-exo sample.
 
 \begin{figure}[h!]
   \centering
@@ -335,15 +341,54 @@ Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 & -0.533\\
   \label{fig:qcdiagram}
 \end{figure}
 
-\subsection{Characteristics of ChIP exo data}
-\label{sec:charac}
 
 
+\subsubsection{Assessing the strand imbalance in ChIP-exo data}
+\label{sec:strand_imbalance}
+
+The strand imbalance assesment is based in the observation that the
+enriched regions usually have a higher concentration of fragments,
+therefore we examine the FSR (defined as the ratio of the number of
+forward stranded reads divided by the total number of reads in a given
+region) as the region with lower depth are being filtered out. This
+indicator is of particular importance, since several methods rely on
+the ``peak-pair'' assumption. In table \ref{tab:qcbase}, we calculated
+the FSR and noticed that for all the samples, it's value is close to
+0.5, which means that there are roughly the same amount of reads in
+both strands. However, as we can see in figure \ref{fig:fsr}
+
+
+
+\begin{figure}[h]
+  \centering
+ 
+  \caption{This is a place-holder figure by now. The idea of this segments it }
+  \label{fig:fsr}
+\end{figure}
 
 
 
 \subsection{Comparison with ChIP-Seq data}
 \label{sec:comp}
+
+We compared 
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = .6\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
+  \includegraphics[width = .9\textwidth ]{../figs/for_paper/MA_plot_fwd_bwd_by_seq.pdf}
+  \caption{Comparison}
+  \label{fig:comp}
+\end{figure}
+
+
+
+% \[
+% \mbox{FSR} = \frac{\mbox{Number of forward strand reads in region}}{\mbox{Total number of reads in region}}
+% \]
+
+
+
 
 
 
@@ -380,14 +425,42 @@ we used their respective Input samples.
 \end{figure}
 
 In figure \ref{fig:design} we compared the behaviour of each data type
-when their depth is fixed. 
+when their depth is fixed. It is remarkable that even when the number
+of candiate peaks or the number of predicted events in quite lower
+than for both ChIP-Seq cases, it outperforms them in the number of
+identified targets and in resolution. This may suggest that with
+ChIP-exo less false positive peaks are being called and that when the
+targets are being identified, dpeak is able to estimate binding
+locations closer to the actual true cases. Additionally, we can see
+that as the read depth increases all four indicators do so as well,
+which may indicate that with ChIP-exo a smaller amount of reads is
+necessary to identify a higher number of targets, but it may also be
+possible that this is an artifact occurring due to ChIP-exo's lower
+library complexity.
+
 
 
 \newpage
 
 
-\section*{Methods}
+\section{Methods}
 \label{sec:methods}
+
+\subsection{Growth conditions}
+\label{sec:growth}
+
+
+\subsection{ChIP-exo experiments}
+\label{sec:experiments}
+
+
+
+\subsection{Library preparation, sequencing and mapping of sequencing reads}
+\label{sec:library}
+
+\subsection{Method comparison for ChIP-exo}
+\label{sec:method_comp}
+
 
 
 

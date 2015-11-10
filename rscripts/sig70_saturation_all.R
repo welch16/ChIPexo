@@ -185,7 +185,7 @@ p3 <- ggplot(niden,aes(sample,V1,colour = what))+geom_point(size = 1)+
   geom_smooth(method = "loess",se = FALSE,size = 1.5)+
   scale_color_brewer(palette = "Set1",name = "")+
   theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
-  xlab("Nr. reads (in thousands)")+ylab("Nr. of identificed targets")
+  xlab("Nr. reads (in thousands)")+ylab("Nr. of identified targets")
 
 reso <- summaries[, min(dist), by = .(seed,what,sample,peakId)]
 reso <- reso[,median(V1), by = .(seed,what,sample)]

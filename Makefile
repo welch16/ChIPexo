@@ -73,11 +73,17 @@ vignettest/%.pdf:vignettes/%.tex
 vignettes/%.tex:vignettes/%.Rnw
 	cd vignettes;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
 
-rmarkdown/chip_exo_paper.pdf:rmarkdown/chip_exo_paper.tex
+rmarkdown/chip_exo_paper.pdf:rmarkdown/chip_exo_paper.tex figs/for_paper/Sig70_aerobic_saturation.pdf figs/for_paper/coverage_diagram.pdf
 	cd rmarkdown;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
 
-rmarkdown/chip_exo_paper.tex:rmarkdown/chip_exo_paper.Rnw
+rmarkdown/chip_exo_paper.tex:rmarkdown/chip_exo_paper.Rnw figs/for_paper/Sig70_aerobic_saturation.pdf figs/for_paper/coverage_diagram.pdf
 	cd rmarkdown;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
+
+figs/for_paper/Sig70_aerobic_saturation.pdf:rscripts/sig70_saturation_all.R
+	R CMD BATCH --no-save rscripts/sig70_saturation_all.R
+
+figs/for_paper/coverage_diagram.pdf:rscripts/ChIPQC_diagram_coverage_plot.R
+	R CMD BATCH --no-save rscripts/ChIPQC_diagram_coverage_plot.R
 
 # rmarkdown/%.pdf:rmarkdown/%.tex
 # 	cd rmarkdown;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..

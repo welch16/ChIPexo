@@ -94,14 +94,203 @@ create_regions <- function(reads,lower,rangesOnly=TRUE)
   stopifnot(lower > 0)
   cover <- coverage(reads)
   islands <- slice(cover,lower = lower,rangesOnly = rangesOnly)
+  islands <- as(islands,"GRanges")
   return(islands)
 }
 
 gr <- lapply(reads,function(x)dt2gr(rbind(readsF(x)[[1]],readsR(x)[[1]])))
-
 regs <- lapply(gr,create_regions,lower  = 1)
-regs <- lapply(gr,as,"GRanges")
 
-## ovs <- mcmapply(findOverlaps,gr,regs,SIMPLIFY = FALSE,mc.cores = 6)
- 
+build_stats <- function(region,reads)
+{
+  ## fix formats and stuff
+  ov <- findOverlaps(region,reads)
+  reads <- gr2dt(reads)
+  w <- width(region)    
+  region <- gr2dt(region)
+  region[ , width := w]
+  region[, match := paste0(seqnames,":",start,"_",end)]
+  reads[  subjectHits(ov), match := region[queryHits(ov), (match)] ]  
+  reads[,strand := ifelse(strand == "+", "F","R")]
 
+  ## get base statistics
+  f <- reads[,sum(strand == "F"),by = match]
+  setnames(f,names(f),c("match","f"))
+  setkey(f,match)
+  r <- reads[,sum(strand == "R"),by = match]
+  setkey(r,match)
+  setnames(r,names(r),c("match","r"))
+  f_uniq <- reads[strand == "F",length(unique(start)),by = match]
+  setnames(f_uniq,names(f_uniq),c("match","f_pos"))
+  setkey(f_uniq,match)
+  r_uniq <- reads[strand == "R",length(unique(end)),by = match]
+  setnames(r_uniq,names(r_uniq),c("match","r_pos"))
+  setkey(r_uniq,match)
+
+  ## merge statistics
+  stats <- merge(region,f,by = "match",allow.cartesian = TRUE)
+  stats <- merge(stats,r,by = "match",allow.cartesian = TRUE)
+  stats <- merge(stats,f_uniq,by = "match",allow.cartesian = TRUE,all = TRUE)
+  stats <- merge(stats,r_uniq,by = "match",allow.cartesian = TRUE, all = TRUE)
+  stats[is.na(f_pos), f_pos := 0]
+  stats[is.na(r_pos), r_pos := 0]
+
+  ## calculate composite stats
+  stats[ , depth := f + r]
+  stats[ , npos := f_pos + r_pos]
+  stats[ , ave_reads := depth / width]
+  stats[ , cover_rate := npos / depth]
+  stats[ , fsr := f / (f + r)]
+
+  stats[ , M := as.numeric(NA)]
+  stats[ , A := as.numeric(NA)]
+
+  stats[f > 0 & r > 0, M := log2(f * r) - 2 * log2(width)]
+  stats[f > 0 & r > 0, A := log2( f/ r)]
+
+  stats[ , strand := NULL]
+
+  return(stats)
+}
+
+stats <- mcmapply(build_stats,regs,gr,SIMPLIFY = FALSE,mc.cores = 6)
+
+aux <- mapply(function(x,y)x[,edsn := y],stats,exo[,(edsn)],SIMPLIFY =FALSE)
+aux <- do.call(rbind,aux)
+aux[ , edsn := factor(edsn , levels  = c(1311,1317, 931 , 1314,1320 , 933))]
+aux[ , edsn := plyr::mapvalues(edsn , from = c(1311,1317, 931 , 1314,1320 , 933),
+          to = c("Rif0_rep1","Rif20_rep1","Aerobic_rep1","Rif0_rep2","Rif20_rep2","Aerobic_rep2"))]
+         
+
+pdf(file = "figs/for_paper/Sig70_number_unique_positions_perSample.pdf")
+ggplot(aux[npos > 10] , aes(npos))+  geom_histogram()+scale_x_log10()+facet_wrap( ~  edsn)
+dev.off()
+
+library(hexbin)
+library(scales)
+r <- viridis::viridis(100,option = "D")
+
+pdf(file = "figs/for_paper/Sig70_enrichment.pdf",width = 9 , height = 7 )
+p <- ggplot(aux , aes( ave_reads,cover_rate))+stat_binhex(bins = 50)+
+  facet_wrap( ~ edsn)+scale_fill_gradientn(colours = r,trans = "log10",
+    labels = trans_format("log10",math_format(10^.x)))+xlim(0,7)+ylim(0,.6)+
+  theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
+  xlab("Average read coverage")+
+  ylab("Uniquue read coverage rate")
+print(p + ggtitle("All regions"))
+print( p  %+% aux[ npos > 10] + ggtitle("Npos > 10")) 
+print( p  %+% aux[ npos > 30] + ggtitle("Npos > 30")) 
+dev.off()
+
+enrichment <- list( data = aux , plot = p)
+save(enrichment , file = "data/for_paper/enrich_plot.RData")
+
+
+## signal-to-noise
+
+### filter to regions where we can calcualte the local scc
+
+pdf(file = "figs/for_paper/Sig70_MA_plots.pdf",width = 9 , height = 7 )
+p <-ggplot(aux[f > 0 & r > 0 ] , aes( M , A))+stat_binhex(bins = 50)+
+  facet_wrap( ~ edsn)+scale_fill_gradientn(colours = r,trans = "log10",
+    labels = trans_format("log10",math_format(10^.x)))+
+  theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))
+dev.off()
+print(p + ggtitle("All regions"))
+print( p  %+% aux[ npos > 10] + ggtitle("Npos > 10")) 
+print( p  %+% aux[ npos > 30] + ggtitle("Npos > 30")) 
+dev.off()
+
+
+filter_stats <- lapply(stats,function(x)x[ f > 0 & r > 0])
+
+local_scc <- function(stat , reads , min_npos,max_npos, nsample, shift = 1:300)
+{
+
+  stat <- copy(stat[ between(npos, min_npos,max_npos)])
+  message(nrow(stat))
+  if(nrow(stat) > nsample){
+    stat <- stat[sample(match , nsample)]
+  }
+
+  regions <- dt2gr(stat[,2:4,with = FALSE])
+  regions <- split(regions,start(regions))
+  names(regions) <- stat[,(match)]
+
+  scc <- lapply(regions,function(x)local_strand_cross_corr(reads,x,shift))
+
+  return(scc)
+}
+
+
+strata_high <- mapply(local_scc,filter_stats,reads,
+      MoreArgs = list(min_npos = 100, max_npos = Inf,nsample = 100 ,shift = 1:150),SIMPLIFY = FALSE)
+
+strata_med1 <- mapply(local_scc,filter_stats,reads,
+      MoreArgs = list(min_npos = 75, max_npos = 100,nsample = 100 ,shift = 1:150),SIMPLIFY = FALSE)
+
+strata_med2 <- mapply(local_scc,filter_stats,reads,
+      MoreArgs = list(min_npos = 50, max_npos = 75,nsample = 100 ,shift = 1:150),SIMPLIFY = FALSE)
+
+strata_low <- mapply(local_scc,filter_stats,reads,
+      MoreArgs = list(min_npos = 30, max_npos = 50,nsample = 100 ,shift = 1:150),SIMPLIFY = FALSE)
+
+strata_low2 <- mapply(local_scc,filter_stats,reads,
+      MoreArgs = list(min_npos = 15, max_npos = 30,nsample = 100 ,shift = 1:150),SIMPLIFY = FALSE)
+
+strata_low3 <- mapply(local_scc,filter_stats,reads,
+      MoreArgs = list(min_npos = 10, max_npos = 15,nsample = 100 ,shift = 1:150),SIMPLIFY = FALSE)
+
+
+local_scc_data <- list(strata_high, strata_med1,strata_med2,strata_low,strata_low2,strata_low3)
+save(local_scc_data , file = "data/for_paper/sig70_local_scc_by_strata.RData")
+
+## get it as a big table
+## strati <- c("high","med1","med2","low1","low2","low3")
+
+## load(file = "data/for_paper/sig70_local_scc_by_strata.RData")
+
+## names(local_scc_data) <- strati
+## local_scc_data <- lapply(local_scc_data,function(x,nm){
+##   names(x) <- nm
+##   return(x)},exo[,(edsn)])
+
+## local_scc_data <- lapply(local_scc_data,
+##   function(x){
+##     out <- lapply(x,function(y){
+##     scc <- mapply(function(curve,name)curve[,match := name],y,names(y),SIMPLIFY = FALSE)
+##     scc <- do.call(rbind,scc)
+##     return(scc)
+##     })
+##     out <- mapply(function(scc,name)scc[,edsn := name],out,names(out),SIMPLIFY = FALSE)
+##     out <- do.call(rbind,out)
+##     return(out)
+##   })
+
+## local_scc_data <- mapply(function(x,y)x[,strata := y],local_scc_data,strati,SIMPLIFY = FALSE)
+## local_scc_data <- do.call(rbind,local_scc_data)
+
+## noise <- function(shift,cross.corr)
+## {
+##   if(all( is.na(cross.corr))){
+##     out <- Inf
+##   }else{
+##     mod <- loess(cross.corr ~ shift)
+##     out <- mod$s
+##   }
+##   return(out)
+## }
+
+## cc_max <- function(shift,cross.corr)
+## {
+##   if(all(is.na(cross.corr))){
+##     out <- Inf
+##   }else{
+##     mod <- loess(cross.corr ~ shift)
+##     out <- max(predict(mod))
+##   }
+##   return(out)
+## }
+
+
+## local_scc_data[,noise(shift,cross.corr), by = .(match, edsn,strata)][,length(unique(V1))]

@@ -28,7 +28,7 @@ covers <- lapply(frags,coverage)
 
 chr <- "U00096"
 start <-  5000
-end <- 15000
+end <- 12000
 
 reg <- GRanges(seqnames = chr,ranges = IRanges(
   start = start, end= end),strand = "*")
