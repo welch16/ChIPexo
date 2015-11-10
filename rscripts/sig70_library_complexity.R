@@ -3,8 +3,8 @@ rm(list = ls())
 
 library(GenomicAlignments)
 library(data.table)
-library(ChIPUtils)
 library(ggplot2)
+library(ChIPUtils)
 
 exo_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPexo"
 
@@ -217,7 +217,11 @@ local_scc <- function(stat , reads , min_npos,max_npos, nsample, shift = 1:300)
   regions <- split(regions,start(regions))
   names(regions) <- stat[,(match)]
 
-  scc <- lapply(regions,function(x)local_strand_cross_corr(reads,x,shift))
+  regions <- as.list(regions)
+  
+  scc <- mclapply(regions,function(x){
+    out <- local_strand_cross_corr(reads,x,shift)
+    return(out)},mc.cores = 20)
 
   return(scc)
 }
@@ -246,51 +250,147 @@ local_scc_data <- list(strata_high, strata_med1,strata_med2,strata_low,strata_lo
 save(local_scc_data , file = "data/for_paper/sig70_local_scc_by_strata.RData")
 
 ## get it as a big table
-## strati <- c("high","med1","med2","low1","low2","low3")
+strati <- c("high","med1","med2","low1","low2","low3")
+load(file = "data/for_paper/sig70_local_scc_by_strata.RData")
 
-## load(file = "data/for_paper/sig70_local_scc_by_strata.RData")
+names(local_scc_data) <- strati
+local_scc_data <- lapply(local_scc_data,function(x,nm){
+  names(x) <- nm
+  return(x)},exo[,(edsn)])
 
-## names(local_scc_data) <- strati
-## local_scc_data <- lapply(local_scc_data,function(x,nm){
-##   names(x) <- nm
-##   return(x)},exo[,(edsn)])
+local_scc_data <- lapply(local_scc_data,
+  function(x){
+    out <- lapply(x,function(y){
+    scc <- mapply(function(curve,name)curve[,match := name],y,names(y),SIMPLIFY = FALSE)
+    scc <- do.call(rbind,scc)
+    return(scc)
+    })
+    out <- mapply(function(scc,name)scc[,edsn := name],out,names(out),SIMPLIFY = FALSE)
+    out <- do.call(rbind,out)
+    return(out)
+  })
 
-## local_scc_data <- lapply(local_scc_data,
-##   function(x){
-##     out <- lapply(x,function(y){
-##     scc <- mapply(function(curve,name)curve[,match := name],y,names(y),SIMPLIFY = FALSE)
-##     scc <- do.call(rbind,scc)
-##     return(scc)
-##     })
-##     out <- mapply(function(scc,name)scc[,edsn := name],out,names(out),SIMPLIFY = FALSE)
-##     out <- do.call(rbind,out)
-##     return(out)
-##   })
+local_scc_data <- mapply(function(x,y)x[,strata := y],local_scc_data,strati,SIMPLIFY = FALSE)
+local_scc_data <- do.call(rbind,local_scc_data)
 
-## local_scc_data <- mapply(function(x,y)x[,strata := y],local_scc_data,strati,SIMPLIFY = FALSE)
-## local_scc_data <- do.call(rbind,local_scc_data)
+noise <- function(shift,cross.corr)
+{
+  if(all( is.na(cross.corr))){
+    out <- Inf
+  }else{
+    mod <- loess(cross.corr ~ shift)
+    out <- mod$s
+  }
+  return(out)
+}
 
-## noise <- function(shift,cross.corr)
-## {
-##   if(all( is.na(cross.corr))){
-##     out <- Inf
-##   }else{
-##     mod <- loess(cross.corr ~ shift)
-##     out <- mod$s
-##   }
-##   return(out)
-## }
+cc_max <- function(shift,cross.corr)
+{
+  if(all(is.na(cross.corr))){
+    out <- Inf
+  }else{
+    
+    mod <- loess(cross.corr ~ shift)
+    out <- max(predict(mod))
+  }
+  return(out)
+}
+ 
 
-## cc_max <- function(shift,cross.corr)
-## {
-##   if(all(is.na(cross.corr))){
-##     out <- Inf
-##   }else{
-##     mod <- loess(cross.corr ~ shift)
-##     out <- max(predict(mod))
-##   }
-##   return(out)
-## }
+ss <- local_scc_data[,noise(shift,cross.corr), by = .(match, edsn,strata)]
+nsc <- local_scc_data[,cc_max(shift,cross.corr), by = .(match, edsn, strata)]
+setnames(ss , names(ss), c("match","edsn","strata","noise"))
+setnames(nsc , names(nsc), c("match","edsn","strata","max"))
+
+nsc[ , edsn := NULL]
+nsc[ , strata := NULL]
+
+dat <- merge(ss,nsc,by = "match",allow.cartesian = TRUE)
+
+dat[ , nsc := max / noise ]
+
+dat[ , strata := factor(strata, levels = rev(strati) ) ]
+dat[ , strata := plyr::mapvalues(strata ,
+         from = c(
+           "high",
+           "med1",
+           "med2",
+           "low1",
+           "low2",
+           "low3"),
+         to = c(
+           "(100,Inf)",
+           "(75,100)",
+           "(50,75)",
+           "(30,50)",
+           "(15,30)",
+           "(10,15)"             
+           ))]
 
 
-## local_scc_data[,noise(shift,cross.corr), by = .(match, edsn,strata)][,length(unique(V1))]
+strata_plots <- list()
+strata_plots[[1]] <- ggplot(dat , aes( strata , noise,colour = edsn))+geom_boxplot()+facet_grid( . ~ edsn) +
+  scale_color_brewer(palette = "Dark2")+theme_bw()+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90),plot.title = element_text(hjust = 0))+
+  xlab("")+ylab("Local SCC fit noise")+ylim(0,.25)
+strata_plots[[2]] <- ggplot(dat , aes( strata , max,colour = edsn))+geom_boxplot()+facet_grid( . ~ edsn) +
+  scale_color_brewer(palette = "Dark2")+theme_bw()+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90),plot.title = element_text(hjust = 0))+
+  xlab("")+ylab("Loess max")+geom_abline( slope = 0 , intercept = 0, linetype = 2)+
+  ylim(0,.5)
+strata_plots[[3]] <- ggplot(dat , aes( strata , nsc,colour = edsn))+geom_boxplot()+facet_grid( . ~ edsn) +
+  scale_color_brewer(palette = "Dark2")+theme_bw()+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90),plot.title = element_text(hjust = 0))+
+  xlab("")+ylab("Local NSC")+ylim(-1,6)+geom_abline( slope = 0 , intercept = 0, linetype = 2)
+
+
+save(strata_plots,file = "data/for_paper/Local_SCC_indicator_by_strata.RData")
+
+pdf(file = "figs/for_paper/Local_SCC_indicator_by_strata.pdf",width = 9,height = 6)
+u <- lapply(strata_plots,print)
+dev.off()
+
+library(grid)
+library(gridExtra)
+
+pdf(file = "figs/for_paper/Local_SCC_all.pdf",width = 12,height = 14)
+grid.arrange(strata_plots[[1]]+ggtitle("A"),
+             strata_plots[[2]]+ggtitle("B"),
+             strata_plots[[3]]+ggtitle("C"),nrow = 3)
+dev.off()
+
+
+
+plots <- list()
+plots[[1]] <- ggplot(dat , aes( edsn , noise , colour = edsn))+geom_boxplot()+
+  facet_grid( . ~ edsn ,drop = TRUE , space = "free",scales = "free_x")+
+  scale_color_brewer(palette = "Dark2")+theme_bw()+
+  theme(legend.position = "none", plot.title = element_text(hjust = 0) ,
+        axis.ticks.x = element_blank(),axis.text.x = element_text(size = 0))+
+  xlab("")+ylab("Local SCC fit noise")+ylim(0,.18)
+plots[[2]] <- ggplot(dat , aes( edsn , max , colour = edsn))+geom_boxplot()+
+  facet_grid( . ~ edsn ,drop = TRUE , space = "free",scales = "free_x")+
+  scale_color_brewer(palette = "Dark2")+theme_bw()+
+  theme(legend.position = "none", plot.title = element_text(hjust = 0) ,
+        axis.ticks.x = element_blank(),axis.text.x = element_text(size = 0))+
+  xlab("")+ylab("Loess max")+ylim(-.05, .4)+geom_abline(slope = 0,intercept = 0,linetype = 2)
+plots[[3]] <- ggplot(dat , aes( edsn , nsc , colour = edsn))+geom_boxplot()+
+  facet_grid( . ~ edsn ,drop = TRUE , space = "free",scales = "free_x")+
+  scale_color_brewer(palette = "Dark2")+theme_bw()+
+  theme(legend.position = "none", plot.title = element_text(hjust = 0) ,
+        axis.ticks.x = element_blank(),axis.text.x = element_text(size = 0))+
+  xlab("")+ylab("Local NSC")+ylim(-1, 3)+geom_abline(slope = 0,intercept = 0,linetype = 2)
+
+save(plots, file = "data/for_paper/Local_SCC_indicators.RData")
+
+pdf(file = "figs/for_paper/Local_SCC_indicators.pdf",width = 5 , height = 6)
+u <- lapply(plots,print)
+dev.off()
+
+
+pdf(file = "figs/for_paper/Local_SCC_indicators_all.pdf",width = 5,height = 14)
+grid.arrange(plots[[1]]+ggtitle("A"),
+             plots[[2]]+ggtitle("B"),
+             plots[[3]]+ggtitle("C"),nrow = 3)
+dev.off()
+
