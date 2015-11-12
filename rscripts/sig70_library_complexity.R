@@ -1,4 +1,4 @@
-
+p
 rm(list = ls())
 
 library(GenomicAlignments)
@@ -177,6 +177,7 @@ p <- ggplot(aux , aes( ave_reads,cover_rate))+stat_binhex(bins = 50)+
   theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Average read coverage")+
   ylab("Unique read coverage rate")
+print(p + ggtitle("A"))
 print(p + ggtitle("All regions"))
 print( p  %+% aux[ npos > 10] + ggtitle("Npos > 10")) 
 print( p  %+% aux[ npos > 30] + ggtitle("Npos > 30")) 
@@ -195,7 +196,6 @@ p <-ggplot(aux[f > 0 & r > 0 ] , aes( M , A))+stat_binhex(bins = 50)+
   facet_wrap( ~ edsn)+scale_fill_gradientn(colours = r,trans = "log10",
     labels = trans_format("log10",math_format(10^.x)))+
   theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))
-dev.off()
 print(p + ggtitle("All regions"))
 print( p  %+% aux[ npos > 10] + ggtitle("Npos > 10")) 
 print( p  %+% aux[ npos > 30] + ggtitle("Npos > 30")) 
@@ -341,12 +341,12 @@ strata_plots[[2]] <- ggplot(dat , aes( strata , max,colour = edsn))+geom_boxplot
 strata_plots[[3]] <- ggplot(dat , aes( strata , nsc,colour = edsn))+geom_boxplot()+facet_grid( . ~ edsn) +
   scale_color_brewer(palette = "Dark2")+theme_bw()+
   theme(legend.position = "none", axis.text.x = element_text(angle = 90),plot.title = element_text(hjust = 0))+
-  xlab("")+ylab("Local NSC")+ylim(-1,6)+geom_abline( slope = 0 , intercept = 0, linetype = 2)
+  xlab("")+ylab("Local NSC")+ylim(-1,6)+geom_abline( slope = 0 , intercept = 0, linetype = 2)+ggtitle("B")
 
 
 save(strata_plots,file = "data/for_paper/Local_SCC_indicator_by_strata.RData")
 
-pdf(file = "figs/for_paper/Local_SCC_indicator_by_strata.pdf",width = 9,height = 6)
+pdf(file = "figs/for_paper/Local_SCC_indicator_by_strata.pdf",width = 9,height = 4)
 u <- lapply(strata_plots,print)
 dev.off()
 

@@ -267,6 +267,8 @@ ChIP-Seq and both significantly improve the resolution of protein
 binding site identification compared to SET-based analysis with any of
 the available methods.
 
+\newpage
+
 \section{Results and discussion}
 \label{sec:results}
 
@@ -344,6 +346,7 @@ obtaining a smaller resolution and identifying a comparable number of
 targets as in ChIP-Seq PET experiments.
 
 
+\newpage 
 
 \subsection{ChIP-exo Quality Control pipeline}
 \label{sec:QC}
@@ -364,6 +367,7 @@ ChIP-exo sample.
     collection of qc indicators.}
   \label{fig:qcdiagram}
 \end{figure}
+
 
 
 \color{blue}
@@ -387,6 +391,13 @@ both strands. To asses
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 \label{sec:enri}
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_enrichment.pdf}
+  \includegraphics[width = .8\textwidth,page =3]{../figs/for_paper/Local_SCC_indicator_by_strata.pdf}
+  \caption{Enrichment and else}
+  \label{fig:enrich}
+\end{figure}
 
 
 
@@ -447,16 +458,11 @@ located in the other site of the binding site.
   \caption{ A) ChIP signal in ChIP-exo was linearly related to that in
     PET ChIP-Seq data in the region with high ChIP tag counts. In
     contrast, there wer clear differences in their background
-    distribution, where several of the background ChIP-exo regions
-    were empty.}
+    distribution, where several ChIP-exo background regions were
+    empty.}
   \label{fig:comp}
 \end{figure}
 
-
-
-% \[
-% \mbox{FSR} = \frac{\mbox{Number of forward strand reads in region}}{\mbox{Total number of reads in region}}
-% \]
 
 
 
@@ -559,6 +565,8 @@ library complexity.
 \bibliography{chip_exo_paper}
 
 \nocite{exo_gb}
+
+
 
 
 \end{document}
