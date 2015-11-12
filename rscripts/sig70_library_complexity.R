@@ -176,7 +176,7 @@ p <- ggplot(aux , aes( ave_reads,cover_rate))+stat_binhex(bins = 50)+
     labels = trans_format("log10",math_format(10^.x)))+xlim(0,7)+ylim(0,.6)+
   theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Average read coverage")+
-  ylab("Uniquue read coverage rate")
+  ylab("Unique read coverage rate")
 print(p + ggtitle("All regions"))
 print( p  %+% aux[ npos > 10] + ggtitle("Npos > 10")) 
 print( p  %+% aux[ npos > 30] + ggtitle("Npos > 30")) 
@@ -358,8 +358,6 @@ grid.arrange(strata_plots[[1]]+ggtitle("A"),
              strata_plots[[2]]+ggtitle("B"),
              strata_plots[[3]]+ggtitle("C"),nrow = 3)
 dev.off()
-
-
 
 plots <- list()
 plots[[1]] <- ggplot(dat , aes( edsn , noise , colour = edsn))+geom_boxplot()+
