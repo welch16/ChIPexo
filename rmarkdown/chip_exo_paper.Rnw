@@ -181,7 +181,7 @@ ChIP-Seq. Finally, high throughput sequencing of a small region (25 to
 tags.
 
 While the number of produced ChIP-exo data keeps increasing,
-characteristicos of ChIP-exo data and optimal strategies for
+characteristics of ChIP-exo data and optimal strategies for
 experimental design and analysis of ChIP-exo data are not fully
 investigated yet, including issues of sequence biases inherent to
 ChIP-exo data, choice of optimal statistical methods, and
@@ -328,6 +328,15 @@ Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 \\
   \label{tab:qcbase}
 \end{table}
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .8\textwidth]{../figs/for_paper/EColi_strand_cross_corr.pdf}
+  \caption{Strand cross-correlation curves for $\sigma^{70}$
+    samples.}
+  \label{figsup:scc}
+\end{figure}
+
+
 In a good ChIP-Seq experiment the strand cross-correlation is
 maximized at the fragment length and there is also a ``phantom peak''
 at the sample's read length (\cite{encode_qc} and \cite{strandcc}).
@@ -345,8 +354,6 @@ particular we are going to show that for the first two samples we are
 obtaining a smaller resolution and identifying a comparable number of
 targets as in ChIP-Seq PET experiments.
 
-
-\newpage 
 
 \subsection{ChIP-exo Quality Control pipeline}
 \label{sec:QC}
@@ -391,22 +398,30 @@ both strands. To asses
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 \label{sec:enri}
 
+In ChIP-exo experiments and input samples is often unavailable,
+therefore to determine the quality of a ChIP-exo experiment is
+necesary to address the balance between the enrichment and the library
+complexity of the experiment. To diagnose this balance we considered
+the Average Read Coverage (ARC) and the Unique Read Coverage Rate (URCR) which are defined as:
+
+\begin{align}
+  \mbox{ARC} &= \frac{\text{Nr. of reads in the region}}{\text{Width of the region}} \nonumber \\
+  \mbox{URCR} &= \frac{\text{Nr. of reads mapped to only one position
+      in the region}}{\text{Nr. of reads in the region}} \nonumber
+\end{align}
+
+
+
 \begin{figure}[h!]
   \centering
   \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_enrichment.pdf}
   \includegraphics[width = .8\textwidth,page =3]{../figs/for_paper/Local_SCC_indicator_by_strata.pdf}
-  \caption{Enrichment and else}
+  \caption{A) For all $\sigma^{70}$ ChIP-exo experiments we are
+    comparing the ARC against the URCR.}
   \label{fig:enrich}
 \end{figure}
 
 
-
-% \begin{figure}[h]
-%   \centering
- 
-%   \caption{This is a place-holder figure by now. The idea of this segments it }
-%   \label{fig:fsr}
-% \end{figure}
 
 
 
@@ -543,19 +558,10 @@ library complexity.
 \label{sec:method_comp}
 
 
-\newpage
+% \newpage
+% \section*{Supplement figures}
+% \subsection*{Strand cross-correlation for ChIP-exo data}
 
-\section*{Supplement figures}
-
-\subsection*{Strand cross-correlation for ChIP-exo data}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width = .8\textwidth]{../figs/for_paper/EColi_strand_cross_corr.pdf}
-  \caption{Strand cross-correlation curves for $\sigma^{70}$
-    samples.}
-  \label{figsup:scc}
-\end{figure}
 
 
 

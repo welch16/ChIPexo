@@ -1,4 +1,4 @@
-p
+
 rm(list = ls())
 
 library(GenomicAlignments)
@@ -157,8 +157,8 @@ stats <- mcmapply(build_stats,regs,gr,SIMPLIFY = FALSE,mc.cores = 6)
 
 aux <- mapply(function(x,y)x[,edsn := y],stats,exo[,(edsn)],SIMPLIFY =FALSE)
 aux <- do.call(rbind,aux)
-aux[ , edsn := factor(edsn , levels  = c(1311,1317, 931 , 1314,1320 , 933))]
-aux[ , edsn := plyr::mapvalues(edsn , from = c(1311,1317, 931 , 1314,1320 , 933),
+aux[ , edsn := factor(edsn , levels  = c(1311,1314, 931 , 1317,1320 , 933))]
+aux[ , edsn := plyr::mapvalues(edsn , from = c(1311,1314, 931 , 1317,1320 , 933),
           to = c("Rif0_rep1","Rif20_rep1","Aerobic_rep1","Rif0_rep2","Rif20_rep2","Aerobic_rep2"))]
          
 
@@ -327,6 +327,12 @@ dat[ , strata := plyr::mapvalues(strata ,
            "(10,15)"             
            ))]
 
+dat[ , edsn := factor(edsn , levels  = c(1311,1317,1314,1320, 931 ,  933))]
+dat[ , edsn := plyr::mapvalues(edsn , from = c(1311,1314, 931 , 1317,1320 , 933),
+          to = c("Rif0_rep1","Rif20_rep1","Aerobic_rep1","Rif0_rep2","Rif20_rep2","Aerobic_rep2"))]
+
+
+            
 
 strata_plots <- list()
 strata_plots[[1]] <- ggplot(dat , aes( strata , noise,colour = edsn))+geom_boxplot()+facet_grid( . ~ edsn) +
