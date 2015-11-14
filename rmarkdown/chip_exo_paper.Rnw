@@ -332,10 +332,11 @@ Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 \\
   \centering
   \includegraphics[width = .8\textwidth]{../figs/for_paper/EColi_strand_cross_corr.pdf}
   \caption{Strand cross-correlation curves for $\sigma^{70}$
-    samples.}
+    samples. The ``phantom peak'' and the summit that corresponds to
+    the read and fragment length respectively are confounded, due to
+    the exonuclease enzyme digestion.}
   \label{figsup:scc}
 \end{figure}
-
 
 In a good ChIP-Seq experiment the strand cross-correlation is
 maximized at the fragment length and there is also a ``phantom peak''
@@ -375,6 +376,63 @@ ChIP-exo sample.
   \label{fig:qcdiagram}
 \end{figure}
 
+\subsubsection{Enrichment and library complexity in ChIP-exo data}
+\label{sec:enri}
+
+
+In ChIP-exo experiments, the background is often digested by the
+exonuclease enzyme, therefore to determine the sample's quality is
+necesary to address the balance between the enrichment and library
+complexity. To diagnose this, we considered the Average Read Coverage
+(ARC) and the Unique Read Coverage Rate (URCR) which are defined as:
+
+\begin{align}
+  \mbox{ARC} &= \frac{\text{Nr. of reads in the region}}{\text{Width of the region}} \nonumber \\
+  \mbox{URCR} &= \frac{\text{Nr. of reads mapped to only one position
+      in the region}}{\text{Nr. of reads in the region}} \nonumber
+\end{align}
+
+Figure \ref{fig:enrich}A shows hexbin plots illustrating the
+interaction between these two quantities. Notice how there are two
+strong arms in each panel: The first one corresponds to regions with
+low $\mbox{ARC}$ values and $\mbox{URCR}$ values that can vary accross
+the whole $[0,1]$ interval, while the second one shows a decreasing
+trend in $\mbox{URCR}$ as $\mbox{ARC}$ increases. When an experiment
+shows a higher degree of enrichment, then the separation of this two
+arms is more noticeable, since the second arm corresponds to possibly
+enriched regions (\ref{fig:enrich2}A and \ref{fig:enrich2}B).
+
+<<strata_param , include =FALSE,echo = FALSE, eval = TRUE>>=
+
+  nstrata <- 100
+  
+@ 
+
+Figure \ref{fig:enrich}B shows boxplots of the $\mbox{local-NSC}$
+stratified by the number of reads mapped exactly to one position for
+all $\sigma^{70}$ ChIP-exo experiments; for each stratum, we sampled
+\Sexpr{nstrata} regions that whenever possible (in the opposite case,
+all the regions in the category were considered). There is an
+increasing trend as the number of unique position increases, which
+means that this is an effective indicator of library complexity since
+regions where the reads are mapped to more positions are usually more
+complex.
+
+%% perhaps do two other slots about how this works... a good experiment vs a bad experiment
+%% of the same region
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_enrichment.pdf}
+  \includegraphics[width = .8\textwidth,page =3]{../figs/for_paper/Local_SCC_indicator_by_strata.pdf}
+  \caption{A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$ and
+    B) boxplots of the $\mbox{local-NSC}$ stratified by nr. of reads
+    mapped to only one position in the regions for the ChIP-exo
+    $\sigma^{70}$ experiments divided by condition and biological
+    replicate}
+  \label{fig:enrich}
+\end{figure}
+
 
 
 \color{blue}
@@ -393,35 +451,10 @@ the FSR and noticed that for all the samples, it's value is close to
 0.5, which means that there are roughly the same amount of reads in
 both strands. To asses 
 
+
+
+
 \color{black}
-
-\subsubsection{Enrichment and library complexity in ChIP-exo data}
-\label{sec:enri}
-
-In ChIP-exo experiments and input samples is often unavailable,
-therefore to determine the quality of a ChIP-exo experiment is
-necesary to address the balance between the enrichment and the library
-complexity of the experiment. To diagnose this balance we considered
-the Average Read Coverage (ARC) and the Unique Read Coverage Rate (URCR) which are defined as:
-
-\begin{align}
-  \mbox{ARC} &= \frac{\text{Nr. of reads in the region}}{\text{Width of the region}} \nonumber \\
-  \mbox{URCR} &= \frac{\text{Nr. of reads mapped to only one position
-      in the region}}{\text{Nr. of reads in the region}} \nonumber
-\end{align}
-
-
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_enrichment.pdf}
-  \includegraphics[width = .8\textwidth,page =3]{../figs/for_paper/Local_SCC_indicator_by_strata.pdf}
-  \caption{A) For all $\sigma^{70}$ ChIP-exo experiments we are
-    comparing the ARC against the URCR.}
-  \label{fig:enrich}
-\end{figure}
-
-
 
 
 
@@ -459,7 +492,7 @@ homogeneous than that of ChIP-Seq data.
 \color{blue}
 
 We next evaluated the ``peak pair'' assumption of Rhee and Pugh
-\cite{exo1}, MACE \cite{MACE}, CexoR, \cite{cexor} and peakzilla
+\cite{exo1}, MACE \cite{mace}, CexoR, \cite{cexor} and peakzilla
 \cite{peakzilla}, i.e. a peak of reads in the forward strand is
 usually paired with a peak of reads in the reverse strand that is
 located in the other site of the binding site. 
@@ -469,7 +502,6 @@ located in the other site of the binding site.
 \begin{figure}[h]
   \centering
   \includegraphics[width = .6\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
-  % \includegraphics[width = .9\textwidth ,page = 3]{../figs/for_paper/MA_plot_fwd_bwd_by_seq.pdf}
   \caption{ A) ChIP signal in ChIP-exo was linearly related to that in
     PET ChIP-Seq data in the region with high ChIP tag counts. In
     contrast, there wer clear differences in their background
@@ -554,6 +586,15 @@ library complexity.
 
 \color{black}
 
+
+
+
+
+
+
+
+
+
 \subsection{Method comparison for ChIP-exo}
 \label{sec:method_comp}
 
@@ -564,13 +605,52 @@ library complexity.
 
 
 
-
 \newpage
 
 \bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
 \bibliography{chip_exo_paper}
 
 \nocite{exo_gb}
+\nocite{maplot1}
+\nocite{maplot2}
+
+\newpage
+
+\section*{Supplement}
+\label{sec:supp}
+
+\subsection*{Additional Enrichment plots for $\sigma^{70}$}
+\label{sec:enrichsup}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .8\textwidth,page = 3]{../figs/for_paper/Sig70_enrichment.pdf}
+  \includegraphics[width = .8\textwidth,page = 4]{../figs/for_paper/Sig70_enrichment.pdf}
+  \caption{Hexbin plots of $\mbox{ARC}$ vs $\mbox{URCR}$ for each
+    region after partitioning the genome. In A and B the regions with
+    reads mapped to at most 10 and 30 positions respectively where not
+    considered.}
+  \label{fig:enrich2}
+\end{figure}
+
+\subsection{Local-NSC}
+\label{sec:localnsc}
+
+The local strand cross-correlaiton is defined as:
+
+\begin{align}
+  \mbox{local-NSC} &= \frac{max_{x_\delta} f(x_\delta)}{\sigma} \nonumber \\
+ y_\delta &= f(x_\delta) + \sigma \epsilon_\delta \nonumber
+\end{align}
+
+
+where $f$ is calculated by fitting a non-parametric regression model
+over the strand cross-correlation calculated using exclusively the
+fragments that overlap a pre-defined genomic region, $y_\delta$ is the
+correlation of the forward and backward coverages when one is shifted
+$x_\delta$ bp towards their 3' end.
+
+
 
 
 

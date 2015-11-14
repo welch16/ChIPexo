@@ -1,3 +1,8 @@
+## ----strata_param , include =FALSE,echo = FALSE, eval = TRUE-------------
+
+  nstrata <- 100
+  
+
 ## ----comp_param,include = FALSE,echo = FALSE,eval = TRUE-----------------
 
   bin_size <- 150

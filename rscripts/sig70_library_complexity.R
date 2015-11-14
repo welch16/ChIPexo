@@ -82,9 +82,15 @@ exo[,which.max := SCC[,which.max(cross.corr),by = sample][,(V1)]]
 save(exo,file = "data/for_paper/sig70_summary.RData")
 
 
+SCC[ , sample := factor(sample , levels  = c(1311,1317,1314,1320, 931 ,  933))]
+SCC[ , sample := plyr::mapvalues(sample , from = c(1311,1314, 931 , 1317,1320 , 933),
+          to = c("Rif:0-rep1","Rif:20-rep1","Aerobic-rep1","Rif:0-rep2","Rif:20-rep2","Aerobic-rep2"))]
+
+
 pdf(file = "figs/for_paper/EColi_strand_cross_corr.pdf",width = 9 , height = 5)
 ggplot(SCC,aes(shift,cross.corr,colour = sample))+geom_line(size = .8)+
-  scale_color_brewer(palette = "Dark2")+theme_bw()+theme(legend.position = "top")
+  scale_color_brewer(name = "",palette = "Dark2")+theme_bw()+theme(legend.position = "top")+
+  ylab("Strand cross-correlation")
 dev.off()
 
 
@@ -159,7 +165,7 @@ aux <- mapply(function(x,y)x[,edsn := y],stats,exo[,(edsn)],SIMPLIFY =FALSE)
 aux <- do.call(rbind,aux)
 aux[ , edsn := factor(edsn , levels  = c(1311,1314, 931 , 1317,1320 , 933))]
 aux[ , edsn := plyr::mapvalues(edsn , from = c(1311,1314, 931 , 1317,1320 , 933),
-          to = c("Rif0_rep1","Rif20_rep1","Aerobic_rep1","Rif0_rep2","Rif20_rep2","Aerobic_rep2"))]
+          to = c("Rif:0-rep1","Rif:20-rep1","Aerobic-rep1","Rif:0-rep2","Rif:20-rep2","Aerobic-rep2"))]
          
 
 pdf(file = "figs/for_paper/Sig70_number_unique_positions_perSample.pdf")
@@ -179,8 +185,8 @@ p <- ggplot(aux , aes( ave_reads,cover_rate))+stat_binhex(bins = 50)+
   ylab("Unique read coverage rate")
 print(p + ggtitle("A"))
 print(p + ggtitle("All regions"))
-print( p  %+% aux[ npos > 10] + ggtitle("Npos > 10")) 
-print( p  %+% aux[ npos > 30] + ggtitle("Npos > 30")) 
+print( p  %+% aux[ npos > 10] + ggtitle("A"))  ## npos > 10 
+print( p  %+% aux[ npos > 30] + ggtitle("B")) ## npos > 30
 dev.off()
 
 enrichment <- list( data = aux , plot = p)
@@ -329,7 +335,7 @@ dat[ , strata := plyr::mapvalues(strata ,
 
 dat[ , edsn := factor(edsn , levels  = c(1311,1317,1314,1320, 931 ,  933))]
 dat[ , edsn := plyr::mapvalues(edsn , from = c(1311,1314, 931 , 1317,1320 , 933),
-          to = c("Rif0_rep1","Rif20_rep1","Aerobic_rep1","Rif0_rep2","Rif20_rep2","Aerobic_rep2"))]
+          to = c("Rif:0-rep1","Rif:20-rep1","Aerobic-rep1","Rif:0-rep2","Rif:20-rep2","Aerobic-rep2"))]
 
 
             
