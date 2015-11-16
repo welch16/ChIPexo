@@ -51,7 +51,7 @@ setnames(sites,names(sites),c("seqnames","start","end","strand","id"))
 sites[,seqnames := "U00096"]
 sites[,strand := ifelse(strand == "F","+","-")]
 
-zites <- data.table(seqnames = "U00096",start = loc.prom, end = loc.prom , strand = "*")
+## zites <- data.table(seqnames = "U00096",start = loc.prom, end = loc.prom , strand = "*")
 
 ## ######################################################################################
 
@@ -60,56 +60,56 @@ bs_dir <- file.path(out_dir,"binding")
 check_create(bs_dir)
 
   load(file = file.path(bs_dir, "dpeakFit_exo_sig70aerobic.RData"))
-  load( file = file.path(bs_dir, "dpeakFit_pet1_sig70aerobic.RData"))
+  load( file = file.path(bs_dir, "dpeakFit_pet3_sig70aerobic.RData"))
   load( file = file.path(bs_dir, "dpeakFit_set_sig70aerobic.RData"))
 
-fit_comparison <- function(fit1 , fit2 , mm)
-{
-  mu1 <- lapply(fit1@optFit,function(x)x$mu)
-  mu2 <- lapply(fit2@optFit,function(x)x$mu)
+## fit_comparison <- function(fit1 , fit2 , mm)
+## {
+##   mu1 <- lapply(fit1@optFit,function(x)x$mu)
+##   mu2 <- lapply(fit2@optFit,function(x)x$mu)
 
-  G1 <- sapply(mu1,length)
-  G2 <- sapply(mu2,length)
+##   G1 <- sapply(mu1,length)
+##   G2 <- sapply(mu2,length)
 
-  print(identical(mu1,mu2))
-  print(table(G1))
-  print(table(G2))
-  print(table(G1 , G2))
+##   print(identical(mu1,mu2))
+##   print(table(G1))
+##   print(table(G2))
+##   print(table(G1 , G2))
 
-  min_dist <- function(m1,m2){
+##   min_dist <- function(m1,m2){
 
-    out <- sapply(m1 , function(x) min(abs(x - m2)))
-    out <- min(out)
+##     out <- sapply(m1 , function(x) min(abs(x - m2)))
+##     out <- min(out)
 
-    return(out)
+##     return(out)
 
-  }
+##   }
   
-  alls <- mapply(c , mu1 , mu2 ,SIMPLIFY = FALSE)
-  alls <- lapply(alls,sort)
+##   alls <- mapply(c , mu1 , mu2 ,SIMPLIFY = FALSE)
+##   alls <- lapply(alls,sort)
 
-  alls <- lapply(alls,diff)
+##   alls <- lapply(alls,diff)
 
-  alls <- sapply(alls,mean)
+##   alls <- sapply(alls,mean)
   
-  dt <- data.table( G1 , G2  , mean_dist = alls, min = mapply(min_dist,mu1,mu2))
-  dt[,diff := G1 - G2 ]
+##   dt <- data.table( G1 , G2  , mean_dist = alls, min = mapply(min_dist,mu1,mu2))
+##   dt[,diff := G1 - G2 ]
 
-  r <- viridis::viridis(100, option = "D")
+##   r <- viridis::viridis(100, option = "D")
   
-  p1 <- ggplot(dt[,median(min),by = .(G1,G2)], aes(G1, G2 , fill = V1))+geom_tile()+
-    scale_fill_gradientn(colours = r,name = "")+ggtitle(mm)+xlab("common")+ylab("separate")+coord_flip()+
-    theme(legend.position = "top")
-  print(p1)
-  return(dt)
+##   p1 <- ggplot(dt[,median(min),by = .(G1,G2)], aes(G1, G2 , fill = V1))+geom_tile()+
+##     scale_fill_gradientn(colours = r,name = "")+ggtitle(mm)+xlab("common")+ylab("separate")+coord_flip()+
+##     theme(legend.position = "top")
+##   print(p1)
+##   return(dt)
 
-}
+## }
 
 
-exo_out <- fit_comparison(exo_fits[[1]],exo_fits[[2]],"exo")
-pet_out <- fit_comparison(pet_fits1[[1]],pet_fits1[[2]],"pet")
-set_out <- fit_comparison(set_fits[[1]],set_fits[[2]],"set")
-dev.off()
+## exo_out <- fit_comparison(exo_fits[[1]],exo_fits[[2]],"exo")
+## pet_out <- fit_comparison(pet_fits1[[1]],pet_fits1[[2]],"pet")
+## set_out <- fit_comparison(set_fits[[1]],set_fits[[2]],"set")
+## dev.off()
 
 site_fit_match <- function(fit,sites,mm)
 {
@@ -191,5 +191,5 @@ reso2 <- do.call(rbind,list(
   reso_table(set_match2,"set_sep")))
 
 
-ggplot(reso[reso < 100],aes(seq,reso))+geom_boxplot()+ylim(0,75)
+ggplot(reso1[reso < 100],aes(seq,reso))+geom_boxplot()+ylim(0,100)
 dev.off()

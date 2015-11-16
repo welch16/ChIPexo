@@ -7,7 +7,7 @@ library(ChIPUtils)
 library(dpeak)
 
 exo_file <- "/p/keles/ChIPexo/volume3/LandickData/ChIPexo/edsn931_042814_qc.sorted.bam"
-pet_file1 <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET/edsn790_042814_qc.filter.bam"
+pet_file <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_PET/edsn790_042814_qc.filter.bam"
 set_file <- "/p/keles/ChIPexo/volume3/LandickData/ChIPseq_SET/edsn80_042814_qc.sorted.bam"
 
 frag_len <- 150
@@ -33,7 +33,7 @@ out_dir <- "/p/keles/ChIPexo/volume6/peak_pair"
 ### create bins
 
 
-bin_flag <- FALSE
+bin_flag <- TRUE
 
 bin_dir <- file.path(out_dir,"bins")
 check_create(bin_dir)
@@ -42,9 +42,7 @@ check_create(bin_dir)
 if(bin_flag){
   constructBins(exo_file,fileFormat = "bam",outfileLoc = bin_dir,PET = FALSE,
                 fragLen = frag_len,binSize = bin_size)
-  constructBins(pet_file1,fileFormat = "bam",outfileLoc = bin_dir, PET =  TRUE,
-               binSize = bin_size)
-  constructBins(pet_file2,fileFormat = "bam",outfileLoc = bin_dir, PET =  TRUE,
+  constructBins(pet_file,fileFormat = "bam",outfileLoc = bin_dir, PET =  TRUE,
                binSize = bin_size)
   constructBins(set_file,fileFormat = "bam",outfileLoc = bin_dir, PET =  FALSE,
                fragLen = frag_len , binSize = bin_size)  
@@ -52,31 +50,25 @@ if(bin_flag){
 
 ### call peaks
 
-
-
-peak_flag <- FALSE
+peak_flag <- TRUE
 
 if(peak_flag){
   exo_bin <- file.path(bin_dir,paste0(basename(exo_file),"_fragL",frag_len,"_bin",bin_size,".txt"))
-  pet_bin1 <- file.path(bin_dir,paste0(basename(pet_file1),"_bin",bin_size,".txt"))
-  pet_bin2 <- file.path(bin_dir,paste0(basename(pet_file2),"_bin",bin_size,".txt"))
+  pet_bin <- file.path(bin_dir,paste0(basename(pet_file),"_bin",bin_size,".txt"))
   set_bin <- file.path(bin_dir,paste0(basename(set_file),"_fragL",frag_len,"_bin",bin_size,".txt"))
   
   exo_bins <- readBins(c("chip","M","GC","N"),c(exo_bin,extra[["exo"]]))
-  pet_bins1 <- readBins(c("chip","input"),c(pet_bin1,extra[["pet"]]))
-  pet_bins2 <- readBins(c("chip","input"),c(pet_bin2,extra[["pet"]]))
+  pet_bins <- readBins(c("chip","input"),c(pet_bin,extra[["pet"]]))
   set_bins <- readBins(c("chip","input"),c(set_bin,extra[["set"]]))
 
   
   exo_fit <- mosaicsFit(exo_bins)
-  pet_fit1 <- mosaicsFit(pet_bins1)
-  pet_fit2 <- mosaicsFit(pet_bins2)
+  pet_fit <- mosaicsFit(pet_bins)
   set_fit <- mosaicsFit(set_bins)
 
   pdf(file = "figs/sig70/gof_plots_sig70.pdf")
   plot(exo_fit)
-  plot(pet_fit1)
-  plot(pet_fit2)
+  plot(pet_fit)
   plot(set_fit)
   dev.off()
 
@@ -89,38 +81,40 @@ if(peak_flag){
       peak <- mosaicsPeak(fit , signalModel = "1S", FDR = fdr, maxgap = bin_size ,thres = thresh)
     }
     show(peak)
-    return(data.table(peak@peakList))
+    return(peak)
   }
   
   fdr <- .05
   thresh <- 10
 
   exo_peak <- get_peaks(exo_fit,fdr,bin_size,thresh)
-  pet_peak1 <- get_peaks(pet_fit1,fdr,bin_size,thresh)
-  pet_peak2 <- get_peaks(pet_fit2,fdr,bin_size,thresh)
+  pet_peak <- get_peaks(pet_fit,fdr,bin_size,thresh)
   set_peak <- get_peaks(set_fit,fdr,bin_size,thresh)
 
   peak_dir <- file.path(out_dir,"peaks")
   check_create(peak_dir)
   exo_peak_file <- file.path(peak_dir,gsub("_qc.sorted.bam","_peaks.txt",basename(exo_file)))
-  pet_peak_file1 <-  file.path(peak_dir,gsub("_qc.filter.bam", "_filter_peaks.txt",basename(pet_file1)))
-  pet_peak_file2 <- file.path(peak_dir, gsub("_qc.sorted.bam", "_all_peaks.txt",basename(pet_file2)))
+  pet_peak_file <-  file.path(peak_dir,gsub("_qc.filter.bam", "_filter_peaks.txt",basename(pet_file)))
   set_peak_file <-  file.path(peak_dir,gsub("_qc.sorted.bam", "_peaks.txt",basename(set_file)))
 
-  
 
-  write.table(exo_peak,file = exo_peak_file, sep = "\t",row.names = FALSE,quote = FALSE,col.names=FALSE)
-  write.table(pet_peak1, file  = pet_peak_file1, sep = "\t",row.names = FALSE,quote = FALSE,col.names=FALSE)
-  write.table(pet_peak2, file  = pet_peak_file2, sep = "\t",row.names = FALSE,quote = FALSE,col.names=FALSE)
-  write.table(set_peak , file = set_peak_file, sep = "\t",row.names = FALSE,quote = FALSE,col.names=FALSE)
+  save_fix <- function(peak,file)
+  {
+    export(peak,type = "bed",filename = file)
+    dt <- read.table(file,skip = 1)
+    write.table(dt , file = file , quote = FALSE,col.names = FALSE,row.names = FALSE)
+   
+  }
+
+  save_fix(exo_peak,exo_peak_file)
+
 }
 
   peak_dir <- file.path(out_dir,"peaks")
 
-  ## exo_peak_file <- file.path(peak_dir,gsub("_qc.sorted.bam","_peaks.txt",basename(exo_file)))
-  pet_peak_file1 <-  file.path(peak_dir,gsub("_qc.filter.bam", "_filter_peaks.txt",basename(pet_file1)))
-  ## pet_peak_file2 <- file.path(peak_dir, gsub("_qc.sorted.bam", "_all_peaks.txt",basename(pet_file2)))
-  ## set_peak_file <-  file.path(peak_dir,gsub("_qc.sorted.bam", "_peaks.txt",basename(set_file)))
+  exo_peak_file <- file.path(peak_dir,gsub("_qc.sorted.bam","_peaks.txt",basename(exo_file)))
+  pet_peak_file <-  file.path(peak_dir,gsub("_qc.filter.bam", "_filter_peaks.txt",basename(pet_file)))
+  set_peak_file <-  file.path(peak_dir,gsub("_qc.sorted.bam", "_peaks.txt",basename(set_file)))
 
 
 ## estimate binding events
@@ -136,15 +130,16 @@ bind_flag <- TRUE
 
 if(bind_flag){
 
-  ## exo_dp <- dpeakRead(peakfile = exo_peak_file,readfile = exo_file , fileFormat = "bam",
-  ##                 PET = FALSE, fragLen = frag_len,parallel = TRUE,nCore = 18)
-  ## exo_fits <- list()
-  ## exo_fits[["common"]] <- dpeakFit(exo_dp,nCore = 18) 
-  ## exo_fits[["separate"]] <- dpeakFit(exo_dp,estDeltaSigma = "separate",nCore = 18)
-  ## save( exo_fits, file = file.path(bs_dir, "dpeakFit_exo_sig70aerobic.RData"))
+  mc <- 24
+  
+  
+  exo_dp <- dpeakRead(peakfile = exo_peak_file,readfile = exo_file , fileFormat = "bam",
+                  PET = FALSE, fragLen = frag_len,parallel = TRUE,nCore = mc)
+xo  exo_fits <- dpeakFit(exo_dp,nCore = mc) 
+  save( exo_fits, file = file.path(bs_dir, "dpeakFit_exo_sig70aerobic.RData"))
 
   pet_dp1 <- dpeakRead(peakfile = pet_peak_file1,readfile = pet_file1 , fileFormat = "bam",
-                  PET = TRUE, fragLen = frag_len,parallel = TRUE,nCore = 24)   
+                  PET = TRUE, fragLen = frag_len,parallel = TRUE,nCore = mc)   
   pet_fits1 <- list()
   pet_fits1[["common"]] <- dpeakFit(pet_dp1,nCore = 24) 
   ## pet_fits1[["separate"]] <- dpeakFit(pet_dp1,estDeltaSigma = "separate",nCore = 18)

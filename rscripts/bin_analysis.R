@@ -44,14 +44,15 @@ read_files <- mapply(filter_reads,
 reads <- mapply(create_reads,read_files,c(FALSE,TRUE,FALSE),SIMPLIFY = FALSE)
 
 
-pdf(file = file.path("figs/for_paper","ChIPseqPET_ChIPexo_tagCount_comparison.pdf"),width = 6,height = 6)
+pdf(file = file.path("figs/for_paper","ChIPseqPET_ChIPexo_tagCount_comparison.pdf"),width = 4,height = 4)
 p <- hexbin_plot(reads[[2]],reads[[1]],150,frag_len = 150)+xlab("ChIP-seq (PET) tag counts")+ylab("ChIP-exo tag counts")+theme_bw()
 dt <- copy(p$data)
 dt[,x := 1 + x]
 dt[,y := 1 + y]
 print(p)    
 print(p + xlim(0,500)+ylim(0,500)+coord_fixed())
-z <- p %+% dt +coord_fixed() + scale_x_log10() + scale_y_log10()+theme(plot.title = element_text(hjust = 0))+
+z <- p %+% dt +coord_fixed() + scale_x_log10() + scale_y_log10()+
+  theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   ggtitle("A")
 print(z)
 dev.off()

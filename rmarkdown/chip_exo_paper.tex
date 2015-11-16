@@ -60,6 +60,18 @@
 \usetikzlibrary{shapes,arrows}
 \usepackage{float}
 \usepackage{verbatim}
+\usepackage{hyperref}
+
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks   = true,
+     citecolor    = black
+}
+\hypersetup{linkcolor=black}
+\hypersetup{linkcolor=black}
+\hypersetup{linkcolor=black}
+
+
 
 % \usepackage{authblk}
 \usepackage[utf8]{inputenc} %unicode support
@@ -479,8 +491,6 @@ complex.
 
 
 
-\color{blue}
-
 \subsubsection{Strand imbalance in ChIP-exo data}
 \label{sec:strand_imbalance}
 
@@ -493,12 +503,10 @@ indicator is of particular importance, since several methods rely on
 the ``peak-pair'' assumption. In table \ref{tab:qcbase}, we calculated
 the FSR and noticed that for all the samples, it's value is close to
 0.5, which means that there are roughly the same amount of reads in
-both strands. To asses 
+both strands. However, figure \ref{fig:comp}B shows that this
+assumption don't hold in practice. 
 
 
-
-
-\color{black}
 
 
 
@@ -528,28 +536,54 @@ large proportion of regions without any read in ChIP-exo data. These
 results indicate that background distribution of ChIP-exo data is less
 homogeneous than that of ChIP-Seq data.
 
-\color{blue}
-
 We next evaluated the ``peak pair'' assumption of Rhee and Pugh
 \cite{exo1}, MACE \cite{mace}, CexoR, \cite{cexor} and peakzilla
 \cite{peakzilla}, i.e. a peak of reads in the forward strand is
 usually paired with a peak of reads in the reverse strand that is
-located in the other site of the binding site. 
+located in the other site of the binding site. In order to evaluate
+this assumptiom, we reviewed the proportion of reads in the forward
+streand in candidate regions (i.e. regions with at least one binding
+site) in $\sigma^{70}$ ChIP-exo data. We found that strands of reads
+were much less balanced in ChIP-exo data than in ChIP-Seq data in
+these regions with potential binding sites (Fig. \ref{fig:comp}B) and
+htis indicates that the peak pair assumptuon might not hold in real
+ChIP-exo data.
 
-\color{black}
+%  We obtained esentially the same conclusion from the
+% ChIP-exo data for CTCF factir from human sample Rhee and Pugh
+% (\cite{exo1}) as well. 
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width = .6\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
+  \includegraphics[width = .46\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/forward_strand_ratio_comp_old.pdf}
   \caption{ A) ChIP signal in ChIP-exo was linearly related to that in
     PET ChIP-Seq data in the region with high ChIP tag counts. In
     contrast, there wer clear differences in their background
     distribution, where several ChIP-exo background regions were
-    empty.}
+    empty. B) Density of the proportion of the ratio of forward strand
+    reads in a ChIP-exo and ChIP-Seq SET data.}
   \label{fig:comp}
 \end{figure}
 
 
+\subsubsection{Comparison with ChIP-Seq data using dPeak}
+\label{sec:dpeak_analysis}
+
+
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = .4\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
+  \includegraphics[width = .4\textwidth]{../figs/for_paper/resolution_by_dataset_old_data.pdf}
+  \caption{Comparison of (A) sensitivity and (B) resolution between
+    ChIP-exo and ChIP-Seq data. Sensitivity is defined as the
+    propotion of regulonDB annotations identificed using each
+    data. Resolution is defined as the distance between regulonDB
+    annotation and its closest prediction.}
+  \label{fig:reso_all}
+\end{figure}
 
 
 
@@ -561,18 +595,20 @@ located in the other site of the binding site.
 
 
 
+
 We sampled a fixed amoung of fragments for each of the ChIP-exo, PET
 ChIP-Seq and SET ChIP-Seq datasets of the $\sigma^{70}$ sample in
 aerobic conditions. For each sampled dataset we applied our
 lower-to-higher resolution pipeline by calling peaks with MOSAiCS
-\cite{mosaics} and then deconvoling the binding events by using dPeak
+\cite{mosaics} and then deconvolving the binding events by using dPeak
 \cite{dpeak}. For the ChIP-exo datasets we called peaks by using
 GC-content and mappability with MOSAiCS, and for the ChIP-Seq datasets
 we used their respective Input samples.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_aerobic_saturation.pdf}
+%  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_aerobic_saturation.pdf}
+  \includegraphics[width = .8\textwidth]{../figs/for_paper/saturation_analysis_old.pdf}
   \caption{Comparison of the number of candidate regions (A),
     predicted events (B), identified targets (C) and resolution (D)
     among ChIP-exo, PET ChIP-Seq and SET ChIP-Seq. RegulonDB
@@ -582,10 +618,10 @@ we used their respective Input samples.
   \label{fig:design}
 \end{figure}
 
-In figure \ref{fig:design} we compared the behaviour of each data type
-when their depth is fixed. It is remarkable that even when the number
-of candiate peaks or the number of predicted events in quite lower
-than for both ChIP-Seq cases, it outperforms them in the number of
+Figure \ref{fig:design} shows the behaviour of each data type when
+their depth is fixed. It is remarkable that even when the number of
+candiate peaks or the number of predicted events in quite lower than
+for both ChIP-Seq cases, it outperforms them in the number of
 identified targets and in resolution. This may suggest that with
 ChIP-exo less false positive peaks are being called and that when the
 targets are being identified, dpeak is able to estimate binding
@@ -599,7 +635,6 @@ library complexity.
 
 
 \newpage
-
 
 \section{Methods}
 \label{sec:methods}
@@ -620,24 +655,51 @@ library complexity.
 
 \color{black}
 
+\subsection{Method comparison with ChIP-exo}
+\label{sec:suppcomp}
+
+We considered dPeak Chung et al. \cite{dpeak}, GEM Guo et
+al. \cite{gem} and MACE Wang et al. \cite{mace} for ChIP-exo data
+analysis. For the dPeak algorithm, we used the R package \emph{dPeak}
+version 1.0.0, which is available from
+\url{http://dongjunchung.github.io/dpeak/}. For the GEM algorithm we
+used its Java implementation version 0.9, which is available from
+\url{http://cgs.csail.mit.edu/gem/}. For the MACE algorithm, we used
+ity Python implementation version 1.0, which is available from
+\url{http://dldcc-web.brc.bcm.edu/lilab/MACE/docs/html/}. Candidate
+regions for dPeak were identified for each replicate of ChIP-exo data
+using the MOSAiCS algorithm Kuan et al. \cite{mosaics} (one sample
+analysis using false discovery rate of 0.0001) implemented as an R
+package \emph{mosaics} 2.4 (available from \emph{Bioconductor}
+\url{https://www.bioconductor.org/packages/release/bioc/html/mosaics.html}). We
+further filtered out candidate region with average ChIP tag count less
+than 3,000 to avoid potential false positives based in exploratory
+analysis. These regions were also explicitly provided to the GEM
+algorithm as candidate regions. Default tuning parameters were used
+duging model fitting for all methods.
+
+\subsection{Local-NSC}
+\label{sec:localnsc}
+
+The local strand cross-correlation is defined as:
+
+\begin{align}
+  \mbox{local-NSC} &= \frac{max_{x_\delta} f(x_\delta)}{\sigma} \nonumber \\
+ y_\delta &= f(x_\delta) + \sigma \epsilon_\delta \nonumber
+\end{align}
 
 
+where $f$ is calculated by fitting a local polynomial regression model
+over the strand cross-correlation calculated using exclusively the
+fragments that overlap a pre-defined genomic region, $y_\delta$ is the
+correlation of the forward and backward coverages when one is shifted
+$x_\delta$ bp towards their 3' end.
 
+The local polynomial model was fitted using the \emph{loess} function
+from the R software version 3.2.1 using the default tunning parameters.
 
-
-
-
-
-
-\subsection{Method comparison for ChIP-exo}
-\label{sec:method_comp}
-
-
-% \newpage
-% \section*{Supplement figures}
-% \subsection*{Strand cross-correlation for ChIP-exo data}
-
-
+%% not sure if here or before it would be nice to add an example of how this 
+%% method works. probably here
 
 \newpage
 
@@ -647,14 +709,25 @@ library complexity.
 \nocite{exo_gb}
 \nocite{maplot1}
 \nocite{maplot2}
+% \nocite{esl}
+
 
 \newpage
 
 \section*{Supplement}
 \label{sec:supp}
 
+
 \subsection*{Additional Enrichment plots for $\sigma^{70}$}
 \label{sec:enrichsup}
+
+In figure \ref{fig:enrich2} it is shown the same relationshtip as in
+figure \ref{fig:enrich}, but considering only regions formed where the
+reads are being allocated in more than 10 (A) and 30 (B) unique
+positions respectively. Both plots show that the vertical arms formed
+by regions with low $\mbox{ARC}$ is formed by low complexity regions,
+that way suggesting that this segment correspond to the background of
+a ChIP-exo experiment.
 
 \begin{figure}[h!]
   \centering
@@ -663,26 +736,13 @@ library complexity.
   \caption{Hexbin plots of $\mbox{ARC}$ vs $\mbox{URCR}$ for each
     region after partitioning the genome. In A and B the regions with
     reads mapped to at most 10 and 30 positions respectively where not
-    considered.}
+    considered. $\mbox{ARC}$ is defined as the ratio of the nr. of
+    reads and the width of a region and $\mbox{URCR}$ is the ratio of
+    the number of unique position where the reads are being allocated
+    and the number of reads in a region.}
   \label{fig:enrich2}
 \end{figure}
 
-\subsection{Local-NSC}
-\label{sec:localnsc}
-
-The local strand cross-correlaiton is defined as:
-
-\begin{align}
-  \mbox{local-NSC} &= \frac{max_{x_\delta} f(x_\delta)}{\sigma} \nonumber \\
- y_\delta &= f(x_\delta) + \sigma \epsilon_\delta \nonumber
-\end{align}
-
-
-where $f$ is calculated by fitting a non-parametric regression model
-over the strand cross-correlation calculated using exclusively the
-fragments that overlap a pre-defined genomic region, $y_\delta$ is the
-correlation of the forward and backward coverages when one is shifted
-$x_\delta$ bp towards their 3' end.
 
 
 
