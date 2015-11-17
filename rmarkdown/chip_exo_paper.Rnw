@@ -462,7 +462,23 @@ the FSR and noticed that for all the samples, it's value is close to
 both strands. However, figure \ref{fig:comp}B shows that this
 assumption don't hold in practice. 
 
+In order to asses the strand imbalance we create the following
+visualization in figure \ref{fig:strand}. A) presents the FSR's
+behaviour as lower depth regions are being filtered out. while B)
+shows which percentage of the regions are composed by fragments of
+both strand or only one. Roughly speaking in a lower quality dataset
+there is going to be a higher amount of single stranded-regions. To
+asses this, we divided the ChIP-exo regions into two sets, the oens
+that overlap with a known set of peaks and the opposite and performed
+$\chi^2$ tests.
 
+\begin{figure}[h!]
+  \centering  
+  \includegraphics[width = .8\textwidth]{../figs/fsr/draft_fsr_plot.pdf}
+  \includegraphics[width = .8\textwidth]{../figs/fsr/draft_label_prop_plot.pdf}
+  \caption{ABCD}
+  \label{fig:strand}
+\end{figure}
 
 
 
@@ -511,7 +527,7 @@ htis indicates that the peak pair assumptuon might not hold in real
 ChIP-exo data.
 
 %  We obtained esentially the same conclusion from the
-% ChIP-exo data for CTCF factir from human sample Rhee and Pugh
+% ChIP-exo data for CTCF factor from human sample Rhee and Pugh
 % (\cite{exo1}) as well. 
 
 \begin{figure}[h]
@@ -590,11 +606,6 @@ SET ChIP-Seq.
   \label{fig:reso_all}
 \end{figure}
 
-
-
-
-
-
 \subsection{Recomendations for the design of ChIP-exo experiments}
 \label{sec:reco}
 
@@ -641,6 +652,9 @@ which may indicate that with ChIP-exo a smaller amount of reads is
 necessary to identify a higher number of targets, but it may also be
 possible that this is an artifact occurring due to ChIP-exo's lower
 library complexity.
+
+\section{Conclusions}
+\label{sec:conclusions}
 
 
 
