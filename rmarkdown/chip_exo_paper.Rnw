@@ -522,8 +522,9 @@ ChIP-exo data.
     PET ChIP-Seq data in the region with high ChIP tag counts. In
     contrast, there wer clear differences in their background
     distribution, where several ChIP-exo background regions were
-    empty. B) Density of the proportion of the ratio of forward strand
-    reads in a ChIP-exo and ChIP-Seq SET data.}
+    empty. B) In ChIP-exo data, strands of reads were significantly
+    less balanced in the regions with potential binding sites compared
+    to SET ChIP-Seq data. }
   \label{fig:comp}
 \end{figure}
 
@@ -531,18 +532,61 @@ ChIP-exo data.
 \subsubsection{Comparison with ChIP-Seq data using dPeak}
 \label{sec:dpeak_analysis}
 
+<<reso_param, include = FALSE , eval  = TRUE , echo = FALSE>>=
+
+  ext <- 20
+
+@ 
+
+Figure \ref{fig:reso_all} shows different comparisons among ChIP-exo,
+PET ChIP-Seq and SET ChIP-Seq. A regulonDB annotation was considered
+identified if the distance between it and dPeak binding site estimate
+was at most of \Sexpr{ext} bp. That way, the sensitivity is defined as
+the proportion of regulonDB annotations identified in a peak. In
+figure \ref{fig:reso_all}A can be seen that the sensitivity of all
+protocols increases as the average distance between binding sites
+does. Despite that when the binding events in a peak are closer to
+each other both ChIP-exo and PET ChIP-Seq are comparable, as the
+distance increases ChIP-exo identifies a higher proportion of the
+regulonDB annotations; additionally SET ChIP-Seq is significantly less
+sensible than both ChIP-exo and PET ChIP-Seq. In figure
+\ref{fig:reso_all}B the distance between a regulonDB annotation to its
+closest prediction is compared for ChIP-exo, PET and SET ChIP-Seq;
+while the first two are comparable, both outperform SET
+ChIP-Seq. 
+
+In figures \ref{fig:reso_all}C and \ref{fig:reso_all}D, we observe the
+behaviour of dPeak's estimated parameters for single end data (both
+ChIP-exo and ChIP-Seq). The $\delta$ parameter measures the distance
+from the 5' end of the fragment to its respective binding event and
+the $\sigma$ parameter indicater the fragments distribution
+variability around their respective binding sites (more information in
+\cite{dpeak}). For both parameters, it can be seen that the ChIP-exo
+estimates are smaller than the SET ChIP-Seq estimates in average,
+which agrees with the fact that the sample reads are allocated more
+tihgtly around the binding events in ChIP-exo data. Hence we can
+conclude that the peaks shape is quite different between ChIP-exo and
+SET ChIP-Seq.
 
 
-
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
-  \includegraphics[width = .4\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
-  \includegraphics[width = .4\textwidth]{../figs/for_paper/resolution_by_dataset_old_data.pdf}
-  \caption{Comparison of (A) sensitivity and (B) resolution between
-    ChIP-exo and ChIP-Seq data. Sensitivity is defined as the
-    propotion of regulonDB annotations identificed using each
-    data. Resolution is defined as the distance between regulonDB
-    annotation and its closest prediction.}
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/resolution_by_dataset_old_data.pdf}
+   \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/sigma_delta_old_densities.pdf}
+   \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/sigma_delta_old_densities.pdf} 
+
+   \caption{Comparison of (A) sensitivity and (B) resolution between
+     ChIP-exo and ChIP-Seq data. Sensitivity is defined as the
+     propotion of regulonDB annotations identificed using each
+     data. Resolution is defined as the distance between regulonDB
+     annotation and its closest prediction. $\quad$ C) $\delta$ parameter in
+     dPeak measures average distance of the reads to their respective
+     binding site. In ChIP-exo data, reads were located much closer to
+     the binding site than in SET ChIP-Seq. D) $\sigma$ parameter
+     measure the dispersion of reads around each binding site. In
+     ChIP-exo data, reads showed less variation around the their
+     respective binding sites compared to SET ChIP-Seq.}
   \label{fig:reso_all}
 \end{figure}
 

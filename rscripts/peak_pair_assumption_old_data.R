@@ -168,23 +168,30 @@ dt[ , Dataset := plyr::mapvalues( Dataset ,
         from = c("ChIP-exo","ChIP-seq (PET)","ChIP-seq (SET)"),
         to = c("exo","pet","set"))]
 
-brewer.pal(3,"Set1")
-
 p1 = ggplot(dt,aes(delta,colour = Dataset))+geom_density(size=1)+facet_grid(Dataset~.)+
-  theme(legend.position = "none")+scale_color_manual( values = brewer.pal(3,"Set1")[c(1,3)])+
-  ylab("")+xlab(expression(delta))
-u = print(p1)
-dev.off()
-
+  theme_bw()+theme(legend.position = "none",plot.title = element_text(hjust = 0))+
+  scale_color_manual( values = brewer.pal(3,"Set1")[c(1,3)])+
+  ylab("")+xlab("delta estimate")
 dt1 = data.table(sigma = sigma.exo1)
 dt1[,Dataset :="ChIP-exo"]
 dt2 = data.table(sigma = sigma.SET)
 dt2[,Dataset:= "ChIP-seq (SET)"]
 dt = rbind(dt1,dt2)
 
-p1 = ggplot(dt,aes(sigma,colour = Dataset))+geom_density(size=1)+facet_grid(Dataset~.)+
-  theme(legend.position = "none")+scale_color_brewer(palette = "Dark2")+ylab("")+
-  xlab(expression(sigma))
+dt[ , Dataset := plyr::mapvalues( Dataset ,
+        from = c("ChIP-exo","ChIP-seq (PET)","ChIP-seq (SET)"),
+        to = c("exo","pet","set"))]
+
+p2 = ggplot(dt,aes(sigma,colour = Dataset))+geom_density(size=1)+facet_grid(Dataset~.)+
+  theme_bw()+theme(legend.position = "none",plot.title = element_text(hjust = 0))+
+  scale_color_manual(values = brewer.pal(3,"Set1")[c(1,3)])+ylab("")+
+  xlab("sigma estimate")
+
+pdf(file = "figs/for_paper/sigma_delta_old_densities.pdf",width = 4 ,height  = 4)
+print(p1 + ggtitle("C"))
+print(p2 + ggtitle("D"))
+dev.off()
+
 pdf(file = file.path(dr,"sigma_estimate_exo_seq_R1.pdf"))
 u = print(p1)
 dev.off()
