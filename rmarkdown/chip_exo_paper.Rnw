@@ -479,6 +479,17 @@ the FSR and noticed that for all the samples, it's value is close to
 both strands. However, figure \ref{fig:comp}B shows that this
 assumption don't hold in practice. 
 
+<<fsr,include = FALSE,eval = TRUE,echo = FALSE>>=
+
+  de <- 100
+
+pval <- list()
+pval[[1]] <- 0.1039
+pval[[2]] <- 0.0064
+pval[[3]] <- 0.0871
+
+@ 
+
 In order to asses the strand imbalance we create the following
 visualization in figure \ref{fig:strand}. A) presents the FSR's
 behavior as lower depth regions are being filtered out, while B) shows
@@ -486,9 +497,11 @@ which percentage of the regions are composed by fragments of both
 strand or only one. Roughly speaking in a lower quality dataset there
 is going to be a higher amount of single stranded-regions. To evaluate
 this statement, for each replicate of the FoxA1 dataset from
-\cite{exoillumina}, we divided the regions considered by the QC
-pipeline into two sets by reviewing if they overlap any of the
-sample's peaks and then calculate the Kolmogorov-Smirnov test.
+\cite{exoillumina}, we divided the regions formed by at least
+\Sexpr{de} fragments into into the ones that overlap with any of the
+sample's peaks. The p.value for ERR36935 is \Sexpr{pval[[1]]}, for
+ERR336942 is \Sexpr{pval[[2]]} and for ERR336956 is \Sexpr{pval[[3]]}.
+
 
 
 
