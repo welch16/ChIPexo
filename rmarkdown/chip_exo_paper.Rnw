@@ -21,7 +21,6 @@
 % \hypersetup{linkcolor=black}
 
 
-
 % \usepackage{authblk}
 \usepackage[utf8]{inputenc} %unicode support
 
@@ -331,12 +330,13 @@ Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820 & 0.5054 & 17.69  \\
 Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 \\
 \hline
 \end{tabular}  
-  \caption{Usual quality control indicators applied to our
-    $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD
-    for standardized standard deviation, FSR for forward strand ratio,
-    NSC for normalized strand cross-correlation coefficient. We
-    omitted the RSC (relative strand cross-correlation since ChIP-exo
-    experiments don't usually have an accompanying input file)}
+\caption{Usual quality control indicators applied to our
+  $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD
+  for standardized standard deviation, FSR for forward strand ratio,
+  NSC for normalized strand cross-correlation coefficient. We
+  omitted the RSC (relative strand cross-correlation since ChIP-exo
+  experiments don't usually have an accompanying input file) 
+  [note: I need to change the table, due the alignment issue]}
 
   \label{tab:qcbase}
 \end{table}
@@ -392,7 +392,6 @@ ChIP-exo sample.
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 \label{sec:enri}
 
-
 In ChIP-exo experiments, the background is often digested by the
 exonuclease enzyme, therefore to determine the sample's quality is
 necessary to address the balance between the enrichment and library
@@ -405,47 +404,64 @@ complexity. To diagnose this, we considered the Average Read Coverage
       in the region}}{\text{Nr. of reads in the region}} \nonumber
 \end{align}
 
-Figure \ref{fig:enrich}A shows hexbin plots illustrating the
-interaction between these two quantities. Notice how there are two
-strong arms in each panel: The first one corresponds to regions with
-low $\mbox{ARC}$ values and $\mbox{URCR}$ values that can vary across
-the whole $[0,1]$ interval, while the second one shows a decreasing
-trend in $\mbox{URCR}$ as $\mbox{ARC}$ increases. When an experiment
-shows a higher degree of enrichment, then the separation of this two
-arms is more noticeable, since the second arm corresponds to possibly
-enriched regions (\ref{fig:enrich2}A and \ref{fig:enrich2}B).
+Using the mouse-FoxA1 experiment from \cite{exoillumina}, the
+relationship between this two quantities, library complexty and sample
+enrichment was explored. Figure \ref{fig:enrich}A shows hexbin plots
+illustrating the interaction between these two quantities. Notice how
+there are two strong arms in each panel: The first one corresponds to
+regions with low $\mbox{ARC}$ values and $\mbox{URCR}$ values that can
+vary across the whole $[0,1]$ interval, while the second one shows a
+decreasing trend in $\mbox{URCR}$ as $\mbox{ARC}$ increases. When an
+experiment shows a higher degree of enrichment, then the separation of
+this two arms is more noticeable, since the second arm corresponds to
+possibly enriched regions (\ref{fig:enrich2}A and \ref{fig:enrich2}B).
 
 <<strata_param , include =FALSE,echo = FALSE, eval = TRUE>>=
 
-  nstrata <- 100
+  nstrata <- 400
+  high <- 100
+  med <- 50
+  low <- 20
   
 @ 
 
-Figure \ref{fig:enrich}B shows boxplots of the $\mbox{local-NSC}$
-stratified by the number of reads mapped exactly to one position for
-all $\sigma^{70}$ ChIP-exo experiments; for each stratum, we sampled
-\Sexpr{nstrata} regions that whenever possible (in the opposite case,
-all the regions in the category were considered). There is an
-increasing trend as the number of unique position increases, which
-means that this is an effective indicator of library complexity since
-regions where the reads are mapped to more positions are usually more
-complex.
-
-%% perhaps do two other slots about how this works... a good experiment vs a bad experiment
-%% of the same region
+Figure \ref{fig:enrich}B shows boxplots of the $\mbox{local-NSC}$ on
+regions common to the 3 replicates and stratified by the number of
+reads mapped exactly to one position for all $\sigma^{70}$ ChIP-exo
+experiments; The high stratum is defined by regions consising of more
+than \Sexpr{high} unique positions, the medium stratum for regions
+where the number of unique position is on the
+(\Sexpr{med},\Sexpr{high}) range and the low stratum in the
+(\Sexpr{low},\Sexpr{med}) range. For each stratum and biological
+replicate, we sampled \Sexpr{nstrata} regions whenever possible (in
+the opposite case, all the regions in the category were considered)
+and calculated the $\mbox{local-NSC}$ for those regions. For all three
+replicates, it is shown an increasing trend as the number of unique
+position increases, which means that the $\mbox{local-NSC}$ is an
+effective indicator of library complexity. Figure \ref{fig:enrich}C
+shows the $\mbox{local-NSC}$ coefficient calculated for the same set
+of regions, stratified by the number of unique positions in the
+regions of ERR336942 using the same criteria as before. In the high
+panel it is shown that the ERR336942 sample performs slightly better
+than ERR336956 and both outperform ERR336935, this agrees with
+\ref{fig:enrich}A, where only in the left-most panel doesn't seem to
+be a separation between the low $\mbox{ARC}$ arm and the other.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_enrichment.pdf}
-  \includegraphics[width = .8\textwidth,page =3]{../figs/for_paper/Local_SCC_indicator_by_strata.pdf}
-  \caption{A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$ and
-    B) boxplots of the $\mbox{local-NSC}$ stratified by nr. of reads
-    mapped to only one position in the regions for the ChIP-exo
-    $\sigma^{70}$ experiments divided by condition and biological
-    replicate}
+  \includegraphics[width = .8\textwidth]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
+  \includegraphics[width = .8\textwidth,page =3]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata.pdf}
+  \includegraphics[width = .8\textwidth,page =4]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata_sameRegion.pdf}
+  \caption{Using the mouse-FoxA1 experiment from \cite{exoillumina}:
+    A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$, B) Boxplots
+    of the $\mbox{local-NSC}$ stratified by nr. of reads mapped to
+    only one position in the regions for the ChIP-exo experiments
+    divided by condition and biological replicate and C) Boxplots of
+    the a set of ERR336942 regions, stratified as in (B) with the
+    $\mbox{local-NSC}$ calculated with the different biological
+    replicates.}
   \label{fig:enrich}
 \end{figure}
-
 
 
 \subsubsection{Strand imbalance in ChIP-exo data}
@@ -465,19 +481,21 @@ assumption don't hold in practice.
 
 In order to asses the strand imbalance we create the following
 visualization in figure \ref{fig:strand}. A) presents the FSR's
-behavior as lower depth regions are being filtered out. while B)
-shows which percentage of the regions are composed by fragments of
-both strand or only one. Roughly speaking in a lower quality dataset
-there is going to be a higher amount of single stranded-regions. To
-asses this, we divided the ChIP-exo regions into two sets, the ones
-that overlap with a known set of peaks and the opposite and performed
-$\chi^2$ tests.
+behavior as lower depth regions are being filtered out, while B) shows
+which percentage of the regions are composed by fragments of both
+strand or only one. Roughly speaking in a lower quality dataset there
+is going to be a higher amount of single stranded-regions. To evaluate
+this statement, for each replicate of the FoxA1 dataset from
+\cite{exoillumina}, we divided the regions considered by the QC
+pipeline into two sets by reviewing if they overlap any of the
+sample's peaks and then calculate the Kolmogorov-Smirnov test.
+
+
 
 \begin{figure}[h!]
   \centering  
-  \includegraphics[width = .8\textwidth]{../figs/fsr/draft_fsr_plot.pdf}
-  \includegraphics[width = .8\textwidth]{../figs/fsr/draft_label_prop_plot.pdf}
-  \caption{ABCD}
+  \includegraphics[width = .8\textwidth,page = 3]{../figs/Carroll_mice_for_paper/Strand_imbalance.pdf} 
+  \caption{Strand imbalance QC plots for the same data as in figure \ref{fig:enrich}.}
   \label{fig:strand}
 \end{figure}
 
@@ -703,12 +721,10 @@ further filtered out candidate region with average ChIP tag count less
 than 3,000 to avoid potential false positives based in exploratory
 analysis. These regions were also explicitly provided to the GEM
 algorithm as candidate regions. Default tuning parameters were used
-during model fitting for all methods.
-
-% And for
-% the CexoR algorithm, we used its R implementation version 1.8.0 which
-% is available from
-% \url{http://bioconductor.org/packages/release/bioc/html/CexoR.html}
+during model fitting for all methods. We tried to use the CexoR
+algorithm with its R implementation version 1.8.0 available from
+\url{http://bioconductor.org/packages/release/bioc/html/CexoR.html},
+but it returned an error everytime we used it.
 
 \subsection{Local-NSC}
 \label{sec:localnsc}
@@ -729,9 +745,6 @@ $x_\delta$ bp towards their 3' end.
 
 The local polynomial model was fitted using the \emph{loess} function
 from the R software version 3.2.1 using the default tuning parameters.
-
-%% not sure if here or before it would be nice to add an example of how this 
-%% method works. probably here
 
 \newpage
 
@@ -763,8 +776,8 @@ a ChIP-exo experiment.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width = .8\textwidth,page = 3]{../figs/for_paper/Sig70_enrichment.pdf}
-  \includegraphics[width = .8\textwidth,page = 4]{../figs/for_paper/Sig70_enrichment.pdf}
+  \includegraphics[width = .8\textwidth,page = 3]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
+  \includegraphics[width = .8\textwidth,page = 4]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
   \caption{Hexbin plots of $\mbox{ARC}$ vs $\mbox{URCR}$ for each
     region after partitioning the genome. In A and B the regions with
     reads mapped to at most 10 and 30 positions respectively where not

@@ -1,6 +1,9 @@
 ## ----strata_param , include =FALSE,echo = FALSE, eval = TRUE-------------
 
-  nstrata <- 100
+  nstrata <- 400
+  high <- 100
+  med <- 50
+  low <- 20
   
 
 ## ----comp_param,include = FALSE,echo = FALSE,eval = TRUE-----------------
