@@ -600,6 +600,8 @@ ChIP-exo data.
   \centering
   \includegraphics[width = .46\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
   \includegraphics[width = .46\textwidth]{../figs/for_paper/forward_strand_ratio_comp_old.pdf}
+  \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
+  \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
   \caption{ A) ChIP signal in ChIP-exo was linearly related to that in
     PET ChIP-Seq data in the region with high ChIP tag counts. In
     contrast, there were clear differences in their background
@@ -736,13 +738,20 @@ library complexity.
   seems to decrease resolution. Also, Apex was updated into MACE, so I
   think it could be better to add that method instead}
 
-
-
 \section{Conclusions}
 \label{sec:conclusions}
 
+We provide a ChIP-exo QC pipeline capable of asses the balance between
+enriched samples and low complexity regions. It is shown that the
+``peak-pair'' assumption doesn't hold in practice and we provide two
+out-of-the-box visualization capable to asses the strand imbalance in
+a ChIP-exo experiment.
 
-
+We updated the dPeak algorithm from \cite{dpeak} and showed that
+ChIP-exo is comparable in resolution and sensitivity with PET ChIP-Seq
+and outperforms SET ChIP-Seq. ChIP-exo compared with PET and SET
+ChIP-Seq at fixed depth sample is able to identify more targets at a
+lower resolution.
 
 
 
