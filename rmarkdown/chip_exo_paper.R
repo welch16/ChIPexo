@@ -6,6 +6,16 @@
   low <- 20
   
 
+## ----fsr,include = FALSE,eval = TRUE,echo = FALSE------------------------
+
+  de <- 100
+
+  pval <- list()
+  pval[[1]] <- 0.1039
+  pval[[2]] <- 0.0064
+  pval[[3]] <- 0.0871
+
+
 ## ----comp_param,include = FALSE,echo = FALSE,eval = TRUE-----------------
 
   bin_size <- 150
