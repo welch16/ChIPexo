@@ -1,6 +1,6 @@
-## ----strata_param , include =FALSE,echo = FALSE, eval = TRUE-------------
+## ----strata_para , include =FALSE,echo = FALSE, veal = TRUE--------------
 
-  nstrata <- 400
+  strata <- 400
   high <- 100
   med <- 50
   low <- 20
