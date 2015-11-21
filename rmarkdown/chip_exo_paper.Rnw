@@ -143,7 +143,7 @@
     ChIP-Seq.
 
     In this article we provide a quality control pipeline which
-    visually asses ChIP-exo biases and calculates a signal-to-noise
+    visually assess ChIP-exo biases and calculates a signal-to-noise
     measure. Also, we updated dPeak \cite{dpeak}, which makes a
     striking balance in sensitivity, specificity and spatial
     resolution for ChIP-exo data analysis.
@@ -377,7 +377,7 @@ Figure \ref{fig:qcdiagram} shows a flowchart for the ChIPexoQC
 pipeline. Which basically partitions the genome by keeping the
 non-digested ChIP-exo regions. Then, for each region it calculates a
 series of statistics. Finally, it creates several visualizations
-designed to asses the quality levels of a ChIP-exo sample.
+designed to assess the quality levels of a ChIP-exo sample.
 
 \begin{figure}[h!]
   \centering
@@ -499,7 +499,7 @@ doesn't hold in practice.
 
 @ 
 
-In order to asses the strand imbalance we created the following
+In order to assess the strand imbalance we created the following
 visualization presented in figure \ref{fig:strand}. A) shows the FSR's
 behavior as lower depth regions are being filtered out, while B) shows
 which percentage of the regions are composed by fragments of both
@@ -729,10 +729,10 @@ artifact occurring due to ChIP-exo's lower library complexity.
 \section{Conclusions}
 \label{sec:conclusions}
 
-We provide a ChIP-exo QC pipeline capable of asses the balance between
+We provide a ChIP-exo QC pipeline capable of assess the balance between
 enriched samples and low complexity regions. It is shown that the
 ``peak-pair'' assumption doesn't hold in practice and we provide two
-out-of-the-box visualization capable to asses the strand imbalance in
+out-of-the-box visualization capable to assess the strand imbalance in
 a ChIP-exo experiment.
 
 We updated the dPeak algorithm from \cite{dpeak} and showed that
