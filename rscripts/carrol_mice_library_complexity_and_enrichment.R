@@ -160,7 +160,11 @@ build_stats <- function(region,reads)
   return(stats)
 }
 
-stats <- mclapply(gr,function(x)build_stats(common,x),mc.cores = 6)
+regs <- lapply(regs,dt2gr)
+
+stats <- mcmapply(build_stats,regs,gr,mc.cores = 6 ,SIMPLIFY = FALSE)
+
+stats_common <- mclapply(gr,function(x)build_stats(common,x),mc.cores = 6)
 
 aux <- mapply(function(x,y)x[,sample := y],stats,names(stats),SIMPLIFY =FALSE)
 aux <- do.call(rbind,aux)
@@ -346,6 +350,12 @@ strata_plots[[4]] <- ggplot(dat , aes( file , nsc,colour = strata))+geom_boxplot
   scale_color_brewer(palette = "Dark2")+theme_bw()+
   theme(legend.position = "none", axis.text.x = element_text(angle = 90),plot.title = element_text(hjust = 0))+
   xlab("")+ylab("Local NSC")+ylim(0,3)+geom_abline( slope = 0 , intercept = 0, linetype = 2)+ggtitle("B")
+
+pdf(file = file.path(figs_dir,"Local_SCC_indicator_by_strata.pdf"),width = 9,height = 4)
+u <- lapply(strata_plots,print)
+dev.off()
+
+
 
 anchor_stats <- filter_stats[[2]]
 
