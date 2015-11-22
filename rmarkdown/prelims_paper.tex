@@ -389,8 +389,29 @@ the genome where no fragment is being mapped. Finally the normalized
 strand cross-correlation is defined as:
 
 \[
-\mbox{NSC} = \frac{ \max }{\min}
+\mbox{NSC} = \frac{ \max_\delta y(\delta)}{\min_\delta y(\delta)}
 \]
+
+where $y(\delta)$ is strand cross-correlation defined as in (\ref{scc}). 
+
+\subsubsection{Strand cross-correlation}
+\label{sec:scc}
+
+The strand cross-correlation (SCC) was proposed by Kharchenko et al.,
+2008 \cite{strandcc} and it may be one of the most used of the
+ChIP-Seq QC metrics. The SCC curve is defined as:
+
+\begin{align}
+  y(\delta) = \sum_c w_c r\left[ n_c^+ \left(x + \frac{\delta}{2}
+    \right), n_c^- \left( x- \frac{\delta}{2} \right)\right]
+\label{scc}
+\end{align}
+
+where $y(\delta)$ is strand cross-correlation for a strand shift
+$\delta$, $r$ is the Pearson correlation, $w_c$ is the propotion of
+tags mapped to chromosome $c$ and $n_c^S$ is the tag count vector for
+strand $S$ and chromsome $c$.
+
 
 
 

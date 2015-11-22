@@ -20,3 +20,6 @@ rmarkdown/*blg
 rmarkdown/*bbl
 rmarkdown/*toc
 rmarkdown/_region_.tex
+rmarkdown/*lof
+rmarkdown/*out
+rmarkdown/auto
