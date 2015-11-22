@@ -15,7 +15,7 @@ files <- list.files(dr)
 files <- files[grep("bam",files)]
 files <-files[grep("bai",files,invert = TRUE)]
 
-files <- files[sapply(c("41","52","59"),grep,files)]
+files <- files[sapply(c("933","950","938"),grep,files)]
 
 files <- file.path(dr,files)
 

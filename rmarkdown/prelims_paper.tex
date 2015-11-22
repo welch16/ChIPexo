@@ -53,13 +53,17 @@
 \usepackage{adjustbox}
 \usepackage{fullpage}
 \usepackage{epsfig}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks   = true,
+     citecolor    = black
+}
+\hypersetup{linkcolor=black}
 
 \usepackage{multicol}
-%\setkomafont{disposition}{\normalfont\bfseries}
-% \usepackage[round, sort]{natbib}
+
 \renewcommand{\baselinestretch}{1.4}
 \usepackage{float}
-
 \usepackage{wrapfig}
 
 \title{High Resolution Identification of Protein-DNA Binding Events
@@ -254,7 +258,7 @@ both significantly improve the resolution of protein binding site
 identification compared to SET-based analysis with any of the
 available methods.
 
-\section{ChIP-exo's review}
+\section{ChIP-exo and ChIP-Seq review}
 \label{sec:exo}
 
 \begin{wrapfigure}{l}{.4\textwidth}
@@ -304,15 +308,6 @@ either of the $\beta$ factors show that the complexity of the ChIP-exo
 libraries may be lower in some cases, i.e. the peak is mapped with
 fewer positions.
 
-\subsection{Current Quality Control Measures for ChIP-Seq}
-\label{sec:QC_seq}
-
-Despite that not specific QC pipeline exists for ChIP-exo.
-
-
-
-
-
 \begin{figure}[h!]
   \centering
   \includegraphics[width = .8 \textwidth,page = 107]{/p/keles/ChIPexo/volume5/OpenClosedComplexes/figs/peaks/ChIPseq_ChIPexo_peaks_rif20.pdf}
@@ -328,17 +323,272 @@ Despite that not specific QC pipeline exists for ChIP-exo.
   \label{fig:exo_example}
 \end{figure}
 
+\subsection{Current Quality Control Measures for ChIP-Seq}
+\label{sec:QC_chipseq}
+
+To our knowledge it doesn't exists a QC pipeline for ChIP-exo. Hence,
+we analyzed how the current ChIP-Seq QC measures behave on ChIP-exo
+data.
+
+\begin{table}[h]
+  \centering
+  \caption{Usual quality control indicators applied to the $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD for standardized standard deviation, NSC for normalized strand cross-correlation coefficient (Another measure related to the strand cross-correlation curve is the RSC was ommited since input sample usually don't exists for ChIP-exo). $\sig$ samples were given by Robert Landick, FoxA1 and ER samples are from Serandour et al., 2013 \cite{exoillumina} and CTCF sample is from Rhee and Pugh, 2011 \cite{exo1}.}
+
+\begin{tabular}{l|l|r|r|r|r|r|r}
+\hline\hline
+IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
+\hline\hline
+$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 &  10.29 \\
+\hline
+$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091  &  25.08  \\
+\hline
+$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820  & 17.69  \\
+\hline
+$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647  &  14.11 \\
+\hline
+FoxA1 &  Mouse &  NA & 1 & 22,210,461 & 0.6562 & 9.12 $\times 10^{-5}$ & 21.452 \\
+\hline
+FoxA1 &  Mouse &  NA & 2 & 22,307,557 & 0.7996 & 7.94 $\times 10^{-5}$ & 60.661 \\
+\hline
+FoxA1 &  Mouse &  NA & 3 & 22,421,729 & 0.1068 & 1.31 $\times 10^{-4}$ & 72.312 \\
+\hline
+ER & Human & NA & 1 & 9,289,835 & 0.8082 & 3.64 $\times 10^{-5}$ & 19.843 \\
+\hline
+ER & Human & NA & 2 & 11,041,833 & 0.8024 & 4.6 $\times 10^{-5}$ & 21.422 \\
+\hline
+ER & Human & NA & 3 & 12,464,836 & 0.8203 & 4.89 $\times 10^{-5}$ & 19.699 \\
+\hline
+CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \\
+\hline
+\end{tabular}  
+  \label{tab:qcbase}
+\end{table}
+
+Table \ref{tab:qcbase} contains measures that are commonly used with
+ChIP-Seq data. PBC stands for PCR bottleneck amplification and is
+defined as the ratio between the number of positions to which exactly
+one mappping read maps divided by the number of position to which at
+least one mapping reads maps, the ENCODE project proposed a series of
+ranges to interpret this quantity (which can be found in
+\url{https://www.encodeproject.org/data-standards/2012-quality-metrics/}),
+but it doesn't apply to ChIP-exo, if it did all the samples with
+$\mbox{PBC} < 0.5$ should be reject due to be showing severe
+bottlenecking. Planet et al., 2011 proposed the Standarized Standard
+Deviation which defined as:
+
+\[
+\mbox{SSD} = \mbox{SD}_N / \sqrt{N} 
+\]
+
+where $\mbox{SD}_N$ is the standard deviation of the coverage of the
+sample and $N$ is the number of reads. This measure is smaller for
+ChIP-exo since the reads are located more tightly around binding
+sites, but it may be biased since several fragments are being
+diggested by exonuclease enzyme, hence there are several position in
+the genome where no fragment is being mapped. Finally the normalized
+strand cross-correlation is defined as:
+
+\[
+\mbox{NSC} = \frac{ \max }{\min}
+\]
 
 
 
 
+\subsection{Comparison with ChIP-Seq data}
+\label{sec:comp_chipseq}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = .46\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/forward_strand_ratio_comp_old.pdf}
+  \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
+  \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
+  \caption{ A) ChIP signal in ChIP-exo was linearly related to that in
+    PET ChIP-Seq data in the region with high ChIP tag counts. In
+    contrast, there were clear differences in their background
+    distribution, where several ChIP-exo background regions were
+    empty. B) In ChIP-exo data, strands of reads were significantly
+    less balanced in the regions with potential binding sites compared
+    to SET ChIP-Seq data. C) ChIP tag counts increase linearly as
+    mappability scores increases. D) ChIP tag counts increase linearly
+    as GC content score increases when GC content is less than 0.6 and
+    then ChIP tag counts decrease as GC content increases. }
+  \label{fig:comp}
+\end{figure}
+
+
+
+We first compared various factors that could affect binding site
+identification between ChIP-exo and ChIP-Seq data. In order to compare
+distribution of signal and background between ChIP-exo and ChIP-Seq
+data, we calculated ChIP tag counts across the genome by counting the
+number of reads mapping to each of 150 non-overlapping
+window after extending reads by 150 to their 3' end
+directions. ChIP tag counts in ChIP-exo data were linearly related to
+ChIP tag counts in ChIP-Seq data for the regions with high ChIP tag
+counts (Figure \ref{fig:comp}A). This implies that signals for
+potential binding sites are well reproducible between ChIP-exo and
+ChIP-Seq data. On the other hand, there was clear difference in the
+background distribution between them. In ChIP-Seq data reads were
+almost uniformly distributed over background (non-binding) regions and
+the ChIP tag counts in there regions were significantly larger than
+zero. In contrast, in ChIP-exo data, there was larger variation in
+ChIP tag counts among background regions and ChIP tag counts were much
+lower in these regions compared to ChIP-Seq data. There were also
+large proportion of regions without any read in ChIP-exo data. These
+results indicate that background distribution of ChIP-exo data is less
+homogeneous than that of ChIP-Seq data.
+
+We next evaluated the ``peak pair'' assumption from Rhee and Pugh,
+2011 \cite{exo1}, i.e. a peak of reads in the forward strand is
+usually paired with a peak of reads in the reverse strand that is
+located in the other site of the binding site. Wang et al., 2014
+\cite{mace}, Madrigal 2015 \cite{cexor} and Bardet et al., 2013
+\cite{peakzilla} proposed method rely in this assumption. In order to
+evaluate this assumption, we reviewed the proportion of reads in the
+forward strand in candidate regions (i.e. regions with at least one
+binding site) in $\sig$ ChIP-exo data. We found that strands of reads
+were much less balanced in ChIP-exo data than in ChIP-Seq data in
+these regions with potential binding sites (Fig. \ref{fig:comp}B) and
+this indicates that the peak pair assumption might not hold in real
+ChIP-exo data.
+
+We evaluated ChIP-exo data for CTCF factor from human genome
+\cite{exo1} to investigate issues specific to eukaryotic genomes for
+binding sites identification. Figures \ref{fig:comp}C and
+\ref{fig:comp}D display the bin-level average read counts against
+mappability and GC content. Each data point is obtained by averaging
+the read counts across bins with the same mappability of GC
+content. These results indicate that binding site identification in
+ChIP-exo sample might also benefit from the use of methods that take
+into account of apparent sequence biases such as mappability and GC
+content.
 
 \section{Results}
 \label{sec:results}
 
 
+\subsubsection{Comparison with ChIP-Seq data using dPeak}
+\label{sec:dpeak_analysis}
 
 
+
+
+Figure \ref{fig:reso_all} shows different comparisons among ChIP-exo,
+PET ChIP-Seq and SET ChIP-Seq. A RegulonDB annotation was considered
+identified if the distance between it and dPeak binding site estimate
+was at most of 20 bp. That way, the sensitivity is defined as
+the proportion of RegulonDB annotations identified in a peak. In
+figure \ref{fig:reso_all}A can be seen that the sensitivity of all
+protocols increases as the average distance between binding sites
+does. Despite that when the binding events in a peak are closer to
+each other, both ChIP-exo and PET ChIP-Seq are comparable, as the
+distance increases ChIP-exo identifies a higher proportion of the
+RegulonDB annotations; additionally SET ChIP-Seq is significantly less
+sensible than both ChIP-exo and PET ChIP-Seq. In figure
+\ref{fig:reso_all}B the distance between a RegulonDB annotation to its
+closest prediction is compared for ChIP-exo, PET and SET ChIP-Seq;
+while the first two are comparable, both outperform SET ChIP-Seq.
+
+In figures \ref{fig:reso_all}C and \ref{fig:reso_all}D, we observe the
+behavior of dPeak's estimated parameters for single end data (both
+ChIP-exo and ChIP-Seq). The $\delta$ parameter measures the distance
+from the 5' end of the fragment to its respective binding event and
+the $\sigma$ parameter indicates the fragments distribution
+variability around their respective binding sites (more information in
+\cite{dpeak}). For both parameters, it can be seen that the ChIP-exo
+estimates are smaller than the SET ChIP-Seq estimates in average,
+which agrees with the fact that the sample reads are allocated more
+tightly around the binding events in ChIP-exo data. Hence we can
+conclude that the peaks shape is quite different between ChIP-exo and
+SET ChIP-Seq.
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/resolution_by_dataset_old_data.pdf}
+   \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/sigma_delta_old_densities.pdf}
+   \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/sigma_delta_old_densities.pdf} 
+
+   \caption{Comparison of (A) sensitivity and (B) resolution between
+     ChIP-exo and ChIP-Seq data. Sensitivity is defined as the
+     proportion of RegulonDB annotations identified using each
+     data. Resolution is defined as the distance between RegulonDB
+     annotation and its closest prediction. $\quad$ C) $\delta$ parameter in
+     dPeak measures average distance of the reads to their respective
+     binding site. In ChIP-exo data, reads were located much closer to
+     the binding site than in SET ChIP-Seq. D) $\sigma$ parameter
+     measure the dispersion of reads around each binding site. In
+     ChIP-exo data, reads showed less variation around the their
+     respective binding sites compared to SET ChIP-Seq.}
+  \label{fig:reso_all}
+\end{figure}
+
+\subsection{Recommendations for the design of ChIP-exo experiments}
+\label{sec:reco}
+
+
+
+We sampled a fixed amount of fragments for each of the ChIP-exo, PET
+ChIP-Seq and SET ChIP-Seq datasets of the $\sigma^{70}$ sample in
+aerobic conditions. For each sampled dataset we applied our
+lower-to-higher resolution pipeline by calling peaks with MOSAiCS
+\cite{mosaics} and then deconvolving the binding events by using dPeak
+\cite{dpeak}. For the ChIP-exo datasets we called peaks by using
+GC-content and mappability with MOSAiCS, and for the ChIP-Seq datasets
+we used their respective Input samples.
+
+\begin{figure}[h!]
+  \centering
+%  \includegraphics[width = .8\textwidth]{../figs/for_paper/Sig70_aerobic_saturation.pdf}
+  \includegraphics[width = .8\textwidth]{../figs/for_paper/saturation_analysis_old.pdf}
+  \caption{Comparison of the number of candidate regions (A),
+    predicted events (B), identified targets (C) and resolution (D)
+    among ChIP-exo, PET ChIP-Seq and SET ChIP-Seq. RegulonDB
+    annotations are considered as a gold standard. A gold standard was
+    considered identified if a BS was estimated inside a 15
+    bp window around it}
+  \label{fig:design}
+\end{figure}
+
+Figure \ref{fig:design} shows the behavior of each data type when
+their depth is fixed. It is remarkable that even when the number of
+candidate peaks or the number of predicted events is lower for
+ChIP-exo, it outperforms both PET and SET ChIP-Seq in the number of
+identified targets and resolution. This may suggest that with ChIP-exo
+less false positive peaks are being called and that when the targets
+are being identified, dPeak estimates binding locations closer to the
+true location. Additionally, we can see that as the read depth
+increases all four indicators do so as well, which may indicate that
+with ChIP-exo a smaller amount of reads is necessary to identify a
+higher number of targets, but it may also be possible that this is an
+artifact occurring due to ChIP-exo's lower library complexity.
+
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+We provide a ChIP-exo QC pipeline capable of assess the balance between
+enriched samples and low complexity regions. It is shown that the
+``peak-pair'' assumption doesn't hold in practice and we provide two
+out-of-the-box visualization capable to assess the strand imbalance in
+a ChIP-exo experiment.
+
+We updated the dPeak algorithm from \cite{dpeak} and showed that
+ChIP-exo is comparable in resolution and sensitivity with PET ChIP-Seq
+and outperforms SET ChIP-Seq. ChIP-exo compared with PET and SET
+ChIP-Seq at fixed depth sample is able to identify more targets at a
+lower resolution. We compared dPeak with another algorithms to
+estimate binding locations in ChIPexo data, dPeak is comparable to
+MACE and outperforms GEM in resolution. dPeak provided a striking
+balance in sensitivity, specificity and spatial resolution for
+ChIP-exo analysis.
+
+
+\newpage
 
 
 \section{Planned work}

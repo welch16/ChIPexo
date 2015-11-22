@@ -556,7 +556,7 @@ large proportion of regions without any read in ChIP-exo data. These
 results indicate that background distribution of ChIP-exo data is less
 homogeneous than that of ChIP-Seq data.
 
-We next evaluated the ``peak pair'' assumption of Rhee and Pugh
+We next evaluated the ``peak pair'' assumption from Rhee and Pugh
 \cite{exo1}, MACE \cite{mace}, CexoR, \cite{cexor} and peakzilla
 \cite{peakzilla}, i.e. a peak of reads in the forward strand is
 usually paired with a peak of reads in the reverse strand that is
