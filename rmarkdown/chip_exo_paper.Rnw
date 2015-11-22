@@ -219,7 +219,7 @@ improved. However, this method requires to know blacklisted regions in
 advance which may not be available, additionally using SCC may not be
 useful since the peaks that are attained at the read and fragment
 length are confused in a typical ChIP-exo SCC curve.  In our pipeline
-we propose two out-the-shelf analysis: an enrichment plot and the
+we propose two out-the-shelf analysis: An enrichment plot and the
 local normalized SCC cofficient.
 
 In order to archive the potential benefits of ChIP-exo on protein
@@ -316,10 +316,6 @@ suggested to repeat the experiment.
 \hline\hline
 Condition & Rep. & Nr. reads & PBC & SSD & FSR & NSC  \\
 \hline\hline
-Aerobic & 1 & 1,454,566 & 0.2156 & 0.0830 & 0.5012 & 114.14 \\
-\hline
-Aerobic & 2 & 864,714 & 0.2471 & 0.0488 & 0.4923 & 160.93  \\
-\hline
 Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 & 0.4998 & 10.29 \\
 \hline
 Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091 & 0.5047 &  25.08  \\
@@ -782,12 +778,12 @@ regions for dPeak were identified for each replicate of ChIP-exo data
 using the MOSAiCS algorithm Kuan et al. \cite{mosaics} (one sample
 analysis using false discovery rate of 0.0001) implemented as an R
 package \emph{mosaics} 2.4 (available from \emph{Bioconductor}
-\url{https://www.bioconductor.org/packages/release/bioc/html/mosaics.html}). We
-further filtered out candidate region with average ChIP tag count less
-than 3,000 to avoid potential false positives based in exploratory
-analysis. These regions were also explicitly provided to the GEM
-algorithm as candidate regions. Default tuning parameters were used
-during model fitting for all methods. We tried to use the CexoR
+\url{https://www.bioconductor.org/packages/release/bioc/html/mosaics.html}).
+We further filtered out candidate region with average ChIP tag count
+less than 3,000 to avoid potential false positives based in
+exploratory analysis. These regions were also explicitly provided to
+the GEM algorithm as candidate regions. Default tuning parameters were
+used during model fitting for all methods. We tried to use the CexoR
 algorithm with its R implementation version 1.8.0 available from
 \url{http://bioconductor.org/packages/release/bioc/html/CexoR.html},
 but it returned an error every time we used it.
@@ -820,6 +816,7 @@ from the R software version 3.2.1 using the default tuning parameters.
 \nocite{exo_gb}
 \nocite{maplot1}
 \nocite{maplot2}
+\nocite{chipbeyond}
 % \nocite{esl}
 
 
