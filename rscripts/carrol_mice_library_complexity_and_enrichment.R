@@ -169,8 +169,12 @@ stats_common <- mclapply(gr,function(x)build_stats(common,x),mc.cores = 6)
 aux <- mapply(function(x,y)x[,sample := y],stats,names(stats),SIMPLIFY =FALSE)
 aux <- do.call(rbind,aux)
 
+aux[, sample := plyr::mapvalues(sample,from = bamfiles,to =  repl)]
+
+
 pdf(file = file.path(figs_dir,"FoxA1_number_unique_positions_perSample.pdf"))
-ggplot(aux[npos > 10] , aes(npos))+  geom_histogram()+scale_x_log10()+xlim(0,100)+facet_wrap( ~  sample)
+ggplot(aux[npos > 10] , aes(npos))+  geom_histogram()+scale_x_log10()+xlim(0,100)+
+  facet_wrap( ~  sample)
 dev.off()
 
 library(hexbin)
@@ -315,6 +319,8 @@ dat[ , nsc := max / noise ]
 
 dat[ , strata := factor(strata, levels = rev(strati) ) ]
 
+dat[ , file := plyr::mapvalues(file, from = bamfiles, to = repl)]
+
 ## dat[ , strata := plyr::mapvalues(strata ,
 ##          from = c(
 ##            "high",
@@ -431,7 +437,7 @@ dat2 <- merge(ss,nsc,by = "match",allow.cartesian = TRUE)
 dat2[ , nsc := max / noise ]
 dat2[ , strata := factor(strata, levels = rev(strati) ) ]
 
-dat2[  , file := gsub(".bam","",file)]
+dat2[  , file := plyr::mapvalues(file,from = bamfiles, to = repl)]
 
 strata_plots <- list()
 strata_plots[[1]] <- ggplot(dat2 , aes( strata , noise,colour = file))+geom_boxplot()+facet_grid( . ~ file) +

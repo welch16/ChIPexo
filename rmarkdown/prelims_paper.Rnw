@@ -112,7 +112,7 @@ digestion and next generation sequencing) Rhee and Pugh, 2011
 single base-pair resolution of protein binding site identification and
 it is considered as a powerful alternative to popularly used ChIP-Seq
 (Chromatin Immunoprecipitation coupled with next generation sequencing
-) assay.
+ assay.
 
 While the number of produced ChIP-exo data keeps increasing,
 characteristics of ChIP-exo data and optimal strategies for
@@ -435,31 +435,28 @@ is generated from a
 
 $\mbox{Multinomial}(\pi_0,\pi_1,\cdots,\pi_{g^*})$.
 
+\subsubsection{dPeak's algorithm initialization strategy}
+\label{sec:algo}
 
+dPeak's model likelihood is optimized by the stochastic EM
+algorithm. Hence, it is of utmost importance how the parameters are
+initialized in order to obtain a global maximum.
 
+Chung et al., 2013 \cite{dpeak} derived an initialization strategy for
+the stochastic EM algorithm where each region is initialized by
+separate independently and the binding sites locations $\mu_g,
+g=1,\cdots,g^*$ are initialized by a uniform partition.
+
+For this work, we considered a new strategy where the all the regions
+are ranked by a statistical measure (as the $-\log(p)$ where $p$ is
+the empirical p.value of the test $H_0: \mathcal{R} \text{ is
+  enriched}$, where $\mathcal{R}$ is a genomic region) or a empirical
+quantity (as the number of ChIP tag counts in the region) and use as
+initial estimates of the $\delta$ and $\sigma$ parameters the average
+of the estimates from the highest ranked $N_{\text{top}}$ peaks.
 
 \subsection{Comparison with ChIP-Seq data}
 \label{sec:comp_chipseq}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width = .46\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
-  \includegraphics[width = .46\textwidth]{../figs/for_paper/forward_strand_ratio_comp_old.pdf}
-  \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
-  \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
-  \caption{ A) ChIP signal in ChIP-exo was linearly related to that in
-    PET ChIP-Seq data in the region with high ChIP tag counts. In
-    contrast, there were clear differences in their background
-    distribution, where several ChIP-exo background regions were
-    empty. B) In ChIP-exo data, strands of reads were significantly
-    less balanced in the regions with potential binding sites compared
-    to SET ChIP-Seq data. C) ChIP tag counts increase linearly as
-    mappability scores increases. D) ChIP tag counts increase linearly
-    as GC content score increases when GC content is less than 0.6 and
-    then ChIP tag counts decrease as GC content increases. }
-  \label{fig:comp}
-\end{figure}
 
 <<comp_param,include = FALSE,echo = FALSE,eval = TRUE>>=
 
@@ -489,6 +486,25 @@ large proportion of regions without any read in ChIP-exo data. These
 results indicate that background distribution of ChIP-exo data is less
 homogeneous than that of ChIP-Seq data.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = .46\textwidth,page = 3 ]{../figs/for_paper/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/forward_strand_ratio_comp_old.pdf}
+\includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
+  \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
+  \caption{ A) ChIP signal in ChIP-exo was linearly related to that in
+    PET ChIP-Seq data in the region with high ChIP tag counts. In
+    contrast, there were clear differences in their background
+    distribution, where several ChIP-exo background regions were
+    empty. B) In ChIP-exo data, strands of reads were significantly
+    less balanced in the regions with potential binding sites compared
+    to SET ChIP-Seq data. C) ChIP tag counts increase linearly as
+    mappability scores increases. D) ChIP tag counts increase linearly
+    as GC content score increases when GC content is less than 0.6 and
+    then ChIP tag counts decrease as GC content increases. }
+  \label{fig:comp}
+\end{figure}
+
 We next evaluated the ``peak pair'' assumption from Rhee and Pugh,
 2011 \cite{exo1}, i.e. a peak of reads in the forward strand is
 usually paired with a peak of reads in the reverse strand that is
@@ -517,6 +533,7 @@ content.
 \section{Results}
 \label{sec:results}
 
+
 \subsection{ChIP-exo Quality Control pipeline}
 \label{sec:QC}
 
@@ -535,6 +552,13 @@ designed to assess the quality levels of a ChIP-exo sample.
     collection of QC indicators.}
   \label{fig:qcdiagram}
 \end{figure}
+
+\subsubsection{Local Normalized Strand cross-correlation}
+\label{sec:locNSC}
+
+We considered the creation of a novel QC measure for ChIP-exo called
+local normalized SCC or $\mbox{local-NSC}$. 
+
 
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 \label{sec:enri}
@@ -589,17 +613,18 @@ position increases, which means that the $\mbox{local-NSC}$ is an
 effective indicator of library complexity. Figure \ref{fig:enrich}C
 shows the $\mbox{local-NSC}$ coefficient calculated for the same set
 of regions, stratified by the number of unique positions in the
-regions of ERR336942 using the same criteria as before. In the high
-panel it is shown that the ERR336942 sample performs slightly better
-than ERR336956 and both outperform ERR336935, this agrees with
-\ref{fig:enrich}A, where only in the left-most panel doesn't seem to
-be a separation between the low $\mbox{ARC}$ arm and the other.
+regions of the first replicate using the same criteria as before. In
+the high panel it is shown that the first replicate sample performs
+slightly better than the second and both outperform the third one,
+this agrees with \ref{fig:enrich}A, where only in the left-most panel
+doesn't seem to be a separation between the low $\mbox{ARC}$ arm and
+the other.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width = .8\textwidth]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
-  \includegraphics[width = .8\textwidth,page =3]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata.pdf}
-  \includegraphics[width = .8\textwidth,page =4]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata_sameRegion.pdf}
+  \includegraphics[width = .7\textwidth]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
+  \includegraphics[width = .7\textwidth,page =3]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata.pdf}
+  \includegraphics[width = .7\textwidth,page =4]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata_sameRegion.pdf}
   \caption{Using the mouse-FoxA1 experiment from \cite{exoillumina}:
     A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$, in general
     we can see a slight separation into two strong arms, one
@@ -608,9 +633,9 @@ be a separation between the low $\mbox{ARC}$ arm and the other.
     Boxplots of the $\mbox{local-NSC}$ stratified by nr. of reads
     mapped to only one position in the regions for the ChIP-exo
     experiments divided by condition and biological replicate and C)
-    Boxplots of the a set of ERR336942 regions, stratified as in (B)
-    with the $\mbox{local-NSC}$ calculated with the different
-    biological replicates.}
+    Boxplots of the a set of the first replicate regions, stratified
+    as in (B) with the $\mbox{local-NSC}$ calculated with the
+    different biological replicates.}
   \label{fig:enrich}
 \end{figure}
 
@@ -651,11 +676,12 @@ region's lower bound increases, the quantiles tend to approach the
 median. To evaluate this statement, for each replicate of the FoxA1
 dataset, we divided the regions formed by at least \Sexpr{de}
 fragments into into the ones that overlap with any of the sample's
-peaks. The p.value for ERR36935 is \Sexpr{pval[[1]]}, for ERR336942 is
-\Sexpr{pval[[2]]} and for ERR336956 is \Sexpr{pval[[3]]}. This shows
-that only the middle sample from figure \ref{fig:strand} is the least
-imbalance sample from the the three, while the other two still show a
-higher imbalance at the \Sexpr{de} level.
+peaks. The p.value for the third replicate is \Sexpr{pval[[1]]}, for
+first replicate is \Sexpr{pval[[2]]} and for the second is
+\Sexpr{pval[[3]]}. This shows that only the middle sample from figure
+\ref{fig:strand} is the least imbalance sample from the the three,
+while the other two still show a higher imbalance at the \Sexpr{de}
+level.
 
 \begin{figure}[H]
   \centering  
@@ -670,7 +696,7 @@ higher imbalance at the \Sexpr{de} level.
   \label{fig:strand}
 \end{figure}
 
-\subsubsection{Comparison with ChIP-Seq data using dPeak}
+\subsection{Comparison with ChIP-Seq data using dPeak}
 \label{sec:dpeak_analysis}
 
 
@@ -776,6 +802,28 @@ with ChIP-exo a smaller amount of reads is necessary to identify a
 higher number of targets, but it may also be possible that this is an
 artifact occurring due to ChIP-exo's lower library complexity.
 
+\section{Software packages}
+\label{sec:software}
+
+For this project several R packages were created or updated:
+
+\begin{itemize}
+\item \textbf{dPeak}: We updated the initialization strategy. The
+  latest version is currently available from
+  \url{http://dongjunchung.github.io/dpeak/}.
+\item \textbf{ChIPexoQual}: This package contains the QC pipeline for
+  ChIP-exo. The last version is available in
+  \url{https://github.com/welch16/ChIPexoQual}.
+\item \textbf{Segvis}: The goal of this package is to visualize
+  genomic regions by using aligned reads such as in figures
+  \ref{fig:exo} or \ref{fig:qcdiagram}.  The latest version is
+  available in \url{https://github.com/keleslab/Segvis}.
+\item \textbf{ChIPUtils}: This package attempts to gather the most
+  commonly used ChIP-Seq QC (as in table \ref{tab:qcbase} or figure
+  \ref{fig:scc}) indicators and additional utilities (as figure
+  \ref{fig:comp}A) for ChIP-Seq. The latest available version is in
+  \url{https://github.com/welch16/ChIPUtils}.
+\end{itemize}
 
 \section{Conclusions}
 \label{sec:conclusions}
@@ -827,6 +875,9 @@ to modify the QC pipeline in the step where it paritions the reads
 into regions, but the $\mbox{local-NSC}$ may be used to prove this
 statement.
 
+\subsection{Analysis of E. Coli's Transcription Initiation Complexes}
+\label{sec:ecoli}
+
 
 
 \newpage
@@ -836,6 +887,35 @@ statement.
 \nocite{exo_gb}
 \nocite{maplot1}
 \nocite{maplot2}
+
+\section*{Supplement}
+\label{sec:supp}
+
+
+\subsection*{Additional Enrichment plots for $\sigma^{70}$}
+\label{sec:enrichsup}
+
+In figure \ref{fig:enrich2} it is shown the same relationship as in
+figure \ref{fig:enrich}, but considering only regions formed where the
+reads are being allocated in more than 10 (A) and 30 (B) unique
+positions respectively. Both plots show that the vertical arms formed
+by regions with low $\mbox{ARC}$ is formed by low complexity regions,
+that way suggesting that this segment correspond to the background of
+a ChIP-exo experiment.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .8\textwidth,page = 3]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
+  \includegraphics[width = .8\textwidth,page = 4]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
+  \caption{Hexbin plots of $\mbox{ARC}$ vs $\mbox{URCR}$ for each
+    region after partitioning the genome. In A and B the regions with
+    reads mapped to at most 10 and 30 positions respectively where not
+    considered. $\mbox{ARC}$ is defined as the ratio of the nr. of
+    reads and the width of a region and $\mbox{URCR}$ is the ratio of
+    the number of unique position where the reads are being allocated
+    and the number of reads in a region.}
+  \label{fig:enrich2}
+\end{figure}
 
 
 \end{document}
