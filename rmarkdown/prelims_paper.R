@@ -4,6 +4,24 @@
   frag_len <- 150
   
 
+## ----strata_para , include =FALSE,echo = FALSE, veal = TRUE--------------
+
+  strata <- 400
+  high <- 100
+  med <- 50
+  low <- 20
+  
+
+## ----fsr,include = FALSE,eval = TRUE,echo = FALSE------------------------
+
+  de <- 100
+
+  pval <- list()
+  pval[[1]] <- 0.1039
+  pval[[2]] <- 0.0064
+  pval[[3]] <- 0.0871
+
+
 ## ----reso_param, include = FALSE , eval  = TRUE , echo = FALSE-----------
 
   ext <- 20

@@ -21,8 +21,11 @@
 % \hypersetup{linkcolor=black}
 
 
+
 % \usepackage{authblk}
 \usepackage[utf8]{inputenc} %unicode support
+
+\newcommand{\sig}{\sigma^{70}}
 
 
 \begin{document}
@@ -312,17 +315,31 @@ suggested to repeat the experiment.
 
 \begin{table}[h]
   \centering
-\begin{tabular}{l|r|r|r|r|r|r}
+\begin{tabular}{l|l|r|r|r|r|r|r}
 \hline\hline
-Condition & Rep. & Nr. reads & PBC & SSD & FSR & NSC  \\
+IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
 \hline\hline
-Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 & 0.4998 & 10.29 \\
+$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 &  10.29 \\
 \hline
-Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091 & 0.5047 &  25.08  \\
+$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091  &  25.08  \\
 \hline
-Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820 & 0.5054 & 17.69  \\
+$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820  & 17.69  \\
 \hline
-Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647 & 0.5071 &  14.11 \\
+$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647  &  14.11 \\
+\hline
+FoxA1 &  Mouse &  NA & 1 & 22,210,461 & 0.6562 & 9.12 $\times 10^{-5}$ & 21.452 \\
+\hline
+FoxA1 &  Mouse &  NA & 2 & 22,307,557 & 0.7996 & 7.94 $\times 10^{-5}$ & 60.661 \\
+\hline
+FoxA1 &  Mouse &  NA & 3 & 22,421,729 & 0.1068 & 1.31 $\times 10^{-4}$ & 72.312 \\
+\hline
+ER & Human & NA & 1 & 9,289,835 & 0.8082 & 3.64 $\times 10^{-5}$ & 19.843 \\
+\hline
+ER & Human & NA & 2 & 11,041,833 & 0.8024 & 4.6 $\times 10^{-5}$ & 21.422 \\
+\hline
+ER & Human & NA & 3 & 12,464,836 & 0.8203 & 4.89 $\times 10^{-5}$ & 19.699 \\
+\hline
+CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \\
 \hline
 \end{tabular}  
 \caption{Usual quality control indicators applied to our
@@ -443,10 +460,6 @@ panel it is shown that the ERR336942 sample performs slightly better
 than ERR336956 and both outperform ERR336935, this agrees with
 \ref{fig:enrich}A, where only in the left-most panel doesn't seem to
 be a separation between the low $\mbox{ARC}$ arm and the other.
-
-\emph{Comment: I think I need to change the name of the FoxA1 samples
-  to Rep1 to Rep3, but I wasn't sure about this. Therefore I used the
-  name of the bam files}
 
 \begin{figure}[h!]
   \centering
