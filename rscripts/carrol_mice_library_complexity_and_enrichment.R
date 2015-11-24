@@ -169,8 +169,8 @@ stats_common <- mclapply(gr,function(x)build_stats(common,x),mc.cores = 6)
 aux <- mapply(function(x,y)x[,sample := y],stats,names(stats),SIMPLIFY =FALSE)
 aux <- do.call(rbind,aux)
 
-aux[, sample := plyr::mapvalues(sample,from = bamfiles,to =  repl)]
-
+aux[, sample := plyr::mapvalues(sample , from = c("ERR336935.bam","ERR336942.bam","ERR336956.bam"),
+    to = c("rep-3","rep-1","rep-2"))]
 
 pdf(file = file.path(figs_dir,"FoxA1_number_unique_positions_perSample.pdf"))
 ggplot(aux[npos > 10] , aes(npos))+  geom_histogram()+scale_x_log10()+xlim(0,100)+
@@ -319,7 +319,8 @@ dat[ , nsc := max / noise ]
 
 dat[ , strata := factor(strata, levels = rev(strati) ) ]
 
-dat[ , file := plyr::mapvalues(file, from = bamfiles, to = repl)]
+dat[ , file := plyr::mapvalues(file, from = c("ERR336942.bam","ERR336956.bam","ERR336935.bam"),
+  to = c("rep-1","rep-2","rep-3"))]         
 
 ## dat[ , strata := plyr::mapvalues(strata ,
 ##          from = c(

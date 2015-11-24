@@ -163,6 +163,15 @@ library(grid)
 library(gridExtra)
 
 
+fsr_dt[, sample := plyr::mapvalues(sample,
+    from = c("ERR336935.bam","ERR336942.bam","ERR336956.bam"),
+    to = c("rep-3","rep-1","rep-2"))]
+
+label_dt[, sample := plyr::mapvalues(sample,
+    from = c("ERR336935.bam","ERR336942.bam","ERR336956.bam"),
+    to = c("rep-3","rep-1","rep-2"))]
+
+
 
 pdf(file = file.path(figs_dir,"Strand_imbalance.pdf"),width = 9 , height = 5)
 p1 <- ggplot(fsr_dt,aes(depth , fsr , colour = quantiles))+geom_line(size = 1)+

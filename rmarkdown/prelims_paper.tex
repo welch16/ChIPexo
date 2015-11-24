@@ -66,6 +66,10 @@
 \usepackage{float}
 \usepackage{wrapfig}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+
 \title{High Resolution Identification of Protein-DNA Binding Events
   and Quality Control for ChIP-exo data\vspace*{\fill}}
 
@@ -174,7 +178,7 @@ sequencing depths are still insufficient for such investigation. To
 address this limitation we gathered ChIP-exo data from diverse
 organisms: CTCF factor in human \cite{exo1}; ER factor in human and
 FoxA1 factor in mouse (Serandour et al., 2013 \cite{exoillumina}); and
-generated $\sig$ factor in Escherichia coli (E. Coli) under
+generated $\sig$ factor in Escherichia Coli (E. Coli) under
 aerobic ($ + O_2$) condition, and treated by rifampicin by 0 and 20
 minutes.
 
@@ -331,40 +335,6 @@ To our knowledge it doesn't exists a QC pipeline for ChIP-exo. Hence,
 we analyzed how the current ChIP-Seq QC measures behave on ChIP-exo
 data.
 
-\begin{table}[h]
-  \centering
-  \caption{Usual quality control indicators applied to the $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD for standardized standard deviation, NSC for normalized strand cross-correlation coefficient (Another measure related to the strand cross-correlation curve is the RSC was ommited since input sample usually don't exists for ChIP-exo). $\sig$ samples were given by Robert Landick, FoxA1 and ER samples are from Serandour et al., 2013 \cite{exoillumina} and CTCF sample is from Rhee and Pugh, 2011 \cite{exo1}.}
-
-\begin{tabular}{l|l|r|r|r|r|r|r}
-\hline\hline
-IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
-\hline\hline
-$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 &  10.29 \\
-\hline
-$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091  &  25.08  \\
-\hline
-$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820  & 17.69  \\
-\hline
-$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647  &  14.11 \\
-\hline
-FoxA1 &  Mouse &  NA & 1 & 22,210,461 & 0.6562 & 9.12 $\times 10^{-5}$ & 21.452 \\
-\hline
-FoxA1 &  Mouse &  NA & 2 & 22,307,557 & 0.7996 & 7.94 $\times 10^{-5}$ & 60.661 \\
-\hline
-FoxA1 &  Mouse &  NA & 3 & 22,421,729 & 0.1068 & 1.31 $\times 10^{-4}$ & 72.312 \\
-\hline
-ER & Human & NA & 1 & 9,289,835 & 0.8082 & 3.64 $\times 10^{-5}$ & 19.843 \\
-\hline
-ER & Human & NA & 2 & 11,041,833 & 0.8024 & 4.6 $\times 10^{-5}$ & 21.422 \\
-\hline
-ER & Human & NA & 3 & 12,464,836 & 0.8203 & 4.89 $\times 10^{-5}$ & 19.699 \\
-\hline
-CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \\
-\hline
-\end{tabular}  
-  \label{tab:qcbase}
-\end{table}
-
 Table \ref{tab:qcbase} contains measures that are commonly used with
 ChIP-Seq data. PBC stands for PCR bottleneck amplification and is
 defined as the ratio between the number of positions to which exactly
@@ -436,6 +406,42 @@ but the ChIP-exo doesn't. Additionally, since the exonuclease enzyme
 digests the DNA fragments, then the shifts where the SCC may reach a
 locall or a global maximum are confounded. Hence, new QC measures are
 necessary for ChIP-exo data.
+
+\begin{table}[H]
+  \centering
+  \caption{Usual quality control indicators applied to the $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD for standardized standard deviation, NSC for normalized strand cross-correlation coefficient (Another measure related to the strand cross-correlation curve is the RSC was ommited since input sample usually don't exists for ChIP-exo). $\sig$ samples were given by Robert Landick, FoxA1 and ER samples are from Serandour et al., 2013 \cite{exoillumina} and CTCF sample is from Rhee and Pugh, 2011 \cite{exo1}.}
+
+\begin{tabular}{l|l|r|r|r|r|r|r}
+\hline\hline
+IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
+\hline\hline
+$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 &  10.29 \\
+\hline
+$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091  &  25.08  \\
+\hline
+$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820  & 17.69  \\
+\hline
+$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647  &  14.11 \\
+\hline
+FoxA1 &  Mouse &  NA & 1 & 22,210,461 & 0.6562 & 9.12 $\times 10^{-5}$ & 21.452 \\
+\hline
+FoxA1 &  Mouse &  NA & 2 & 22,307,557 & 0.7996 & 7.94 $\times 10^{-5}$ & 60.661 \\
+\hline
+FoxA1 &  Mouse &  NA & 3 & 22,421,729 & 0.1068 & 1.31 $\times 10^{-4}$ & 72.312 \\
+\hline
+ER & Human & NA & 1 & 9,289,835 & 0.8082 & 3.64 $\times 10^{-5}$ & 19.843 \\
+\hline
+ER & Human & NA & 2 & 11,041,833 & 0.8024 & 4.6 $\times 10^{-5}$ & 21.422 \\
+\hline
+ER & Human & NA & 3 & 12,464,836 & 0.8203 & 4.89 $\times 10^{-5}$ & 19.699 \\
+\hline
+CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \\
+\hline
+\end{tabular}  
+  \label{tab:qcbase}
+\end{table}
+
+\vspace*{\fill}
 
 \subsection{The dPeak model}
 \label{sec:dpeak}
@@ -589,11 +595,12 @@ designed to assess the quality levels of a ChIP-exo sample.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width = .9\textwidth]{../figs/for_paper/coverage_diagram.pdf}
-  \caption{Diagram of the ChIP-exo Quality control pipeline [this is a
-    place-holder]. The genome is partitioned into several regions by
-    removing the empty segments and for each regions we calculate a
-    collection of QC indicators.}
+  \includegraphics[width = .7\textwidth]{../figs/for_paper/coverage_diagram2.pdf}
+  \caption{Diagram of the ChIP-exo Quality control pipeline. The
+    genome is partitioned into several regions by removing the empty
+    segments and for each regions we calculate a collection of QC
+    indicators, then for each region $R_k$ a vector of summary
+    statistics $T(R_k)$ is calculated.}
   \label{fig:qcdiagram}
 \end{figure}
 
@@ -601,8 +608,46 @@ designed to assess the quality levels of a ChIP-exo sample.
 \label{sec:locNSC}
 
 We considered the creation of a novel QC measure for ChIP-exo called
-local normalized SCC or $\mbox{local-NSC}$. 
+local normalized SCC or $\mbox{local-NSC}$. This measure 
 
+\begin{align}
+  y(\delta) = r\left[ n^+ \left(x + \frac{\delta}{2}
+    \right), n^- \left( x- \frac{\delta}{2} \right)\right]
+\nonumber
+\end{align}
+
+where again $r$ is the Pearson correlation but $n^+$ and $n^-$ are the
+coverage vectors of a given region in the genome. Figure
+\ref{fig:locSCC} shows that as the library complexity of the region is
+lower, then the local SCC seems to show higher variance. Hence, we
+fit a nonparametric regression model to smooth the SCC signal:
+
+\begin{align}
+ y(\delta) &= f(x_\delta) + \epsilon_\delta \nonumber
+\end{align}
+
+where $y(\delta)$ is the observed SCC for shift $x_\delta$,
+$\epsilon_\delta \sim N(0,\sigma_f^2)$. Finally the $\mbox{local-NSC}$
+is defined as a signal-to-noise ratio by using:
+
+\begin{align}
+    \mbox{local-NSC} &= \frac{max_{x_\delta} \hat{f}(x_\delta)}{\hat{\sigma}_f} \label{locNSC}
+\end{align}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = .8\textwidth]{../figs/for_paper/local_SCC_example.pdf}
+  \caption{Using the FoxA1 sample from \cite{exoillumina}. A) shows an
+    example region for the 3 replicates. The library complexity seem
+    to be comparable between the two top rows and both outperfom the
+    last row. The number of reads for the first replicate is higher
+    than the number of reads for the other replicates. B) Shows the
+    local SCC for the 3 replicates, this measure is comparable among
+    the 3 replicates. The first replicate shows the lowest residual
+    error, while the third one shows the highest. In blue, a ``loess''
+    regression model is fitted.}
+\label{fig:locSCC}
+\end{figure}
 
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 \label{sec:enri}
@@ -610,7 +655,7 @@ local normalized SCC or $\mbox{local-NSC}$.
 In ChIP-exo experiments, the background is often digested by the
 exonuclease enzyme, therefore to determine the sample's quality is
 necessary to address the balance between the enrichment and library
-complexity. To diagnose this, we considered the Average Read Coverage
+complexity. To diagnose this, we consider the Average Read Coverage
 (ARC) and the Unique Read Coverage Rate (URCR) which are defined as:
 
 \begin{align}
@@ -661,7 +706,7 @@ the other.
   \centering
   \includegraphics[width = .7\textwidth]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
   \includegraphics[width = .7\textwidth,page =3]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata.pdf}
-  \includegraphics[width = .7\textwidth,page =4]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata_sameRegion.pdf}
+%  \includegraphics[width = .7\textwidth,page =4]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata_sameRegion.pdf}
   \caption{Using the mouse-FoxA1 experiment from \cite{exoillumina}:
     A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$, in general
     we can see a slight separation into two strong arms, one
@@ -669,13 +714,14 @@ the other.
     the other $\mbox{URCR}$ decreases as $\mbox{ARC}$ increases B)
     Boxplots of the $\mbox{local-NSC}$ stratified by nr. of reads
     mapped to only one position in the regions for the ChIP-exo
-    experiments divided by condition and biological replicate and C)
-    Boxplots of the a set of the first replicate regions, stratified
-    as in (B) with the $\mbox{local-NSC}$ calculated with the
-    different biological replicates.}
+    experiments divided by condition and biological replicate.}
   \label{fig:enrich}
 \end{figure}
 
+
+% and C) Boxplots of the a set of the first replicate regions,
+% stratified as in (B) with the $\mbox{local-NSC}$ calculated with the
+% different biological replicates.
 
 \subsubsection{Strand imbalance in ChIP-exo data}
 \label{sec:strand_imbalance}
@@ -704,8 +750,10 @@ region's lower bound increases, the quantiles tend to approach the
 median. To evaluate this statement, for each replicate of the FoxA1
 dataset, we divided the regions formed by at least 100
 fragments into into the ones that overlap with any of the sample's
-peaks. The p.value for the third replicate is 0.1039, for
-first replicate is 0.0064 and for the second is
+peaks. Then we considered a Kolmogorov-Smirnov tests to assess if the
+distribution of both groups were the same. The p.value for the third
+replicate's test is 0.1039, for the first replicate's test
+is 0.0064 and for the second test is
 0.0871. This shows that only the middle sample from figure
 \ref{fig:strand} is the least imbalance sample from the the three,
 while the other two still show a higher imbalance at the 100
@@ -764,6 +812,10 @@ SET ChIP-Seq.
   \centering
   \includegraphics[width = .46\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
   \includegraphics[width = .46\textwidth]{../figs/for_paper/resolution_by_dataset_old_data.pdf}
+\end{figure}
+
+\begin{figure}[H]
+\centering
    \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/sigma_delta_old_densities.pdf}
    \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/sigma_delta_old_densities.pdf} 
 
@@ -844,10 +896,6 @@ For this project several R packages were created or updated:
   \url{https://github.com/welch16/ChIPUtils}.
 \end{itemize}
 
-
-
-
-
 \section{Conclusions}
 \label{sec:conclusions}
 
@@ -874,7 +922,9 @@ ChIP-exo analysis.
 \section{Planned work}
 \label{sec:future}
 
-\subsection{GC content and mappability quality indicators}
+\subsection{Some additional thoughts for this analysis}
+
+\subsubsection{GC content and mappability quality indicators}
 \label{sec:gc_map_qc}
 
 Figure \ref{fig:comp} shows a relationship between the ChIP tag counts
@@ -885,7 +935,7 @@ considers them as necessary information when there is not input
 sample. Hence, quality measures we may consider to add indicators to
 the QC pipeline that considers this biases.
 
-\subsection{Quality control for ChIP-Nexus}
+\subsubsection{Quality control for ChIP-Nexus}
 \label{sec:nexus}
 
 He et al., 2014 \cite{chipnexus} proposed a modification to the
@@ -898,8 +948,115 @@ to modify the QC pipeline in the step where it paritions the reads
 into regions, but the $\mbox{local-NSC}$ may be used to prove this
 statement.
 
-\subsection{Analysis of E. Coli's Transcription Initiation Complexes}
+\subsection{Analysis of E. Coli Transcription Initiation Complexes}
 \label{sec:ecoli}
+
+The data showed in figure \ref{fig:exo_example} is actually part of a
+more interesting experiment. We have 2 biological replicates of the
+$\sig$, $\beta'_f$ and $\beta$ transcription factors under two
+conditions, one where rifampicin was applied by 20 minutes and another
+where it wasn't applied. As seen in the figure, there is ChIP-exo data
+for the 3 factors and PET ChIP-Seq for $\sig$ and $\beta'_f$ (in the
+figure both replicates were pooled).
+
+$\sig$ factor is a transcription initiation factor of housekeeping
+genes in E. Coli, and both $\beta$ factors transcribe the DNA into
+mRNA. Hence, we want to use this data to have a better understanding
+of the transcription in E. Coli.
+
+The steps in formation of productive transcription complexes are:
+
+\begin{enumerate}
+\item Binding of RNAP to rpomoter DNA to form a closed complex.
+\item Rearrangement of RNAP-DNA contacts to form an open complex.
+\item Binding of nucleoside triphosphates in the active site and
+  synthesis of a initial RNA to yield an initial transcription complex
+  (ITC) - this is sometimes called a ``scrunched complex''.
+\item Promoter escape to form a elongated complex (EC$_1$) when the
+  promoter contacts are broken, and the $\sig$ factor is realeased.
+\item Conversion of EC$_1$ into EC$_2$ by loading of the ribosome and
+  elongation factors to enable efficient transcript elongation.
+\end{enumerate}
+
+% \begin{figure}[H]
+% \centering
+% \begin{tikzpicture}[node distance = 3cm]
+% \tikzstyle{region} = [draw,thin,fill = blue!20]
+% \tikzstyle{line} = [draw,thick]
+% %\path[use as bounding box] (-1,0) rectangle (10,-2);
+% \path[-] node[region] (step1) {RNAP + Promoters};
+% \path[-] node[region,right of =step1,fill = red!20] (step2) {Closed};
+% \path[-] node[region,right of =step2,fill = green!20] (step3) {Intermediate};
+% \path[-] node[region,right of =step3,fill = yellow!20] (step4) {Open};
+% \path[line][<->] (step1) -- (step2);
+% \path[line][<->] (step2) -- (step3);
+% \path[line][<->] (step3) -- (step4);
+% \end{tikzpicture}
+% \caption{Zooming into transcription}
+% \end{figure}
+
+As a proof of concept we were able to identify open and closed regions
+by centering the binding the peaks respecto to the highest $\sig$
+summit (among the rif0 and rif20 samples), and then using hierachical
+clustering on the $\beta'_f$ signal of the rif0 samples to produce:
+
+\begin{figure}[H]
+  \centering
+ \includegraphics[width = \textwidth]{/p/keles/ChIPexo/volume5/OpenClosedComplexes/figs/filtered/heatmaps_centroid.png}
+ \caption{Centered and normalized heatmaps for PET ChIP-Seq peaks of
+   $\sig$ and $\beta'_f$ under rif0 and rif20. The regions are
+   organized by the centroids clustering of the $\beta'_f$-rif0
+   profiles.}
+  \label{fig:hm1}
+\end{figure}
+
+Figure \ref{fig:hm1} shows heatmaps of the normalized coverages of PET
+ChIP-Seq peaks for $\beta'_f$ and $\sig70$ under rif0 and rif20
+treatments. Each row represents the same region, under the four
+different samples. As expected the signal for both $\sig$ samples is
+centered around the middle, for $\beta'_f$-rif20, the majority of he
+signal seems to be centered, hence the trascription was interrupted
+and for $\beta'_f$-rif0 we can see clusters formed by open regions.
+
+Then, using a set of high quality PET ChIP-Seq peaks and clustering
+with the mclust model by Fraley and Raftery, 2007 \cite{mclust} we
+were able to label the a set of regions as closed or open
+complexes. Hence, we expect that by using ChIP-exo data we may find
+different patterns that represent transcription units whose output was
+limited at differemt steps in the formation of EC$_2$.
+
+Additionally if we find several cases of those patterns, then we may
+be able to determine which sequences may be causing this behaviour at
+the different steps.
+
+\subsection{Enhancer prediction and active learning}
+\label{sec:enhancer}
+
+Last summer, we entered to a contest from ENCODE's functional
+characterization group to fit a model to classify enhancers. Roughly
+speaks, the data set consided of a set of regions
+$\mathcal{R}_1,\cdots,\mathcal{R}_n$ and a set of labels
+$Y_1,\cdots,Y_n \in \{0,1,\}$. Hence, we built a series of features
+$X_1,\cdots,X_p$ and fitted a model by dividing the $n$ observations
+into a training set and a test set, etc. However, there are in total
+another $m >> n$ regions in the experiment, and the cost of labelling
+those $m$ regions may be high (in either the actual monetary cost of
+the experiment or the time the scientists spends labelling those
+regions). Those $n+m$ regions are H3K27ac peaks, hence they were
+ranked and the first $n$ were selected randomly from groups with high,
+medium and low signal. This raises the following questions:
+
+\begin{itemize}
+\item Is there a better way of ranking this $n+m$ regions ?
+\item What is the best way to select the regions that are going to be
+  labelled, i.e. we would want to label the regions that gives us the
+  best model.
+\end{itemize}
+
+Hence, it may be worth to investigate which active learning strategies
+may be the best to apply in this particular problem. Settles, 2012
+\cite{al} is a survey of acive learning techniques that we want to
+explore in order to solve this problems.
 
 
 
@@ -910,6 +1067,11 @@ statement.
 \nocite{exo_gb}
 \nocite{maplot1}
 \nocite{maplot2}
+\nocite{esl}
+\nocite{anp}
+\nocite{al}
+\nocite{oc_review}
+\nocite{exo4}
 
 \section*{Supplement}
 \label{sec:supp}
