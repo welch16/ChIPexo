@@ -1,4 +1,4 @@
-\documentclass[table,xcolor=dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[compress,table,xcolor=dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
 %% maxwidth is the original width if it is less than linewidth
 %% otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -66,10 +66,10 @@
 \newcolumntype{Y}{>{\arraybackslash\RaggedRight}X}
 \newcolumntype{P}[1]{>{\arraybackslash\RaggedRight}p{#1}}
 
-
 \usetheme{Szeged}
 \usecolortheme[named=RoyalBlue]{structure}
-
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
 
 % Personal Data
 
@@ -178,8 +178,8 @@ IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
 
 \section{Comparison of ChIP-exo and ChIP-seq}
 
-\begin{frame}[plain]
-  \frametitle{Comparison of ChIP-exo and ChIP-seq - SCC}  
+\begin{frame}
+  \frametitle{Comparison of ChIP-exo and ChIP-seq I}  
 \begin{figure}[H]
   \centering  
 \includegraphics[width = .7\textwidth]{../figs/for_paper/scc_ctcf.pdf}
@@ -199,7 +199,7 @@ IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
 
 
 \begin{frame}
-  \frametitle{Comparison of ChIP-exo and ChIP-Seq}
+  \frametitle{Comparison of ChIP-exo and ChIP-Seq II}
 
 \begin{figure}[H]
   \centering
@@ -207,10 +207,14 @@ IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
   \includegraphics[width = .5\textwidth]{../figs/for_paper/forward_strand_ratio_comp_old.pdf}
 \end{figure}
 
+{\small
 \begin{itemize}
-\item
-\item 
+\item A shows that high dnesity regions are similar between ChIP-Seq
+  and ChIP-exo but background regions are not.
+\item The peak-pair assumption doesn't hold in ChIP-exo data, some
+  regions show strand-imbalance
 \end{itemize}
+}
 
 % \only<2>{
 % \begin{figure}[H]
@@ -221,23 +225,263 @@ IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
 % }
 \end{frame}
 
+\section{The ChIP-exo QC pipeline}
+
+\begin{frame}[plain]
+  \frametitle{The ChIP-exo QC pipeline}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2.pdf}
+\end{figure}
+
+{\small
+  \begin{itemize}
+  \item $\mbox{ARC} = \frac{\text{Nr. of reads in the
+        region}}{\text{Width of the region}}$
+  \item $\mbox{URCR} = \frac{\text{Nr. of reads mapped to only one
+        position in the region}}{\text{Nr. of reads in the region}}$
+  \item $\mbox{local-NSC}$
+  \item $\mbox{FSR} = \frac{\text{Nr. of fwd. strand reads in region}}{\text{Nr. of reads in region}}$
+  \end{itemize}  
+}
+
+\end{frame}
+
+\begin{frame}[t,plain]
+  \frametitle{Library complexity and enrichment}
+\only<1>{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
+\end{figure}
+}
+
+\only<2>{
+{\small
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth]{../figs/for_paper/local_SCC_example.pdf}
+\end{figure}
+}}
+\only<2>{
+\begin{align}
+ y(\delta) = f(x_\delta) + \epsilon_\delta \quad 
+\mbox{local-NSC} = \frac{max_{x_\delta} \hat{f}(x_\delta)}{\hat{\sigma}_f}
+\nonumber
+\end{align}
+}
+
+\only<3>{
+\begin{figure}[H]
+\centering
+  \includegraphics[width = \textwidth,page =3]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata.pdf}
+\end{figure}
+}
+
+\only<3>{
+{\small
+where:
+\begin{itemize}
+\item high - regions with nr. of unique positions $ > 100$
+\item med - regions with nr. of unique positions in $(50,100)$
+\item low - regions with nr. of unique positions in $(20,100)$
+\end{itemize}
+}}
+
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{Strand imbalance}
+
+\begin{figure}[H]
+  \centering  
+  \includegraphics[width = \textwidth,page = 3]{../figs/Carroll_mice_for_paper/Strand_imbalance.pdf} 
+  \label{fig:strand}
+\end{figure}
+
+
+\end{frame}
+
+\section{Comparison with ChIP-Seq using dPeak}
+\begin{frame}[t]
+  \frametitle{dPeak model for SET case}
+
+\only<1>{
+  We consider a region with $n$ reads and $m$ positions, for the
+  $i$-th read:
+  \begin{itemize}
+  \item $Z_i \sim \mbox{Multi}(\pi_0,\pi_1,\cdots,\pi_{g^*})$
+  \item $D_i \sim \mbox{Ber}(p_D)$
+    \begin{itemize}
+    \item The read is in the forward strand ($D_i = 1$):
+      \begin{itemize}
+      \item The reads belongs to the background: $R_i | Z_i = 0, D_i =
+        1 \sim \mbox{Unif}(1 - \beta + 1, m)$
+      \item The read belong to the $g$-th binding event: $R_i | Z_i =
+        g, D_i = 1 \sim \mbox{N}(\mu_g - \delta , \sigma^2)$
+      \end{itemize}
+    \item The read is in the backward strand ($D_i = 0$):
+      \begin{itemize}
+      \item The reads belongs to the background: $R_i | Z_i = 0, D_i =
+        0 \sim \mbox{Unif}(1 , m + \beta - 1)$
+      \item The read belong to the $g$-th binding event: $R_i | Z_i =
+        g, D_i = 0 \sim \mbox{N}(\mu_g + \delta , \sigma^2)$
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+}
+
+\only<2>{
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width =
+        .8\textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/poster/dpeak.png}
+      \end{figure}
+}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Comparison with ChIP-Seq using dPeak}
+\only<1>{
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
+  \includegraphics[width = .46\textwidth]{../figs/for_paper/resolution_by_dataset_old_data.pdf}
+\end{figure}
+}
+\only<1>{
+{\small
+  \begin{itemize}
+  \item Sensitivity is the defined as the proportion of identified
+    peaks (regulonDoB \cite{regulonDB} is used as gold-stantard)
+  \item Resolution is defined as the min. absolute distance of a
+    regulonDB annotation to an est. binding location.
+  \end{itemize}
+}}
+
+\only<2>{
+\begin{figure}[H]
+\centering
+   \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/sigma_delta_old_densities.pdf}
+   \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/sigma_delta_old_densities.pdf} 
+ \end{figure}
+}
+\only<2>{
+{\small
+\begin{itemize}
+\item $\delta$ measures the average distance of reads to their
+  respective binding sites
+\item $\sigma$ measures the dispersion of reads around their
+  respective binding sites
+\end{itemize}
+}}
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{ChIP-Seq comparison at fixed depth}
+
+  We sampled $n$ fragment reads of each dataset ($2n$ for PET
+  ChIP-Seq), and applied the MOSAiCS / dPeak pipeline:
+
+\only<1>{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = .4\textwidth,page = 1]{../figs/for_paper/saturation_analysis_old_frames.pdf}
+  \includegraphics[width = .4\textwidth,page = 2]{../figs/for_paper/saturation_analysis_old_frames.pdf}
+\end{figure}
+}
+\only<1>{
+{\small
+  \begin{itemize}
+  \item ChIP-exo and PET ChIP-Seq are comparable and outperform SET
+    ChIP-Seq
+  \end{itemize}
+}}
+
+\only<2>{
+\begin{figure}[H]
+\centering
+\includegraphics[width = .4\textwidth,page = 3]{../figs/for_paper/saturation_analysis_old_frames.pdf}
+  \includegraphics[width = .4\textwidth,page = 4]{../figs/for_paper/saturation_analysis_old_frames.pdf}
+\end{figure}
+}
+
+\end{frame}
+
+\section{Conclusions and future work}
+
+\begin{frame}
+  \frametitle{Conclusions}
+
+  \begin{itemize}
+  \item Our pipeline is capable of assessing the balance between
+    sample enrichment and library complexity.
+  \item We shown that the ``peak-pair'' assumption doesn't hold well
+    in practice, and implemented a visualization capable of detecting
+    strand imbalance.
+  \item We updated dPeak, which makes a striking balance in
+    sensitivity, specificity and spatial resolution.
+  \item ChIP-exo and PET ChIP-Seq are comparable in resolution and
+    sensitivity, and both outperform SET ChIP-Seq.
+  \item We showed that with a fixed number of reads, ChIP-exo
+    outperforms PET and SET ChIP-Seq.
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Future work}  
+
+\begin{itemize}
+\item In the paper, we showed that there is a relationship between
+  ChIP-exo tag counts and both mappability and GC content scores. We
+  want to add a QC measure to the pipeline based on them.
+\item We want to assess if ChIP-Nexus library complexity is actually higher than ChIP-exo's by using the $\mbox{local-NSC}$.
+\item We have been studying E. Coli's transcription initiation
+  complexes with PET ChIP-Seq, being able to label regions as open or
+  closed complexes. We want to improve this analysis by using ChIP-exo
+  data, and hopefully detecting intermediate step between this two
+  states.
+\item Find a optimal strategy for labelling enhancer out of a
+  predetermined list of regions in the genome by the use of active
+  learning techniques.
+\end{itemize}
+
+\end{frame}
 
 \begin{frame}[t]
 \frametitle{Software}  
 \begin{itemize}
-\item \textbf{dPeak}: We updated the initialization strategy. The
-  latest version is currently available from
+\item {\color{RoyalBlue}\textbf{dPeak}}: We updated the initialization
+  strategy. The latest version is currently available from
   \url{http://dongjunchung.github.io/dpeak/}.
-\item \textbf{ChIPexoQual}: This package contains the QC pipeline for
-  ChIP-exo. The last version is available in
+\item {\color{RoyalBlue}\textbf{ChIPexoQual}}: This package contains
+  the QC pipeline for ChIP-exo. The last version is available in
   \url{https://github.com/welch16/ChIPexoQual}.
-\item \textbf{Segvis}: The goal of this package is to visualize
-  genomic regions by using aligned reads. The latest version is
-  available in \url{https://github.com/keleslab/Segvis}.
-\item \textbf{ChIPUtils}: This package attempts to gather the most
-  commonly used ChIP-Seq QC.The latest available version is in
-  \url{https://github.com/welch16/ChIPUtils}.
+\item {\color{RoyalBlue}\textbf{Segvis}}: The goal of this package is
+  to visualize genomic regions by using aligned reads. The latest
+  version is available in \url{https://github.com/keleslab/Segvis}.
+\item {\color{RoyalBlue}\textbf{ChIPUtils}}: This package attempts to
+  gather the most commonly used ChIP-Seq QC.The latest available
+  version is in \url{https://github.com/welch16/ChIPUtils}.
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}[plain]
+  
+{\Huge
+{\color{RoyalBlue}
+\begin{center}
+  \textbf{Thank you very much!}
+\end{center}
+}
+}
+
 
 \end{frame}
 
