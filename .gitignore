@@ -22,4 +22,6 @@ rmarkdown/*toc
 rmarkdown/_region_.tex
 rmarkdown/*lof
 rmarkdown/*out
+rmarkdown/*nav
+rmarkdown/*snm
 rmarkdown/auto
