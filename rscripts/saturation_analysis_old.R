@@ -272,27 +272,36 @@ library(grid)
 library(gridExtra)
 library(RColorBrewer)
 
-pdf(file = "figs/for_paper/saturation_analysis_old.pdf")
 p1 <- ggplot(dt1,aes(nreads,candre, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Number of candidate regions")+
-  ylim(0,600)+ggtitle("A")
+  ylim(0,600)
 p2 <- ggplot(dt2,aes(nreads,predre, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Number of predicted events")+
-  ylim(0,1500)+ggtitle("B")
+  ylim(0,1500)
 p3 <- ggplot(dt3,aes(nreads,iden, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Number of identified targets")+
-  ylim(0,250)+ggtitle("C")
+  ylim(0,250)
 p4 <- ggplot(dt4,aes(nreads,resol, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Resolution")+
-  ylim(0,50)+ggtitle("D")
+  ylim(0,50)
+
+
+pdf(file = "figs/for_paper/saturation_analysis_old_frames.pdf",height = 4,width = 4)
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+dev.off()
+
+pdf(file = "figs/for_paper/saturation_analysis_old.pdf")
 grid.arrange(p1,p2,p3,p4,nrow =2)
 dev.off()
 
