@@ -124,34 +124,43 @@ and Medical Informatics
 
 \section*{Abstract}
 
-    Recently, ChIP-exo has been developed to investigate protein-DNA
-    interaction in higher resolution compared to popularly used
-    ChIP-Seq. Although ChIP-exo has drawn much attention and is
-    considered as powerful assay, currently no systematic studies
-    have yet been conducted to determine optimal strategies for
-    experimental design and analysis of ChIP-exo. In order to address
-    these questions, we evaluated diverse aspects of ChIP-exo and
-    found the following characteristics of ChIP-exo data. First, the
-    background of ChIP-exo data is quite different from that of
-    ChIP-Seq data. However, sequence biases inherently present in
-    ChIP-Seq data still exist in ChIP-exo data. Second, in ChIP-exo
-    data, reads are located around binding sites much more tightly and
-    hence, it has potential for high resolution identification of
-    protein-DNA interaction sites, and also the space to allocate the
-    reads is greatly reduced. Third, although often assumed in the
-    ChIP-exo data analysis methods, the ``peak pair'' assumption does
-    not hold well in real ChIP-exo data. Fourth, spatial resolution of
-    ChIP-exo is comparable to that of PET ChIP-Seq and both of them
-    are significantly better than resolution of SET ChIP-Seq. Finally,
-    for given fixed sequencing depth, ChIP-exo provides higher
-    sensitivity, specificity and spatial resolution than PET
-    ChIP-Seq.
 
-    We provide a quality control pipeline which visually assess
-    ChIP-exo biases, library complexity and enrichment; and calculates
-    a signal-to-noise measure. Also, we updated dPeak (Chung et al.,
-    2012 \cite{dpeak}), which makes a striking balance in sensitivity,
-    specificity and spatial resolution for ChIP-exo data analysis.
+
+% Recently, ChIP-exo has been developed to investigate protein-DNA
+% interaction in higher resolution compared to popularly used
+% ChIP-Seq. Although ChIP-exo has drawn much attention and is considered
+% as powerful assay, currently no systematic studies have yet been
+% conducted to determine which biases impact in a ChIP-exo's dataset
+% quality.
+
+
+
+% optimal strategies for
+%     experimental design and analysis of ChIP-exo.
+
+
+%     In order to address these questions, we evaluated diverse aspects
+%     of ChIP-exo and found the following characteristics of ChIP-exo
+%     data. First, the background of ChIP-exo data is quite different
+%     from that of ChIP-Seq data. However, sequence biases inherently
+%     present in ChIP-Seq data still exist in ChIP-exo data. Second, in
+%     ChIP-exo data, reads are located around binding sites much more
+%     tightly and hence, it has potential for high resolution
+%     identification of protein-DNA interaction sites, and also the
+%     space to allocate the reads is greatly reduced. Third, although
+%     often assumed in the ChIP-exo data analysis methods, the ``peak
+%     pair'' assumption does not hold well in real ChIP-exo
+%     data. Fourth, spatial resolution of ChIP-exo is comparable to that
+%     of PET ChIP-Seq and both of them are significantly better than
+%     resolution of SET ChIP-Seq. Finally, for given fixed sequencing
+%     depth, ChIP-exo provides higher sensitivity, specificity and
+%     spatial resolution than PET ChIP-Seq.
+
+%     We provide a quality control pipeline which visually assess
+%     ChIP-exo biases, library complexity and enrichment; and calculates
+%     a signal-to-noise measure. Also, we updated dPeak (Chung et al.,
+%     2012 \cite{dpeak}), which makes a striking balance in sensitivity,
+%     specificity and spatial resolution for ChIP-exo data analysis.
 
 \newpage
 
@@ -160,49 +169,55 @@ and Medical Informatics
 
 
 ChIP-exo (Chromatin Immunopecipitation followed by exonuclease
-digestion and next generation sequencing) Rhee and Pugh, 2011
-(\cite{exo1}) is the state-of-the-art experiment developed to attain
+digestion and next generation sequencing, Rhee and Pugh, 2011
+\cite{exo1}) is the state-of-the-art experiment developed to attain
 single base-pair resolution of protein binding site identification and
 it is considered as a powerful alternative to popularly used ChIP-Seq
-(Chromatin Immunoprecipitation coupled with next generation sequencing
- assay.
+(Chromatin Immunoprecipitation coupled with next generation
+sequencing) assay.
 
 While the number of produced ChIP-exo data keeps increasing,
-characteristics of ChIP-exo data and optimal strategies for
-experimental design and analysis of ChIP-exo data are not fully
-investigated yet, including issues of sequence biases inherent to
-ChIP-exo data, choice of optimal statistical methods, and
-determination of optimal sequencing depth. However, currently the
-number of available ChIP-exo data is still limited and their
-sequencing depths are still insufficient for such investigation. To
-address this limitation we gathered ChIP-exo data from diverse
-organisms: CTCF factor in human \cite{exo1}; ER factor in human and
-FoxA1 factor in mouse (Serandour et al., 2013 \cite{exoillumina}); and
-generated $\sig$ factor in Escherichia Coli (E. Coli) under
-aerobic ($ + O_2$) condition, and treated by rifampicin by 0 and 20
-minutes.
+characteristics of ChIP-exo data are not fully investigated
+yet. First, DNA libraries generated by the ChIP-exo protocol seem to
+be less complex than the libraries generated by ChIP-Seq (Mahony et
+al., 2015 \cite{exo_review}), i.e. the number of positions to which
+the reads can be aligned has been reduced due to the exonuclease
+digestion. Second, although the are roughly the same amount of reads
+in both strands, locally there may be more reads in one strand than in
+the other. To address this challenges, we suggest a collection of
+quality control visualizations to understand which of this biases are
+present in ChIP-exo data and globally assess the enrichment and
+library complexity of a ChIP-exo sample.We gathered ChIP-exo data from
+diverse organisms: CTCF factor in human \cite{exo1}; ER factor in
+human and FoxA1 factor in mouse (Serandour et al., 2013
+\cite{exoillumina}); and generated $\sig$ factor in Escherichia Coli
+(E. Coli) under aerobic ($ + O_2$) condition, and treated by
+rifampicin by 0 and 20 minutes (courtesy of Professor Robert Landick's
+lab).
+% While the number of produced ChIP-exo data keeps increasing,
+% characteristics of ChIP-exo data and its analysis are not fully
+% investigated yet, including issues of sequence biases inherent to
+% ChIP-exo data, choice of optimal statistical methods, and
+% determination of optimal sequencing depth. However, currently the
+% number of available ChIP-exo data is still limited and their
+% sequencing depths are still insufficient for such investigation.
 
-DNA libraries generated by the ChIP-exo protocol seem to be less
-complex than the libraries generated by ChIP-Seq (Mahony et al., 2015
-\cite{exo_review}). Hence, most of current QC guidelines (Landt et
-al., 2012 \cite{encode_qc}) may not be applicable on ChIP-exo,
-additionally to our knowledge there are not established quality
-control pipelines for ChIP-exo. To address this challenge, we suggest
-a collection of quality control visualizations to understand which
-biases are present in ChIP-exo data. Previous ChIP-exo analysis used
-ChIP-Seq samples to compare the resolution between experiments
-(\cite{exo1}, \cite{exo2}, \cite{exoillumina}); Carroll et al., 2014
-\cite{carroll.qc} studied the use of the Strand-Cross Correlation
-(SCC) (Kharchenko et al., 2008 \cite{strandcc}) and showed that by
-filtering blacklisted regions the estimation of the SCC is
-improved. However, this method requires to know blacklisted regions in
-advance which may not be available, additionally using SCC may not be
-useful since the peaks that are attained at the read and fragment
-length are confused in a typical ChIP-exo SCC curve.  In our pipeline
-we propose two out-the-shelf analysis: an enrichment plot and the
-local normalized SCC cofficient.
+Most of current ChIP-Seq QC guidelines (Landt et al., 2012
+\cite{encode_qc}) may not be applicable on ChIP-exo, additionally to
+our knowledge there are not established quality control pipelines for
+ChIP-exo.Previous ChIP-exo analysis used ChIP-Seq samples to compare
+the resolution between experiments (\cite{exo1}, \cite{exo2},
+\cite{exoillumina}); Carroll et al., 2014 \cite{carroll.qc} studied
+the use of the Strand-Cross Correlation (SCC) (Kharchenko et al., 2008
+\cite{strandcc}) and showed that by filtering blacklisted regions the
+estimation of the SCC is improved. However, this method requires to
+know blacklisted regions in advance which may not be available,
+additionally using SCC may not be useful since the peaks that are
+attained at the read and fragment length are confused in a typical
+ChIP-exo SCC curve.  In our pipeline we propose two out-the-shelf
+analysis: an enrichment plot and the normalized local SCC coefficient.
 
-In order to archive the potential benefits of ChIP-exo on protein
+In order to obtain the potential benefits of ChIP-exo on protein
 binding site identification, it is critical to understand which are
 the important characteristics of ChIP-exo data and to use algorithms
 that could fully utilize information available in ChIP-exo data. Rhee
@@ -248,20 +263,19 @@ ChIP-Seq data, so that it can also handle ChIP-exo data. The dPeak
 algorithm implements a probabilistic model that accurately describes
 the ChIP-exo and ChIP-Seq data generation process.
 
-In this work, we demonstrate that the ``peak pair'' assumption of
-Rhee and Pugh \cite{exo1} does not hold well in real ChIP-exo
+In this work, we demonstrate that the ``peak pair'' assumption of Rhee
+and Pugh \cite{exo1} does not hold well in real ChIP-exo
 data. Furthermore, we found that when we analyze ChIP-exo data from
 eukaryotic genomes, it is important to consider sequence biases
 inherent to ChIP-exo data, such as mappability and GC content in order
 to improve sensitivity and specificity of binding site
 identification. We evaluated several method to identify binding events
-and dPeak outperforms or performs competitively respecto to GEM and
+and dPeak outperforms or performs competitively respect to GEM and
 MACE when analyzing ChIP-exo data. More importantly, when comparable
 number of reads is used for both ChIP-exo and ChIP-Seq, dPeak coupled
-with ChIP-exo data provides resolution comparable to PET ChIP-Seq and
+with ChIP-exo data provides outperform Paired End (PE) ChIP-Seq and
 both significantly improve the resolution of protein binding site
-identification compared to SET-based analysis with any of the
-available methods.
+identification compared to Single End (SE) ChIP-Seq.
 
 \section{ChIP-exo and ChIP-Seq review}
 \label{sec:exo}
@@ -300,7 +314,7 @@ being found. Rhee and Pugh, 2011 \cite{exo1}, showed that ChIP-exo
 generated fragments are located around the binding events more tightly
 than ChIP-Seq generated fragments. Hence, it is of utmost importance
 to understand how this new protocol works, specifically we focused on
-understanding which biases are mantained from ChIP-Seq to ChIP-exo,
+understanding which biases are maintained from ChIP-Seq to ChIP-exo,
 which biases are specific to ChIP-exo, how the current ChIP-Seq QC
 guidelines behave in ChIP-exo and we developed a new QC pipeline
 specific to ChIP-exo. A typical example is shown in figure
@@ -317,14 +331,14 @@ fewer positions.
   \centering
   \includegraphics[width = .8 \textwidth,page = 107]{/p/keles/ChIPexo/volume5/OpenClosedComplexes/figs/peaks/ChIPseq_ChIPexo_peaks_rif20.pdf}
   \caption{An example of a PET ChIP-Seq peak compared to
-    ChIP-exo. $\sig$, $\beta$ and $\beta_f'$ are subunits of
-    the transcription initiation complex in E. Coli. Gene regions on
-    the reverse strand are highlighted in light blue and the region
+    ChIP-exo. $\sig$, $\beta$ and $\beta_f'$ are subunits of the
+    transcription initiation complex in \emph{E. Coli}. Gene regions
+    on the reverse strand are highlighted in light blue and the region
     was centered respect to ChIP-Seq $\sig$ summit. The library
     complexity is lower in ChIP-exo than in ChIP-Seq but the
-    resolution is increased, this can be observed at the $\sig$
-    peak that for ChIP-exo was created as the combination of at least
-    three ChIP-exo ``sub-peaks''.}
+    resolution is increased, this can be observed at the $\sig$ peak
+    that for ChIP-exo was created as the combination of at least three
+    ChIP-exo ``sub-peaks''.}
   \label{fig:exo_example}
 \end{figure}
 
@@ -338,13 +352,13 @@ data.
 Table \ref{tab:qcbase} contains measures that are commonly used with
 ChIP-Seq data. PBC stands for PCR bottleneck amplification and is
 defined as the ratio between the number of positions to which exactly
-one mappping read maps divided by the number of position to which at
+one mapping read maps divided by the number of position to which at
 least one mapping reads maps, the ENCODE project proposed a series of
 ranges to interpret this quantity (which can be found in
 \url{https://www.encodeproject.org/data-standards/2012-quality-metrics/}),
 but it doesn't apply to ChIP-exo, if it did all the samples with
 $\mbox{PBC} < 0.5$ should be reject due to be showing severe
-bottlenecking. Planet et al., 2011 proposed the Standarized Standard
+bottlenecking. Planet et al., 2011 proposed the Standardized Standard
 Deviation which defined as:
 
 \[
@@ -379,15 +393,15 @@ ChIP-Seq QC metrics. The SCC curve is defined as:
 \end{align}
 
 where $y(\delta)$ is the SCC for a strand shift $\delta$, $r$ is the
-Pearson correlation, $w_c$ is the propotion of tags mapped to
+Pearson correlation, $w_c$ is the proportion of tags mapped to
 chromosome $c$ and $n_c^S$ is the tag count vector for strand $S$ and
-chromsome $c$.
+chromosome $c$.
 
 For ChIP-Seq data, the SCC will have two peaks: One when $\delta$ is
 equal to reads length and one when $\delta$ is equal to the unobserved
 fragment length, ideally the SCC function is maximized at this
-point. Landt et al., 2012 \cite{encode_qc} explain that a succesful if
-this happens, it is marginally succesful if its maximized at the read
+point. Landt et al., 2012 \cite{encode_qc} explain that a successful if
+this happens, it is marginally successful if its maximized at the read
 length peak but still shows the fragment length summit and failed if
 is maximized at the read length peak but the second summit is not
 present. 
@@ -401,41 +415,41 @@ present.
 
 Figure \ref{fig:scc} shows the SCC function for both a ChIP-exo (in
 red) and a SET ChIP-Seq (in green) for CTCF in HeLa cell line. The
-ChIP-Seq dataset behaves as the succesful case from \cite{encode_qc},
+ChIP-Seq dataset behaves as the successful case from \cite{encode_qc},
 but the ChIP-exo doesn't. Additionally, since the exonuclease enzyme
 digests the DNA fragments, then the shifts where the SCC may reach a
-locall or a global maximum are confounded. Hence, new QC measures are
+local or a global maximum are confounded. Hence, new QC measures are
 necessary for ChIP-exo data.
 
 \begin{table}[H]
   \centering
-  \caption{Usual quality control indicators applied to the $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD for standardized standard deviation, NSC for normalized strand cross-correlation coefficient (Another measure related to the strand cross-correlation curve is the RSC was ommited since input sample usually don't exists for ChIP-exo). $\sig$ samples were given by Robert Landick, FoxA1 and ER samples are from Serandour et al., 2013 \cite{exoillumina} and CTCF sample is from Rhee and Pugh, 2011 \cite{exo1}.}
+  \caption{Usual quality control indicators applied to the $\sigma^{70}$ samples. PBC stands PCR-bottleneck coefficient, SSD for standardized standard deviation, NSC for normalized strand cross-correlation coefficient (Another measure related to the strand cross-correlation curve is the RSC was omitted since input sample usually don't exists for ChIP-exo). $\sig$ samples were given by Robert Landick, FoxA1 and ER samples are from Serandour et al., 2013 \cite{exoillumina} and CTCF sample is from Rhee and Pugh, 2011 \cite{exo1}.}
 
-\begin{tabular}{l|l|r|r|r|r|r|r}
+\begin{tabular}{l|l|r|r|r|r|r}
 \hline\hline
-IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
+IP & Organism  &Condition & Rep. & Nr. reads & PBC &  NSC  \\
 \hline\hline
-$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 &  10.29 \\
+$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 &   10.29 \\
 \hline
-$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091  &  25.08  \\
+$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 &  25.08  \\
 \hline
-$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820  & 17.69  \\
+$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 &  17.69  \\
 \hline
-$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647  &  14.11 \\
+$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 &   14.11 \\
 \hline
-FoxA1 &  Mouse &  NA & 1 & 22,210,461 & 0.6562 & 9.12 $\times 10^{-5}$ & 21.452 \\
+FoxA1 &  Mouse &  NA & 1 & 22,210,461 & 0.6562 & 21.452 \\
 \hline
-FoxA1 &  Mouse &  NA & 2 & 22,307,557 & 0.7996 & 7.94 $\times 10^{-5}$ & 60.661 \\
+FoxA1 &  Mouse &  NA & 2 & 22,307,557 & 0.7996 & 60.661 \\
 \hline
-FoxA1 &  Mouse &  NA & 3 & 22,421,729 & 0.1068 & 1.31 $\times 10^{-4}$ & 72.312 \\
+FoxA1 &  Mouse &  NA & 3 & 22,421,729 & 0.1068 & 72.312 \\
 \hline
-ER & Human & NA & 1 & 9,289,835 & 0.8082 & 3.64 $\times 10^{-5}$ & 19.843 \\
+ER & Human & NA & 1 & 9,289,835 & 0.8082 & 19.843 \\
 \hline
-ER & Human & NA & 2 & 11,041,833 & 0.8024 & 4.6 $\times 10^{-5}$ & 21.422 \\
+ER & Human & NA & 2 & 11,041,833 & 0.8024 & 21.422 \\
 \hline
-ER & Human & NA & 3 & 12,464,836 & 0.8203 & 4.89 $\times 10^{-5}$ & 19.699 \\
+ER & Human & NA & 3 & 12,464,836 & 0.8203 & 19.699 \\
 \hline
-CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \\
+CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 15.977 \\
 \hline
 \end{tabular}  
   \label{tab:qcbase}
@@ -446,7 +460,7 @@ CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \
 \subsection{The dPeak Model}
 \label{sec:dpeak}
 
-Chung et al., 2013 proposed the dpeak model to identifity
+Chung et al., 2013 proposed the dPeak model to identify the
 transcription factor binding sites in high resolution. Two models are
 proposed: One to deconvolve the signal of single end tags (SET) data,
 i.e. when only one end of the DNA fragment is sequenced; and another
@@ -639,7 +653,7 @@ is defined as a signal-to-noise ratio by using:
   \includegraphics[width = .8\textwidth]{../figs/for_paper/local_SCC_example.pdf}
   \caption{Using the FoxA1 sample from \cite{exoillumina}. A) shows an
     example region for the 3 replicates. The library complexity seem
-    to be comparable between the two top rows and both outperfom the
+    to be comparable between the two top rows and both outperform the
     last row. The number of reads for the first replicate is higher
     than the number of reads for the other replicates. B) Shows the
     local SCC for the 3 replicates, this measure is comparable among
@@ -945,7 +959,7 @@ extending the fragments by a random barcode prior to the exonuclease
 digestion. This last statement is briefly mentioned by Mahony and
 Pugh, 2015 \cite{exo_review}. We want to apply our QC pipeline to
 ChIP-Nexus. Depending if ChIP-Nexus data shows background we may need
-to modify the QC pipeline in the step where it paritions the reads
+to modify the QC pipeline in the step where it partitions the reads
 into regions, but the $\mbox{local-NSC}$ may be used to prove this
 statement.
 
@@ -968,13 +982,13 @@ of the transcription in E. Coli.
 The steps in formation of productive transcription complexes are:
 
 \begin{enumerate}
-\item Binding of RNAP to rpomoter DNA to form a closed complex.
+\item Binding of RNAP to promoter DNA to form a closed complex.
 \item Rearrangement of RNAP-DNA contacts to form an open complex.
-\item Binding of nucleoside triphosphates in the active site and
+\item Binding of nucleotide triphosphates in the active site and
   synthesis of a initial RNA to yield an initial transcription complex
   (ITC) - this is sometimes called a ``scrunched complex''.
 \item Promoter escape to form a elongated complex (EC$_1$) when the
-  promoter contacts are broken, and the $\sig$ factor is realeased.
+  promoter contacts are broken, and the $\sig$ factor is released.
 \item Conversion of EC$_1$ into EC$_2$ by loading of the ribosome and
   elongation factors to enable efficient transcript elongation.
 \end{enumerate}
@@ -997,8 +1011,8 @@ The steps in formation of productive transcription complexes are:
 % \end{figure}
 
 As a proof of concept we were able to identify open and closed regions
-by centering the binding the peaks respecto to the highest $\sig$
-summit (among the rif0 and rif20 samples), and then using hierachical
+by centering the binding the peaks respect to the highest $\sig$
+summit (among the rif0 and rif20 samples), and then using hierarchical
 clustering on the $\beta'_f$ signal of the rif0 samples to produce:
 
 \begin{figure}[H]
@@ -1016,7 +1030,7 @@ ChIP-Seq peaks for $\beta'_f$ and $\sig70$ under rif0 and rif20
 treatments. Each row represents the same region, under the four
 different samples. As expected the signal for both $\sig$ samples is
 centered around the middle, for $\beta'_f$-rif20, the majority of he
-signal seems to be centered, hence the trascription was interrupted
+signal seems to be centered, hence the transcription was interrupted
 and for $\beta'_f$-rif0 we can see clusters formed by open regions.
 
 Then, using a set of high quality PET ChIP-Seq peaks and clustering
@@ -1024,10 +1038,10 @@ with the mclust model by Fraley and Raftery, 2007 \cite{mclust} we
 were able to label the a set of regions as closed or open
 complexes. Hence, we expect that by using ChIP-exo data we may find
 different patterns that represent transcription units whose output was
-limited at differemt steps in the formation of EC$_2$.
+limited at different steps in the formation of EC$_2$.
 
 Additionally if we find several cases of those patterns, then we may
-be able to determine which sequences may be causing this behaviour at
+be able to determine which sequences may be causing this behavior at
 the different steps.
 
 \subsection{Enhancer Prediction and Active Learning}
@@ -1035,14 +1049,14 @@ the different steps.
 
 Last summer, we entered to a contest from ENCODE's functional
 characterization group to fit a model to classify enhancers. Roughly
-speaks, the data set consided of a set of regions
+speaking, the dataset consisted of a set of regions
 $\mathcal{R}_1,\cdots,\mathcal{R}_n$ and a set of labels
 $Y_1,\cdots,Y_n \in \{0,1,\}$. Hence, we built a series of features
 $X_1,\cdots,X_p$ and fitted a model by dividing the $n$ observations
 into a training set and a test set, etc. However, there are in total
-another $m >> n$ regions in the experiment, and the cost of labelling
+another $m >> n$ regions in the experiment, and the cost of labeling
 those $m$ regions may be high (in either the actual monetary cost of
-the experiment or the time the scientists spends labelling those
+the experiment or the time the scientists spends labeling those
 regions). Those $n+m$ regions are H3K27ac peaks, hence they were
 ranked and the first $n$ were selected randomly from groups with high,
 medium and low signal. This raises the following questions:
@@ -1050,13 +1064,13 @@ medium and low signal. This raises the following questions:
 \begin{itemize}
 \item Is there a better way of ranking this $n+m$ regions ?
 \item What is the best way to select the regions that are going to be
-  labelled, i.e. we would want to label the regions that gives us the
+  labeled, i.e. we would want to label the regions that gives us the
   best model.
 \end{itemize}
 
 Hence, it may be worth to investigate which active learning strategies
 may be the best to apply in this particular problem. Settles, 2012
-\cite{al} is a survey of acive learning techniques that we want to
+\cite{al} is a survey of active learning techniques that we want to
 explore in order to solve this problems.
 
 
@@ -1105,3 +1119,5 @@ a ChIP-exo experiment.
 
 
 \end{document}
+
+% LocalWords:  deconvolve
