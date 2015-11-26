@@ -21,8 +21,8 @@
 \usetikzlibrary{shapes,arrows}
 
 
-\title{High Resolution Identification of Protein-DNA Binding Events
-  and Quality Control for ChIP-exo data\vspace*{\fill}}
+\title{Data exploration, quality control and statistical analyses of
+  ChIP-exo experiments\vspace*{\fill}}
 
 \author{Rene Welch\\Preliminary Examination\\Department of Statistics,
   University of Wisconsin-Madison}
@@ -177,7 +177,7 @@ in its very early stage. Although many methods have been proposed to
 identify protein binding sites from ChIP-Seq data (reviewed by
 Wilbanks and Facciotti, 2012 \cite{evaluation} and Pepke and Wold,
 2009 \cite{computation}), such as MACS (Zhang et al., 2008
-\cite{macs}), CisGenome (Hongkai et al., 2008 \cite{cisgenome}) and
+\cite{macs}), CisGenome (Ji et al., 2008 \cite{cisgenome}) and
 MOSAiCS (Kuan et al., 2009 \cite{mosaics}), these approaches reveal
 protein binding sites in lower resolution, i.e., at an interval of
 hundreds to thousands of base pairs. Furthermore, they report only one
@@ -316,7 +316,7 @@ strand cross-correlation is defined as:
 
 where $y(\delta)$ is strand cross-correlation defined as in (\ref{scc}). 
 
-\subsubsection{Strand cross-correlation}
+\subsubsection{Strand Cross-Correlation}
 \label{sec:scc}
 
 The strand cross-correlation (SCC) was proposed by Kharchenko et al.,
@@ -394,7 +394,7 @@ CTCF & Human & NA & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \
 
 \vspace*{\fill}
 
-\subsection{The dPeak model}
+\subsection{The dPeak Model}
 \label{sec:dpeak}
 
 Chung et al., 2013 proposed the dpeak model to identifity
@@ -441,7 +441,7 @@ is generated from a
 
 $\mbox{Multinomial}(\pi_0,\pi_1,\cdots,\pi_{g^*})$.
 
-\subsubsection{dPeak's algorithm initialization strategy}
+\subsubsection{A New Initialization Strategy for dPeak}
 \label{sec:algo}
 
 dPeak's model likelihood is optimized by the stochastic EM
@@ -540,7 +540,7 @@ content.
 \label{sec:results}
 
 
-\subsection{ChIP-exo Quality Control pipeline}
+\subsection{ChIP-exo Quality Control Pipeline}
 \label{sec:QC}
 
 Figure \ref{fig:qcdiagram} shows a flowchart for the ChIPexoQC
@@ -560,7 +560,7 @@ designed to assess the quality levels of a ChIP-exo sample.
   \label{fig:qcdiagram}
 \end{figure}
 
-\subsubsection{Local Normalized Strand cross-correlation}
+\subsubsection{Normalized Local Strand Cross-Correlation}
 \label{sec:locNSC}
 
 We considered the creation of a novel QC measure for ChIP-exo called
@@ -605,7 +605,7 @@ is defined as a signal-to-noise ratio by using:
 \label{fig:locSCC}
 \end{figure}
 
-\subsubsection{Enrichment and library complexity in ChIP-exo data}
+\subsubsection{Enrichment and Library Complexity in ChIP-exo data}
 \label{sec:enri}
 
 In ChIP-exo experiments, the background is often digested by the
@@ -686,7 +686,7 @@ the other.
 % stratified as in (B) with the $\mbox{local-NSC}$ calculated with the
 % different biological replicates.
 
-\subsubsection{Strand imbalance in ChIP-exo data}
+\subsubsection{Strand Imbalance in ChIP-exo data}
 \label{sec:strand_imbalance}
 
 The strand imbalance assessment is based in the observation that the
@@ -809,7 +809,8 @@ SET ChIP-Seq.
   \label{fig:reso_all}
 \end{figure}
 
-\subsection{Recommendations for the design of ChIP-exo experiments}
+\subsection{Systematic Comparison of ChIP-Seq vs ChIP-exo under
+  Varying Sequencing Depths}
 \label{sec:reco}
 
 <<design_param , include = FALSE , echo = FALSE , eval = TRUE>>=
@@ -903,9 +904,9 @@ ChIP-exo analysis.
 \section{Planned work}
 \label{sec:future}
 
-\subsection{Some additional thoughts for this analysis}
+\subsection{Additional Thoughts for this Analysis}
 
-\subsubsection{GC content and mappability quality indicators}
+\subsubsection{GC Content and Mappability Quality Indicators}
 \label{sec:gc_map_qc}
 
 Figure \ref{fig:comp} shows a relationship between the ChIP tag counts
@@ -916,7 +917,7 @@ considers them as necessary information when there is not input
 sample. Hence, quality measures we may consider to add indicators to
 the QC pipeline that considers this biases.
 
-\subsubsection{Quality control for ChIP-Nexus}
+\subsubsection{Quality Control for ChIP-Nexus}
 \label{sec:nexus}
 
 He et al., 2014 \cite{chipnexus} proposed a modification to the
@@ -929,7 +930,7 @@ to modify the QC pipeline in the step where it paritions the reads
 into regions, but the $\mbox{local-NSC}$ may be used to prove this
 statement.
 
-\subsection{Analysis of E. Coli Transcription Initiation Complexes}
+\subsection{Analysis of \emph{E. Coli} Transcription Initiation Complexes}
 \label{sec:ecoli}
 
 The data showed in figure \ref{fig:exo_example} is actually part of a
@@ -1010,7 +1011,7 @@ Additionally if we find several cases of those patterns, then we may
 be able to determine which sequences may be causing this behaviour at
 the different steps.
 
-\subsection{Enhancer prediction and active learning}
+\subsection{Enhancer Prediction and Active Learning}
 \label{sec:enhancer}
 
 Last summer, we entered to a contest from ENCODE's functional
