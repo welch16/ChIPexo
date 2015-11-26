@@ -45,7 +45,7 @@ reads <- mapply(create_reads,read_files,c(FALSE,TRUE,FALSE),SIMPLIFY = FALSE)
 
 
 pdf(file = file.path("figs/for_paper","ChIPseqPET_ChIPexo_tagCount_comparison.pdf"),width = 4,height = 4)
-p <- hexbin_plot(reads[[2]],reads[[1]],150,frag_len = 150)+xlab("ChIP-seq (PET) tag counts")+ylab("ChIP-exo tag counts")+theme_bw()
+p <- hexbin_plot(reads[[2]],reads[[1]],150,frag_len = 150)+xlab("ChIP-seq (PE) counts")+ylab("ChIP-exo counts")+theme_bw()
 dt <- copy(p$data)
 dt[,x := 1 + x]
 dt[,y := 1 + y]
