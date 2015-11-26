@@ -36,9 +36,11 @@ statM <- .computeStat( Y=tagCount(bin.exo), S=mappability(bin.exo) )
 statGC <- .computeStat( Y=tagCount(bin.exo), S=gcContent(bin.exo) )
 
 M <- data.table( mapp = statM$uS, mean = statM$meanYall,
-  Var = statM$varYall , N = statM$nitem)
+     Var = statM$varYall , N = statM$nitem)
+M <- M[order(-Var)][-c(1:3)]
+
 GC <- data.table( gc = statGC$uS, mean = statGC$meanYall,
-  Var = statGC$varYall , N = statGC$nitem)
+    Var = statGC$varYall , N = statGC$nitem)
 
 M[,lb := mean - 1.96 * sqrt(Var / N)]
 M[,ub := mean + 1.96 * sqrt(Var / N)]
