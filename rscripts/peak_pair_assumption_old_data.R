@@ -166,7 +166,7 @@ dt2[,Dataset:= "ChIP-seq (SET)"]
 dt = rbind(dt1,dt2)
 dt[ , Dataset := plyr::mapvalues( Dataset ,
         from = c("ChIP-exo","ChIP-seq (PET)","ChIP-seq (SET)"),
-        to = c("exo","pet","set"))]
+        to = c("ChIP-exo","ChIP-seq (PE)","ChIP-seq (SE)"))]
 
 p1 = ggplot(dt,aes(delta,colour = Dataset))+geom_density(size=1)+facet_grid(Dataset~.)+
   theme_bw()+theme(legend.position = "none",plot.title = element_text(hjust = 0))+
@@ -180,7 +180,7 @@ dt = rbind(dt1,dt2)
 
 dt[ , Dataset := plyr::mapvalues( Dataset ,
         from = c("ChIP-exo","ChIP-seq (PET)","ChIP-seq (SET)"),
-        to = c("exo","pet","set"))]
+        to = c("ChIP-exo","ChIP-seq (PE)","ChIP-seq (SE)"))]
 
 p2 = ggplot(dt,aes(sigma,colour = Dataset))+geom_density(size=1)+facet_grid(Dataset~.)+
   theme_bw()+theme(legend.position = "none",plot.title = element_text(hjust = 0))+
@@ -227,6 +227,9 @@ balanceSet = balanceSet[nfrag > 3e3]
 dt1 = data.table(seq = "exo", fratio = balance1)
 dt2 = data.table(seq = "set",fratio = balanceSet)
 dt = rbind(dt1,dt2)
+
+dt[ ,seq := plyr::mapvalues(seq , from = c("exo","set"),
+       to = c("ChIP-exo","ChIP-Seq (SE)"))]
 
 pdf(file = "figs/for_paper/forward_strand_ratio_comp_old.pdf",width = 4 ,height  = 4)
 ggplot(dt , aes(fratio, colour = seq))+geom_density()+

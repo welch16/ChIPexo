@@ -353,7 +353,7 @@ strata_plots[[3]] <- ggplot(dat , aes( strata , nsc,colour = file))+geom_boxplot
   scale_color_brewer(palette = "Dark2")+theme_bw()+
   theme(legend.position = "none", axis.text.x = element_text(angle = 90),plot.title = element_text(hjust = 0))+
   xlab("")+ylab("Local NSC")+ylim(0,3)+geom_abline( slope = 0 , intercept = 0, linetype = 2)+ggtitle("B")
-strata_plots[[4]] <- ggplot(dat , aes( file , nsc,colour = strata))+geom_boxplot()+facet_grid( . ~ strata) +
+strata_plots[[4]] <- ggplot(dat , aes( file , nsc,colour = file))+geom_boxplot()+facet_grid( . ~ strata) +
   scale_color_brewer(palette = "Dark2")+theme_bw()+
   theme(legend.position = "none", axis.text.x = element_text(angle = 90),plot.title = element_text(hjust = 0))+
   xlab("")+ylab("Local NSC")+ylim(0,3)+geom_abline( slope = 0 , intercept = 0, linetype = 2)+ggtitle("B")

@@ -124,7 +124,8 @@ setnames(result_rene,names(result_rene),c("Seq","Resolution"))
 
 result_rene[, Seq := plyr::mapvalues(Seq,
    from = c("ChIP-exo","ChIP-Seq (PET)", "ChIP-Seq (SET)"),
-   to = c("exo","pet","set"))]
+   to = c("ChIP-exo","ChIP-Seq (PE)","ChIP-Seq (SE)"))]
+
 
 
 dr = "figs/for_paper"
@@ -132,7 +133,8 @@ pdf(file = file.path(dr , "resolution_by_dataset_old_data.pdf"),height = 3.5,wid
 p = ggplot(result_rene,aes(Seq,Resolution,colour = Seq))+geom_boxplot()+
   scale_y_continuous(limits = c(0,150))+xlab("")+
   theme_bw()+
-  theme(legend.position = "none",plot.title = element_text(hjust = 0))+
+  theme(legend.position = "none",plot.title = element_text(hjust = 0),
+        axis.text.x = element_text(angle = 30,hjust = 1))+
   scale_color_brewer(palette = "Set1")+ggtitle("B")
 u = print(p)
 dev.off()

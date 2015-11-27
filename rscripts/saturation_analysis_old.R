@@ -240,6 +240,12 @@ for ( i in 1:10 ) {
 
 # plot number of candidate regions
 
+## result_rene[, Seq := plyr::mapvalues(Seq,
+##    from = c("ChIP-exo","ChIP-Seq (PET)", "ChIP-Seq (SET)"),
+##    to = c("ChIP-exo","ChIP-Seq (PE)","ChIP-Seq (SE)"))]
+
+
+
 dr = "/p/keles/ChIPexo/volume3/ChIPexo/figs/for_paper"
 
 what <- c( "exo", "pet", "set")
@@ -268,27 +274,49 @@ dt4 = melt(dt4)
 dt4[,nreads:= 0.01 * 1:maxM]
 setnames(dt4,names(dt4),c("Dataset","resol","nreads"))
 
+dt1[, Dataset := plyr::mapvalues(Dataset,
+   from = c("exo","pet", "set"),
+   to = c("ChIP-exo","ChIP-Seq (PE)","ChIP-Seq (SE)"))]
+
+dt2[, Dataset := plyr::mapvalues(Dataset,
+   from = c("exo","pet", "set"),
+   to = c("ChIP-exo","ChIP-Seq (PE)","ChIP-Seq (SE)"))]
+
+dt3[, Dataset := plyr::mapvalues(Dataset,
+   from = c("exo","pet", "set"),
+   to = c("ChIP-exo","ChIP-Seq (PE)","ChIP-Seq (SE)"))]
+
+dt4[, Dataset := plyr::mapvalues(Dataset,
+   from = c("exo","pet", "set"),
+   to = c("ChIP-exo","ChIP-Seq (PE)","ChIP-Seq (SE)"))]
+
+
+
 library(grid)
 library(gridExtra)
 library(RColorBrewer)
 
 p1 <- ggplot(dt1,aes(nreads,candre, colour = Dataset))+
-  geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
+  geom_line(size = 1.2)+theme_bw()+
+  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Number of candidate regions")+
   ylim(0,600)
 p2 <- ggplot(dt2,aes(nreads,predre, colour = Dataset))+
-  geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
+  geom_line(size = 1.2)+theme_bw()+
+  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+    
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Number of predicted events")+
   ylim(0,1500)
 p3 <- ggplot(dt3,aes(nreads,iden, colour = Dataset))+
-  geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
+  geom_line(size = 1.2)+theme_bw()+
+  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+  
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Number of identified targets")+
   ylim(0,250)
 p4 <- ggplot(dt4,aes(nreads,resol, colour = Dataset))+
-  geom_line(size = 1.2)+theme_bw()+scale_color_brewer(palette = "Set1",name="")+
+  geom_line(size = 1.2)+theme_bw()+
+  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+  
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Number of reads (million)")+ylab("Resolution")+
   ylim(0,50)

@@ -177,12 +177,12 @@ pdf(file = file.path(figs_dir,"Strand_imbalance.pdf"),width = 9 , height = 5)
 p1 <- ggplot(fsr_dt,aes(depth , fsr , colour = quantiles))+geom_line(size = 1)+
   scale_color_brewer(name = "",palette = "Set1")+ylim(0,1)+theme_bw()+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
-  ylab("fwd strand ratio")+xlab("least amount of fragments in region")+
+  ylab("Fwd strand ratio (FSR)")+xlab("Min number of reads")+
   facet_grid( sample ~ .)+ggtitle("A")
 p2 <- ggplot(label_dt, aes(values,value, fill = variable))+geom_bar(stat="identity")+
   scale_fill_brewer(name = "",palette = "Pastel1")+theme_bw()+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+facet_grid(sample ~ .) +
-  xlab("least amount of fragments in region")+ggtitle("B")
+  xlab("Min number of reads")+ggtitle("B")+ylab("Proportion of islands")
 print(p1)
 print(p2)
 grid.newpage()

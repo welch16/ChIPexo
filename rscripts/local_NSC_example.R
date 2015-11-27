@@ -1,0 +1,211 @@
+
+rm(list = ls())
+
+library(reshape2)
+library(ChIPUtils)
+library(ggplot2)
+library(data.table)
+library(GenomicAlignments)
+library(parallel)
+library(viridis)
+library(grid)
+library(gridExtra)
+
+dr <- "/p/keles/ChIPexo/volume3/CarrollData/mouse"
+files <- list.files(dr)
+
+files <- files[grep("bam",files)]
+files <- files[grep("bai",files,invert = TRUE)]
+
+files <- file.path(dr,files)
+
+reads <- mclapply(files,create_reads,mc.cores = 3)
+names(reads) <- files
+
+
+bamfiles <-c("ERR336942.bam","ERR336956.bam","ERR336935.bam")
+repl <- paste0("rep-",1:3)
+
+
+create_regions <- function(reads,lower,rangesOnly=TRUE)
+{
+  stopifnot(class(reads) == "GRanges")
+  stopifnot(lower > 0)
+  sreads <- split(reads,seqnames(reads))
+  sreads <- as.list(sreads)
+  cover <- mcmapply(function(x,y)coverage(x)[[y]],sreads,names(sreads),mc.cores = detectCores())
+  islands <- lapply(cover,slice,lower = lower, rangesOnly = rangesOnly)
+  islands <- mapply(function(x,y)GRanges(seqnames = y,ranges = x),islands,names(islands),SIMPLIFY =FALSE)
+  islands <- do.call(rbind,lapply(islands,gr2dt))
+  return(islands)
+}
+
+gr <- lapply(reads,function(x){
+  byChr <- mapply(rbind,readsF(x),readsR(x),SIMPLIFY =FALSE)
+  out <- do.call(rbind,byChr)
+  return(dt2gr(out))
+})
+
+regs <- lapply(gr,create_regions,lower  = 1)
+
+build_stats <- function(region,reads)
+{
+  ## fix formats and stuff
+  
+  ov <- findOverlaps(region,reads)
+  reads <- gr2dt(reads)
+  w <- width(region)    
+  region <- gr2dt(region)
+  region[ , width := w]
+  region[, match := paste0(seqnames,":",start,"_",end)]
+  reads[  subjectHits(ov), match := region[queryHits(ov), (match)] ]  
+  reads[,strand := ifelse(strand == "+", "F","R")]
+  reads <- reads[!is.na(match)]
+
+  ## get base statistics
+  f <- reads[,sum(strand == "F"),by = match]
+  setnames(f,names(f),c("match","f"))
+  setkey(f,match)
+  r <- reads[,sum(strand == "R"),by = match]
+  setkey(r,match)
+  setnames(r,names(r),c("match","r"))
+  f_uniq <- reads[strand == "F",length(unique(start)),by = match]
+  setnames(f_uniq,names(f_uniq),c("match","f_pos"))
+  setkey(f_uniq,match)
+  r_uniq <- reads[strand == "R",length(unique(end)),by = match]
+  setnames(r_uniq,names(r_uniq),c("match","r_pos"))
+  setkey(r_uniq,match)
+
+  ## merge statistics
+  stats <- merge(region,f,by = "match",allow.cartesian = TRUE)
+  stats <- merge(stats,r,by = "match",allow.cartesian = TRUE)
+  stats <- merge(stats,f_uniq,by = "match",allow.cartesian = TRUE,all = TRUE)
+  stats <- merge(stats,r_uniq,by = "match",allow.cartesian = TRUE, all = TRUE)
+  stats[is.na(f_pos), f_pos := 0]
+  stats[is.na(r_pos), r_pos := 0]
+
+  ## calculate composite stats
+  stats[ , depth := f + r]
+  stats[ , npos := f_pos + r_pos]
+  stats[ , ave_reads := depth / width]
+  stats[ , cover_rate := npos / depth]
+  stats[ , fsr := f / (f + r)]
+
+  stats[ , M := as.numeric(NA)]
+  stats[ , A := as.numeric(NA)]
+
+  stats[f > 0 & r > 0, M := log2(f * r) - 2 * log2(width)]
+  stats[f > 0 & r > 0, A := log2( f/ r)]
+
+  stats[ , strand := NULL]
+
+  return(stats)
+}
+
+regs <- lapply(regs,dt2gr)
+
+stats <- mcmapply(build_stats,regs,gr,mc.cores = 6 ,SIMPLIFY = FALSE)
+
+all_stats <- stats
+
+## candidates are high complexity regions
+candidates <- stats[[2]][ npos > 500][seqnames != "chrM"]
+
+candidates <- dt2gr(candidates[,2:4,with = FALSE])
+
+ov <- lapply(regs,function(x)which(countOverlaps(x,candidates) > 0))
+
+regs <- mapply(function(r,i)r[i],regs,ov,SIMPLIFY = FALSE)
+
+stats <- mcmapply(build_stats,regs,gr,mc.cores = 6 ,SIMPLIFY = FALSE)
+
+make_plots <- function(reg,regs,reads,nms)
+{
+  gr <- lapply(reads,function(x){
+    byChr <- mapply(rbind,readsF(x),readsR(x),SIMPLIFY =FALSE)
+    out <- do.call(rbind,byChr)
+    return(dt2gr(out))
+  })
+
+  my_regs <- lapply(regs,function(x)x[countOverlaps(x,reg) > 0])
+
+  my_gr <- mapply(subsetByOverlaps,gr,my_regs,SIMPLIFY = FALSE)
+
+  fwd <- lapply(my_gr,function(x)x[as.character(strand(x)) == "+"])
+  bwd <- lapply(my_gr,function(x)x[as.character(strand(x)) == "-"])
+
+  fwd <- lapply(fwd,ranges)
+  fwd <- lapply(fwd,function(x){
+    end(x) <- start(x)
+    return(x)})
+  fwd <- lapply(fwd,coverage)
+
+  bwd <- lapply(bwd,ranges)
+  bwd <- lapply(bwd,function(x){
+    start(x) <- end(x)
+    return(x)})
+  bwd <- lapply(bwd,coverage)
+
+  simplified_regs <- lapply(my_regs,function(x){
+    GRanges(seqnames = unique(as.character(seqnames(x))),
+            ranges = IRanges(start = min(start(x)),
+              end = max(end(x))))})
+  
+  fwd <- mapply(function(x,reg,nm){
+    out <- data.table(coord = start(reg):end(reg))
+    z1 <- cumsum(runLength(x))
+    z2 <- c(0,runValue(x))
+    out[ , tags := stepfun(z1,z2)(coord)]
+    out[ ,sample := nm]
+    return(out)
+  },fwd,simplified_regs,nms,SIMPLIFY = FALSE)
+
+  bwd <- mapply(function(x,reg,nm){
+    out <- data.table(coord = start(reg):end(reg))
+    z1 <- cumsum(runLength(x))
+    z2 <- c(0,runValue(x))
+    out[ , tags := stepfun(z1,z2)(coord)]
+    out[ ,sample := nm]
+    return(out)    
+  },bwd,simplified_regs,nms,SIMPLIFY = FALSE)
+
+  fwd <- do.call(rbind,fwd)
+  bwd <- do.call(rbind,bwd)
+
+  shift <- 1:200
+  loc_cc <- mapply(local_strand_cross_corr,reads,simplified_regs,
+    MoreArgs = list(shift),SIMPLIFY = FALSE)
+
+  plots <- list()
+  bwd[,tags := -tags]
+  
+  dt1 <- rbind(fwd[,strand:="F"],bwd[,strand:="R"])
+  plots[[1]] <- ggplot(dt1,aes(coord,tags,colour = strand))+geom_step()+facet_grid( sample ~.)+
+    theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust  = 0))+
+    scale_color_brewer(palette = "Set1")+xlab("Genomic position")+ylab("ChIP read counts")
+
+  loc_cc <- mapply(function(x,y )x[,sample := y],loc_cc,nms,SIMPLIFY = FALSE)
+  dt2 <- do.call(rbind,loc_cc)
+
+  plots[[2]] <- ggplot(dt2,aes(shift,cross.corr))+geom_point(size = 1,shape = 1)+
+    geom_line(linetype = 2)+
+    theme_bw()+theme(plot.title = element_text(hjust = 0))+ylab("local Strand Cross Correlation")+
+    facet_grid(sample ~ .)+geom_smooth(method = "loess",se = FALSE)
+
+  return(plots)
+  
+}
+
+nms <- c("rep-3","rep-1","rep-2")
+Z <- make_plots(regs[[2]][1],regs,reads,nms)
+
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+
+pdf(file = "figs/for_paper/local_SCC_example.pdf",width = 9,height = 5)
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(1, 5)))
+print(Z[[1]]+ggtitle("A"), vp = vplayout(1,1:3))
+print(Z[[2]]+ggtitle("B"), vp = vplayout(1,4:5))
+dev.off()
+
+
