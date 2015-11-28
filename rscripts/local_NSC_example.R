@@ -106,6 +106,31 @@ regs <- lapply(regs,dt2gr)
 
 stats <- mcmapply(build_stats,regs,gr,mc.cores = 6 ,SIMPLIFY = FALSE)
 
+aux <- mapply(function(x,y)x[,sample := y],stats,basename(names(stats)),SIMPLIFY =FALSE)
+aux <- do.call(rbind,aux)
+aux[, sample := plyr::mapvalues(sample , from = c("ERR336935.bam","ERR336942.bam","ERR336956.bam"),
+    to = c("rep-3","rep-1","rep-2"))]
+
+library(hexbin)
+library(scales)
+r <- viridis::viridis(100,option = "D")
+
+figs_dir <- "figs/for_paper"
+
+pdf(file = file.path(figs_dir,"FoxA1_enrichment.pdf"),width = 9 , height = 5 )
+p <- ggplot(aux , aes( ave_reads,cover_rate))+stat_binhex(bins = 50)+
+  facet_wrap( ~ sample)+scale_fill_gradientn(colours = r,trans = "log10",
+    labels = trans_format("log10",math_format(10^.x)))+xlim(0,4)+ylim(0,1)+
+  theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
+  xlab("Average read coverage (ARC)")+
+  ylab("Unique read coverage rate (URCR)")
+print(p + ggtitle("All regions"))
+print( p  %+% aux[ npos > 10] + ggtitle("A"))  ## npos > 10 
+print( p  %+% aux[ npos > 30] + ggtitle("B")) ## npos > 30
+dev.off()
+
+
+
 all_stats <- stats
 
 ## candidates are high complexity regions
@@ -198,10 +223,11 @@ make_plots <- function(reg,regs,reads,nms)
 
 nms <- c("rep-3","rep-1","rep-2")
 Z <- make_plots(regs[[2]][1],regs,reads,nms)
-
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
 pdf(file = "figs/for_paper/local_SCC_example.pdf",width = 9,height = 5)
+
+pdf(width = 9,height = 5)
 grid.newpage()
 pushViewport(viewport(layout = grid.layout(1, 5)))
 print(Z[[1]]+ggtitle("A"), vp = vplayout(1,1:3))

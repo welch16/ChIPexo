@@ -62,6 +62,8 @@
 \usepackage{verbatim}
 \usepackage{hyperref}
 
+\usepackage{multirow}
+
 \usepackage{lmodern,tabularx,ragged2e,booktabs}
 \newcolumntype{Y}{>{\arraybackslash\RaggedRight}X}
 \newcolumntype{P}[1]{>{\arraybackslash\RaggedRight}p{#1}}
@@ -74,12 +76,18 @@
 % Personal Data
 
 
-\title[High Resolution Identification of Protein-DNA Binding Events]{High Resolution Identification of Protein-DNA Binding Events
-  and Quality Control for ChIP-exo data}
+\title[QC and analysis of ChIP-exo]{Data exploration, quality control
+  and statistical analysis of ChIP-exo experiments}
 
 \author{Rene Welch\\Preliminary Examination}
 
 \institute[UW-STAT]{Department of Statistics\\University of Wisconsin - Madison}
+
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+\setbeamertemplate{section in toc}[square]
+\setbeamertemplate{subsection in toc}[square]
 
 
 \date{December 1st, 2015}
@@ -98,7 +106,7 @@
   \tableofcontents
 \end{frame}
 
-\section{ChIP-exo procedure}
+\section{Background}
 
 \begin{frame}
 \frametitle{ChIP-exo procedure}
@@ -107,99 +115,109 @@
 \includegraphics{../figs/diagrams/ChIPexo_diagram1.png}
 \includegraphics{../figs/diagrams/ChIPexo_diagram2.png}\\
 \includegraphics{../figs/diagrams/ChIPexo_diagram3.png}
-    \caption{ChIP-exo procedure, the diagram is from Furey, 2012 \cite{chipbeyond}}
+    \caption{ChIP-exo procedure, Furey, 2012 \cite{chipbeyond}}
     \label{fig:exo_diagram}
   \end{figure}
 \end{frame}
 
-\section{ChIP-Seq QC measures}
-\begin{frame}
+\section{ChIP-exo Data Exploration and Qualiy Control}
+
+\subsection{ChIP-Seq QC measures}
+
+\begin{frame}[t,plain]
   \frametitle{ChIP-Seq QC measures}
 
+  \begin{itemize}
 \only<1>{
-\setlength\tabcolsep{3pt}  % default value: 6pt
-\scriptsize  %%  command to change the font size
-\rowcolors{1}{}{RoyalBlue!20} %-- this indicates the change in odd and pair rows
-\begin{tabularx}{\textwidth}{ @{} c|   Y @{}}
-  \toprule
-  \textbf{QC measure} & \textbf{Definition} \\
-  \midrule
-  Nr. reads & Self-explanatory. The higher the better...  \\
-  PCR bottleneck Coeff. &  Ratio of number of pos. to which EXACTLY one read maps and number  of pos. to which AT LEAST one read maps \\
-  Standarized Std. Dev. &  Normalized Std. Deviation of the sequencing coverage \\
-  Strand Cross-Corr. &  $  y(\delta) = \sum_c w_c r\left[ n_c^+ \left(x + \frac{\delta}{2}
-    \right), n_c^- \left( x- \frac{\delta}{2} \right)\right]$ \\
-  Normalized SCC &  Ratio of max value of SCC and min value of SCC$^*$  \\
-  \bottomrule
-\end{tabularx}
+  \item Number of reads. Self-explanatory, the higher the better
 }
-
-\only<1>{
-where $n_c^S$ is the coverage for chromosome $c$ and strand $S$. $r$ is
-the Pearson correlation and $w_c$ is the proportion of reads in the
-experiment for chromosome $c$
-}
-
+  \item<2-> Number of reads.
 \only<2>{
+\item PCR bottleneck Coeff. Ratio of number of pos. to which
+  {\color{RoyalBlue}EXACTLY} one reads maps and number of pos. to
+  which {\color{RoyalBlue}AT LEAST} one reads maps }
+\only<2>{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = .75\textwidth]{../figs/for_paper/PBC_example.pdf}
+\end{figure}
+}
+\item<3-> PCR bottleneck Coeff.
+\only<3,4>{
+\item Strand Cross-Correlation. 
+\begin{align}
+  y(\delta) = \sum_c w_c r\left[ n_c^+ \left(x + \frac{\delta}{2}
+    \right), n_c^- \left( x- \frac{\delta}{2} \right)\right]
+\nonumber
+\end{align}
+}
+\only<3>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .4\textwidth]{../figs/for_paper/Kharchenko.png}
+\caption{SCC explanation. Kharchenko et al., 2008 \cite{strandcc}}
+  \end{figure}
+}
+\only<4>{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth]{../figs/for_paper/SCC.png}
+\caption{SCC as QC. Landt et al., 2012 \cite{encode_qc}}
+\end{figure}
+}
+\item<5-> Strand Cross-Correlation.
+\only<5>{
+\item Normalized Strand Cross-Correlation. Ratio between the SCC when
+  the shift is the fragment length and min. value of the SCC.
+}
+\end{itemize}
+\end{frame}
+
+\subsection{Evaluation of ChIP-Seq QC Metrics for ChIP-exo}
+\begin{frame}[plain]
+\frametitle{Evaluation of ChIP-Seq QC Metrics for ChIP-exo}
+
 \setlength\tabcolsep{3pt}  % default value: 6pt
 \scriptsize  %%  command to change the font size
 % \rowcolor{RoyalBlue!20} %-- this indicates the change in odd and pair rows
+\begin{table}[H]
 \begin{tabularx}{\textwidth}{ @{} c|c|c|c|c|c|c| Y @{}}
   \toprule
-IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
+\textbf{IP} & \textbf{Organism}  & \textbf{Condition} & \textbf{Rep.} & \textbf{Nr. reads} & \textbf{PBC} &  \textbf{NSC} & \textbf{Source} \\
 \midrule
-\rowcolor{RoyalBlue!20}$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 & 0.0361 &  10.29 \\
+$\sig$ & E.Coli & Rif-0min & 1 & 960,256 & 0.2823 &   10.29   & \multirow{4}{\hsize}{Courtesy of Prof. Landick's lab} \\
+$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 &  25.08  \\
+$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 &  17.69  \\
+$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 &   14.11 \\
 \hline
-\rowcolor{RoyalBlue!20}$\sig$ &  E.Coli & Rif-0min & 2 & 2,247,295 & 0.2656 & 0.1091  &  25.08  \\
+FoxA1 &  Mouse &  - & 1 & 22,210,461 & 0.6562 & 21.452 & \multirow{3}{\hsize}{From Serandour et al., 2013 \cite{exoillumina}} \\
+FoxA1 &  Mouse &  - & 2 & 22,307,557 & 0.7996 & 60.661 \\
+FoxA1 &  Mouse &  - & 3 & 22,421,729 & 0.1068 & 72.312 \\
 \hline
-\rowcolor{RoyalBlue!20}$\sig$ &  E.Coli & Rif-20min & 1 & 1,940,387 & 0.2698 & 0.0820  & 17.69  \\
+ER & Human & - & 1 & 9,289,835 & 0.8082 & 19.843 & \multirow{3}{\hsize}{From Serandour et al., 2013 \cite{exoillumina}} \\
+ER & Human & - & 2 & 11,041,833 & 0.8024 & 21.422 \\
+ER & Human & - & 3 & 12,464,836 & 0.8203 & 19.699 \\
 \hline
-\rowcolor{RoyalBlue!20}$\sig$ &  E.Coli & Rif-20min & 2 & 4,229,574 & 0.2153 & 0.1647  &  14.11 \\
-\hline
-\rowcolor{Red!20}FoxA1 &  Mouse &  - & 1 & 22,210,461 & 0.6562 & 9.12 $\times 10^{-5}$ & 21.452 \\
-\hline
-\rowcolor{Red!20}FoxA1 &  Mouse &  - & 2 & 22,307,557 & 0.7996 & 7.94 $\times 10^{-5}$ & 60.661 \\
-\hline
-\rowcolor{Red!20}FoxA1 &  Mouse &  - & 3 & 22,421,729 & 0.1068 & 1.31 $\times 10^{-4}$ & 72.312 \\
-\hline
-\rowcolor{Green!20}ER & Human & - & 1 & 9,289,835 & 0.8082 & 3.64 $\times 10^{-5}$ & 19.843 \\
-\hline
-\rowcolor{Green!20}ER & Human & - & 2 & 11,041,833 & 0.8024 & 4.6 $\times 10^{-5}$ & 21.422 \\
-\hline
-\rowcolor{Green!20}ER & Human & - & 3 & 12,464,836 & 0.8203 & 4.89 $\times 10^{-5}$ & 19.699 \\
-\hline
-\rowcolor{Yellow!20}CTCF & Human & - & 1 &   48,478,450 & 0.4579 & 1.29 $\times 10^{-4}$ & 15.977 \\
+CTCF & Human & - & 1 &   48,478,450 & 0.4579 & 15.977 & From Rhee and Pugh 2011, \cite{exo1} \\
 \bottomrule
 \end{tabularx}  
-}
+\end{table}
 
-\end{frame}
-
-
-\section{Comparison of ChIP-exo and ChIP-seq}
-
-\begin{frame}
-  \frametitle{Comparison of ChIP-exo and ChIP-seq I}  
-\begin{figure}[H]
-  \centering  
-\includegraphics[width = .7\textwidth]{../figs/for_paper/scc_ctcf.pdf}
-\caption{SCC for CTCF factor in HeLa cell line for ChIP-exo and
-  SET-ChIP-Seq }
-  \label{fig:scc}
-\end{figure}
-
+{\small
 \begin{itemize}
-\item There is a \emph{``phantom peak''} at read length.
-\item In ChIP-Seq SCC is maximized at the unobserved fragment length.
-\item In ChIP-exo, the \emph{``phantom peak''} and the frag. length
-  summit are confounded.
+\item For PBC (human and mouse): 0 - 0.5 severe bottlenecking , 0.5 -
+  0.8 moderate bottlenecking, 0.8 - 0.9 mild bottlenecking, 0.9 - 1 no
+  bottlenecking.
+\item For NSC (human and mouse): $ < 1.1$ is relatively low.
 \end{itemize}
-
+}
 \end{frame}
+
+\subsection{Comparison of ChIP-exo and ChIP-seq}
 
 
 \begin{frame}
-  \frametitle{Comparison of ChIP-exo and ChIP-Seq II}
+  \frametitle{Comparison of ChIP-exo and ChIP-Seq}
 
 \begin{figure}[H]
   \centering
@@ -209,30 +227,52 @@ IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
 
 {\small
 \begin{itemize}
-\item A shows that high dnesity regions are similar between ChIP-Seq
+\item A shows that high density regions are similar between ChIP-Seq
   and ChIP-exo but background regions are not.
-\item The peak-pair assumption doesn't hold in ChIP-exo data, some
-  regions show strand-imbalance
+\item The peak-pair assumption does hold in ChIP-exo data, but not
+  locally since some regions show strand-imbalance.
 \end{itemize}
 }
 
-% \only<2>{
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
-%   \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
-% \end{figure}
-% }
 \end{frame}
 
-\section{The ChIP-exo QC pipeline}
+\begin{frame}[t]
+  \frametitle{Comparison of ChIP-exo and ChIP-seq}  
+\begin{columns}
+\column{.7\textwidth}
+\begin{figure}[H]
+  \centering  
+\includegraphics[width = .9\textwidth]{../figs/for_paper/scc_ctcf.pdf}
+\end{figure}
 
-\begin{frame}[plain]
-  \frametitle{The ChIP-exo QC pipeline}
+\column{.3\textwidth}
+  \begin{minipage}[c][.6\textheight][c]{\linewidth}
+{\small
+  {\color{RoyalBlue}Figure:} SCC for CTCF factor in HeLa cell line for
+    ChIP-exo and SET-ChIP-Seq.\\
+    - {\color{ForestGreen} PBC for rep1 is 0.56}
+    - {\color{ForestGreen} PBC for rep2 is 0.94}
+  }
+\end{minipage}
+\end{columns}
+
+{\small
+\begin{itemize}
+\item There is a \emph{``phantom peak''} at read length.
+\item In ChIP-Seq SCC is maximized at the unobserved fragment length.
+\item In ChIP-exo, the \emph{``phantom peak''} and the fragment length
+  summit are confounded.
+\end{itemize}
+}
+\end{frame}
+
+\subsection{Quality Control pipeline}
+
+\begin{frame}[plain,t]
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2.pdf}
+  \includegraphics[width = .75\textwidth]{../figs/for_paper/coverage_diagram2.pdf}
 \end{figure}
 
 {\small
@@ -247,6 +287,14 @@ IP & Organism  &Condition & Rep. & Nr. reads & PBC & SSD &  NSC  \\
 }
 
 \end{frame}
+
+
+
+\section{Systematic Evaluation of ChIP-Seq and ChIP-exo}
+
+
+
+
 
 \begin{frame}[t,plain]
   \frametitle{Library complexity and enrichment}
@@ -355,7 +403,7 @@ where:
 {\small
   \begin{itemize}
   \item Sensitivity is the defined as the proportion of identified
-    peaks (regulonDoB \cite{regulonDB} is used as gold-stantard)
+    peaks (regulonDB \cite{regulonDB} is used as gold-standard)
   \item Resolution is defined as the min. absolute distance of a
     regulonDB annotation to an est. binding location.
   \end{itemize}
@@ -446,7 +494,7 @@ where:
   closed complexes. We want to improve this analysis by using ChIP-exo
   data, and hopefully detecting intermediate step between this two
   states.
-\item Find a optimal strategy for labelling enhancer out of a
+\item Find a optimal strategy for labeling enhancer out of a
   predetermined list of regions in the genome by the use of active
   learning techniques.
 \end{itemize}
@@ -501,3 +549,5 @@ where:
 \end{frame}
 
 \end{document}
+
+% LocalWords:  regulonDoB
