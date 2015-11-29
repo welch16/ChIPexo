@@ -85,7 +85,6 @@
 
 \newcommand{\sig}{\sigma^{70}}
 
-
 \maketitle
 
 \vspace*{\fill}
@@ -128,21 +127,20 @@ many aspect of the ChIP-exo data analysis are similar to those of
 ChIP-Seq, ChIP-exo presents a number of unique challenges. We present
 a quality control pipeline that analyzes ChIP-exo's strand imbalance
 and library complexity. Assessment of these biases and artifacts are
-facilitated through diagnostic plots and summary statistical that
-compare a large portion of the genome as partitioned into island with
-high depth regions.
+facilitated through diagnostic plots and summary statistics calculated
+over regions of the genome with varying levels of coverage.
 
 We systematically evaluated diverse aspects of ChIP-exo and found the
 following characteristics: First, ChIP-exo's background is quite
 different than ChIP-Seq's. Second, although often assumed in ChIP-exo
-data analysis methods, the ``peak pair'' assumption doesn't hold
-locally in real ChIP-exo data. Third, we compared Paired End (PE)
-ChIP-Seq with ChIP-exo and found that both protocols are comparable in
-resolution and sensitivity for closely located binding event, but as
-the distance between binding event increases ChIP-exo shows higher
-sensitivity than PE ChIP-Seq. Finally, for a given sequencing depth,
-ChIP-exo provides higher sensitivity, specificity and spatial
-resolution than PE ChIP-Seq.
+data analysis methods, the ``peak pair'' assumption does not hold
+locally in actual ChIP-exo data. Third, we for the first time compared
+Paired End (PE) ChIP-Seq with ChIP-exo and found that both protocols
+are comparable in resolution and sensitivity for closely located
+binding event, but as the distance between binding event increases
+ChIP-exo shows higher sensitivity than PE ChIP-Seq. Finally, at fixed
+sequencing depths, ChIP-exo provides higher sensitivity, specificity
+and spatial resolution than PE ChIP-Seq.
 
 % optimal strategies for
 %     experimental design and analysis of ChIP-exo.
@@ -380,9 +378,8 @@ bottlenecking. The normalized strand cross-correlation (NSC) is
 defined as:
 
 \[
-\mbox{NSC} = \frac{ \max_\delta y(\delta)}{\min_\delta y(\delta)}
+\mbox{NSC} = \frac{ \max_\delta y(\delta)}{\min_\delta y(\delta)},
 \]
-
 where $y(\delta)$ is strand cross-correlation defined as in (\ref{scc}). 
 
 \subsubsection{Strand Cross-Correlation}
@@ -394,7 +391,7 @@ ChIP-Seq QC metrics. The SCC curve is defined as:
 
 \begin{align}
   y(\delta) = \sum_c w_c r\left[ n_c^+ \left(x + \frac{\delta}{2}
-    \right), n_c^- \left( x- \frac{\delta}{2} \right)\right]
+    \right), n_c^- \left( x- \frac{\delta}{2} \right)\right],
 \label{scc}
 \end{align}
 
@@ -502,19 +499,19 @@ only one end is sequenced, then the fragment length is not
 observed. dPeak assumes that the strand $D_i$ follows a Bernoulli
 distribution with known parameter $p_D$, the binding event is not
 observed and it follows a
-$\mbox{Multinomial}(\pi_0,\pi_1,\cdots,\pi_{g^*})$. And the 5' end
-$R_i$ for the $i$-th fragment is generated according to the following
-procedure:
+$\mbox{Multinomial}(\pi_0,\pi_1,\cdots,\pi_{g^*})$. Then the observed
+data, i.e., the 5' end $R_i$ for the $i$-th fragment is generated
+according to the following procedure:
 
 \begin{itemize}
-\item If the read was sequenced from the forward strand ($D_i = 1$):
+\item If the read is sequenced from the forward strand ($D_i = 1$):
   \begin{itemize}
   \item The read belongs to the background: $R_i | Z_i = 0, D_i = 1
     \sim \mbox{Unif}(1, m)$
   \item The read belong to the $g$-th binding event: $R_i | Z_i = g,
     D_i = 1 \sim \mbox{N}(\mu_g - \delta , \sigma^2)$
   \end{itemize}
-\item If the read was sequenced from the backward strand ($D_i =
+\item If the read is sequenced from the backward strand ($D_i =
   0$):
   \begin{itemize}
   \item The read belongs to the background: $R_i | Z_i = 0, D_i = 1
@@ -541,9 +538,9 @@ initialization strategy does not depend on the data, specially in
 regions with low signal to noise ration and with a low amount of
 reads.
 
-For this work, we considered a new strategy where the $mu_g$'s are
+For this work, we considered a new strategy where the $\mu_g$'s are
 initialized by partitioning the region into $g^*$ bins and finding the
-coverage's local maxima in each bin and we initialize $\delta$ and
+coverage's local maxima in each bin we initialize $\delta$ and
 $\sigma$ by ranking the regions by the signal strength or an empirical
 quantity (as the number of ChIP tag counts in the region), fit the
 model for the top $N_{\text{top}}$ regions and then use as initial
@@ -631,7 +628,7 @@ designed to assess the quality levels of a ChIP-exo sample.
 \begin{figure}[h!]
   \centering
   \includegraphics[width = .7\textwidth]{../figs/for_paper/coverage_diagram2.pdf}
-  \caption{Flowchart of the ChIP-exo Quality control pipeline.}
+  \caption{Flowchart of the ChIP-exo quality control pipeline.}
   % The genome is partitioned into several regions by removing the empty
   % segments and for each regions we calculate a collection of QC
   % indicators, then for each region $R_k$ a vector of summary
@@ -648,7 +645,7 @@ calculating the SCC for a given region:
 
 \begin{align}
   y(\delta) = r\left[ n^+ \left(x + \frac{\delta}{2}
-    \right), n^- \left( x- \frac{\delta}{2} \right)\right]
+    \right), n^- \left( x- \frac{\delta}{2} \right)\right],
 \nonumber
 \end{align}
 

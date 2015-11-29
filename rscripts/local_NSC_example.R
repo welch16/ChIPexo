@@ -106,6 +106,8 @@ regs <- lapply(regs,dt2gr)
 
 stats <- mcmapply(build_stats,regs,gr,mc.cores = 6 ,SIMPLIFY = FALSE)
 
+
+
 aux <- mapply(function(x,y)x[,sample := y],stats,basename(names(stats)),SIMPLIFY =FALSE)
 aux <- do.call(rbind,aux)
 aux[, sample := plyr::mapvalues(sample , from = c("ERR336935.bam","ERR336942.bam","ERR336956.bam"),
@@ -129,6 +131,35 @@ print( p  %+% aux[ npos > 10] + ggtitle("A"))  ## npos > 10
 print( p  %+% aux[ npos > 30] + ggtitle("B")) ## npos > 30
 dev.off()
 
+## here is how to do the animation
+
+
+## beamer part http://tex.stackexchange.com/questions/34921/how-to-overlap-images-in-a-beamer-slide
+
+## > du = data.table(ave_reads = 2, cover_rate = .25)
+## > p %+% aux[sample == "rep-1"] + geom_point(data.table(ave_reads = 2,cover_rate = .25),aes(x = ave_reads,y = cover_rate),colour = "red", size = 2)
+## Error: ggplot2 doesn't know how to deal with data of class uneval
+## > p %+% aux[sample == "rep-1"] + geom_point(data = du,aes(x = ave_reads,y = cover_rate),colour = "red", size = 2)
+## Warning message:
+## Removed 67 rows containing missing values (stat_hexbin). 
+## > dev.off()
+## null device 
+##           1 
+## > p %+% aux[sample == "rep-1"] + geom_point(data = du,aes(x = ave_reads,y = cover_rate),colour = "red", size = 3,shape =2)
+## Warning message:
+## Removed 67 rows containing missing values (stat_hexbin). 
+## > dev.off()
+## null device 
+##           1 
+## > p %+% aux[sample == "rep-1"] + geom_point(data = du,aes(x = ave_reads,y = cover_rate),colour = "orange", size = 3,shape =1)
+## Warning message:
+## Removed 67 rows containing missing values (stat_hexbin). 
+## >   C-c C-c
+## > dev.off()
+## null device 
+##           1 
+## >p %+% aux[sample == "rep-1"] + geom_point(data = du,aes(x = ave_reads,y = cover_rate),colour = "red", size   C-c C-c
+## > 
 
 
 all_stats <- stats

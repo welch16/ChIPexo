@@ -266,27 +266,47 @@ CTCF & Human & - & 1 &   48,478,450 & 0.4579 & 15.977 & From Rhee and Pugh 2011,
 }
 \end{frame}
 
-\subsection{Quality Control pipeline}
+\subsection{Quality Control Pipeline}
 
-\begin{frame}[plain,t]
+\begin{frame}[t]
+  \frametitle{Quality Control Pipeline}
 
+  \begin{enumerate}
+\only<1>{
+  \item Partition the genome and generate ChIP-exo islands.
 \begin{figure}[H]
-  \centering
-  \includegraphics[width = .75\textwidth]{../figs/for_paper/coverage_diagram2.pdf}
+\centering
+\includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2_part1.pdf}
 \end{figure}
-
-{\small
-  \begin{itemize}
-  \item $\mbox{ARC} = \frac{\text{Nr. of reads in the
-        region}}{\text{Width of the region}}$
-  \item $\mbox{URCR} = \frac{\text{Nr. of reads mapped to only one
-        position in the region}}{\text{Nr. of reads in the region}}$
-  \item $\mbox{local-NSC}$
-  \item $\mbox{FSR} = \frac{\text{Nr. of fwd. strand reads in region}}{\text{Nr. of reads in region}}$
-  \end{itemize}  
 }
-
+\only<2>{
+\addtocounter{enumi}{1}
+\item Calculate a vector of summary statistics for each islands.
+\begin{figure}[H]
+\centering
+\includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2_part2.pdf}
+\end{figure}
+}
+\only<3>{
+\addtocounter{enumi}{2}
+\item Visualize all islands together.
+\begin{figure}[H]
+\centering
+\includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2_part3.pdf}
+\end{figure}
+}
+  \end{enumerate}
 \end{frame}
+
+
+  % \begin{itemize}
+  % \item $\mbox{ARC} = \frac{\text{Nr. of reads in the
+  %       region}}{\text{Width of the region}}$
+  % \item $\mbox{URCR} = \frac{\text{Nr. of reads mapped to only one
+  %       position in the region}}{\text{Nr. of reads in the region}}$
+  % \item $\mbox{local-NSC}$
+  % \item $\mbox{FSR} = \frac{\text{Nr. of fwd. strand reads in region}}{\text{Nr. of reads in region}}$
+  % \end{itemize}  
 
 
 
@@ -333,7 +353,7 @@ where:
 \begin{itemize}
 \item high - regions with nr. of unique positions $ > 100$
 \item med - regions with nr. of unique positions in $(50,100)$
-\item low - regions with nr. of unique positions in $(20,100)$
+\item low - regions with nr. of unique positions in $(20,50)$
 \end{itemize}
 }}
 
@@ -351,7 +371,6 @@ where:
 
 \end{frame}
 
-\section{Comparison with ChIP-Seq using dPeak}
 \begin{frame}[t]
   \frametitle{dPeak model for SET case}
 
@@ -458,6 +477,17 @@ where:
 
 \end{frame}
 
+\section{Comparison with Other Algorithms}
+\begin{frame}
+\frametitle{Comparison with Other Algorithms}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = .7\textwidth]{../figs/for_paper/algorithm_resolution.pdf}
+\end{figure}
+  
+\end{frame}
+
 \section{Conclusions and future work}
 
 \begin{frame}
@@ -533,7 +563,8 @@ where:
 
 \end{frame}
 
-\begin{frame}
+
+\begin{frame}[allowframebreaks]
   \frametitle{References}
 
 {\tiny
