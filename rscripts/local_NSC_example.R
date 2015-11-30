@@ -188,7 +188,7 @@ ov <- lapply(regs,function(x)which(countOverlaps(x,candidates) > 0))
 
 regs <- mapply(function(r,i)r[i],regs,ov,SIMPLIFY = FALSE)
 
-stats <- mapply(build_stats,regs,gr,mc = 1 ,SIMPLIFY = FALSE)
+## stats <- mapply(build_stats,regs,gr,mc = 1 ,SIMPLIFY = FALSE)
 
 make_plots <- function(reg,regs,reads,nms)
 {
@@ -261,7 +261,7 @@ make_plots <- function(reg,regs,reads,nms)
   plots[[2]] <- ggplot(dt2,aes(shift,cross.corr))+geom_point(size = 1,shape = 1)+
     geom_line(linetype = 2)+
     theme_bw()+theme(plot.title = element_text(hjust = 0))+ylab("local Strand Cross Correlation")+
-    facet_grid(sample ~ .)+geom_smooth(method = "loess",se = FALSE)
+    facet_grid(sample ~ .)
 
   return(plots)
   
@@ -269,6 +269,7 @@ make_plots <- function(reg,regs,reads,nms)
 
 nms <- c("rep-3","rep-1","rep-2")
 Z <- make_plots(regs[[2]][1],regs,reads,nms)
+
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
 pdf(file = "figs/for_paper/local_SCC_example.pdf",width = 9,height = 5)
@@ -279,6 +280,7 @@ dev.off()
 pdf(file = "figs/for_paper/local_SCC_separated.pdf",width = 6 ,height =4)
 print(Z[[1]])
 print(Z[[2]] )
+print(Z[[2]] +geom_smooth(method = "loess",se = FALSE ,size = 1 ))
 dev.off()
 
 
