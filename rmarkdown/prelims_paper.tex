@@ -372,7 +372,7 @@ one mapping read maps divided by the number of position to which at
 least one mapping reads maps, the ENCODE project proposed a series of
 ranges to interpret this quantity (which can be found in
 \url{https://www.encodeproject.org/data-standards/2012-quality-metrics/}),
-but it doesn't apply to ChIP-exo, if it did all the samples with
+but it does not apply to ChIP-exo, if it did all the samples with
 $\mbox{PBC} < 0.5$ should be reject due to be showing severe
 bottlenecking. The normalized strand cross-correlation (NSC) is
 defined as:
@@ -431,7 +431,7 @@ local maximum at the fragment length.
 Figure \ref{fig:scc} shows the SCC function for both a ChIP-exo (in
 red) and a SE ChIP-Seq (in green) for CTCF in HeLa cell line. The
 ChIP-Seq dataset behaves as the successful case from \cite{encode_qc},
-but the ChIP-exo doesn't. Additionally, since the exonuclease enzyme
+but the ChIP-exo does not. Additionally, since the exonuclease enzyme
 digests the DNA fragments, then the shifts where the SCC may reach a
 local or a global maximum are confounded. Hence, new QC measures are
 necessary for ChIP-exo data.
@@ -781,7 +781,7 @@ the ``peak-pair'' assumption. In Table \ref{tab:qcbase}, we calculated
 the FSR and noticed that for all the samples, it's value is close to
 0.5, which means that there are roughly the same amount of reads in
 both strands. However, Figure \ref{fig:comp}B shows that this value
-doesn't represent the sample locally, hence the assumption doesn't
+does not represent the sample locally, hence the assumption does not
 hold well in practice.
 
 
@@ -796,7 +796,7 @@ evaluate this statement, for each replicate of FoxA1, we divided the
 regions formed by at least 100 reads into the ones that overlap
 with any of the sample's peaks. Then we considered Kolmogorov-Smirnov
 tests to assess if the FSR's distribution was the same for the islands
-that overlap with a peak and the islands that didn't. The p.value for
+that overlap with a peak and the islands that did not. The p.value for
 the third replicate's test is 0.1039, for the first
 replicate's test is 0.0064 and for the second test is
 0.0871. This shows that only the middle sample from Figure
@@ -888,7 +888,7 @@ ChIP-Seq.
 
 
 Previously, ChIP-exo and SE ChIP-Seq have been compared at a fixed
-depth level in the literature, but this comparisons didn't included PE
+depth level in the literature, but this comparisons did not included PE
 ChIP-Seq. Hence, we sampled a fixed amount of reads for each of the
 ChIP-exo, PE ChIP-Seq and SE ChIP-Seq datasets of the $\sigma^{70}$
 sample in aerobic conditions. For each sampled dataset we applied our
@@ -930,6 +930,21 @@ sampled both ends of the fragment, hence for each sequencing depth
 considered we are sampling twice as many reads for PE ChIP-Seq than
 for ChIP-exo or SE ChIP-seq.
 
+% \subsection{Comparison with other algorithms}
+% \label{sec:comp_algo}
+
+
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width = .5\textwidth]{../figs/for_paper/algorithm_resolution.pdf}
+%   \caption{Comparison of resolution of the algorithms for ChIP-exo
+%     data, using regulonDB annotations as a gold standard.}
+%   \label{fig:algor}
+% \end{figure}
+
+
+
 \section{Software packages}
 \label{sec:software}
 
@@ -958,7 +973,7 @@ For this project several R packages were created or updated:
 
 We provide a ChIP-exo QC pipeline capable of assess the balance
 between enriched samples and low complexity regions. It is shown that
-the ``peak-pair'' assumption doesn't hold locally in practice and we
+the ``peak-pair'' assumption does not hold locally in practice and we
 provide two out-of-the-box visualization capable to assess the strand
 imbalance in a ChIP-exo experiment.
 
@@ -1034,7 +1049,7 @@ The data showed in Figure \ref{fig:exo_example} is actually part of a
 more interesting experiment from Professor Landick's lab. We have 2
 biological replicates of the $\sig$, $\beta'_f$ and $\beta$
 transcription factors under two conditions, one where rifampicin was
-applied by 20 minutes and another where it wasn't applied. As seen in
+applied by 20 minutes and another where it was not applied. As seen in
 the Figure, there is ChIP-exo data for the 3 factors and PE ChIP-Seq
 for $\sig$ and $\beta'_f$ (in the Figure both replicates were pooled).
 

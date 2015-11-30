@@ -47,64 +47,79 @@ gr <- lapply(reads,function(x){
 })
 
 regs <- lapply(gr,create_regions,lower  = 1)
+regs <- lapply(regs,dt2gr)
 
-build_stats <- function(region,reads)
+
+
+build_stats <- function(region,reads,mc)
 {
   ## fix formats and stuff
-  
-  ov <- findOverlaps(region,reads)
-  reads <- gr2dt(reads)
-  w <- width(region)    
-  region <- gr2dt(region)
-  region[ , width := w]
-  region[, match := paste0(seqnames,":",start,"_",end)]
-  reads[  subjectHits(ov), match := region[queryHits(ov), (match)] ]  
-  reads[,strand := ifelse(strand == "+", "F","R")]
-  reads <- reads[!is.na(match)]
+  stat_by_chr <- function(reg,read)
+  {
+     ov <- findOverlaps(reg,read)  
+     read <- gr2dt(read)
+     w <- width(reg)    
+     region <- gr2dt(reg)
+     region[ , width := w]
+     region[, match := paste0(seqnames,":",start,"_",end)]
+     read[  subjectHits(ov), match := region[queryHits(ov), (match)] ]  
+     read[,strand := ifelse(strand == "+", "F","R")]
+     read <- read[!is.na(match)]
 
-  ## get base statistics
-  f <- reads[,sum(strand == "F"),by = match]
-  setnames(f,names(f),c("match","f"))
-  setkey(f,match)
-  r <- reads[,sum(strand == "R"),by = match]
-  setkey(r,match)
-  setnames(r,names(r),c("match","r"))
-  f_uniq <- reads[strand == "F",length(unique(start)),by = match]
-  setnames(f_uniq,names(f_uniq),c("match","f_pos"))
-  setkey(f_uniq,match)
-  r_uniq <- reads[strand == "R",length(unique(end)),by = match]
-  setnames(r_uniq,names(r_uniq),c("match","r_pos"))
-  setkey(r_uniq,match)
+     ## get base statistics
+     f <- read[,sum(strand == "F"),by = match]
+     setnames(f,names(f),c("match","f"))
+     setkey(f,match)
+     r <- read[,sum(strand == "R"),by = match]
+     setkey(r,match)
+     setnames(r,names(r),c("match","r"))
+     f_uniq <- read[strand == "F",length(unique(start)),by = match]
+     setnames(f_uniq,names(f_uniq),c("match","f_pos"))
+     setkey(f_uniq,match)
+     r_uniq <- read[strand == "R",length(unique(end)),by = match]
+     setnames(r_uniq,names(r_uniq),c("match","r_pos"))
+     setkey(r_uniq,match)
 
-  ## merge statistics
-  stats <- merge(region,f,by = "match",allow.cartesian = TRUE)
-  stats <- merge(stats,r,by = "match",allow.cartesian = TRUE)
-  stats <- merge(stats,f_uniq,by = "match",allow.cartesian = TRUE,all = TRUE)
-  stats <- merge(stats,r_uniq,by = "match",allow.cartesian = TRUE, all = TRUE)
-  stats[is.na(f_pos), f_pos := 0]
-  stats[is.na(r_pos), r_pos := 0]
+     ## merge statistics
+     stats <- merge(region,f,by = "match",allow.cartesian = TRUE)
+     stats <- merge(stats,r,by = "match",allow.cartesian = TRUE)
+     stats <- merge(stats,f_uniq,by = "match",
+                    allow.cartesian = TRUE,all = TRUE)
+     stats <- merge(stats,r_uniq,by = "match",
+                    allow.cartesian = TRUE, all = TRUE)
+     stats[is.na(f_pos), f_pos := 0]
+     stats[is.na(r_pos), r_pos := 0]
 
-  ## calculate composite stats
-  stats[ , depth := f + r]
-  stats[ , npos := f_pos + r_pos]
-  stats[ , ave_reads := depth / width]
-  stats[ , cover_rate := npos / depth]
-  stats[ , fsr := f / (f + r)]
+     ## calculate composite stats
+     stats[ , depth := f + r]
+     stats[ , npos := f_pos + r_pos]
+     stats[ , ave_reads := depth / width]
+     stats[ , cover_rate := npos / depth]
+     stats[ , fsr := f / (f + r)]
 
-  stats[ , M := as.numeric(NA)]
-  stats[ , A := as.numeric(NA)]
+     stats[ , M := as.numeric(NA)]
+     stats[ , A := as.numeric(NA)]
 
-  stats[f > 0 & r > 0, M := log2(f * r) - 2 * log2(width)]
-  stats[f > 0 & r > 0, A := log2( f/ r)]
+     stats[f > 0 & r > 0, M := log2(f * r) - 2 * log2(width)]
+     stats[f > 0 & r > 0, A := log2( f/ r)]
 
-  stats[ , strand := NULL]
+     stats[ , strand := NULL]
+
+     return(stats)
+
+  }
+
+  reg <- split(region,as.character(seqnames(region)))
+  read <- split(reads,as.character(seqnames(reads)))
+
+  stat_chr <- mcmapply(stat_by_chr,reg,read,SIMPLIFY = FALSE,mc.cores = mc)
+
+  stats <- do.call(rbind,stat_chr)
 
   return(stats)
 }
 
-regs <- lapply(regs,dt2gr)
-
-stats <- mcmapply(build_stats,regs,gr,mc.cores = 6 ,SIMPLIFY = FALSE)
+stats <- mapply(build_stats,regs,gr,mc = 20 ,SIMPLIFY = FALSE)
 
 
 
@@ -173,7 +188,7 @@ ov <- lapply(regs,function(x)which(countOverlaps(x,candidates) > 0))
 
 regs <- mapply(function(r,i)r[i],regs,ov,SIMPLIFY = FALSE)
 
-stats <- mcmapply(build_stats,regs,gr,mc.cores = 6 ,SIMPLIFY = FALSE)
+stats <- mapply(build_stats,regs,gr,mc = 1 ,SIMPLIFY = FALSE)
 
 make_plots <- function(reg,regs,reads,nms)
 {
@@ -257,12 +272,39 @@ Z <- make_plots(regs[[2]][1],regs,reads,nms)
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
 pdf(file = "figs/for_paper/local_SCC_example.pdf",width = 9,height = 5)
-
-pdf(width = 9,height = 5)
 grid.newpage()
 pushViewport(viewport(layout = grid.layout(1, 5)))
-print(Z[[1]]+ggtitle("A"), vp = vplayout(1,1:3))
-print(Z[[2]]+ggtitle("B"), vp = vplayout(1,4:5))
+dev.off()
+
+pdf(file = "figs/for_paper/local_SCC_separated.pdf",width = 6 ,height =4)
+print(Z[[1]])
+print(Z[[2]] )
 dev.off()
 
 
+noise <- function(shift,cross.corr)
+{
+  if(all( is.na(cross.corr))){
+    out <- Inf
+  }else{
+    mod <- loess(cross.corr ~ shift)
+    out <- mod$s
+  }
+  return(out)
+}
+
+cc_max <- function(shift,cross.corr)
+{
+  if(all(is.na(cross.corr))){
+    out <- Inf
+  }else{
+    
+    mod <- loess(cross.corr ~ shift)
+    out <- max(predict(mod))
+  }
+  return(out)
+}
+
+ Z[[2]]$data[,noise(shift,cross.corr),by = sample]
+ Z[[2]]$data[,cc_max(shift,cross.corr),by = sample]
+ Z[[2]]$data[,cc_max(shift,cross.corr)/noise(shift,cross.corr),by = sample]

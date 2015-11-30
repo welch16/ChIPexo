@@ -1,6 +1,5 @@
 \documentclass[compress,table,xcolor=dvipsnames]{beamer}
 
-
 \usepackage{xcolor}
 \usepackage{url}
 \usepackage{amsmath}
@@ -12,6 +11,8 @@
 \usepackage{float}
 \usepackage{verbatim}
 \usepackage{hyperref}
+
+\usepackage{wrapfig}
 
 \usepackage{multirow}
 
@@ -25,6 +26,7 @@
 \setbeamertemplate{navigation symbols}{}
 
 % Personal Data
+\def\Put(#1,#2)#3{\leavevmode\makebox(0,0){\put(#1,#2){#3}}}
 
 
 \title[QC and analysis of ChIP-exo]{Data exploration, quality control
@@ -245,72 +247,250 @@ CTCF & Human & - & 1 &   48,478,450 & 0.4579 & 15.977 & From Rhee and Pugh 2011,
 \item Visualize all islands together.
 \begin{figure}[H]
 \centering
-\includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2_part3.pdf}
+\includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2_part3P.pdf}
 \end{figure}
 }
   \end{enumerate}
 \end{frame}
 
 
-  % \begin{itemize}
-  % \item $\mbox{ARC} = \frac{\text{Nr. of reads in the
-  %       region}}{\text{Width of the region}}$
-  % \item $\mbox{URCR} = \frac{\text{Nr. of reads mapped to only one
-  %       position in the region}}{\text{Nr. of reads in the region}}$
+ % \begin{itemize}
   % \item $\mbox{local-NSC}$
   % \item $\mbox{FSR} = \frac{\text{Nr. of fwd. strand reads in region}}{\text{Nr. of reads in region}}$
   % \end{itemize}  
 
 
+\begin{frame}
+  \frametitle{ARC vs. URCR exploration}
+\only<1>{
+  \begin{itemize}
+  \item $\mbox{ARC} = \frac{\text{Nr. of reads in the
+        region}}{\text{Width of the region}}$
+  \item $\mbox{URCR} = \frac{\text{Nr. of reads mapped to only one
+        position in the region}}{\text{Nr. of reads in the region}}$
+  \end{itemize}
+}
+\only<2>{
+All regions
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page = 1]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
+  \end{figure}
+}
 
-\section{Systematic Evaluation of ChIP-Seq and ChIP-exo}
+\only<3>{
+Mapped to more than 10 positions
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page = 2]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
+  \end{figure}
+}
+
+\only<4>{
+Mapped to more than 30 positions
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page = 3]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
+  \end{figure}
+}
+\only<5>{
+Mapped to more than 50 positions
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page = 4]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
+  \end{figure}
+}
+
+\end{frame}
 
 
+\begin{frame}
+  \frametitle{ARC vs. URCR exploration}
+
+\only<1-2>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page =1]{../figs/for_paper/enrichment_example.pdf}
+  \end{figure}
+}
+
+\only<2>{
+\Put(120,200){\includegraphics[width = .6\textwidth,page = 1]{../figs/for_paper/coverage_example.pdf}}
+}
+
+\only<3-4>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page =2]{../figs/for_paper/enrichment_example.pdf}
+  \end{figure}
+}
+
+\only<4>{
+\Put(120,200){\includegraphics[width = .6\textwidth,page = 2]{../figs/for_paper/coverage_example.pdf}}
+}
+
+\only<5-6>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page =3]{../figs/for_paper/enrichment_example.pdf}
+  \end{figure}
+}
+
+\only<6>{
+\Put(120,200){\includegraphics[width = .6\textwidth,page = 3]{../figs/for_paper/coverage_example.pdf}}
+}
+
+\only<7-8>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page = 4]{../figs/for_paper/enrichment_example.pdf}
+  \end{figure}
+}
+
+\only<8>{
+\Put(120,200){\includegraphics[width = .6\textwidth,page = 4]{../figs/for_paper/coverage_example.pdf}}
+}
+
+% \only<9-10>{
+%   \begin{figure}[H]
+%     \centering
+%     \includegraphics[width = .7\textwidth,page = 5]{../figs/for_paper/enrichment_example.pdf}
+%   \end{figure}
+% }
+
+% \only<10>{
+% \Put(120,200){\includegraphics[width = .6\textwidth,page = 5]{../figs/for_paper/coverage_example.pdf}}
+% }
+
+\only<9-10>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page =6]{../figs/for_paper/enrichment_example.pdf}
+  \end{figure}
+}
+
+\only<10>{
+\Put(120,300){\includegraphics[width = .6\textwidth,page = 6]{../figs/for_paper/coverage_example.pdf}}
+}
+
+\only<11-12>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page =7]{../figs/for_paper/enrichment_example.pdf}
+  \end{figure}
+}
+
+\only<12>{
+\Put(120,300){\includegraphics[width = .6\textwidth,page = 7]{../figs/for_paper/coverage_example.pdf}}
+}
+
+\only<13-14>{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = .7\textwidth,page =8]{../figs/for_paper/enrichment_example.pdf}
+  \end{figure}
+}
+
+\only<14>{
+\Put(120,300){\includegraphics[width = .6\textwidth,page = 8]{../figs/for_paper/coverage_example.pdf}}
+}
 
 
+\end{frame}
 
-\begin{frame}[t,plain]
-  \frametitle{Library complexity and enrichment}
+\begin{frame}
+  \frametitle{ARC vs. URCR exploration by replicate}
 \only<1>{
 \begin{figure}[H]
   \centering
-  \includegraphics[width = \textwidth]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
+  \includegraphics[width = \textwidth,page = 1]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
 \end{figure}
 }
 
 \only<2>{
-{\small
 \begin{figure}[H]
   \centering
-  \includegraphics[width = \textwidth]{../figs/for_paper/local_SCC_example.pdf}
-\end{figure}
-}}
-\only<2>{
-\begin{align}
- y(\delta) = f(x_\delta) + \epsilon_\delta \quad 
-\mbox{local-NSC} = \frac{max_{x_\delta} \hat{f}(x_\delta)}{\hat{\sigma}_f}
-\nonumber
-\end{align}
-}
-
-\only<3>{
-\begin{figure}[H]
-\centering
-  \includegraphics[width = \textwidth,page =3]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata.pdf}
+  \includegraphics[width = \textwidth,page = 3]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
 \end{figure}
 }
-
-\only<3>{
-{\small
-where:
-\begin{itemize}
-\item high - regions with nr. of unique positions $ > 100$
-\item med - regions with nr. of unique positions in $(50,100)$
-\item low - regions with nr. of unique positions in $(20,50)$
-\end{itemize}
-}}
 
 \end{frame}
+
+
+\begin{frame}
+  \frametitle{ARC vs. URCR and local-NSC}
+
+\only<1>{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth,page = 1]{../figs/for_paper/local_SCC_separated.pdf}
+\end{figure}
+}
+
+\only<2>{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth,page = 2]{../figs/for_paper/local_SCC_separated.pdf}
+\end{figure}
+}
+
+\only<3>{
+\begin{align}
+ y(\delta) = f(x_\delta) + \epsilon_\delta, \quad 
+\mbox{local-NSC} = \frac{max_{x_\delta} \hat{f}(x_\delta)}{\hat{\sigma}_f},
+\nonumber
+\end{align}
+\vspace*{\fill}
+}
+
+
+\only<3>{
+\begin{columns}
+
+\column{.4\textwidth}
+where:
+
+\begin{itemize}
+\item $x_\delta$ is the shift.
+\item $y_\delta$ is the local - SCC at shift $x_\delta$
+\item $\epsilon \sim N(0, \sigma^2)$ i.i.d 
+\end{itemize}
+
+
+\column{.6\textwidth}
+{\scriptsize
+  \begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{ @{} l | r | r |r @{}}
+      \toprule
+      Replicate & $\hat{\sigma}$ & $\max_{x_\delta} \hat{f}(x_\delta)$ & $\mbox{local-NSC}$ \\
+      \midrule
+Rep. 1 & 0.0533 & 0.2215 & 4.14 \\
+Rep. 2 & 0.0453 & 0.1606 & 3.54 \\
+Rep. 3 & 0.0475 & 0.0832 & 1.75 \\
+\bottomrule
+    \end{tabularx}
+  \end{table}
+}
+
+\end{columns}
+}
+
+\only<4>{
+  \begin{figure}[H]
+    \centering
+      \includegraphics[width = \textwidth,page =4]{../figs/Carroll_mice_for_paper/Local_SCC_indicator_by_strata.pdf}
+  \end{figure}
+
+  \begin{itemize}
+  \item {\color{RoyalBlue} high:} Number of unique positions $ > 100$
+  \item {\color{RoyalBlue} med:} Number of unique positions in $(50,100)$
+  \item {\color{RoyalBlue} low:} Number of unique positions in $(20,50)$
+  \end{itemize}
+}
+\end{frame}
+
+
 
 \begin{frame}[t]
   \frametitle{Strand imbalance}
@@ -321,13 +501,38 @@ where:
   \label{fig:strand}
 \end{figure}
 
-
+{\scriptsize
+\begin{itemize}
+\item  
+\end{itemize}
+}
 \end{frame}
 
-\begin{frame}[t]
+\section{Systematic Evaluation of ChIP-Seq and ChIP-exo}
+
+
+\begin{frame}[plain]
   \frametitle{dPeak model for SET case}
 
 \only<1>{
+
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width =
+        \textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/poster/dpeak.png}
+      \end{figure}
+}
+
+\only<2>{
+\begin{columns}[t]
+\column{.3\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width =\textwidth]
+{/p/keles/ChIPexo/volume3/ChIPexo/poster/dpeak.png}
+  \end{figure}
+  
+\column{.7\textwidth}
   We consider a region with $n$ reads and $m$ positions, for the
   $i$-th read:
   \begin{itemize}
@@ -337,30 +542,37 @@ where:
     \item The read is in the forward strand ($D_i = 1$):
       \begin{itemize}
       \item The reads belongs to the background: $R_i | Z_i = 0, D_i =
-        1 \sim \mbox{Unif}(1 - \beta + 1, m)$
+        1 \sim \mbox{Unif}(1, m)$
       \item The read belong to the $g$-th binding event: $R_i | Z_i =
         g, D_i = 1 \sim \mbox{N}(\mu_g - \delta , \sigma^2)$
       \end{itemize}
     \item The read is in the backward strand ($D_i = 0$):
       \begin{itemize}
       \item The reads belongs to the background: $R_i | Z_i = 0, D_i =
-        0 \sim \mbox{Unif}(1 , m + \beta - 1)$
+        0 \sim \mbox{Unif}(1 , m )$
       \item The read belong to the $g$-th binding event: $R_i | Z_i =
         g, D_i = 0 \sim \mbox{N}(\mu_g + \delta , \sigma^2)$
       \end{itemize}
     \end{itemize}
   \end{itemize}
+\end{columns}
 }
 
-\only<2>{
-      \begin{figure}[H]
-        \centering
-        \includegraphics[width =
-        .8\textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/poster/dpeak.png}
-      \end{figure}
-}
+
 \end{frame}
 
+
+\begin{frame}
+  \frametitle{Structure of the experiment}
+
+  \begin{figure}[H]
+    \centering
+    
+
+  \end{figure}
+
+
+\end{frame}
 
 \begin{frame}
 \frametitle{Comparison with ChIP-Seq using dPeak}
