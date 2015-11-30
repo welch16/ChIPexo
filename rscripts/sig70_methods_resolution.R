@@ -81,11 +81,11 @@ reso <- rbind(res1,res2,res3)
 reso[ , method := factor(method, levels = c("dPeak","Mace","Gem"))]
 
 pdf(file = "figs/for_paper/algorithm_resolution.pdf",width = 5 , height = 5)
-ggplot(reso[reso < 200], aes(method , reso,fill = method))+geom_boxplot()+
+ggplot(reso[reso < 200], aes(method , reso,colour = method))+geom_boxplot()+
   xlab("Algorithm")+ylab("Resolution")+coord_cartesian(ylim = c(0,150))+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0),legend.position = "none")+
-  scale_fill_brewer(palette = "Pastel1")
+  scale_color_brewer(palette = "Set2")
 dev.off()
 
 
