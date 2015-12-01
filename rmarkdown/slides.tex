@@ -122,7 +122,7 @@
   \end{figure}
 \end{frame}
 
-\section{ChIP-exo Data Exploration and Qualiy Control}
+\section{ChIP-exo Data Exploration and Quality Control}
 
 \subsection{ChIP-Seq QC measures}
 
@@ -131,13 +131,13 @@
 
   \begin{itemize}
 \only<1>{
-  \item Number of reads. Self-explanatory, the higher the better
-}
+\item Number of reads. Self-explanatory, the higher the better
+  (usually).}
   \item<2-> Number of reads.
 \only<2>{
 \item PCR bottleneck Coeff. Ratio of number of pos. to which
   {\color{RoyalBlue}EXACTLY} one reads maps and number of pos. to
-  which {\color{RoyalBlue}AT LEAST} one reads maps }
+  which {\color{RoyalBlue}AT LEAST} one reads maps.}
 \only<2>{
 \begin{figure}[H]
   \centering
@@ -172,8 +172,17 @@
 \item Normalized Strand Cross-Correlation. Ratio between the SCC when
   the shift is the fragment length and min. value of the SCC.
 }
+\item<6> Normalized Strand Cross-Correlation. 
+\only<6>{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth]{../figs/for_paper/SCC.png}
+\caption{SCC as QC. Landt et al., 2012 \cite{encode_qc}}
+\end{figure}
+}
 \end{itemize}
 \end{frame}
+
 
 \subsection{Evaluation of ChIP-Seq QC Metrics for ChIP-exo}
 \begin{frame}[plain]
@@ -229,7 +238,7 @@ CTCF & Human & - & 1 &   48,478,450 & 0.4579 & 15.977 & From Rhee and Pugh 2011,
 
 {\small
 \begin{itemize}
-\item A shows that high density regions are similar between ChIP-Seq
+\item A) shows that high density regions are similar between ChIP-Seq
   and ChIP-exo but background regions are not.
 \item The peak-pair assumption does hold in ChIP-exo data, but not
   locally since some regions show strand-imbalance.
@@ -260,12 +269,13 @@ CTCF & Human & - & 1 &   48,478,450 & 0.4579 & 15.977 & From Rhee and Pugh 2011,
 
 {\small
 \begin{itemize}
-\item There is a \emph{``phantom peak''} at read length.
-\item In ChIP-Seq SCC is maximized at the unobserved fragment length.
+\item There is a \emph{``phantom peak''} at read length for ChIP-Seq (SE).
+\item In ChIP-Seq, SCC is maximized at the unobserved fragment length.
 \item In ChIP-exo, the \emph{``phantom peak''} and the fragment length
   summit are confounded.
 \end{itemize}
 }
+
 \end{frame}
 
 \subsection{Quality Control Pipeline}
@@ -299,57 +309,6 @@ CTCF & Human & - & 1 &   48,478,450 & 0.4579 & 15.977 & From Rhee and Pugh 2011,
 }
   \end{enumerate}
 \end{frame}
-
-
- % \begin{itemize}
-  % \item $\mbox{local-NSC}$
-  % \item $\mbox{FSR} = \frac{\text{Nr. of fwd. strand reads in region}}{\text{Nr. of reads in region}}$
-  % \end{itemize}  
-
-
-\begin{frame}
-  \frametitle{ARC vs. URCR exploration}
-\only<1>{
-  \begin{itemize}
-  \item $\mbox{ARC} = \frac{\text{Nr. of reads in the
-        region}}{\text{Width of the region}}$
-  \item $\mbox{URCR} = \frac{\text{Nr. of reads mapped to only one
-        position in the region}}{\text{Nr. of reads in the region}}$
-  \end{itemize}
-}
-\only<2>{
-All regions
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width = .7\textwidth,page = 1]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
-  \end{figure}
-}
-
-\only<3>{
-Mapped to more than 10 positions
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width = .7\textwidth,page = 2]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
-  \end{figure}
-}
-
-\only<4>{
-Mapped to more than 30 positions
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width = .7\textwidth,page = 3]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
-  \end{figure}
-}
-\only<5>{
-Mapped to more than 50 positions
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width = .7\textwidth,page = 4]{../figs/for_paper/ARC_vs_URCR_example_npos.pdf}
-  \end{figure}
-}
-
-\end{frame}
-
 
 \begin{frame}
   \frametitle{ARC vs. URCR exploration}
@@ -398,17 +357,6 @@ Mapped to more than 50 positions
 \Put(120,200){\includegraphics[width = .6\textwidth,page = 4]{../figs/for_paper/coverage_example.pdf}}
 }
 
-% \only<9-10>{
-%   \begin{figure}[H]
-%     \centering
-%     \includegraphics[width = .7\textwidth,page = 5]{../figs/for_paper/enrichment_example.pdf}
-%   \end{figure}
-% }
-
-% \only<10>{
-% \Put(120,200){\includegraphics[width = .6\textwidth,page = 5]{../figs/for_paper/coverage_example.pdf}}
-% }
-
 \only<9-10>{
   \begin{figure}[H]
     \centering
@@ -448,7 +396,7 @@ Mapped to more than 50 positions
 \begin{frame}
   \frametitle{ARC vs. URCR exploration by replicate}
 \only<1>{
-All regions
+All regions:
 \begin{figure}[H]
   \centering
   \includegraphics[width = \textwidth,page = 1]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
@@ -456,7 +404,7 @@ All regions
 }
 
 \only<2>{
-Regions formed by reads aligned to more than 10 unique positions
+Regions formed by reads aligned to more than 10 unique positions:
 \begin{figure}[H]
   \centering
   \includegraphics[width = \textwidth,page = 3]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
@@ -464,7 +412,7 @@ Regions formed by reads aligned to more than 10 unique positions
 }
 
 \only<3>{
-Regions formed by reads aligned to more than 30 unique positions
+Regions formed by reads aligned to more than 30 unique positions:
 \begin{figure}[H]
   \centering
   \includegraphics[width = \textwidth,page = 4]{../figs/Carroll_mice_for_paper/FoxA1_enrichment.pdf}
@@ -479,7 +427,7 @@ Regions formed by reads aligned to more than 30 unique positions
   \frametitle{ARC vs. URCR and local-NSC}
 
 \only<1>{
-Calculate coverage for all regions
+Calculate coverage for all regions:
 \begin{figure}[H]
   \centering
   \includegraphics[width = \textwidth,page = 1]{../figs/for_paper/local_SCC_separated.pdf}
@@ -487,7 +435,7 @@ Calculate coverage for all regions
 }
 
 \only<2>{
-Calculate $\mbox{local-SCC}$ for regions
+Calculate $\mbox{local-SCC}$ for regions:
 \begin{figure}[H]
   \centering
   \includegraphics[width = \textwidth,page = 2]{../figs/for_paper/local_SCC_separated.pdf}
@@ -495,7 +443,7 @@ Calculate $\mbox{local-SCC}$ for regions
 }
 
 \only<3>{
-Fit local polynomial regression for the $\mbox{local-SCC}$ 
+Fit local polynomial regression for the $\mbox{local-SCC}$ :
 \begin{figure}[H]
   \centering
   \includegraphics[width = \textwidth,page = 3]{../figs/for_paper/local_SCC_separated.pdf}
@@ -521,8 +469,8 @@ where:
 
 \begin{itemize}
 \item $x_\delta$ is the shift.
-\item $y_\delta$ is the local - SCC at shift $x_\delta$
-\item $\epsilon \sim N(0, \sigma^2)$ i.i.d 
+\item $y_\delta$ is the local - SCC at shift $x_\delta$.
+\item $\epsilon \sim N(0, \sigma^2)$ i.i.d .
 \end{itemize}
 
 
@@ -552,9 +500,9 @@ Rep. 3 & 0.0475 & 0.0832 & 1.75 \\
   \end{figure}
 
   \begin{itemize}
-  \item {\color{RoyalBlue} high:} Number of unique positions $ > 100$
-  \item {\color{RoyalBlue} med:} Number of unique positions in $(50,100)$
-  \item {\color{RoyalBlue} low:} Number of unique positions in $(20,50)$
+  \item {\color{RoyalBlue} high:} Number of unique positions $ > 100$.
+  \item {\color{RoyalBlue} med:} Number of unique positions in $(50,100)$.
+  \item {\color{RoyalBlue} low:} Number of unique positions in $(20,50)$.
   \end{itemize}
 }
 \end{frame}
@@ -572,7 +520,15 @@ Rep. 3 & 0.0475 & 0.0832 & 1.75 \\
 
 {\scriptsize
 \begin{itemize}
-\item 
+\only<1>{
+\item The quantiles of the first replicate, approximate the median
+  faster than the other replicate's quantiles.
+ }
+\only<2>{
+\item B) shows that the majority of the low depth islands are formed
+  exclusively by one strand.
+}
+
 \end{itemize}
 }
 
@@ -630,13 +586,12 @@ Rep. 3 & 0.0475 & 0.0832 & 1.75 \\
 \end{columns}
 }
 
-
 \end{frame}
 
 
 \begin{frame}[plain]
   \frametitle{Data structure}
-Data available for $\sig$:
+Available for $\sig$ (courtesy of Prof. Landick's lab):
   \begin{figure}[H]
     \centering
     \includegraphics[width = \textwidth]{../figs/for_paper/chip_explanation.pdf}
@@ -697,6 +652,15 @@ Data available for $\sig$:
 \end{figure}
 }
 
+\only<1>{
+{\small
+  \begin{itemize}
+  \item There are more candidate regions for both ChIP-Seq samples,
+    hence there are also more predicted events.
+  \end{itemize}
+}}
+
+
 \only<2>{
 \begin{figure}[H]
 \centering
@@ -722,9 +686,16 @@ Data available for $\sig$:
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width = .7\textwidth]{../figs/for_paper/algorithm_resolution.pdf}
+  \includegraphics[width = .6\textwidth]{../figs/for_paper/algorithm_resolution.pdf}
 \end{figure}
   
+{\scriptsize
+  \begin{itemize}
+  \item Resolution is defined as the min. absolute distance from the
+    regulonDB annotation to an estimated binding site.
+  \end{itemize}
+}
+
 \end{frame}
 
 \section{Conclusions and future work}
@@ -735,7 +706,7 @@ Data available for $\sig$:
   \begin{itemize}
   \item Our pipeline is capable of assessing the balance between
     sample enrichment and library complexity.
-  \item We shown that the ``peak-pair'' assumption doesn't hold well
+  \item We shown that the ``peak-pair'' assumption does not hold well
     in practice, and implemented a visualization capable of detecting
     strand imbalance.
   \item We updated dPeak, which makes a striking balance in
@@ -749,18 +720,21 @@ Data available for $\sig$:
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[label=future]
 \frametitle{Future work}  
 
 \begin{itemize}
 \item In the paper, we showed that there is a relationship between
   ChIP-exo tag counts and both mappability and GC content scores. We
-  want to add a QC measure to the pipeline based on them.
+  want to add a QC measure to the pipeline based on
+  them. \hyperlink{gcmap}{\beamerbutton{GC \& Mapp}}
 \item We want to assess if ChIP-Nexus library complexity is actually
-  higher than ChIP-exo's by using the $\mbox{local-NSC}$.
+  higher than ChIP-exo's by using the
+  $\mbox{local-NSC}$. \hyperlink{nexus}{\beamerbutton{ChIP-Nexus}}
+
 \item We have been studying E. Coli's transcription initiation
   complexes with PET ChIP-Seq. We want to improve this analysis by
-  using ChIP-exo data.
+  using ChIP-exo data.  \hyperlink{tic}{\beamerbutton{TIC}}
 \item Find a optimal strategy for labeling enhancer out of a
   predetermined list of regions in the genome by the use of active
   learning techniques.
@@ -816,6 +790,81 @@ Data available for $\sig$:
 
 \end{frame}
 
+
+\begin{frame}[label=gcmap]
+\frametitle{GC content and Mappability score bias}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
+  \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
+
+  \begin{itemize}
+  \item ChIP tag counts increase linearly as mappability scores
+    increases.
+  \item ChIP tag counts increase linearly as GC content score
+    increases when GC content is less than 0.6 and then ChIP tag
+    counts decrease as GC content
+    increases. \hyperlink{future}{\beamerbutton{back}}
+
+  \end{itemize}
+
+
+\end{figure}
+  
+\end{frame}
+
+\begin{frame}[plain,label=nexus]
+\frametitle{ChIP-exo and ChIP- Nexus}
+
+\begin{columns}
+\column{.5\textwidth}
+  \begin{figure}[H]
+    \includegraphics[width = .9\textwidth]{../vignettes/exo-protocol.png}
+\caption{ChIP-exo explanation, Mendenhall and Bernstein, 2012 \cite{exo_gb}}
+  \end{figure}
+\column{.5\textwidth}
+
+
+\begin{itemize}
+\item ChIP-Nexus uses a random barcode for adapter $\#$ 1.
+\item Before step 5 uses self-circularization to attach the random
+  barcode to the 3' end, and uses it instead of adapter $\#$ 2.
+
+\end{itemize}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width = \textwidth]{../figs/for_paper/nexus.png}
+    \caption{ChIP-Nexus example, He et al., 2015, \cite{chipnexus}
+      \hyperlink{future}{\beamerbutton{back}}}
+  \end{figure}
+
+
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}[label=tic]
+\frametitle{Transcription Initiation Complexes}
+
+  \begin{figure}[H]
+  \centering
+ \includegraphics[width = \textwidth]{/p/keles/ChIPexo/volume5/OpenClosedComplexes/figs/filtered/heatmaps_centroid.png}
+ \caption{Centered and normalized heatmaps for PE ChIP-Seq peaks of
+   $\sig$ and $\beta'_f$ under rif0 and rif20. The regions are
+   organized by the centroids clustering of the $\beta'_f$-rif0
+   profiles. \hyperlink{future}{\beamerbutton{back}}}
+  \label{fig:hm1}
+\end{figure}
+
+
+
+
+\end{frame}
+
+
 \end{document}
 
 % LocalWords:  regulonDoB
+
