@@ -232,7 +232,7 @@ setkey(stats,match)
 
 get_candidate_region <- function(mat,stats)dt2gr(stats[mat,2:4,with = FALSE])
 
-cover_plot <- function(reg,reads,perm = FALSE)
+cover_DT <- function(reg,reads,perm = FALSE)
 {
 
   gr <- do.call(rbind,mapply(rbind,readsF(reads),readsR(reads),SIMPLIFY =FALSE))
@@ -266,121 +266,51 @@ cover_plot <- function(reg,reads,perm = FALSE)
 
   DT <- rbind(fwdDT,bwdDT)
 
-  out <- ggplot(DT,aes(coord,tags,colour = strand))+
-    geom_step()+theme_bw()+
-    theme(legend.position = "top",plot.title = element_text(hjust  = 0))+
-      scale_color_brewer(palette = "Set1")+
-    xlab("Genomic position")+ylab("ChIP read counts")
-
-  return(out)
+  return(DT)
 
 }
 
-stats <- stats[width > 150]
-## > nrow(stats)
-## [1] 64165
+## 
 
-## > lapply(stats,summary)
+get_candidate_region <- function(mat,stats)dt2gr(stats[mat,2:4,with = FALSE])
 
-## $width
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     151     179     227     269     317    3390 
+candidates <- stats[npos > 500 & between(fsr,.49, .51) & width > 300]
+setkey(candidates,match)
 
-## $f
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-##     1.00    10.00    19.00    43.46    43.00 34610.00 
+m <- candidates[1,(match)]
+reg <- get_candidate_region(m,candidates)
 
-## $r
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-##     1.00    10.00    19.00    43.89    44.00 54250.00 
+DT <- cover_DT(reg,rep1_reads,perm = FALSE)
+p <- ggplot(DT,aes(coord,tags,colour = strand))+
+  geom_step()+theme_bw()+
+  theme(legend.position = "top",plot.title = element_text(hjust  = 0))+
+    scale_color_brewer(palette = "Set1")+
+  xlab("Genomic position")+ylab("ChIP read counts")+ylim(-100,100)
 
-## $f_pos
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     1.0     7.0    12.0    21.6    26.0  1701.0 
+cc <- local_strand_cross_corr(rep1_reads,reg,shift = 1:150,perm = FALSE)
 
-## $r_pos
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    1.00    7.00   12.00   21.55   26.00 1128.00 
+s <- ggplot(cc,aes(shift,cross.corr))+geom_point(shape = 1)+
+    geom_line(size = .5,linetype = 2)+
+    geom_smooth(method = "loess",se = FALSE)+
+    geom_abline(slope = 0,intercept = 0,linetype = 2)+
+    theme_bw()+ylim(-.2,1)+
+    geom_vline(xintercept = 35,colour = "blue",linetype = 1,size = .1)+
+    geom_vline(xintercept = cc[which.max(cross.corr),(shift)],
+      colour = "red",linetype = 1,size = .1)
+  
+set.seed(12345)
+seeds <- floor(runif(20) * 1e3)
 
-## $depth
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-##     5.00    21.00    39.00    87.35    85.00 88860.00 
+figs_dir <- "figs/local_NSC_perm"
 
-## $npos
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    5.00   14.00   24.00   43.16   51.00 2829.00 
-
-## $ave_reads
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-##   0.0305   0.1079   0.1683   0.2598   0.2848 439.9000 
-
-## $cover_rate
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## 0.002138 0.548400 0.625000 0.626600 0.701300 1.000000 
-
-## $fsr
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## 0.001613 0.413800 0.500000 0.500200 0.586200 0.995300 
-
-## $M
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-## -12.720  -8.808  -7.384  -7.169  -5.763  15.490 
-
-## $A
-##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-## -9.274000 -0.502500  0.000000 -0.001624  0.502500  7.735000 
-
-
-
-M <- stats[npos >= 500,(match)][1:3]
-
-
-pdf(height = 8,width = 6)
-for(m1 in M){
-
-## between(npos,30,50)][,(match)][7]
-
-reg1 <- get_candidate_region(m1,stats)
-
-
-truth <- local_strand_cross_corr(rep1_reads,reg1,shift = 1:150,perm = FALSE)
-
-N <- 1000
-system.time(
-perms <- mclapply(1:N,function(i)
-                  local_strand_cross_corr(rep1_reads,reg1,shift = 1:150,perm = TRUE),
-                  mc.cores = mc,mc.preschedule = TRUE)
-)
-
-perms <- mapply(function(x,y)x[,perm := paste0("M",y)],perms,1:N,SIMPLIFY = FALSE)
-perms <- do.call(rbind,perms)
-perms[,perm := factor(perm)]
-
-
-## medians <- perms[,median(cross.corr),by = shift]
-## setnames(medians,names(medians),c("shift","cross.corr"))
-
-means <- perms[,mean(cross.corr),by = shift]
-setnames(means,names(means),c("shift","cross.corr"))
-
-
-p <- cover_plot(reg1,rep1_reads)
-
-
-truth[,summary(loess(cross.corr ~ shift))]
-means[,summary(loess(cross.corr ~ shift))]
-
-
-grid.arrange(p+ggtitle(m1),
-ggplot(truth,aes(shift,cross.corr))+geom_point(shape = 1)+
-  geom_smooth(method = "loess",se = FALSE)+
-  geom_point(data = means,colour = "red",shape = 1)+
-  geom_line(size = .1,linetype = 2)+
-  geom_line(colour = "red",data = means,size = .1,linetype = 2)+
-  geom_smooth(method = "loess",colour =  "red",data = means,se = FALSE)+
-  geom_abline(slope = 0,intercept = 0,linetype = 2)+
-  theme_bw()+geom_vline(xintercept = 35,colour = "blue",linetype = 1,size = .1),
-             nrow = 2)
+pdf(file = file.path(figs_dir,paste0(m,"_region.pdf")),height = 8, width = 6)
+grid.arrange(p + ggtitle("original"),s,nrow = 2)
+for(seed in seeds){ 
+  set.seed(seed)  
+  DU <- cover_DT(reg,rep1_reads,perm = TRUE)
+  set.seed(seed)
+  ccU <- local_strand_cross_corr(rep1_reads,reg,shift = 1:150,perm = TRUE)
+  grid.arrange(p %+% DU + ggtitle(paste("seed",seed)),s %+% ccU,nrow = 2)
 }
 dev.off()
 
