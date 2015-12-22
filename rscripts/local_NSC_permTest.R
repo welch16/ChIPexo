@@ -274,18 +274,23 @@ cover_DT <- function(reg,reads,perm = FALSE)
 
 get_candidate_region <- function(mat,stats)dt2gr(stats[mat,2:4,with = FALSE])
 
-candidates <- stats[npos > 500 & between(fsr,.49, .51) & width > 300]
+candidates <- stats[between(npos,100,200) & between(fsr,.25, .4) & width > 300]
 setkey(candidates,match)
 
-m <- candidates[1,(match)]
+m <- candidates[2,(match)]
 reg <- get_candidate_region(m,candidates)
 
+
 DT <- cover_DT(reg,rep1_reads,perm = FALSE)
+
+M <- max(DT[,max(tags)],-DT[,min(tags)])
+M <- floor(1.2 * M)
+
 p <- ggplot(DT,aes(coord,tags,colour = strand))+
   geom_step()+theme_bw()+
   theme(legend.position = "top",plot.title = element_text(hjust  = 0))+
     scale_color_brewer(palette = "Set1")+
-  xlab("Genomic position")+ylab("ChIP read counts")+ylim(-100,100)
+  xlab("Genomic position")+ylab("ChIP read counts")+ylim(-M,M)
 
 cc <- local_strand_cross_corr(rep1_reads,reg,shift = 1:150,perm = FALSE)
 
@@ -313,4 +318,63 @@ for(seed in seeds){
   grid.arrange(p %+% DU + ggtitle(paste("seed",seed)),s %+% ccU,nrow = 2)
 }
 dev.off()
+
+## localMinima <- function(x)
+## {
+##   # Use -Inf instead if x is numeric (non-integer)
+##   y = diff(c(.Machine$integer.max, x)) > 0L
+##   rle(y)$lengths
+##   y = cumsum(rle(y)$lengths)
+##   y = y[seq.int(1L, length(y), 2L)]
+##   if (x[[1]] == x[[2]]) {
+##     y <- y[-1]
+##   }
+##   return(y)
+## }
+
+## localMaxima <- function(x) localMinima(-x)
+
+
+mm <- "chr12:35967980_35969439"
+reg <- get_candidate_region(mm,stats)
+
+M <- 1e3
+set.seed(12345)
+
+ccs <- mclapply(1:M,function(i)
+  local_strand_cross_corr(rep1_reads,reg,shift = 1:150,perm = TRUE),
+  mc.cores = 16)
+
+ccs <- mapply(function(x,y)x[,perm := paste0("M",y)],ccs,1:M,SIMPLIFY= FALSE)
+ccs <- do.call(rbind,ccs)
+
+obs <- local_strand_cross_corr(rep1_reads,reg,shift = 1:150)
+
+dir.create(file.path(figs_dir,mm))
+figs_dir <- file.path(figs_dir,mm)
+
+## for this part we are gonna calculate summary statistics and
+## calculate empirical p.values
+
+eval_at_point <- function(s,shift,cross.corr)cross.corr[shift == s]
+
+ss <- 12
+pdf(file = file.path(figs_dir,paste0("eval_at_",ss,".pdf")))
+ggplot(ccs[,eval_at_point(ss,shift,cross.corr),by = perm],aes(V1))+
+  geom_histogram(aes(y = ..density..),bins = 50,fill = NA,colour = "black")+
+  stat_density(geom = "line",colour = "red")+
+  geom_vline(xintercept = obs[,eval_at_point(ss,shift,cross.corr)],
+    colour = "blue")
+dev.off()
+
+## std. dev. of noise
+
+pdf(file = file.path(figs_dir,"cross_corr_sd.pdf"))
+ggplot(ccs[,sd(cross.corr),by = perm],aes(V1))+
+  geom_histogram(aes(y = ..density..),bins = 50,fill = NA,colour = "black")+
+  stat_density(geom = "line",colour = "red")+
+  geom_vline(xintercept = obs[,sd(cross.corr)],
+    colour = "blue")
+dev.off()
+
 
