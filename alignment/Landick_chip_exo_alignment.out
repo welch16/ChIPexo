@@ -1,0 +1,52 @@
+Alignining ChIP exo files:
+Index file: /u/w/e/welch/Desktop/Docs/Code/lib/bowtie2-2.2.6/indexes/ecoli/NC_000913
+Threads used: 24
+Allowing reads to align to at most 1 positions
+
+16846671 reads; of these:
+  16846671 (100.00%) were unpaired; of these:
+    12827964 (76.15%) aligned 0 times
+    4018707 (23.85%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+23.85% overall alignment rate
+17268284 reads; of these:
+  17268284 (100.00%) were unpaired; of these:
+    7518751 (43.54%) aligned 0 times
+    9749533 (56.46%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+56.46% overall alignment rate
+18868657 reads; of these:
+  18868657 (100.00%) were unpaired; of these:
+    11111136 (58.89%) aligned 0 times
+    7757521 (41.11%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+41.11% overall alignment rate
+16423038 reads; of these:
+  16423038 (100.00%) were unpaired; of these:
+    8087461 (49.24%) aligned 0 times
+    8335577 (50.76%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+50.76% overall alignment rate
+1050680 reads; of these:
+  1050680 (100.00%) were unpaired; of these:
+    60520 (5.76%) aligned 0 times
+    990160 (94.24%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+94.24% overall alignment rate
+2115858 reads; of these:
+  2115858 (100.00%) were unpaired; of these:
+    108365 (5.12%) aligned 0 times
+    2007493 (94.88%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+94.88% overall alignment rate
+2444898 reads; of these:
+  2444898 (100.00%) were unpaired; of these:
+    130958 (5.36%) aligned 0 times
+    2313940 (94.64%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+94.64% overall alignment rate
+13231701 reads; of these:
+  13231701 (100.00%) were unpaired; of these:
+    711739 (5.38%) aligned 0 times
+    12519962 (94.62%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
