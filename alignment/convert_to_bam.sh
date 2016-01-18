@@ -2,52 +2,29 @@
 
 # this script converts the new aligned reads to sam and generated the index bam files
 
-basedir=/p/keles/ChIPexo/volume7
-dir1=$basedir/aerobic_vs_anaerobic
-dir2=$basedir/rif_treatment
+basedir=/p/keles/ChIPexo/volume7/Landick
+exodir1=$basedir/ChIPexo/aerobic_vs_anaerobic
+exodir2=$basedir/ChIPexo/rif_treatment
+petdir=$basedir/ChIPseq_PET/rif_treatment
 
-samtools view -b $dir1/edsn931_Sig70.sam > $dir1/edsn931_Sig70.bam
-samtools view -b $dir1/edsn933_Sig70.sam > $dir1/edsn933_Sig70.bam
-samtools view -b $dir1/edsn935_Sig70.sam > $dir1/edsn935_Sig70.bam
-samtools view -b $dir1/edsn937_Sig70.sam > $dir1/edsn937_Sig70.bam
+## old alignments ChIPexo
 
-bamtools sort -in $dir1/edsn931_Sig70.bam -out $dir1/edsn931_Sig70.sort.bam
-bamtools sort -in $dir1/edsn933_Sig70.bam -out $dir1/edsn933_Sig70.sort.bam
-bamtools sort -in $dir1/edsn935_Sig70.bam -out $dir1/edsn935_Sig70.sort.bam
-bamtools sort -in $dir1/edsn937_Sig70.bam -out $dir1/edsn937_Sig70.sort.bam
+alignment/format_bam.sh $exodir1/edsn931_Sig70.sam
+alignment/format_bam.sh $exodir1/edsn933_Sig70.sam
+alignment/format_bam.sh $exodir1/edsn935_Sig70.sam
+alignment/format_bam.sh $exodir1/edsn937_Sig70.sam
 
-bamtools index -in $dir1/edsn931_Sig70.sort.bam
-bamtools index -in $dir1/edsn933_Sig70.sort.bam
-bamtools index -in $dir1/edsn935_Sig70.sort.bam
-bamtools index -in $dir1/edsn937_Sig70.sort.bam
+## new alignments ChIPexo
 
-samtools view -b $dir2/edsn1311_Sig70.sam > $dir2/edsn1311_Sig70.bam
-samtools view -b $dir2/edsn1314_Sig70.sam > $dir2/edsn1314_Sig70.bam
-samtools view -b $dir2/edsn1317_Sig70.sam > $dir2/edsn1317_Sig70.bam
-samtools view -b $dir2/edsn1320_Sig70.sam > $dir2/edsn1320_Sig70.bam
-samtools view -b $dir2/edsn1369_Input.sam > $dir2/edsn1369_Input.bam
-samtools view -b $dir2/edsn1396_Sig70.sam > $dir2/edsn1396_Sig70.bam
-samtools view -b $dir2/edsn1398_Sig70.sam > $dir2/edsn1398_Sig70.bam
-samtools view -b $dir2/edsn1400_Sig70.sam > $dir2/edsn1400_Sig70.bam
-samtools view -b $dir2/edsn1402_Sig70.sam > $dir2/edsn1402_Sig70.bam
+alignment/format_bam.sh $exodir2/edsn1311_Sig70.sam
+alignment/format_bam.sh $exodir2/edsn1314_Sig70.sam
+alignment/format_bam.sh $exodir2/edsn1317_Sig70.sam
+alignment/format_bam.sh $exodir2/edsn1320_Sig70.sam
 
-bamtools sort -in $dir2/edsn1311_Sig70.bam -out $dir2/edsn1311_Sig70.sort.bam
-bamtools sort -in $dir2/edsn1314_Sig70.bam -out $dir2/edsn1314_Sig70.sort.bam
-bamtools sort -in $dir2/edsn1317_Sig70.bam -out $dir2/edsn1317_Sig70.sort.bam
-bamtools sort -in $dir2/edsn1320_Sig70.bam -out $dir2/edsn1320_Sig70.sort.bam
+## new alignment ChIPseq_PET
 
-bamtools sort -in $dir2/edsn1369_Input.bam -out $dir2/edsn1369_Input.sort.bam
-bamtools sort -in $dir2/edsn1396_Sig70.bam -out $dir2/edsn1396_Sig70.sort.bam
-bamtools sort -in $dir2/edsn1398_Sig70.bam -out $dir2/edsn1398_Sig70.sort.bam
-bamtools sort -in $dir2/edsn1400_Sig70.bam -out $dir2/edsn1400_Sig70.sort.bam
-bamtools sort -in $dir2/edsn1402_Sig70.bam -out $dir2/edsn1402_Sig70.sort.bam
-
-bamtools index -in $dir2/edsn1311_Sig70.sort.bam
-bamtools index -in $dir2/edsn1314_Sig70.sort.bam
-bamtools index -in $dir2/edsn1317_Sig70.sort.bam
-bamtools index -in $dir2/edsn1320_Sig70.sort.bam
-bamtools index -in $dir2/edsn1369_Input.sort.bam
-bamtools index -in $dir2/edsn1396_Sig70.sort.bam
-bamtools index -in $dir2/edsn1398_Sig70.sort.bam
-bamtools index -in $dir2/edsn1400_Sig70.sort.bam
-bamtools index -in $dir2/edsn1402_Sig70.sort.bam
+alignment/format_bam.sh $petdir/edsn1369_Input.sam
+alignment/format_bam.sh $petdir/edsn1396_Sig70.sam
+alignment/format_bam.sh $petdir/edsn1398_Sig70.sam
+alignment/format_bam.sh $petdir/edsn1400_Sig70.sam
+alignment/format_bam.sh $petdir/edsn1402_Sig70.sam
