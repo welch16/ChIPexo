@@ -13,6 +13,10 @@ if("--help" %in% args){
 
       A bam file, with the reads of PET ChIP-Seq experiment
 
+   -- outfile
+
+      Name of the bam file with location where the sampled reads are being saved
+
    -- help
 
       Show the help file
@@ -26,15 +30,13 @@ if("--help" %in% args){
 library(GenomicAlignments)
 
 file <- args[1]
-dir <- dirname(file)
-out_file <- gsub(".sort.bam",".SET.bam",file)
+outfile <- args[2]
 
 filter_factory <- function(want){
   list(KeepQname = function(x) x$qname %in% want)
 }
 
 param1 <- ScanBamParam(scanBamFlag(isFirstMateRead = TRUE, isSecondMateRead = FALSE))
-param2 <- ScanBamParam(scanBamFlag(isFirstMateRead = FALSE, isSecondMateRead = TRUE))
 
 fmate <- readGAlignments(file, param = param1,use.names = TRUE)
 nms <- names(fmate)
@@ -56,6 +58,6 @@ param2 <- ScanBamParam(what = "qname",scanBamFlag(isFirstMateRead = FALSE, isSec
 ff1 <- filterBam(file,f1,filter = filter1,param = param1)
 ff2 <- filterBam(file,f2,filter = filter2,param = param2)
 
-ff <- mergeBam(c(ff1,ff2),out_file)
+ff <- mergeBam(c(ff1,ff2),outfile)
 
 
