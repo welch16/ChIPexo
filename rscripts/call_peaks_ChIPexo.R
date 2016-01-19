@@ -7,8 +7,7 @@ library(parallel)
 
 frag_len <- 150
 bin_size <- 150
-fdr <- .01
-
+fdr <- .05
 
 out_dir <- "/p/keles/ChIPexo/volume6/resolution/ChIPexo"
 in_dir <- "/p/keles/ChIPexo/volume7/Landick/ChIPexo/rif_treatment"
@@ -49,4 +48,4 @@ peaks <- mclapply(fits,function(x){
   return(out)},mc.cores = 4)
 
 mapply(write.table,peaks,file.path(out_dir,peakfiles),
-       MoreArgs = list(quote = FALSE,row.names = FALSE,sep = "\t"))
+       MoreArgs = list(quote = FALSE,row.names = FALSE,col.names = FALSE,sep = "\t"))
