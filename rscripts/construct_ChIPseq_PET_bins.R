@@ -4,6 +4,7 @@ rm(list = ls())
 
 library(mosaics)
 library(GenomicAlignments)
+library(parallel)
 
 frag_len <- 150
 bin_size <- 150
