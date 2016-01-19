@@ -1,6 +1,6 @@
 #!/bin/sh
 
-basedir=/p/keles/ChIPexo/volume7
+basedir=/p/keles/ChIPexo/volume7/Landick
 indir=$basedir/ChIPseq_PET/rif_treatment
 outdir=$basedir/ChIPseq_SET/rif_treatment
 
