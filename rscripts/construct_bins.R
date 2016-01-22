@@ -5,32 +5,31 @@ if("--help" %in% args){
 
   Name:
 
-    construct_bins.R - Samples a SET file out of a PET file a write it in the same location as file
+    construct_bins.R - Samples a SET file out of a PET file a write it in the same location as file.
 
   Arguments:
 
-    -- file
+   -- indir
 
-      A bam file, with the reads of a ChIP experiment. Can have Paired End Tags (PET) or
-      Single End Tags (SET).
+      The directory where the bam files with the sampled reads are located.
 
-   -- outfile
+   -- outdir
 
-      Name of the bam file with location where the sampled reads are going to be saved.
+      The location where the bins are going to be saved.
 
-   -- N
+   -- fragLen
 
-      Number of reads to be sampled. If the reads are paired ended, we are going to sample
-      2 * N reads instead of N to complete the pairs.
+      The fragment length used to extend the fragments in case of SET experiment. This parameter
+      is ignored in the PET case.
+
+   -- binSize
+
+      The bin size used to construct the bins.
 
    -- isPET
 
       Logical value indicating if the reads are Paired End or Single End.
-
-   -- seed
-
-      Seed used to sample the reads.
-
+      
    -- help
 
       Show the help file.
@@ -40,3 +39,26 @@ if("--help" %in% args){
     Rene Wech, Department of Statistics, University of Wisconsin - Madison
    
 ");q()}
+
+stopifnot(length(args) == 5)
+
+library(GenomicAlignments)
+library(parallel)
+library(mosaics)
+
+indir <- args[1]
+outdir <- args[2]
+fragLen <- as.numeric(args[3])
+binSize <- as.numeric(args[4])
+isPET <- as.logical(args[5])
+
+nCore <- detectCores()
+files <- list.files(indir)
+
+files <- files[grep("bai",files,invert = TRUE)]
+
+A <- mclapply(file.path(indir,files),
+  constructBins,
+  fileFormat = "bam",
+  outfileLoc = outdir,
+  PET = isPET,fragLen = fragLen,binSize = binSize,mc.cores = nCore)           
