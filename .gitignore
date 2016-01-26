@@ -25,3 +25,4 @@ rmarkdown/*out
 rmarkdown/*nav
 rmarkdown/*snm
 rmarkdown/auto
+inst/mace_analysis
