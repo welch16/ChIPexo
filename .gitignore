@@ -26,3 +26,5 @@ rmarkdown/*nav
 rmarkdown/*snm
 rmarkdown/auto
 inst/mace_analysis
+inst/peakzilla_analysis
+inst/gem_analysis
