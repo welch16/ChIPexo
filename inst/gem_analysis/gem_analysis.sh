@@ -16,19 +16,45 @@ outfile=inst/gem_analysis/edsn1311_Sig70
 
  # --genome $genome
 
-java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED
 
 exofile=$basedir/ChIPexo/bedfiles/edsn1314_Sig70.sort.bed
 outfile=inst/gem_analysis/edsn1314_Sig70
 
-java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED
 
 exofile=$basedir/ChIPexo/bedfiles/edsn1317_Sig70.sort.bed
 outfile=inst/gem_analysis/edsn1317_Sig70
 
-java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED
 
 exofile=$basedir/ChIPexo/bedfiles/edsn1320_Sig70.sort.bed
 outfile=inst/gem_analysis/edsn1320_Sig70
 
-java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED
+
+exofile=$basedir/ChIPexo/bedfiles/edsn1311_Sig70.sort.bed
+outfile=inst/gem_analysis/edsn1311_Sig70_with_peaksFDR5
+peakfile=inst/gem_analysis/edsn1311_Sig70_FDR5_gem.txt
+
+ # --genome $genome
+
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED --subf $peakfile
+
+exofile=$basedir/ChIPexo/bedfiles/edsn1314_Sig70.sort.bed
+outfile=inst/gem_analysis/edsn1314_Sig70_with_peaksFDR5
+peakfile=inst/gem_analysis/edsn1314_Sig70_FDR5_gem.txt
+
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED --subf $peakfile
+
+exofile=$basedir/ChIPexo/bedfiles/edsn1317_Sig70.sort.bed
+outfile=inst/gem_analysis/edsn1317_Sig70_with_peaksFDR5
+peakfile=inst/gem_analysis/edsn1317_Sig70_FDR5_gem.txt
+
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED --subf $peakfile
+
+exofile=$basedir/ChIPexo/bedfiles/edsn1320_Sig70.sort.bed
+outfile=inst/gem_analysis/edsn1320_Sig70_with_peaksFDR5
+peakfile=inst/gem_analysis/edsn1320_Sig70_FDR5_gem.txt
+
+java -Xmx10G -jar $gem --t $nCore --g $ecoli --d $readdistr --s $size --exptX $exofile --k $k --out $outfile --outBED --subf $peakfile
