@@ -60,6 +60,14 @@ names(mosaics_peaks) <- basename(peakfiles)
 
 ######################################################################################
 
+## sites to consider
+
+sites_mosaics <- lapply(mosaics_peaks,function(x,sites)
+  sort(reduce(subsetByOverlaps(sites,x))),sites)
+
+######################################################################################
+
+
 ## peakzilla analysis
 
 dr <- "inst/peakzilla_analysis"
@@ -70,22 +78,27 @@ peakzilla <- lapply(file.path(dr,files),read.table)
 peakzilla <- lapply(peakzilla,data.table)
 peakzilla <- lapply(peakzilla,function(x){
   setnames(x,names(x),c("Chromosome","Start","End","Name","Summit","Score","ChIP","Control","FoldEnrichment","DistributionScore","FDR"))
+  x <- x[order(Start)]
   return(x)})
+sapply(peakzilla,nrow)
 
 peakzilla <- mapply(function(mosaics,peakzilla){
   idx <- countOverlaps(IRanges(start = peakzilla[,(Start)],end = peakzilla[,(End)]),
                        mosaics) > 0
   out <- peakzilla[idx]
   return(out)},mosaics_peaks,peakzilla,SIMPLIFY = FALSE)
-peakzilla <- lapply(peakzilla,function(x,sites){
-  ov <- findOverlaps(IRanges(start = x[,(Start)],end = x[,(End)]),sites)
-  reso <- x[,.(reso = min(abs(Summit - start(sites[subjectHits(ov)])))),by = Name]
-  setkey(reso,Name)
-  reso <- reso[as.character(x[queryHits(ov),(Name)])]
-  return(reso)
-},sites)
+sapply(peakzilla,nrow)
 
-peakzilla <- mapply(function(x,y)x[,edsn := y],peakzilla,files,SIMPLIFY = FALSE)
+peakzilla <- mapply(function(peakzilla,sites){
+  pranges <- IRanges(start = peakzilla[,(Start)],end = peakzilla[,(End)])
+#  ov <- findOverlaps(pranges,sites)  
+  reso <- peakzilla[,.(reso = min(abs(Summit - start(sites)))),by = Name]
+  setkey(reso,Name)
+#  reso <- reso[as.character(peakzilla[queryHits(ov),(Name)])]
+  return(reso)
+},peakzilla,sites_mosaics,SIMPLIFY = FALSE)
+
+peakzilla <- mapply(function(x,y)copy(x)[ , edsn := y],peakzilla,files,SIMPLIFY = FALSE)
 peakzilla <- do.call(rbind,peakzilla)
 peakzilla[,edsn := gsub("_Sig70_peaks.tsv","",edsn)]
 
@@ -126,14 +139,16 @@ mace <- mapply(function(mosaics,mace){
   out <- mace[idx]
   return(out)},mosaics_peaks,mace,SIMPLIFY = FALSE)
 
-mace <- lapply(mace,function(x,sites){
-  ov <- findOverlaps(IRanges(start = x[,(st)],end = x[,(en)]),sites)
-  reso <- x[,.(reso = min(abs(site - start(sites[subjectHits(ov)])))),by = Name]
+mace <- mapply(function(mace,sites){
+  mranges <- IRanges(start = mace[,(st)],end = mace[,(en)])
+#  ov <- findOverlaps(mranges,sites)  
+  reso <- mace[,.(reso = min(abs(site - start(sites)))),by = Name]
   setkey(reso,Name)
-  reso <- reso[as.character(x[queryHits(ov),(Name)])]
-  return(reso)},sites)        
-  
-mace <- mapply(function(x,y)x[,edsn := y],mace,files,SIMPLIFY = FALSE)
+#  reso <- reso[as.character(mace[queryHits(ov),(Name)])]
+  return(reso)
+},mace,sites_mosaics,SIMPLIFY = FALSE)
+
+mace <- mapply(function(x,y)copy(x)[,edsn := y],mace,files,SIMPLIFY = FALSE)
 mace <- do.call(rbind,mace)
 
 mace[,edsn := gsub(".border_pair.bed","",edsn)]
@@ -176,14 +191,15 @@ gem <- mapply(function(mosaics,gem){
   out <- gem[idx]
   return(out)},mosaics_peaks,gem,SIMPLIFY = FALSE)
 
-gem <- lapply(gem,function(x,sites){
-  ov <- findOverlaps(IRanges(start = x[,(st)],end = x[,(en)]),sites)
-  reso <- x[,.(reso = min(abs(site - start(sites[subjectHits(ov)])))),by = name]
+gem <- mapply(function(gem,sites){
+  gemranges <- IRanges(start = gem[,(st)],end = gem[,(en)])
+#  ov <- findOverlaps(gemranges,sites)
+  reso <- gem[,.(reso = min(abs(site - start(sites)))),by = name]
   setkey(reso,name)
-  reso <- reso[as.character(x[queryHits(ov),(name)])]
-  return(reso)},sites)        
+#  reso <- reso[as.character(gem[queryHits(ov),(name)])]
+  return(reso)},gem,sites_mosaics,SIMPLIFY = FALSE)
   
-gem <- mapply(function(x,y)x[,edsn := y],gem,basename(files),SIMPLIFY = FALSE)
+gem <- mapply(function(x,y)copy(x)[,edsn := y],gem,basename(files),SIMPLIFY = FALSE)
 gem <- do.call(rbind,gem)
 
 gem[,edsn := gsub("_Sig70_with_peaksFDR5_1_GEM_events.bed","",edsn)]
@@ -222,14 +238,16 @@ dpeak <- mapply(function(mosaics,dpeak){
   out <- dpeak[idx]
   return(out)},mosaics_peaks,dpeak,SIMPLIFY = FALSE)
 
-dpeak <- lapply(dpeak,function(x,sites){
-  ov <- findOverlaps(IRanges(start = x[,(st)] - 10,end = x[,(en)] + 10),sites)
-  reso <- x[,.(reso = min(abs(site - start(sites[subjectHits(ov)])))),by = name]
+dpeak <- mapply(function(dpeak,sites){
+  dranges <- IRanges(start = dpeak[,(st)],end = dpeak[,(en)])
+#  ov <- findOverlaps(dranges,sites)
+  reso <- dpeak[,.(reso = min(abs(site - start(sites)))),by = name]
   setkey(reso,name)
-  reso <- reso[as.character(x[queryHits(ov),(name)])]
-  return(reso)},sites)        
-  
-dpeak <- mapply(function(x,y)x[,edsn := y],dpeak,basename(files),SIMPLIFY = FALSE)
+#  reso <- reso[as.character(dpeak[queryHits(ov),(name)])]
+  return(reso)},dpeak,sites_mosaics,SIMPLIFY = FALSE)
+
+    
+dpeak <- mapply(function(x,y)copy(x)[,edsn := y],dpeak,basename(files),SIMPLIFY = FALSE)
 dpeak <- do.call(rbind,dpeak)
 
 dpeak[,edsn := gsub("_Sig70_sites_G5.txt","",edsn)]
@@ -251,7 +269,7 @@ resol <- list("peakzilla" = peakzilla,"mace" = mace, "gem" = gem, "dpeak" = dpea
 resol <- mapply(function(x,y)x[,method := y],resol,names(resol),SIMPLIFY = FALSE)
 resol <- do.call(rbind,resol)
 
-pdf(file = file.path(figs_dir,"methods_comparison_resolution.pdf"))
+pdf(file = file.path(figs_dir,"methods_comparison_resolution_noOv.pdf"))
 ggplot(resol, aes(method , reso,fill = method))+geom_boxplot()+facet_grid( repl ~ rif)+
   scale_fill_brewer(palette = "Pastel1")+theme_bw()+theme(legend.position = "none")+
   xlab("Method")+ylab("Resolution")+ylim(0,75)
