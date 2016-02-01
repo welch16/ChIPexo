@@ -11,4 +11,4 @@ mkdir $outdir1
 outdir1=$outdir1/FDR$fdr
 mkdir $outdir1
 
-rscripts/call_peaks.R $indir1 $outdir1 $fdr exo
+rscripts/scripts/call_peaks.R $indir1 $outdir1 $fdr exo

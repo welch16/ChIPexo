@@ -14,7 +14,7 @@ mkdir $outdir
 outdir=$outdir/samples
 mkdir $outdir
 
-rscripts/sample_from_experiment.R $indir/edsn1311_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
-rscripts/sample_from_experiment.R $indir/edsn1314_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
-rscripts/sample_from_experiment.R $indir/edsn1317_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
-rscripts/sample_from_experiment.R $indir/edsn1320_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1311_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1314_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1317_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1320_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed

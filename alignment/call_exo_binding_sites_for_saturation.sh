@@ -19,6 +19,6 @@ peaksdir=$indir1/peaks/FDR$fdr
 
 for readsfile in $files
 do
-rscripts/call_binding_sites.R $readsfile $peaksdir $outdir1 FALSE 5
+rscripts/scripts/call_binding_sites.R $readsfile $peaksdir $outdir1 FALSE 5
 done
 

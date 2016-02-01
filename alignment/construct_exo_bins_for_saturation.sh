@@ -10,5 +10,5 @@ outdir1=$indir1/bins
 mkdir $outdir1
 indir1=$indir1/samples
 
-rscripts/construct_bins.R $indir1 $outdir1 $fragLen $binSize FALSE
+rscripts/scripts/construct_bins.R $indir1 $outdir1 $fragLen $binSize FALSE
 

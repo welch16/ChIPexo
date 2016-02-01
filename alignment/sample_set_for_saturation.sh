@@ -6,7 +6,7 @@ minN=100000
 maxN=900000
 inc=100000
 isPET=FALSE
-seed=12345
+seed=2513
 
 outdir=$outdir/seed$seed
 mkdir $outdir
@@ -14,7 +14,7 @@ mkdir $outdir
 outdir=$outdir/samples
 mkdir $outdir
 
-rscripts/sample_from_experiment.R $indir/edsn1396_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
-rscripts/sample_from_experiment.R $indir/edsn1398_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
-rscripts/sample_from_experiment.R $indir/edsn1400_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
-rscripts/sample_from_experiment.R $indir/edsn1402_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1396_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1398_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1400_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed
+rscripts/scripts/sample_from_experiment.R $indir/edsn1402_Sig70.sort.bam $outdir $minN $maxN $inc $isPET $seed

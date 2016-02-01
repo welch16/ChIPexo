@@ -2,7 +2,7 @@
 
 indir=/p/keles/ChIPexo/volume6/saturation_rif
 fdr=.1
-seed=12345
+seed=12452
 
 indir1=$indir/ChIPseq_PET/seed$seed
 
@@ -19,5 +19,5 @@ peaksdir=$indir1/peaks/FDR$fdr
 
 for readsfile in $files
 do
-rscripts/call_binding_sites.R $readsfile $peaksdir $outdir1 TRUE 5
+rscripts/scripts/call_binding_sites.R $readsfile $peaksdir $outdir1 TRUE 5
 done
