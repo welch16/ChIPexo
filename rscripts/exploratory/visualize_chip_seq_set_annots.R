@@ -81,7 +81,7 @@ plot_regions <- function(reads,anchors,annots)
 
 plots <- lapply(reads,plot_regions,anchors,annots)
 
-pdf("figs/EColi_annots_rif_SE_ChIPseq.pdf",width = 9,height = 20)
+pdf("figs/profiles/EColi_annots_rif_SE_ChIPseq.pdf",width = 9,height = 20)
 for(k in 1:length(plots[[1]])){
   grid.arrange(plots[[1]][[k]],
                plots[[2]][[k]],
@@ -91,7 +91,7 @@ for(k in 1:length(plots[[1]])){
 dev.off()
 
 
-pdf("figs/EColi_annots_rif_more1BS_SE_ChIPseq.pdf",width = 9,height = 20)
+pdf("figs/profiles/EColi_annots_rif_more1BS_SE_ChIPseq.pdf",width = 9,height = 20)
 for(k in which(countOverlaps(anchors,annots) > 1)){
   grid.arrange(plots[[1]][[k]],
                plots[[2]][[k]],

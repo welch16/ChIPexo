@@ -9,7 +9,7 @@ library(gridExtra)
 
 dr <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo"
 files <- list.files(dr,recursive = TRUE)
-files <- files[grep("rif_treatment",files)]
+files <- files[grep("aero",files)]
 files <- files[grep("sort",files)]
 files <- files[grep("bai",files,invert = TRUE)]
 
@@ -82,7 +82,7 @@ plot_regions <- function(reads,anchors,annots)
 
 plots <- lapply(reads,plot_regions,anchors,annots)
 
-pdf("figs/profiles/EColi_annots_rif.pdf",width = 9,height = 20)
+pdf("figs/profiles/EColi_annots_aero.pdf",width = 9,height = 20)
 for(k in 1:length(plots[[1]])){
   grid.arrange(plots[[1]][[k]],
                plots[[2]][[k]],
@@ -92,7 +92,7 @@ for(k in 1:length(plots[[1]])){
 dev.off()
 
 
-pdf("figs/profiles/EColi_annots_rif_more1BS.pdf",width = 9,height = 20)
+pdf("figs/profiles/EColi_annots_aero_more1BS.pdf",width = 9,height = 20)
 for(k in which(countOverlaps(anchors,annots) > 1)){
   grid.arrange(plots[[1]][[k]],
                plots[[2]][[k]],

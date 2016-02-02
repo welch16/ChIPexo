@@ -7,7 +7,7 @@ library(data.table)
 library(grid)
 library(gridExtra)
 
-dr <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo"
+dr <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPseq_SET"
 files <- list.files(dr,recursive = TRUE)
 files <- files[grep("rif_treatment",files)]
 files <- files[grep("sort",files)]
@@ -17,10 +17,18 @@ reads <- mclapply(file.path(dr,files),readGAlignments,param = NULL,mc.cores = 4)
 reads <- lapply(reads,as,"GRanges")
 names(reads) <- sapply(strsplit(basename(files),"_"),function(x)x[1])
 
-
 reads <- lapply(reads,function(x){
   x <- resize(x,1)
   return(x)})
+
+peak_dir <- "/p/keles/ChIPexo/volume6/K12/downstream"
+pfiles <- list.files(peak_dir,recursive = TRUE)
+pfiles <- pfiles[grep("FDR5",pfiles)]
+
+peaks <- lapply(file.path(peak_dir,pfiles),read.table,header = FALSE)
+peaks <- lapply(peaks,function(x)IRanges(start  = x$V2,end = x$V3))
+
+peaks <- reduce(do.call(c,peaks))
 
 annot_dir <- "/p/keles/ChIPexo/volume6/K12/annotations"
 files <- list.files(annot_dir)
@@ -33,13 +41,10 @@ annots <- reduce(c(annots[[1]],annots[[2]]))
 width(annots) <- 1
 annots <- sort(annots)
 
-size <- 300
-anchors <- annots[which(diff(mid(annots)) > size)]
-center <- mid(anchors)
-start(anchors) <- center - size
-end(anchors) <- center + size
-start(anchors[1]) <- 1
+overlaps <- findOverlaps(peaks,annots)
 
+peaks <- peaks[unique(queryHits(overlaps))]
+start(peaks)[1] <- 1
 
 plot_regions <- function(reads,anchors,annots)
 {
@@ -80,9 +85,9 @@ plot_regions <- function(reads,anchors,annots)
 
 }
 
-plots <- lapply(reads,plot_regions,anchors,annots)
+plots <- lapply(reads,plot_regions,peaks,annots)
 
-pdf("figs/profiles/EColi_annots_rif.pdf",width = 9,height = 20)
+pdf("figs/profiles/EColi_peaks_rif_SE_ChIPseq.pdf",width = 9,height = 15)
 for(k in 1:length(plots[[1]])){
   grid.arrange(plots[[1]][[k]],
                plots[[2]][[k]],
@@ -90,18 +95,4 @@ for(k in 1:length(plots[[1]])){
                plots[[4]][[k]],nrow = 4)
 }
 dev.off()
-
-
-pdf("figs/profiles/EColi_annots_rif_more1BS.pdf",width = 9,height = 20)
-for(k in which(countOverlaps(anchors,annots) > 1)){
-  grid.arrange(plots[[1]][[k]],
-               plots[[2]][[k]],
-               plots[[3]][[k]],
-               plots[[4]][[k]],nrow = 4)
-}
-dev.off()
-
-
-
-
 
