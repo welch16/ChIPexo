@@ -7,6 +7,7 @@ load:
 clean:
 	rm -fr *~
 	rm -fr */*~
+	rm -fr */*/*~
 	rm -f .RDataTmp
 	rm -f .Rhistory
 	rm -f */.Rhistory

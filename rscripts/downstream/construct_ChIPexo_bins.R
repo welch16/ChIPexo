@@ -8,16 +8,13 @@ library(parallel)
 frag_len <- 150
 bin_size <- 150
 
-out_dir <- "/p/keles/ChIPexo/volume6/resolution"
-in_dir <- "/p/keles/ChIPexo/volume7/Landick/ChIPexo/rif_treatment"
-
-check_create <- function(dr)if(!dir.exists(dr))dir.create(dr)
+out_dir <- "/p/keles/ChIPexo/volume6/K12/downstream"
+in_dir <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo/rif_treatment"
 
 out_dir <- file.path(out_dir,"ChIPexo")
-check_create(out_dir)
-
 out_dir <- file.path(out_dir,"bins")
-check_create(out_dir)
+
+dir.create(out_dir,showWarnings = FALSE,recursive = TRUE)
 
 files <- c("edsn1311_Sig70.sort.bam","edsn1314_Sig70.sort.bam",
            "edsn1317_Sig70.sort.bam","edsn1320_Sig70.sort.bam")
