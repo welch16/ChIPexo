@@ -27,10 +27,32 @@ echo Threads used: $mc
 
 
 
-# bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1002-Sig-70-Lib_ACAGTG_L007_R1.fastq $outdir1/edsn931_Sig70.sam
-# bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1010-Sig-70-Lib_CAGATC_L007_R1.fastq $outdir1/edsn933_Sig70.sam
-# bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1003a-Sig-70-Lib_GATCAG_L007_R1.fastq $outdir1/edsn935_Sig70.sam
-# bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1003b-Sig-70-Lib_GGCTAC_L007_R1.fastq $outdir1/edsn937_Sig70.sam
+bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1002-Sig-70-Lib_ACAGTG_L007_R1.fastq $outdir1/edsn931_Sig70.sam
+bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1010-Sig-70-Lib_CAGATC_L007_R1.fastq $outdir1/edsn933_Sig70.sam
+bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1003a-Sig-70-Lib_GATCAG_L007_R1.fastq $outdir1/edsn935_Sig70.sam
+bowtie -q -m 1 -l 55 -k 1 -5 3 -3 40 --best -S -p $mc $index $indir1/run299.456-166-1003b-Sig-70-Lib_GGCTAC_L007_R1.fastq $outdir1/edsn937_Sig70.sam
+
+# reads processed: 16846671
+# reads with at least one reported alignment: 13961493 (82.87%)
+# reads that failed to align: 2164204 (12.85%)
+# reads with alignments suppressed due to -m: 720974 (4.28%)
+# Reported 13961493 alignments to 1 output stream(s)
+# reads processed: 17268284
+# reads with at least one reported alignment: 14810838 (85.77%)
+# reads that failed to align: 1788229 (10.36%)
+# reads with alignments suppressed due to -m: 669217 (3.88%)
+# Reported 14810838 alignments to 1 output stream(s)
+# reads processed: 18868657
+# reads with at least one reported alignment: 16108774 (85.37%)
+# reads that failed to align: 1622603 (8.60%)
+# reads with alignments suppressed due to -m: 1137280 (6.03%)
+# Reported 16108774 alignments to 1 output stream(s)
+# reads processed: 16423038
+# reads with at least one reported alignment: 13636541 (83.03%)
+# reads that failed to align: 1795625 (10.93%)
+# reads with alignments suppressed due to -m: 990872 (6.03%)
+# Reported 13636541 alignments to 1 output stream(s)
+
 
 ## new files
 
