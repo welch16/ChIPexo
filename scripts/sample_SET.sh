@@ -1,8 +1,8 @@
 #!/bin/sh
 
 basedir=/p/keles/ChIPexo/volume7/Landick
-indir=$basedir/ChIPseq_PET/rif_treatment
-outdir=$basedir/ChIPseq_SET/rif_treatment
+indir=$basedir/K12/ChIPseq_PET/rif_treatment
+outdir=$basedir/K12/ChIPseq_SET/rif_treatment
 
 rscripts/scripts/generate_SET.R $indir/edsn1369_Input.sort.bam $outdir/edsn1369_Input.bam
 rscripts/scripts/generate_SET.R $indir/edsn1396_Sig70.sort.bam $outdir/edsn1396_Sig70.bam
