@@ -11,7 +11,7 @@ dr <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPseq_SET"
 files <- list.files(dr,recursive = TRUE)
 files <- files[grep("rif_treatment",files)]
 files <- files[grep("sort",files)]
-files <- files[grep("bai",files,invert = TRUE)]
+files <- files[grep("bai",files,invert = TRUE)][-1]
 
 reads <- mclapply(file.path(dr,files),readGAlignments,param = NULL,mc.cores = 4)
 reads <- lapply(reads,as,"GRanges")
@@ -23,6 +23,7 @@ reads <- lapply(reads,function(x){
 
 peak_dir <- "/p/keles/ChIPexo/volume6/K12/downstream"
 pfiles <- list.files(peak_dir,recursive = TRUE)
+pfiles <- pfiles[grep("peaks",pfiles)]
 pfiles <- pfiles[grep("FDR5",pfiles)]
 
 peaks <- lapply(file.path(peak_dir,pfiles),read.table,header = FALSE)
