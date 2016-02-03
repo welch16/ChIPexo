@@ -9,10 +9,10 @@ petdir=$basedir/K12/ChIPseq_PET/rif_treatment
 
 ## old alignments ChIPexo
 
-# scripts/format_bam.sh $exodir1/edsn931_Sig70.sam
-# scripts/format_bam.sh $exodir1/edsn933_Sig70.sam
-# scripts/format_bam.sh $exodir1/edsn935_Sig70.sam
-# scripts/format_bam.sh $exodir1/edsn937_Sig70.sam
+scripts/format_bam.sh $exodir1/edsn931_Sig70.sam
+scripts/format_bam.sh $exodir1/edsn933_Sig70.sam
+scripts/format_bam.sh $exodir1/edsn935_Sig70.sam
+scripts/format_bam.sh $exodir1/edsn937_Sig70.sam
 
 ## new alignments ChIPexo
 

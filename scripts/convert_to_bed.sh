@@ -1,6 +1,6 @@
 #!/bin/sh
 
-basedir=/p/keles/ChIPexo/volume7/Landick/ChIPexo
+basedir=/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo
 
 indir=$basedir/rif_treatment
 outdir=$basedir/bedfiles

@@ -11,12 +11,14 @@ load_all("~/Desktop/Docs/Code/dpeak")
 
 frag_len <- 150
 bin_size <- 150
-fdr <- .1
+fdr <- .05
 Gstar <- 5
 mc <- 24
 
-out_dir <- "/p/keles/ChIPexo/volume6/resolution/ChIPseq_SET"
-in_dir <- "/p/keles/ChIPexo/volume7/Landick/ChIPseq_SET/rif_treatment"
+
+in_dir <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPseq_SET/rif_treatment"
+out_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPseq_SET"
+
 peak_dir <- file.path(out_dir,"peaks",paste0("FDR",fdr*100))
 
 files <- c("edsn1396_Sig70.sort.bam","edsn1398_Sig70.sort.bam",
