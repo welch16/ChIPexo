@@ -10,7 +10,7 @@ dr <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPseq_SET"
 files <- list.files(dr,recursive = TRUE)
 files <- files[grep("rif_treatment",files)]
 files <- files[grep("sort",files)]
-files <- files[grep("bai",files,invert = TRUE)]
+files <- files[grep("bai",files,invert = TRUE)][-1]
 
 reads <- mclapply(file.path(dr,files),readGAlignments,param = NULL,mc.cores = 4)
 reads <- lapply(reads,as,"GRanges")
