@@ -70,7 +70,7 @@ sample_bam <- function(outfile,N,file,isPET){
   param <- NULL
   if(isPET){
     pairs <- readGAlignmentPairs(file,param = NULL,use.names = TRUE)
-    want <- sample(names(pairs),N)
+    want <- sample(names(pairs),floor(N/2))
   }else{
     reads <- readGAlignments(file,param = NULL,use.names = TRUE)
     want <- sample(names(reads),N)
@@ -80,8 +80,9 @@ sample_bam <- function(outfile,N,file,isPET){
   out <- filterBam(file,outfile,filter = filter,param = ScanBamParam(what = "qname"))
 }
 
+txt_samps <- paste0(samps / 1000,"K")
 outfiles <- gsub(".sort.bam","",basename(infile))
-outfiles <- paste0(outfiles,"_samp",samps,"_",seed,".bam")
+outfiles <- paste0(outfiles,"_samp",txt_samps,"_",seed,".bam")
 outfiles <- file.path(outdir,outfiles)
 
 a = mcmapply(sample_bam,outfiles,samps,MoreArgs = list(infile,isPET),

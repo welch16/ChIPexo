@@ -53,16 +53,15 @@ nCore <- detectCores()
 files <- list.files(indir)
 
 if(what == "exo"){
-  extra <- file.path("/p/keles/genome_data/EColi_U00096.2",
+  extra <- file.path("/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo/peak_inputs",
     c("mappability","GC","N"),
-    "bin",
-    c("fragL150_bin150_32mer_single/E.coli_K-12_MG1655_GENOME_fragL150_bin150.txt",
-    "fragL150_bin150/E.coli_K-12_MG1655_GENOME_GC_fragL150_bin150.txt",
-    "fragL150_bin150/E.coli_K-12_MG1655_GENOME_N_fragL150_bin150.txt"))
+    c("E.coli_K-12_MG1655_GENOME_fragL150_bin150.txt",
+      "E.coli_K-12_MG1655_GENOME_GC_fragL150_bin150.txt",
+      "E.coli_K-12_MG1655_GENOME_N_fragL150_bin150.txt"))
 }else if(what == "pet"){
-  extra <- "/p/keles/ChIPexo/volume6/resolution/inputs/ChIPseq_PET/edsn1369_Input.sort.bam_bin150.txt"
+  extra <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPseq_PET/bins/edsn1369_INput.sort.bam_bin150.txt"  
 }else{
-  extra <- "/p/keles/ChIPexo/volume6/resolution/inputs/ChIPseq_SET/edsn1369_Input.sort.bam_fragL150_bin150.txt"
+  extra <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPseq_PET/bins/edsn1369_INput.sort.bam_fragL150_bin150.txt"
 }
 
 call_peaks <- function(binfile,extra,what,fdr)
