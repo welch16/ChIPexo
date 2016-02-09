@@ -19,11 +19,12 @@ extract_info <- function(file)
   return(readMatrix$nAligns)
 }
 
-exofiles <- files[grep("exo",files)]
-nreads <- sapply(file.path(dr,exofiles),extract_info)
+nreads <- sapply(file.path(dr,files),extract_info)
+nreads <- split(nreads,1:length(nreads) %% 4)
+nreads2sample <- sapply(nreads,min)
 
-nreads2sample <- 1e3 * floor(nreads / 1e3)
 
+nreads2sample <- 1e3 * floor(nreads2sample / 1e3)
 files <- split(file.path(dr,files),1:length(files) %% 4)
 
 sample_commands <- function(files,nreads,outdr,isPET,seed)
