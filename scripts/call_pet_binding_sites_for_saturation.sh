@@ -1,8 +1,8 @@
 #!/bin/sh
 
-indir=/p/keles/ChIPexo/volume6/saturation_rif
+indir=/p/keles/ChIPexo/volume6/K12/saturation
 fdr=.1
-seed=12452
+seed=$1
 
 indir1=$indir/ChIPseq_PET/seed$seed
 

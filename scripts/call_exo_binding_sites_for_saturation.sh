@@ -1,6 +1,6 @@
 #!/bin/sh
 
-indir=/p/keles/ChIPexo/volume6/K12/saturation/ChIPexo
+indir=/p/keles/ChIPexo/volume6/K12/saturation
 fdr=.1
 seed=$1
 
