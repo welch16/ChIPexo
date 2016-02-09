@@ -1,12 +1,12 @@
 #!/bin/sh
 
-indir=/p/keles/ChIPexo/volume7/Landick/ChIPseq_PET/rif_treatment
-outdir=/p/keles/ChIPexo/volume6/saturation_rif/ChIPseq_PET
+indir=/p/keles/ChIPexo/volume7/Landick/K12/ChIPseq_PET/rif_treatment
+outdir=/p/keles/ChIPexo/volume6/K12/saturation/ChIPseq_PET
 minN=100000
 maxN=900000
 inc=100000
 isPET=TRUE
-seed=12452
+seed=$1
 
 outdir=$outdir/seed$seed
 mkdir $outdir
