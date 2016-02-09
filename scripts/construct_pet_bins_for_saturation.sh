@@ -1,9 +1,9 @@
 #!/bin/sh
 
-indir=/p/keles/ChIPexo/volume6/saturation_rif
+indir=/p/keles/ChIPexo/volume6/K12/saturation
 fragLen=150
 binSize=150
-seed=12452
+seed=$1
 
 indir2=$indir/ChIPseq_PET/seed$seed
 outdir2=$indir2/bins
