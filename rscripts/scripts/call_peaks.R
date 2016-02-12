@@ -59,9 +59,9 @@ if(what == "exo"){
       "E.coli_K-12_MG1655_GENOME_GC_fragL150_bin150.txt",
       "E.coli_K-12_MG1655_GENOME_N_fragL150_bin150.txt"))
 }else if(what == "pet"){
-  extra <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPseq_PET/bins/edsn1369_INput.sort.bam_bin150.txt"  
+  extra <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPseq_PET/bins/edsn1369_Input.sort.bam_bin150.txt"  
 }else{
-  extra <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPseq_PET/bins/edsn1369_INput.sort.bam_fragL150_bin150.txt"
+  extra <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPseq_SET/bins/edsn1369_Input.sort.bam_fragL150_bin150.txt"
 }
 
 call_peaks <- function(binfile,extra,what,fdr)
