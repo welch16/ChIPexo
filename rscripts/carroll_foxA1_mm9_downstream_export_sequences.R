@@ -27,7 +27,8 @@ sequences <- lapply(anchors,function(x)
 
 nms <- lapply(sites,function(x)x[,paste0(chrID,":",start,"-",end)])
 
+
 fasta_formats <- mapply(function(nms,seqs)paste0(">",nms,"\n",seqs),nms,sequences,SIMPLIFY = FALSE)
 
-mapply(write.table,fasta_formats,file.path(dirname(sitedir),gsub("sites.txt","sequences.fa",files)),
+mapply(write.table,fasta_formats,file.path(dirname(sitedir),"sequences",gsub("sites.txt","sequences.fna",files)),
   MoreArgs = list(quote = FALSE,row.names = FALSE,col.names = FALSE))
