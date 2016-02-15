@@ -80,6 +80,14 @@ rmarkdown/chip_exo_paper.pdf:rmarkdown/chip_exo_paper.tex figs/for_paper/Sig70_a
 rmarkdown/chip_exo_paper.tex:rmarkdown/chip_exo_paper.Rnw figs/for_paper/Sig70_aerobic_saturation.pdf figs/for_paper/coverage_diagram.pdf
 	cd rmarkdown;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
 
+rmarkdown/paper.pdf:rmarkdown/paper.tex
+	cd rmarkdown;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
+
+rmarkdown/paper.tex:rmarkdown/paper.Rnw
+	cd rmarkdown;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
+
+
+
 rmarkdown/slides.pdf:rmarkdown/slides.tex 
 	cd rmarkdown;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
 

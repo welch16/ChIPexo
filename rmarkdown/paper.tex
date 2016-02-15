@@ -1,0 +1,382 @@
+% \VignetteEngine{knitr::knitr}
+\documentclass{bmcart}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks   = true,
+     citecolor    = black
+}
+\hypersetup{linkcolor=black}
+% \hypersetup{linkcolor=black}
+% \hypersetup{linkcolor=black}
+
+
+
+% \usepackage{authblk}
+\usepackage[utf8]{inputenc} %unicode support
+
+\newcommand{\sig}{\sigma^{70}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+%\maketitle
+
+
+\begin{frontmatter}
+
+\begin{fmbox}
+\dochead{Draft}
+
+\title{High Resolution Identification of Protein-DNA Binding
+  Events and Quality Control for ChIP-exo data}
+
+\author[
+   addressref={aff6},                   % id's of addresses, e.g. {aff1,aff2}
+   email={chungd@musc.edu}   % email address
+]{\inits{DC}\fnm{Dongjun} \snm{Chung}}
+\author[
+   addressref={aff1},
+   email={welch@stat.wisc.edu}
+]{\inits{RW}\fnm{Rene} \snm{Welch}}
+\author[
+   addressref={aff3},
+   email={ong@cs.wisc.edu}
+]{\inits{IO}\fnm{Irene} \snm{Ong}}
+\author[
+   addressref={aff3,aff4},
+   email={jagrass@wisc.edu}
+]{\inits{JG}\fnm{Jeffrey} \snm{Grass}}
+\author[
+   addressref={aff3,aff4,aff5},
+   email={landick@bact.wisc.edu}
+]{\inits{RL}\fnm{Robert} \snm{Landick}}
+\author[
+   addressref={aff1,aff2},
+   corref={aff1},
+   email={keles@stat.wisc.edu}
+]{\inits{SK}\fnm{S\"und\"uz} \snm{Kele\c{s}}}
+
+
+
+\address[id=aff1]{%                           % unique id
+  \orgname{Department of Statistics, University of Wisconsin Madison}, % university, etc
+  \street{1300 University Avenue},                     %
+  %\postcode{}                                % post or zip code
+  \city{Madison},                              % city
+  \cny{WI}                                    % country
+}
+
+\address[id=aff2]{%
+  \orgname{Department of Biostatistics and Medical Informatics, University of Wisconsin Madison},
+  \street{600 Highland Avenue},
+%  \postcode{24105}
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff3]{
+  \orgname{Great Lakes Bioenergy Research Center, University of Wisconsin Madison},
+  \street{1552 University Avenue},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff4]{
+  \orgname{Department of Biochemistry, University of Wisconsin Madison},
+  \street{433 Babcock Drive},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff5]{
+  \orgname{Department of Bacteriology, University of Wisconsin Madison},
+  \street{1550 Linden Drive},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff6]{
+  \orgname{Department of Public Health Sciences, Medical University of South Carolina},
+  \street{135 Cannon Street},
+  \city{Charleston},
+  \cny{SC}
+}
+
+
+% \begin{artnotes}
+% %\note{Sample of title note}     % note to the article
+% \note[id=n1]{Equal contributor} % note, connected to author
+% \end{artnotes}
+
+
+\end{fmbox}
+
+\begin{abstractbox}
+
+  \begin{abstract}
+
+  ChIP-exo is a modification of the ChIP-Seq protocol for high
+  resolution mapping of transcription factor binding sites. Although
+  many aspect of the ChIP-exo data analysis are similar to those of
+  ChIP-Seq, ChIP-exo presents a number of unique challenges. We
+  present a quality control pipeline that analyzes ChIP-exo's strand
+  imbalance and library complexity. Assessment of these biases and
+  artifacts are facilitated through diagnostic plots and summary
+  statistics calculated over regions of the genome with varying levels
+  of coverage.
+
+  We systematically evaluated diverse aspects of ChIP-exo and found
+  the following characteristics: First, ChIP-exo's background is quite
+  different from ChIP-Seq's. Second, although often assumed in
+  ChIP-exo data analysis methods, the ``peak pair'' assumptions does
+  not hold locally in actual ChIP-exo data. Third, we for the first
+  time compared Paired End (PE) ChIP-Seq with ChIP-exo and found that
+  both protocols are comparable in resolutions and sensitivity for
+  closely located binding events, but as the distance between binding
+  events increases ChIP-exo shows higher sensitivity that PE
+  ChIP-Seq. Finally, at fixed sequencing depths, ChIP-exo provides
+  higher sensitivity, specificity and spatial resolution than PE
+  ChIP-Seq.
+
+  \end{abstract}
+
+\begin{keyword}
+  \kwd{ChIP-exo}
+  \kwd{QC}
+  \kwd{TFBS}
+  \kwd{BS identification on High-Res}
+\end{keyword}
+
+\end{abstractbox}
+
+\end{frontmatter}
+
+\newpage
+
+\listoffigures
+
+\newpage
+
+\listoftables
+
+\newpage
+
+\section{Background}
+\label{sec:intro}
+
+ChIP-exo (Chromatin Immunoprecipitation followed by exonuclease
+digestion and next generation sequencing) Rhee and Pugh, 2011
+\cite{exo1} is the state-of-the-art experiment developed to attain
+single base-pair resolution of protein binding site identification and
+it is considered as a powerful alternative to popularly used ChIP-Seq
+(Chromatin Immunoprecipitation coupled with next generation
+sequencing) assay. ChIP-exo experiments first capture millions of DNA
+fragments (150 -250 bp in length) that the protein under study
+interacts with using random fragmentation of DNA and a
+protein-specific antibody. Then, exonuclease is introduced to trim the
+5' end of each DNA fragment to a fixed distance from the bound protein
+compared to ChIP-Seq. This step is unique to ChIP-exo and could
+potentially provide significantly higher spatial resolution compared
+to ChIP-Seq. Finally, high throughput sequencing of a small region (25
+to 100 bp) at the 5' end of each fragment generates millions of reads.
+
+While the number of ChIP-exo data keeps increasing,characteristics of
+ChIP-exo data are not fully investigated yet. First, DNA libraries
+generated by the ChIP-exo protocol seem to be less complex than the
+libraries generated by ChIP-Seq (Mahony et al., 2015,
+\cite{exo_review}), i.e. the possible number of positions to which the
+reads can be aligned has been reduced due to the exonuclease
+digestion. Second, although there are roughly the same amount of read
+in both strands, locally there may be more reads in one strand than in
+the other. To address this challenges, we suggest a collection of
+quality control visualizations to understand which of this biases are
+present in a ChIP-exo experiment and globally asses the enrichment and
+library complexity of a ChIP-exo sample. We gathered ChIP-exo data from
+diverse organisms: CTCF factor in human \cite{exo1}; ER factor in
+human and FoxA1 factor in mouse (Serandour et al., 2013
+\cite{exoillumina}); and generated $\sig$ factor in Escherichia Coli
+(\emph{E. Coli}) under aerobic ($ + O_2$) condition, and treated by
+rifampicin by 0 and 20 minutes (courtesy of Professor Robert Landick's
+lab). %% note to self, we may add more experiments here
+
+Most of current ChIP-Seq quality control (QC) guidelines (Landt et
+al., \cite{encode_qc}) may not be applicable on ChIP-exo, additionally
+to our knowledge there are not established QC pipelines for
+ChIP-exo. Previous ChIP-exo analyses used ChIP-Seq samples to compare
+the resolution between experiments (\cite{exo1}, \cite{exo2},
+\cite{exoillumina}); Carroll et al., 2014 \cite{carroll.qc} studied
+the use of the Strand-Cross Correlation (SCC) (Kharchenko et al., 2008
+\cite{strandcc}) and showed that by filtering blacklisted regions the
+estimation of the SCC is improved. However, using the SCC may not be
+helpful since the peaks that are attained at the read and fragment
+lengths are confused in a typical ChIP-exo SCC curve. Additionally
+this method requires to know blacklisted regions in advance which may
+not be available. In our pipeline we propose an out-the-shelf analysis
+that contrasts the enrichment of the experiment against its library
+complexity.
+
+In order to obtain the potential benefits of ChIP-exo on protein
+binding site identification, it is critical to understand which are
+the important characteristics of ChIP-exo data and to use algorithms
+that could fully utilize information available in ChIP-exo data. Rhee
+and Pugh, 2011 \cite{exo1} discussed that reads in the forward and
+reverse strand might construct peak pairs around bound proteins, of
+which heights were implicitly assumed to be symmetric. Hence, they
+used the ``peak pair method'' that predicts the midpoint of two modes
+of peak pairs as potential binding sites. Mace (Wang et al, 20114
+\cite{mace}), CexoR (Madrigal, 2015 \cite{cexor}) and peakzilla
+(Bardet et al., 2013 \cite{peakzilla}), recently developed ChIP-exo
+data analysis methods are also based on this peak pair
+assumption. However, appropriateness of such assumption was not fully
+evaluated in the literature yet. Furthermore, it is still unknown
+which factors could affect protein binding site identification using
+ChIP-exo data. In order to address this problem, we investigated
+various aspects of ChIP-exo data by contrasting them with their
+respective ChIP-Seq experiments.
+
+Currently, research on statistical methods for ChIP-exo data is still
+in its very early stage. Although many methods have been proposed to
+identify protein binding sites from ChIP-Seq data (reviewed by
+Wilbanks and Facciotti, 2012 \cite{evaluation} and Pepke and Wold,
+2009 \cite{computation}), such as MACS (Zhang et al., 2008
+\cite{macs}), CisGenome (Ji et al., 2008 \cite{cisgenome}) and MOSAiCS
+(Kuan et al., 2009 \cite{mosaics}), these approaches reveal protein
+binding sites in lower resolution, i.e., at an interval of hundreds to
+thousands of base pairs. Furthermore, they report only one ``mode'' or
+``predicted binding location'' per peak. Hence, these methods are not
+appropriate to evaluate the potential of ChIP-exo data for high
+resolution identification of protein binding sites. More recently,
+deconvolution algorithms such as Deconvolution (Lun et al., 2009
+\cite{csdeconv}), GEM (Guo et al., 2012 \cite{gem}, an improved
+version of Guo et al., 2010 \cite{gps} ) and PICS (Zhang et al., 2010
+\cite{pics}) have been proposed to identify binding sites in higher
+resolution using ChIP-Seq data. However, most of them are still not
+tailored for ChIP-exo and PE and SE ChIP-Seq data in a unified
+framework and as a result, currently available methods are not
+appropriate for fair comparison between ChIP-exo and ChIP-Seq. To
+address these limitations, we developed an improved of dPeak (Chung et
+al., 2013 \cite{dpeak}), a high resolution binding site identification
+(deconvolution) algorithm that we previously developed for PE and SE
+ChIP-Seq data, so that it can also handle ChIP-exo data. The dPeak
+algorithm implements a probabilistic model that accurately describes
+the ChIP-exo and ChIP-Seq data generation process.
+
+In this work we demonstrate that the ``peak pair'' assumption of Rhee
+and Pugh, 2013 \cite{exo2} does not hold well in real ChIP-exo
+data. Furthermore, we found that when we analyze ChIP-exo data from
+eukaryotic genomes, it is important to consider sequence biases
+inherent to ChIP-exo data, such as mappability and GC content in order
+to improve sensitivity and specificity of binding site
+identification. We evaluated several methods to identify binding events
+and dPeak performs competitively respect to GEM and MACE when
+analyzing ChIP-exo data. More importantly, when comparable number of
+reads is used for both ChIP-exo and ChIP-Seq , dPeak coupled with
+ChIP-exo data provides resolution comparable to PE ChIP-Seq and both
+significantly improve the resolution of protein binding identification
+compared to SE-based analysis with any of the available methods.
+
+\section{Results and discussion}
+\label{sec:results}
+
+\subsection{Deeply sequence E. Coli $\sig$ ChIP-exo and ChIP-Seq data}
+ 
+$\sig$ factor is a transcription initiation factor of housekeeping
+genesin E. Coli. In this organism's genomes, many promoters contain
+multiple transcription start sites (TSS) and these TSS are often
+closely spaced (10 $\sim$ 150 bp). These closely spaced binding sites
+are considered to be multiple ``switches'' that differentially
+regulate gene expression under diverse growth conditions
+\cite{regulondb}. Therefore, investigation of ChIP-exo's potential for
+identification and differentiation of closely spaced binding sites are
+invaluable for elucidating the transcriptional networks of prokaryotic
+genomes.
+
+\subsection{Current ChIP-Seq guidelines and quality metrics on ChIP-exo data}
+
+We calculated the most commonly used quality indicators (list in table
+\ref{tab:qc}) for ChIP-Seq data using all the ChIP-exo data we
+gathered. The PCR Bottleneck Coefficient (PBC) and the Normalized
+Strand Cross-Correlation (NSC) are calculated as in \cite{encode_qc}.
+Additionally, we calculated the Forward Strand Ratio (FSR) to comped
+the number of fragments sequenced from each strand. We can observe
+that the PBC is low, hence it would be incorrectly suggested to repeat
+the experiment.
+
+\begin{table}[H]
+  \centering
+  \caption{Usual quality control indicators applied to the gathered ChIP-exo samples. 
+    PBC stands for PCR Bottleneck Coefficient, NSC for Normalized Strand Cross-Correlation and
+    FSR for Forward Strand Ratio. We ommited the Relative Strand Cross-Correlation (RSC) because
+    a typical ChIP-exo experiment is not accompanied by an input file.}
+  \label{tab:qc}
+\end{table}
+
+
+\bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
+\bibliography{chip_exo_paper}
+
+% \nocite{exo_gb}
+%  \nocite{maplot1}
+% \nocite{maplot2}
+% \nocite{chipbeyond}
+% \nocite{esl}
+
+
+
+\end{document}
+
