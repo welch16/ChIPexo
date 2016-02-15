@@ -6,6 +6,7 @@ vignettes/*Rmd
 *.pdf
 *.csv
 vignettes/*
+rmarkdown/*
 data/*
 .Rbuildignore
 .Rinstignore
