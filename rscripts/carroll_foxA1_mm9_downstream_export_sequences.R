@@ -11,7 +11,27 @@ files <- list.files(sitedir)
 sites <- lapply(file.path(sitedir,files),read.table,header = TRUE)
 sites <- lapply(sites,data.table)
 
-bandwidth <- 50
+peakdir <- "/p/keles/ChIPexo/volume4/carroll_data/mouse/peaks"
+peaks <- list.files(peakdir)
+peaks <- lapply(file.path(peakdir,peaks),read.table)
+peaks <- lapply(peaks,data.table)
+peaks <- lapply(peaks,function(x){
+  setnames(x,names(x),c("chrID","peakStart",
+                        "peakStop","peakSize",
+                        "logAveP","logMinP","aveLogP",
+                        "aveChipCount","maxChipCount","map","GC"))
+  x})
+peaks <- lapply(peaks,function(x)x[,peakID := paste0(chrID,":",peakStart,"-",peakStop)])
+
+lapply(peaks,function(x)x[,summary(aveChipCount)])
+
+peaks <- lapply(peaks,function(x)x[aveChipCount > 250])
+
+ids <- lapply(peaks,function(x)x[,(peakID)])
+
+sites <- mapply(function(x,y)x[peakID %in% y],sites,ids,SIMPLIFY= FALSE)
+
+bandwidth <- 10
 
 anchors <- lapply(sites,function(x,bw){
   summits <- x[,mid(IRanges(start = start,end = end))]

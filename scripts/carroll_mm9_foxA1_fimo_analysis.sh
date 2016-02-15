@@ -38,15 +38,6 @@ fimo -oc $outdir/fimo/ERR336935_FOXA2_$db --motif $motif $motifdb $seqdir/ERR336
 fimo -oc $outdir/fimo/ERR336942_FOXA2_$db --motif $motif $motifdb $seqdir/ERR336942_sequences.fna
 fimo -oc $outdir/fimo/ERR336956_FOXA2_$db --motif $motif $motifdb $seqdir/ERR336956_sequences.fna
 
-
-db=zhao2011.meme
-motif=UP00073
-
-motifdb=$motifdr/$db
-fimo -oc $outdir/fimo/ERR336935_FOXA2_$db --motif $motif $motifdb $seqdir/ERR336935_sequences.fna
-fimo -oc $outdir/fimo/ERR336942_FOXA2_$db --motif $motif $motifdb $seqdir/ERR336942_sequences.fna
-fimo -oc $outdir/fimo/ERR336956_FOXA2_$db --motif $motif $motifdb $seqdir/ERR336956_sequences.fna
-
 db=uniprobe_mouse.meme
 motif=UP00073_1
 
