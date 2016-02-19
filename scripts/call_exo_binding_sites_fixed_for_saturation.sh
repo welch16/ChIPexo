@@ -23,6 +23,6 @@ peaksfile=$(ls $peaksdir/edsn$edsn*900K*)
 
 for readsfile in $files
 do
-rscripts/scripts/call_binding_sites.R $readsfile $peaksdir $outdir1 FALSE 5
+rscripts/scripts/call_binding_sites_fixed_peaks.R $readsfile $peaksfile $outdir1 FALSE 5
 done
 
