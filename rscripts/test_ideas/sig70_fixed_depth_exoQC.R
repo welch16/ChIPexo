@@ -28,20 +28,22 @@ stats <- mapply(function(x,y)x[,file := y],stats,names(stats),SIMPLIFY = FALSE)
 STAT <- do.call(rbind,stats)
 STAT[,file := gsub(".bam","",file)]
 STAT[,edsn := sapply(strsplit(file,"_",fixed = TRUE),function(x)x[1])]
+STAT[,samp := sapply(strsplit(file,"_",fixed = TRUE),function(x)x[3])]
+STAT[,samp := gsub("samp","",samp)]
 setkey(STAT,edsn)
 
 library(scales)
 r <- viridis::viridis(100,option = "D")
 
-pdf(file = "figs/sig70_rif_enrichment.pdf",height = 12,width = 12)
+pdf(file = "figs/saturation/K12_alignment/sig70_rif_enrichment.pdf",height = 12,width = 12)
 p <- ggplot(STAT["edsn1311"],aes(ave_reads,cover_rate))+stat_binhex(bins = 50)+
-  facet_wrap( ~ file,ncol = 3)+scale_fill_gradientn(colours = r,trans = "log10",
+  facet_wrap( ~ samp,ncol = 3)+scale_fill_gradientn(colours = r,trans = "log10",
     labels = trans_format("log10",math_format(10^.x)))+xlim(0,3)+ylim(0,1)+
   theme_bw()+theme(legend.position = "top")+
   xlab("Average read coverage")+
   ylab("Unique read coverage rate")
-p
-p %+% STAT["edsn1314"]
-p %+% STAT["edsn1317"]
-p %+% STAT["edsn1320"]
+p # + ggtitle("Rep-1 and rif-0min")
+p %+% STAT["edsn1314"]# + ggtitle("Rep-1 and rif-20min")
+p %+% STAT["edsn1317"]# + ggtitle("Rep-2 and rif-0min")
+p %+% STAT["edsn1320"]# + ggtitle("Rep-2 and rif-20min")
 dev.off()
