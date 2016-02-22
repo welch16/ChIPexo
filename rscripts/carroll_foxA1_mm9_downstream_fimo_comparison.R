@@ -122,10 +122,10 @@ dev.off()
 ## x-axis =  -log10(p.value)
 ## y-axis = nr (or prop) of motifs with p.value below that
 
-pvals <- sort(-log10(DT[,(p.value)]))
+pvals <- sort(DT[,(p.value)])
 nmotifs <- lapply(pvals,function(p,DT,DTsummary){
   base <- data.table(rep = paste0("Rep-",1:3), cumMotif = 0)
-  out <- DT[-log10(p.value) <=  p][,.(cumMotif = length(pattern)),by = rep]
+  out <- DT[p.value <=  p][,.(cumMotif = length(pattern)),by = rep]
   if(nrow(out) == 0){
     out <- base
   }else if(nrow(out) < 3){
@@ -140,7 +140,7 @@ nmotifs <- lapply(pvals,function(p,DT,DTsummary){
 nmotifs <- do.call(rbind,nmotifs)
 
 pdf(file = file.path(figs_dir,"FOXA1_log10pval_cumulative_nmotifs.pdf"))
-p <- ggplot(nmotifs,aes(p , motif_perc_cumm,colour = rep))+geom_line()+theme_bw()+
+p <- ggplot(nmotifs,aes(-log10(p) , motif_perc_cumm,colour = rep))+geom_line()+theme_bw()+
   theme(legend.position = "top")+
   scale_color_brewer(palette = "Set1",guide = guide_legend(title = "Replicate"))+
   scale_y_continuous(labels = percent)+xlab("-log10(p.value)")+
