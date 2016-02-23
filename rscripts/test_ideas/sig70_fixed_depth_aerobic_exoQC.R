@@ -1,0 +1,46 @@
+
+rm(list = ls())
+
+library(devtools)
+library(parallel)
+library(GenomicAlignments)
+library(data.table)
+library(viridis)
+library(hexbin)
+
+load_all("~/Desktop/Docs/Code/ChIPexoQual")
+
+indir <- "/p/keles/ChIPexo/volume6/K12/saturation_QC/aerobic_vs_anaerobic/seed12345"
+files <- list.files(indir,recursive = TRUE)
+files <- files[grep("bam",files)]
+files <- files[grep("bai",files,invert = TRUE)]
+files <- files[grep("samples",files)]
+files <- files[grep("12345",files)]
+
+exo <- mclapply(file.path(indir,files),create_exo_experiment,calc_summary = TRUE,parallel = FALSE,mc.cores = 24)
+names(exo) <- basename(files)
+
+stats <- lapply(exo,summary_stats)
+
+stats <- mapply(function(x,y)x[,file := y],stats,names(stats),SIMPLIFY = FALSE)
+
+STAT <- do.call(rbind,stats)
+STAT[,file := gsub(".bam","",file)]
+STAT[,edsn := sapply(strsplit(file,"_",fixed = TRUE),function(x)x[1])]
+STAT[,samp := sapply(strsplit(file,"_",fixed = TRUE),function(x)x[3])]
+STAT[,samp := gsub("samp","",samp)]
+setkey(STAT,edsn)
+
+library(scales)
+r <- viridis::viridis(100,option = "D")
+
+pdf(file = "figs/saturation/K12_alignment/sig70_aerobic_enrichment.pdf",height = 12,width = 12)
+p <- ggplot(STAT["edsn931"],aes(ave_reads,cover_rate))+stat_binhex(bins = 50)+
+  facet_wrap( ~ samp,ncol = 3)+scale_fill_gradientn(colours = r,trans = "log10",
+    labels = trans_format("log10",math_format(10^.x)))+xlim(0,2)+ylim(0,1)+
+  theme_bw()+theme(legend.position = "top")+
+  xlab("Average read coverage")+
+  ylab("Unique read coverage rate")
+p # + ggtitle("Rep-1 and rif-0min")
+p %+% STAT["edsn933"]# + ggtitle("Rep-1 and rif-20min")
+dev.off()
