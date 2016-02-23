@@ -1,22 +1,25 @@
 
 rm(list = ls())
-
 library(data.table)
 
-base_dir <- "/p/keles/ChIPexo/volume6/resolution"
+basedir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo"
 
-files <- list.files(base_dir,recursive = TRUE)
-files <- files[grep("exo",files)]
+files <- list.files(basedir,recursive = TRUE)
 files <- files[grep("peaks",files)]
 
-gem_dir <- "inst/gem_analysis"
+gem_dir <- "/p/keles/ChIPexo/volume6/K12/other_methods/gem/peaks"
 
-outfiles <- strsplit(files,"/",fixed = TRUE)
-outfiles <- sapply(outfiles,function(x){
-  out <- gsub("_peaks.txt",paste0("_",x[3],"_gem.txt"),x[4])
-  return(out)})
+outfiles <- basename(files)
 
-peaks <- lapply(file.path(base_dir,files),read.table)
+sep_files <- strsplit(files,"/",fixed = TRUE)
+fdr <- sapply(sep_files,function(x)x[2])
+
+outfiles <- mapply(function(infile,fdr){
+  out <- gsub("_peaks",paste0("_peaks_",fdr),infile)
+  out},outfiles,fdr)
+names(outfiles) <- NULL
+
+peaks <- lapply(file.path(basedir,files),read.table)
 peaks <- lapply(peaks,data.table)
 peaks <- lapply(peaks,function(x)x[,paste0(V1,":",V2,"-",V3)])
 
