@@ -63,7 +63,7 @@ pbc[,repl := ifelse(edsn %in% c(1311,1314,1396,1398),"Rep-1","Rep-2")]
 
 
 pdf(file = "figs/saturation/K12_alignment/PBC_saturation.pdf")
-ggplot(pbc[,mean(pbc),by = .(samp,protocol,rif,repl)],aes(samp,V1,colour = protocol))+geom_line()+
+ggplot(pbc[,mean(pbc),by = .(samp,protocol,rif,repl)],aes(samp,V1,colour = protocol))+geom_line(size = 1.5)+
   facet_grid(repl ~ rif)+theme_bw()+theme(legend.position = "top")+
   scale_color_brewer(palette = "Set1")+xlab("Nr. of reads")+ylab("Average PBC")
 dev.off()
