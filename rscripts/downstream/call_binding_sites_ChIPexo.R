@@ -14,15 +14,16 @@ fdr <- .05
 Gstar <- 5
 mc <- detectCores()
 
-in_dir <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo/rif_treatment"
+in_dir1 <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo/rif_treatment"
+in_dir2 <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo/aerobic_vs_anaerobic"
 out_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo"
 peak_dir <- file.path(out_dir,"peaks",paste0("FDR",fdr*100))
 
-files <- c("edsn1311_Sig70.sort.bam","edsn1314_Sig70.sort.bam",
-           "edsn1317_Sig70.sort.bam","edsn1320_Sig70.sort.bam",
-           "edsn931_Sig70.sort.bam","edsn933_Sig70.sort.bam")
+files1 <- c("edsn1311_Sig70.sort.bam","edsn1314_Sig70.sort.bam",
+           "edsn1317_Sig70.sort.bam","edsn1320_Sig70.sort.bam")
+files2 <- c( "edsn931_Sig70.sort.bam","edsn933_Sig70.sort.bam")
 
-peakfiles <- gsub(".sort.bam","_peaks.txt",files)
+peakfiles <- gsub(".sort.bam","_peaks.txt",c(files1,files2))
 
 get_binding_events <- function(peakfile,readfile,Gstar,pet,frag_len,mc){
 
@@ -39,7 +40,7 @@ get_binding_events <- function(peakfile,readfile,Gstar,pet,frag_len,mc){
 }
 
 sites <- mapply(get_binding_events,peakfile = file.path(peak_dir,peakfiles),
-  readfile = file.path(in_dir,files),
+  readfile = c(file.path(in_dir1,files1),file.path(in_dir2,files2)),
   MoreArgs = list(Gstar = Gstar,pet = FALSE,frag_len = frag_len,
   mc = mc),SIMPLIFY = FALSE)
 
