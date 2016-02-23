@@ -5,22 +5,22 @@ library(ChIPUtils)
 library(data.table)
 library(parallel)
 library(devtools)
+library(dpeak)
 
-
-load_all("~/Desktop/Docs/Code/dpeak")
 
 frag_len <- 150
 bin_size <- 150
 fdr <- .05
 Gstar <- 5
-mc <- 20
+mc <- detectCores()
 
 in_dir <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo/rif_treatment"
 out_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo"
 peak_dir <- file.path(out_dir,"peaks",paste0("FDR",fdr*100))
 
 files <- c("edsn1311_Sig70.sort.bam","edsn1314_Sig70.sort.bam",
-           "edsn1317_Sig70.sort.bam","edsn1320_Sig70.sort.bam")
+           "edsn1317_Sig70.sort.bam","edsn1320_Sig70.sort.bam",
+           "edsn931_Sig70.sort.bam","edsn933_Sig70.sort.bam")
 
 peakfiles <- gsub(".sort.bam","_peaks.txt",files)
 
