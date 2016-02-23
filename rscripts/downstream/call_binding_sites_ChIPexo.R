@@ -49,7 +49,9 @@ out_dir <- file.path(out_dir,"binding_sites",FF)
 
 dir.create(out_dir,showWarnings = FALSE,recursive = TRUE)
 
-sitefiles <- gsub(".sort.bam",paste0("_sites_G",Gstar,".txt")  , files)
+sitefiles <- c(gsub(".sort.bam",paste0("_sites_G",Gstar,".txt")  , files1),
+               gsub(".sort.bam",paste0("_sites_G",Gstar,".txt")  , files2))
+               
 
 a = mapply(write.table,sites,file.path(out_dir,sitefiles),
   MoreArgs = list(quote = FALSE,sep = "\t", row.names = FALSE,col.names = TRUE))
