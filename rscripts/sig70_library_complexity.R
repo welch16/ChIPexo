@@ -6,33 +6,19 @@ library(data.table)
 library(ggplot2)
 library(ChIPUtils)
 
-exo_dir <- "/p/keles/ChIPexo/volume3/LandickData/ChIPexo"
+exo_dir <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo"
 
-files <- list.files(exo_dir)
+files <- list.files(exo_dir,recursive = TRUE)
 
 files <- files[grep("bam",files)]
-files <- files[grep("edsn",files)]
+files <- files[grep("sort",files)]
 files <- files[grep("bai",files,invert = TRUE)]
-
-source("R/base_edsn.R")
-
-exo <- list(edsn_tab("exo"),edsn_tab_old("exo"))
-exo[[2]][,growth := NULL]
-exo[[3]] <- copy(exo[[2]])
-exo[[3]][,edsn := 933]
-exo[[3]][,repl := 2]
-exo[[1]] <- exo[[1]][ip == "Sig70"]
-
-exo <- do.call(rbind,exo)
                    
-files <- files[sapply(exo[,(edsn)],function(x)grep(x,files))]
 files <- file.path(exo_dir,files)
-
-reads <- mclapply(files,create_reads,mc.cores = 6)
+reads <- mclapply(files,create_reads,mc.cores = 8)
 
 pbc <- sapply(reads,PBC)
 depth <- sapply(reads,nreads)
-ssd <- sapply(reads,SSD)
 
 
 FSR <- function(reads)
@@ -46,51 +32,46 @@ FSR <- function(reads)
 
 fsr <- sapply(reads,FSR)
 
-exo[,nreads := depth]
-exo[,pbc := pbc]
-exo[,ssd := ssd]
-exo[,fsr := fsr]
-
 ecoli.size <- data.table(V1 = "U00096",V2 = 4639221)
-
-scc <- mclapply(reads,strand_cross_corr,shift = 1:300,chrom.sizes = ecoli.size,mc.cores = 6)
+scc <- mclapply(reads,strand_cross_corr,shift = 1:300,chrom.sizes = ecoli.size,parallel = FALSE,mc.cores = 8)
 
 nsc <- sapply(scc,function(x)x[ ,max(cross.corr) / min(cross.corr)])
 
 
-rl1 <- sapply(reads,function(x)readsF(x)[[1]][,mean(end - start + 1)])
-rl2 <- sapply(reads,function(x)readsR(x)[[1]][,mean(end - start + 1)])
-rl <- floor(.5 * (rl1 + rl2))
+## rl1 <- sapply(reads,function(x)readsF(x)[[1]][,mean(end - start + 1)])
+## rl2 <- sapply(reads,function(x)readsR(x)[[1]][,mean(end - start + 1)])
+## rl <- floor(.5 * (rl1 + rl2))
 
 
-rsc <- mapply(function(x,rl){
-  M <- x[,max(cross.corr)]
-  m <- x[,min(cross.corr)]
-  fr <- x[shift == rl, (cross.corr)]
-  return( (M - fr) / (m - fr))},scc,rl)
+## rsc <- mapply(function(x,rl){
+##   M <- x[,max(cross.corr)]
+##   m <- x[,min(cross.corr)]
+##   fr <- x[shift == rl, (cross.corr)]
+##   return( (M - fr) / (m - fr))},scc,rl)
 
 
-exo[, readLength := rl]
-exo[ , nsc := nsc]
-exo[,rsc := rsc]
+## exo[, readLength := rl]
+## exo[ , nsc := nsc]
+## exo[,rsc := rsc]
 
-scc <- mapply(function(x,y)x[,sample := y],scc,exo[,(edsn)],SIMPLIFY = FALSE)
+scc <- mapply(function(x,y)x[,sample := y],scc,sapply(strsplit(basename(files),"_"),function(x)x[1]),
+              SIMPLIFY = FALSE)
 SCC <- do.call(rbind,scc)
 
-exo[,which.max := SCC[,which.max(cross.corr),by = sample][,(V1)]]
+## exo[,which.max := SCC[,which.max(cross.corr),by = sample][,(V1)]]
 
-save(exo,file = "data/for_paper/sig70_summary.RData")
+## save(exo,file = "data/for_paper/sig70_summary.RData")
+SCC <- SCC[ ! sample %in% c("edsn935","edsn937")]
 
-
-SCC[ , sample := factor(sample , levels  = c(1311,1317,1314,1320, 931 ,  933))]
-SCC[ , sample := plyr::mapvalues(sample , from = c(1311,1314, 931 , 1317,1320 , 933),
+SCC[ , sample := plyr::mapvalues(sample , from = c("edsn1311","edsn1314",
+         "edsn931" , "edsn1317","edsn1320" , "edsn933"),
           to = c("Rif:0-rep1","Rif:20-rep1","Aerobic-rep1","Rif:0-rep2","Rif:20-rep2","Aerobic-rep2"))]
 
 
 pdf(file = "figs/for_paper/EColi_strand_cross_corr.pdf",width = 9 , height = 5)
 ggplot(SCC,aes(shift,cross.corr,colour = sample))+geom_line(size = .8)+
   scale_color_brewer(name = "",palette = "Dark2")+theme_bw()+theme(legend.position = "top")+
-  ylab("Strand cross-correlation")
+  ylab("Strand cross-correlation")+xlab("Shift")+xlim(0,200)
 dev.off()
 
 
