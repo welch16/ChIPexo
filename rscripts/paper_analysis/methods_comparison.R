@@ -9,123 +9,78 @@ library(RColorBrewer)
 library(ChIPUtils)
 library(gridExtra)
 library(grid)
+library(parallel)
 
 ######################################################################################
 
 ## Initial parameters
 
 mc <- detectCores()
-figs_dir <- "figs/condition/rif_treatment_reso"
+figs_dir <- "figs/for_paper"
 
 dir.create(figs_dir,showWarnings = FALSE, recursive = TRUE)
+base_dir <- "/p/keles/ChIPexo/volume6/K12"
+FDR <- "FDR5"
+edsn <- c("1311","1314","1317","1320","931","933")
+max_dist <- 50
+topM <- 300
+mc <- detectCores()
 
-base_dir <- "/p/keles/ChIPexo/volume6/resolution"
+### methods directories
 
-
-######################################################################################
-
-## get promoter locations table
-
-prom_dir <- "/p/keles/ChIPexo/volume6/gold_standard/Landick"
-pfiles <- list.files(prom_dir)
-pfiles <- pfiles[grep(".bed",pfiles)]
-promoters <- lapply(file.path(prom_dir,pfiles),read.table)
-promoters <- lapply(promoters,data.table)
-
-promoters[[1]][,str := "R"]
-promoters[[2]][,str := "F"]
-
-sites <- do.call(rbind,promoters)
-sites[, id := 1:nrow(sites)]
-setnames(sites,names(sites),c("seqnames","start","end","strand","id"))
-
-sites <- sites[,ifelse(strand == "R",end,start)]
-sites <- IRanges(start = sites,width = 1)
+peakzilla_dir <- file.path(base_dir,"other_methods/peakzilla")
+mace_dir <- file.path(base_dir,"other_methods/mace")
+gem_dir <- file.path(base_dir,"other_methods/gem")
 
 ######################################################################################
 
-## get mosaics peaks
-peakfiles <- list.files(base_dir,recursive = TRUE)
-peakfiles <- peakfiles[grep("peak",peakfiles)]
-peakfiles <- peakfiles[grep("exo",peakfiles)]
-peakfiles <- peakfiles[grep("FDR5",peakfiles)]
+## get annotations -- gold standard
 
-mosaics_peaks <- lapply(file.path(base_dir,peakfiles),function(x)data.table(read.table(x)[,1:3]))
-mosaics_peaks <- lapply(mosaics_peaks,
-  function(x){
-    setnames(x,names(x),c("seqnames","start","end"))
-    x <- ranges(dt2gr(x))
-    return(x)})
-names(mosaics_peaks) <- basename(peakfiles)
+annot_dir <- file.path(base_dir,"annotations")
+afiles <- list.files(annot_dir)
+afiles <- afiles[grep("csv",afiles)]
+
+annots <- read.csv(file.path(annot_dir,afiles),sep = "\t")
+annots <- data.table(annots)
+annots <- annots[grep("Sigma70",sigma.factor)]
+annots <- annots[grep("TIM",description)]
+annots <- annots[grep("RPP",description,invert = TRUE)]
+annots <- annots[grep("AIPP",description,invert = TRUE)]
+annots <- annots[grep("WHO",description,invert = TRUE)]
+annots <- annots[grep("NTAS",description,invert = TRUE)]
+annots <- annots[grep("ICA",description,invert = TRUE)]
+annotDT <- annots
+
+annots <- annots[,IRanges(start = coord,width = 1)]
+annots <- sort(annots)
 
 ######################################################################################
 
-## sites to consider
+## load method sites
 
-sites_mosaics <- lapply(mosaics_peaks,function(x,sites)
-  sort(reduce(subsetByOverlaps(sites,x))),sites)
+### METHOD 1) load peakzilla sites
 
-######################################################################################
-
-
-## peakzilla analysis
-
-dr <- "inst/peakzilla_analysis"
-files <- list.files(dr)
+files <- list.files(peakzilla_dir)
 files <- files[grep("tsv",files)]
 
-peakzilla <- lapply(file.path(dr,files),read.table)
+peakzilla <- lapply(file.path(peakzilla_dir,files),read.table)
 peakzilla <- lapply(peakzilla,data.table)
 peakzilla <- lapply(peakzilla,function(x){
-  setnames(x,names(x),c("Chromosome","Start","End","Name","Summit","Score","ChIP","Control","FoldEnrichment","DistributionScore","FDR"))
+  setnames(x,names(x),c("Chromosome","Start","End","Name","Summit","Score","ChIP","Control",
+                        "FoldEnrichment","DistributionScore","FDR"))
   x <- x[order(Start)]
   return(x)})
-sapply(peakzilla,nrow)
+names(peakzilla) <- edsn
 
-peakzilla <- mapply(function(mosaics,peakzilla){
-  idx <- countOverlaps(IRanges(start = peakzilla[,(Start)],end = peakzilla[,(End)]),
-                       mosaics) > 0
-  out <- peakzilla[idx]
-  return(out)},mosaics_peaks,peakzilla,SIMPLIFY = FALSE)
-sapply(peakzilla,nrow)
+rm(files)
 
-peakzilla <- mapply(function(peakzilla,sites){
-  pranges <- IRanges(start = peakzilla[,(Start)],end = peakzilla[,(End)])
-#  ov <- findOverlaps(pranges,sites)  
-  reso <- peakzilla[,.(reso = min(abs(Summit - start(sites)))),by = Name]
-  setkey(reso,Name)
-#  reso <- reso[as.character(peakzilla[queryHits(ov),(Name)])]
-  return(reso)
-},peakzilla,sites_mosaics,SIMPLIFY = FALSE)
+### METHOD 2) load mace sites
 
-peakzilla <- mapply(function(x,y)copy(x)[ , edsn := y],peakzilla,files,SIMPLIFY = FALSE)
-peakzilla <- do.call(rbind,peakzilla)
-peakzilla[,edsn := gsub("_Sig70_peaks.tsv","",edsn)]
-
-peakzilla[, repl := 0]
-peakzilla[, rif := ""]
-
-
-peakzilla[edsn %in% c("edsn1311","edsn1314","edsn1396","edsn1398"), repl := 1]
-peakzilla[!edsn %in% c("edsn1311","edsn1314","edsn1396","edsn1398"), repl := 2]
-
-peakzilla[edsn %in% c("edsn1311","edsn1317","edsn1396","edsn1400"), rif := "0min"]
-peakzilla[!edsn %in% c("edsn1311","edsn1317","edsn1396","edsn1400"), rif := "20min"]
-
-peakzilla[, Name := NULL]
-peakzilla[, edsn := NULL]
-
-rm(dr,files)
-
-######################################################################################
-
-dr <- "inst/mace_analysis"
-files <- list.files(dr)
+files <- list.files(mace_dir)
 files <- files[grep("bed",files)]
-
 files <- files[grep("border_pair.bed",files,fixed = TRUE)]
 
-mace <- lapply(file.path(dr,files),read.table)
+mace <- lapply(file.path(mace_dir,files),read.table)
 mace <- lapply(mace, data.table)
 
 mace <- lapply(mace,function(x){
@@ -133,144 +88,170 @@ mace <- lapply(mace,function(x){
   x[,Name := paste0(chrom,":",st,"-",en)]
   x[,site := mid(IRanges(start = st , end = en))]
   return(x)})
+names(mace) <- edsn
+rm(files)
 
-mace <- mapply(function(mosaics,mace){
-  idx <- countOverlaps(IRanges(start = mace[,(st)],end = mace[,(en)]),mosaics) > 0
-  out <- mace[idx]
-  return(out)},mosaics_peaks,mace,SIMPLIFY = FALSE)
+### METHOD 3) load gem sites
 
-mace <- mapply(function(mace,sites){
-  mranges <- IRanges(start = mace[,(st)],end = mace[,(en)])
-#  ov <- findOverlaps(mranges,sites)  
-  reso <- mace[,.(reso = min(abs(site - start(sites)))),by = Name]
-  setkey(reso,Name)
-#  reso <- reso[as.character(mace[queryHits(ov),(Name)])]
-  return(reso)
-},mace,sites_mosaics,SIMPLIFY = FALSE)
-
-mace <- mapply(function(x,y)copy(x)[,edsn := y],mace,files,SIMPLIFY = FALSE)
-mace <- do.call(rbind,mace)
-
-mace[,edsn := gsub(".border_pair.bed","",edsn)]
-mace[,edsn := gsub("Sig70_","",edsn)]
-
-mace[, repl := 0]
-mace[, rif := ""]
-
-mace[grep("rep1",edsn),repl := 1]
-mace[grep("rep2",edsn),repl := 2]
-mace[grep("rif0",edsn),rif := "0min"]
-mace[grep("rif20",edsn),rif := "20min"]
-
-mace[,Name := NULL]
-mace[,edsn := NULL]
-
-rm(dr, files)
-
-######################################################################################
-
-## gem analysis
-
-dr <- "inst/gem_analysis"
-files <- list.files(dr,recursive = TRUE)
-files <- files[grep("peaks",files)]
+files <- list.files(gem_dir,recursive = TRUE)
+files <- files[grep(FDR,files)]
 files <- files[grep("bed",files)]
 files <- files[grep("insig",files,invert = TRUE)]
 files <- files[grep("event",files)]
 
-gem <- lapply(file.path(dr,files),read.table,skip = 1)
+gem <- lapply(file.path(gem_dir,files),read.table,skip = 1)
 gem <- lapply(gem,data.table)
 
 gem <- lapply(gem,function(x){
   setnames(x,names(x),c("chr","st","en","name","signal"))
   x[,site := mid(IRanges(start = st , end = en))]
   return(x)})
+names(gem) <- edsn
 
-gem <- mapply(function(mosaics,gem){
-  idx <- countOverlaps(IRanges(start = gem[,(st)],end = gem[,(en)]),mosaics) > 0
-  out <- gem[idx]
-  return(out)},mosaics_peaks,gem,SIMPLIFY = FALSE)
-
-gem <- mapply(function(gem,sites){
-  gemranges <- IRanges(start = gem[,(st)],end = gem[,(en)])
-#  ov <- findOverlaps(gemranges,sites)
-  reso <- gem[,.(reso = min(abs(site - start(sites)))),by = name]
-  setkey(reso,name)
-#  reso <- reso[as.character(gem[queryHits(ov),(name)])]
-  return(reso)},gem,sites_mosaics,SIMPLIFY = FALSE)
-  
-gem <- mapply(function(x,y)copy(x)[,edsn := y],gem,basename(files),SIMPLIFY = FALSE)
-gem <- do.call(rbind,gem)
-
-gem[,edsn := gsub("_Sig70_with_peaksFDR5_1_GEM_events.bed","",edsn)]
-gem[, repl := 0]
-gem[, rif := ""]
-
-gem[edsn %in% c("edsn1311","edsn1314","edsn1396","edsn1398"), repl := 1]
-gem[!edsn %in% c("edsn1311","edsn1314","edsn1396","edsn1398"), repl := 2]
-
-gem[edsn %in% c("edsn1311","edsn1317","edsn1396","edsn1400"), rif := "0min"]
-gem[!edsn %in% c("edsn1311","edsn1317","edsn1396","edsn1400"), rif := "20min"]
-
-gem[,name := NULL]
-gem[,edsn := NULL]
-
-rm(dr, files)
+rm(files)
 
 ######################################################################################
 
-dr <- file.path(base_dir,"ChIPexo")
-files <- list.files(dr,recursive = TRUE)
-files <- files[grep("binding",files)]
-files <- files[grep("FDR5",files)]
+## Get mosaics peakz and dpeak sites in two separate lists
 
-dpeak <- lapply(file.path(dr,files),read.table,skip = 1)
+### A) MOSAiCS peaks
+
+files <- list.files(file.path(base_dir,"downstream"),recursive = TRUE)
+files <- files[grep("peak",files)]
+files <- files[grep("exo",files)]
+files <- files[grep(FDR,files)]
+
+mosaics <- lapply(file.path(base_dir,"downstream",files),read.table)
+mosaics <- lapply(mosaics,data.table)
+mosaics <- lapply(mosaics,function(x){
+  setnames(x,names(x),c("chrID","peakStart","peakStop","peakSize","logAveP","logMinP",
+                        "aveLogP","aveChipCount","maxChipCount","map","GC"))
+  x})
+names(mosaics) <- edsn
+rm(files)
+
+mosaics <- lapply(mosaics,function(x,topM)x[order(-aveChipCount)][1:topM],topM)
+mosaics_ranges <- lapply(mosaics,function(x) x[,IRanges(start = peakStart, end = peakStop)])
+
+### B) dPeak sites
+files <- list.files(file.path(base_dir,"downstream"),recursive = TRUE)
+files <- files[grep("exo",files)]
+files <- files[grep("sites",files)]
+files <- files[grep(FDR,files)]
+
+dpeak <- lapply(file.path(base_dir,"downstream",files),read.table,header = TRUE)
 dpeak <- lapply(dpeak,data.table)
+names(dpeak) <- edsn
+rm(files)
 
-dpeak <- lapply(dpeak,function(x){
-  setnames(x,names(x),c("chrID","st","en","peak","strength"))  
-  x[,site := mid(IRanges(start = st , end = en))]
-  x[,name := paste0(st,"-",en)]
-  return(x)})
+tab1 <- do.call(rbind,list(peakzilla = sapply(peakzilla,nrow),
+                           mace = sapply(mace,nrow),
+                           gem = sapply(gem,nrow),
+                           mosaics = sapply(mosaics,nrow),
+                           dpeak = sapply(dpeak,nrow)))
+tab1
 
-dpeak <- mapply(function(mosaics,dpeak){
-  idx <- countOverlaps(IRanges(start = dpeak[,(st)],end = dpeak[,(en)]),mosaics) > 0
-  out <- dpeak[idx]
-  return(out)},mosaics_peaks,dpeak,SIMPLIFY = FALSE)
+######################################################################################
 
-dpeak <- mapply(function(dpeak,sites){
-  dranges <- IRanges(start = dpeak[,(st)],end = dpeak[,(en)])
-#  ov <- findOverlaps(dranges,sites)
-  reso <- dpeak[,.(reso = min(abs(site - start(sites)))),by = name]
-  setkey(reso,name)
-#  reso <- reso[as.character(dpeak[queryHits(ov),(name)])]
-  return(reso)},dpeak,sites_mosaics,SIMPLIFY = FALSE)
+covert2IRanges <- function(DT,method)
+{
+  if(method == "peakzilla"){
+    out <- DT[,IRanges(start = mid(IRanges(start = Start, end = End)),width = 1)]
+  }else if(method == "mace"){
+    out <- DT[,IRanges(start = mid(IRanges(start = st,end = en)),width = 1)]
+  }else if(method == "gem"){
+    out <- DT[,IRanges(start = mid(IRanges(start = st,end = en)),width = 1)]
+  }else if(method == "dpeak"){
+    out <- DT[,IRanges(start = mid(IRanges(start = siteStart,end = siteEnd)),width = 1)]
+  }else{
+    message(method , " is unknown, returning empty IRanges")
+    out <- IRanges()
+  }
+  return(out)
+}
 
-    
-dpeak <- mapply(function(x,y)copy(x)[,edsn := y],dpeak,basename(files),SIMPLIFY = FALSE)
-dpeak <- do.call(rbind,dpeak)
+## Convert files to sites
 
-dpeak[,edsn := gsub("_Sig70_sites_G5.txt","",edsn)]
-dpeak[, repl := 0]
-dpeak[, rif := ""]
+peakzilla_ranges <- lapply(peakzilla,covert2IRanges,"peakzilla")
+mace_ranges <- lapply(mace,covert2IRanges,"mace")
+gem_ranges <- lapply(gem,covert2IRanges,"gem")
+dpeak_ranges <- lapply(dpeak,covert2IRanges,"dpeak")
 
-dpeak[edsn %in% c("edsn1311","edsn1314","edsn1396","edsn1398"), repl := 1]
-dpeak[!edsn %in% c("edsn1311","edsn1314","edsn1396","edsn1398"), repl := 2]
+######################################################################################
 
-dpeak[edsn %in% c("edsn1311","edsn1317","edsn1396","edsn1400"), rif := "0min"]
-dpeak[!edsn %in% c("edsn1311","edsn1317","edsn1396","edsn1400"), rif := "20min"]
+## Compare ranges
+resolution <- function(annot,predictions,max_dist)
+{
+  if(length(predictions) == 0){
+    out <- NA
+  }else{
+    out <- sapply(mid(annot),function(x,pred)min(abs(x - pred)),mid(predictions))
+    if(length(predictions) < length(annot)){
+      out <- sort(out)[1:length(predictions)]
+    }
+    out[out > max_dist] <- NA
+  }
+  return(out)
+}
 
-dpeak[,name := NULL]
-dpeak[,edsn := NULL]
+separate_sites <- function(peaks,sites,idx = NULL)
+{
+  out <- mclapply(peaks,function(x)subsetByOverlaps(sites,x),mc.cores = mc)
+  if(!is.null(idx))out <- out[idx]
+  return(out)
+}
 
-rm(dr, files)
+clean_list <- function(predictions)
+{
+  out <- do.call(c,predictions)
+  out <- out[!is.na(out)]
+  return(out)
+}
 
-resol <- list("peakzilla" = peakzilla,"mace" = mace, "gem" = gem, "dpeak" = dpeak)
-resol <- mapply(function(x,y)x[,method := y],resol,names(resol),SIMPLIFY = FALSE)
-resol <- do.call(rbind,resol)
+compare_predictions <- function(peakzilla,mace,gem,dpeak,peaks,annots,max_dist)
+{
+  peaks <- split(peaks,1:length(peaks))
+  annots_in_peaks <- separate_sites(peaks,annots)
+  idx <- which(sapply(annots_in_peaks,length) > 0)
+  annots_in_peaks <- annots_in_peaks[idx]
+  peakzilla_in_peaks <- separate_sites(peaks,peakzilla,idx)
+  mace_in_peaks <- separate_sites(peaks,mace,idx)
+  gem_in_peaks <- separate_sites(peaks,gem,idx)
+  dpeak_in_peaks <- separate_sites(peaks,dpeak,idx)
+  
+  peakzilla_reso <- mcmapply(resolution,annots_in_peaks,peakzilla_in_peaks,
+    MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
+  mace_reso <- mcmapply(resolution,annots_in_peaks,mace_in_peaks,
+    MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
+  gem_reso <- mcmapply(resolution,annots_in_peaks,gem_in_peaks,
+    MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
+  dpeak_reso <- mcmapply(resolution,annots_in_peaks,dpeak_in_peaks,
+    MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
+  peakzilla_reso <- data.table(method = "Peakzilla",reso = clean_list(peakzilla_reso))
+  mace_reso <- data.table(method = "Mace",reso = clean_list(mace_reso))
+  gem_reso <- data.table(method = "Gem",reso = clean_list(gem_reso))
+  dpeak_reso <- data.table(method = "dPeak",reso = clean_list(dpeak_reso))
 
-pdf(file = file.path(figs_dir,"methods_comparison_resolution_noOv.pdf"))
-ggplot(resol, aes(method , reso,fill = method))+geom_boxplot()+facet_grid( repl ~ rif)+
-  scale_fill_brewer(palette = "Pastel1")+theme_bw()+theme(legend.position = "none")+
-  xlab("Method")+ylab("Resolution")+ylim(0,75)
+  out <- do.call(rbind,list(peakzilla_reso,mace_reso,gem_reso,dpeak_reso))
+  return(out)
+}
+
+reso <- mapply(compare_predictions,
+               peakzilla_ranges,
+               mace_ranges,
+               gem_ranges,
+               dpeak_ranges,
+               mosaics_ranges,
+               MoreArgs = list(annots,max_dist),SIMPLIFY = FALSE)
+reso <- mapply(function(x,y)copy(x)[,dataset := y],reso,edsn,SIMPLIFY = FALSE)
+reso <- do.call(rbind,reso)
+
+pdf(file = file.path("figs/for_paper",paste0("sig70_methods_comparison_",FDR,"_topM",topM,".pdf")))
+ggplot(reso,aes_string("method","reso",fill = "method"))+geom_boxplot(outlier.shape = NA)+
+  scale_fill_brewer(palette = "Pastel1")+facet_wrap(~ dataset,nrow = 2 )+
+  theme_bw()+theme(legend.position = "none",axis.text.x = element_text(angle = 30))+
+  coord_cartesian(ylim = c(-max_dist*.05,max_dist*1.05))+
+  xlab("Methods")+ylab("Resolution")
 dev.off()
+
+  ## geom_jitter(aes(colour = method),size = 1.2)+scale_color_brewer(palette = "Set1")+
