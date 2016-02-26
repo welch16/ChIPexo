@@ -13,18 +13,17 @@ library(reshape2)
 
 load_all("~/Desktop/Docs/Code/ChIPexoQual")
 
-indir <- "/p/keles/ChIPexo/volume7/Landick/K12/ChIPexo/aerobic_vs_anaerobic"
+indir <- "/p/keles/ChIPexo/volume4/carroll_data/human/bamfiles"
 files <- list.files(indir)
 files <- files[grep("sort",files)]
 files <- files[grep("bai",files,invert= TRUE)]
-files <- files[grepl("931",files) | grepl("933",files)]
 mc <- detectCores()
 
-prefix <- "Sig70_aerobic"
+prefix <- "Carroll_ER_human"
 
 expts <- lapply(file.path(indir,files),create_exo_experiment,calc_summary = TRUE,height = 1,parallel = TRUE , mc = detectCores())
-names(expts) <- plyr::mapvalues(gsub(".sort.bam","",files),from = c("edsn931_Sig70","edsn933_Sig70"),
-                                to = c("Aerobic_Rep-1","Aerobic_Rep-2"))
+names(expts) <- plyr::mapvalues(gsub(".sort.bam","",files),from = c("ERR336933","ERR336950","ERR336938"),
+                                to = c("Rep-3","Rep-1","Rep-2"))
 stats <- lapply(expts,summary_stats)
 
 
@@ -105,7 +104,7 @@ r <- viridis::viridis(1e3, option = "D")
 pdf(file = file.path(figsdir,paste(prefix,"enrichment.pdf",sep = "_")),width =9 ,height = 4)
 ggplot(stats,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ cond)+
   scale_x_continuous(limits = c(0,4))+
-  scale_y_continuous(limits = c(0,.8))+
+  scale_y_continuous(limits = c(0,1))+
   theme_bw()+theme(legend.position = "top")+
   scale_fill_gradientn(colours = r,trans = 'log10',labels=trans_format('log10',math_format(10^.x)) )+  
   xlab("Average read coverage (ARC)")+ylab("Unique read coverage rate (URCR)")
@@ -114,7 +113,7 @@ dev.off()
 pdf(file = file.path(figsdir,paste(prefix,"enrichment_noSingleStrand.pdf",sep = "_")),width =9 ,height = 4)
 ggplot(stats2,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ cond)+
   scale_x_continuous(limits = c(0,4))+
-  scale_y_continuous(limits = c(0,.8))+
+  scale_y_continuous(limits = c(0,1))+
   theme_bw()+theme(legend.position = "top")+
   scale_fill_gradientn(colours = r,trans = 'log10',labels=trans_format('log10',math_format(10^.x)) )+
   xlab("Average read coverage (ARC)")+ylab("Unique read coverage rate (URCR)")
@@ -124,7 +123,7 @@ pdf(file = file.path(figsdir,paste(prefix,"MA_plot.pdf",sep = "_")),width =9 ,he
 ggplot(stats2,aes(M,A))+stat_binhex(bins = 70)+facet_grid( ~ cond)+
   theme_bw()+theme(legend.position = "top")+
   scale_fill_gradientn(colours = r,trans = 'log10',labels=trans_format('log10',math_format(10^.x)) )+
-  xlab("M")+ylab("A")+ylim(-10,10)
+  xlab("M")+ylab("A")+ylim(-10,10)+xlim(-15,5)
 dev.off()
 
 
@@ -150,4 +149,5 @@ ggplot(label,aes(values,value,fill = variable))+geom_bar(stat = "identity")+
   scale_fill_brewer(palette = "Pastel1",name = "Strand composition")+
   xlab("Minimum number of reads")+ylab("Proportion of islands")
 dev.off()
+
 
