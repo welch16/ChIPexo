@@ -39,8 +39,8 @@
 \begin{fmbox}
 \dochead{Draft}
 
-\title{High Resolution Identification of Protein-DNA Binding
-  Events and Quality Control for ChIP-exo data}
+\title{Data exploration, quality control and statistical analysis of
+  ChIP-exo experiments}
 
 \author[
    addressref={aff6},                   % id's of addresses, e.g. {aff1,aff2}
@@ -67,7 +67,6 @@
    corref={aff1},
    email={keles@stat.wisc.edu}
 ]{\inits{SK}\fnm{S\"und\"uz} \snm{Kele\c{s}}}
-
 
 
 \address[id=aff1]{%                           % unique id
@@ -298,7 +297,7 @@ current state-of-the-art QC pipelines for ChIP-Seq for ChIP-exo. Table
 \ref{tab:qc} contains measures that are commonly calculated for
 ChIP-Seq samples: PCR Bottleneck Coefficient (PBC) and the Normalized
 Strand Cross-Correlation (NSC) are calculated as in \cite{encode_qc}.
-Additionally, we calculated the Forward Strand Ratio (FSR) to comped
+Additionally, we calculated the Forward Strand Ratio (FSR) to compare
 the number of fragments sequenced from each strand.
 
 %% We can observe that the PBC is low, hence it would be incorrectly
@@ -426,7 +425,8 @@ which are defined as follows:
 
 \begin{align*}
   \text{ARC} &= \dfrac{\text{Nr. of reads in the region}}{\text{Width of the region}} \\
-  \text{URCR} &= \dfrac{\text{Nr. of reads in the region mapped to exactly one position}}{\text{Nr. of reads in the region}} 
+  \text{URCR} &= \dfrac{\text{Nr. of reads in the region mapped to
+      exactly one position}}{\text{Nr. of reads in the region}}
 \end{align*}
 
 Using the FoxA1 in mouse liver cell lines from \cite{exoillumina} and
@@ -493,7 +493,6 @@ make this distinction.
 
 @ 
 
-
 Figure \ref{fig:reso_all} shows different comparisons among ChIP-exo,
 PE ChIP-Seq and SE ChIP-Seq. A RegulonDB annotation (Salgado et al,
 2012 \cite{regulondb}) was considered identified if the distance
@@ -512,7 +511,8 @@ ChIP-exo and PE ChIP-Seq. The right panel shows that ChIP-exo and PE
 ChIP-Seq are comparable in resolution, while both protocols
 significantly outperform SE ChIP-Seq.
 
-\subsection{Systematic comparison of ChIP-Seq vs ChIP-exo under varying sequencing depth}
+\subsection{Systematic comparison of ChIP-Seq vs ChIP-exo under
+  varying sequencing depth}
 
 Previously, ChIP-exo and SE ChIP-Seq have been compared at a fixed
 depth level in the literature, but this comparisons did not include PE
@@ -569,13 +569,9 @@ strand-imbalance which in turn may bias the binding site estimate and
 therefore decrease the number of identified targets or increase an
 experiments resolution.
 
-
-
 % In supplement figures \ref{fig:exoQC_sat1} to \ref{fig:exoQC_sat4}, we
 % repeat the same analysis for both replicates under the two rif
 % conditions.
-
-
 
 \subsection{dPeak outperforms competing methods in discovering closely
   spaced binding events from ChIP-exo and ChIP-Seq data}
@@ -589,17 +585,114 @@ the ChIP-exo experiments under aerobic (panel 933) or anaerobic (panel
 dPeak slightly outperforms the rest. On the other hand, for
 experiments with low library complexity the resolution calculated with
 dPeak's predictions is smaller than both Mace and Peakzilla, but it is
-greater than Gem. This may be due to the fact that Gem uses sequence
-information in addition to the 5' ends counts per coordinate that
-dPeak uses. \footnote{For here we may probably use only 933 as part of
-  the main article and keep the rest for the supplement}
+greater than Gem. This may be due that the fact that Gem uses sequence
+information in addition to the aligned 5' end counts that dPeak
+uses.\footnote{For here we may probably use only 933 as part of the
+  main article and keep the rest for the supplement}
+
+\section{Conclusions}
+\label{sec:conc}
+
+We made a systematic exploration of several ChIP-exo experiments and
+provide a list of factors that reflect the quality of a ChIP-exo
+experiment and we provide a QC pipeline which is capable of assessing
+the balance between the enrichment and the library complexity of a
+ChIP-exo experiment. Additionally, a set of diagnostics was established
+to assess the an experiment's quality. The QC pipeline only requires a
+set of aligned reads to give a global overview of a ChIP-exo
+experiment, this overview coincides with more elaborate analysis, such
+as motif detection in a set of high quality regions or resolution
+analysis given a set of annotations as gold-standard.
+
+To the extent of our knowledge, we made for the fist time a comparison
+between ChIP-exo and PE ChIP-Seq. Using a set of annotations as
+gold-standard, we showed that both protocols are comparable in
+resolution and that for regions with more than one binding site,
+ChIP-exo is more sensitive than both SE and PE ChIP-Seq. We made a
+systematic comparison between fixed depth ChIP-exo, PE ChIP-Seq and SE
+ChIP-Seq, and we probed that for sufficiently complex libraries,
+ChIP-exo experiments can outperform PE and SE ChIP-Seq in number of
+identified targets and resolution. Using the ChIP-exo QC pipeline, we
+show how to diagnose if the library complexity of ChIP-exo experiment
+is adequate.
+
+
+
+
 
 
 
 \section{Methods}
 \label{sec:methods}
 
+<<methods_param , include = FALSE,echo = FALSE,eval = TRUE>>=
 
+  fdr <- 0.01
+  topM <- 300
+
+@ 
+
+\subsection*{Growth conditions.}
+
+\subsection*{ChIP-exo experiments.}
+
+\subsection*{Construction of a SE ChIP-Seq experiment.}
+
+For the rif-treatment ChIP-Seq experiments, we sampled SE ChIP-Seq
+experiment from the PE ones by taking one of both ends randomly
+following a $\mbox{Ber}(0.5)$ model. 
+
+\subsection*{Saturation analysis of ChIP-exo, PE ChIP-Seq and SE ChIP-Seq.}
+
+
+
+\subsection*{ChIP-Seq quality control metrics and Strand
+  Cross-Correlation.}
+
+The statistics in table \ref{tab:qc} and the SCC curves from figure
+\ref{fig:scc_exo} where calculated with the \textbf{ChIPUtils} package
+version 0.99.0, available in
+\url{https://github.com/welch16/ChIPUtils}.
+
+\subsection*{ChIP-exo quality control pipeline.}
+
+We used the R package \textbf{ChIPexoQual} to assess the quality of
+the ChIP-exo datasets by following the steps described in figure
+\ref{fig:qcdiagram}. We used version 1.0, and it is available in
+\url{https://github.com/welch16/ChIPexoqual}.
+
+\subsection*{dPeak analysis of $\sig$ ChIP-exo and ChIP-Seq data.}
+
+\vspace{2 cm}
+
+
+
+\subsection*{Method comparison for ChIP-exo.}
+
+We considered dPeak Chung et al., 2013 \cite{dpeak}, GEM Guo et al.,
+2012 \cite{gem}, MACE Wang et al., 2014 \cite{mace} and Peazilla
+Bardet et al., 2013 \cite{peakzilla} for the ChIP-exo data
+analysis. for the dPeak algorithm we used the R package \textbf{dPeak}
+version 2.0.1 which is available from
+\url{https://github.com/dongjunchung/dpeak}. For the GEM algorithm, we
+used it's Java implementation version 2.6 which is available from
+\url{http://groups.csail.mit.edu/cgs/gem/}. For the Mace algorithm, we
+used it Python implementation version 1.2, which is available from
+\url{http://dldcc-web.brc.bcm.edu/lilab/MACE/docs/html/}. For the
+Peakzilla algorithm, we used the version available in
+\url{https://github.com/steinmann/peakzilla}. Candidate regions for
+\textbf{dPeak} were identified for each replicate of ChIP-exo data
+using the \textbf{MOSAiCS} algorithm Kuan et al., 2011 \cite{mosaics}
+(one sample analysis using false discovery rate of \Sexpr{fdr}\%)
+implemented as an R package \textbf{mosaics} version 2.9.7 (available
+from \emph{bioconductor}). We further filtered out candidate regions
+by using the \Sexpr{topM} peaks with higher average ChIP tag count to
+avoid potential false positive based on the exploratory
+analysis. These regions were also explicitly provided to the GEM
+algorithm as candidate regions. Default tuning parameters were used
+during model fitting for all methods. 
+
+%% CexoR
 
 
 \bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).

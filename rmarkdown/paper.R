@@ -24,6 +24,12 @@
   ext <- 15
 
 
+## ----methods_param , include = FALSE,echo = FALSE,eval = TRUE------------
+
+  fdr <- 0.01
+  topM <- 300
+
+
 ## ----table_chipseq,include = TRUE,echo = FALSE,eval = TRUE---------------
   load("../data/paper_tables/Landick_rif_chipseq_summary.RData")
   do.call(rbind,chipseq)
