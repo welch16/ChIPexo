@@ -700,14 +700,13 @@ the ChIP-exo datasets by following the steps described in figure
 
 \subsection*{Motif analysis of Fox A1 enriched regions}
 
-For all three replicates we called peaks using the GC + Mappability
-model from \textbf{MOSAiCS} using an FDR level of 5\%, filtering out
-the peaks with average ChIP counts below one hundred fragments and
-merging peaks gaped by at most 200 bp. Then, we fitted the
-\textbf{dPeak} model considering at most 5 binding events for each
-peak, and we searched for the Fox A1 motif over a 10 bp window around
-the estimated binding events. We used FIMO's command line on its 4.9.1
-version.
+For all three replicates we called peaks using the MOSAiCS GC +
+Mappability model using an FDR level of 5\%, filtering out the peaks
+with average ChIP counts below one hundred fragments and merging peaks
+gaped by at most 200 bp. Then, we fitted the dPeak model considering
+at most 5 binding events for each peak, and we searched for the Fox A1
+motif over a 10 bp window around the estimated binding events. We used
+FIMO's command line 4.9.1 version.
 
 \subsection*{Imbalance index}
 
@@ -721,23 +720,44 @@ as:
 \mbox{Imbalance index} = -\log_{10} (4 \times \mbox{FSR} \times (1 - \mbox{FSR}))
 \]
 
-\subsection*{Construction of a SE ChIP-Seq experiment.}
+\subsection*{Construction of a SE ChIP-Seq from a PE ChIP-Seq experiment.}
 
 For the rif-treatment ChIP-Seq experiments, we sampled SE ChIP-Seq
 experiment from the PE ones by taking one of both ends randomly
 following a $\mbox{Ber}(0.5)$ model. 
 
+\subsection*{dPeak analysis of $\sig$ ChIP-exo and ChIP-Seq data.}
+
+For the resolution and sensitivity analysis, we used the MOSAiCS GC
+content + mappability model to call peaks for ChIP-exo experiments,
+while for both SE and PE ChIP-Seq experiments we used the MOSAiCS
+Input model. To avoid false positives we only considered ChIP-exo
+peaks with average ChIP counts greater than 3000 that overlapped both
+the SE and PE ChIP-Seq peaks. Then we estimated the binding site
+events using the dPeak model with a maximum number of 5 binding
+events. We considered RegulonDB annotation as gold-standard;
+Resolution is defined as the minimum distance from an annotation to an
+estimated binding events and Sensitivity is defined as the fraction of
+annotation in a are within 20 bp from an estimated binding event.
+
 \subsection*{Saturation analysis of ChIP-exo, PE ChIP-Seq and SE ChIP-Seq.}
 
 To perform the saturation analysis, we sub-sampled $N$ fragments for
 both ChIP-exo and SE ChIP-Seq protocols. For PE ChIP-Seq we
-sub-sampled $N$ pairs or $N/2$ fragments. For all the experiments under a certain condition, we 
-
-\subsection*{dPeak analysis of $\sig$ ChIP-exo and ChIP-Seq data.}
-
-\vspace{2 cm}
-
-
+sub-sampled $N$ pairs or $N/2$ fragments. For each seed, we called
+peaks using MOSAiCS \cite{mosaics} (GC content + mappability for
+ChIP-exo and Input for SE and PE ChIP-Seq) for the maximum sample size
+and to avoid false positives we considered only the top 500 peaks for
+each data protocol. We defined the number of candidate regions as the
+number of top sample peaks such that a binding events was estimated
+using the sampled reads and the dPeak's model; the number of predicted
+events is the total quantity of binding events estimated using the
+dPeak's model; the number of identified targets are number of
+gold-standard annotations within 20 bp from an estimated binding
+events; and the resolution is defined as the minimum distance from a
+gold-standard annotation to an estimated binding event. We repeated
+this analysis for ten seeds and reported the median between all those
+values.
 
 \subsection*{Method comparison for ChIP-exo.}
 
@@ -762,10 +782,8 @@ by using the \Sexpr{topM} peaks with higher average ChIP tag count to
 avoid potential false positive based on the exploratory
 analysis. These regions were also explicitly provided to the GEM
 algorithm as candidate regions. Default tuning parameters were used
-during model fitting for all methods. 
-
-%% CexoR
-
+during model fitting for all methods. We were unable to use CexoR
+\cite{cexor} to estimate ChIP-exo binding sites.
 
 \bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
 \bibliography{chip_exo_paper}
@@ -870,18 +888,19 @@ during model fitting for all methods.
 \begin{figure}[h]
   \centering
   \includegraphics[width = .9\textwidth]{../figs/for_paper/saturation_analysis_old.pdf}
-  \caption{\textbf{ChIP-exo, PE ChIP-Seq and SE ChIP-Seq comparison at
-      varying sequencing depths.} Comparison of the number of candidate
-    regions (A), predicted events (B), identified targets (C) and
-    resolution (D) among ChIP-exo, PE ChIP-Seq and SE
-    ChIP-Seq. RegulonDB annotations are considered as a gold
-    standard. A gold standard binding events was deemed identified if
-    a binding event was estimated at a $\pm$ \Sexpr{ext} vicinity of
-    it.}
+  \caption{Comparison of the number of candidate regions (A),
+    predicted events (B), identified targets (C) and resolution (D)
+    among ChIP-exo, PE ChIP-Seq and SE ChIP-Seq. RegulonDB annotations
+    are considered as a gold standard. A gold standard binding events
+    was deemed identified if a binding event was estimated at a $\pm$
+    \Sexpr{ext} vicinity of it.}
   \label{fig:design}
 \end{figure}
 
-\newpage
+
+% \textbf{ChIP-exo, PE ChIP-Seq and SE ChIP-Seq comparison at varying
+%   sequencing depths.} 
+ \newpage
 
 \begin{figure}[h!]
   \centering
@@ -979,16 +998,17 @@ during model fitting for all methods.
   \includegraphics[width = .3\textwidth,page =2]{../figs/saturation/K12_alignment/Sig70_rep2_rif20_saturation_analysis.pdf}
   \includegraphics[width = .3\textwidth,page =3]{../figs/saturation/K12_alignment/Sig70_rep2_rif20_saturation_analysis.pdf}
   \includegraphics[width = .3\textwidth,page =4]{../figs/saturation/K12_alignment/Sig70_rep2_rif20_saturation_analysis.pdf}
-  \caption{\textbf{ChIP-exo, PE ChIP-Seq and SE ChIP-Seq comparison at
-      varying sequencing depth} Comparison of the number of predicted
-    events (left), identified targets (middle) and resolution (right)
-    among ChIP-exo, PE ChIP-Seq and SE ChIP-Seq. RegulonDB annotations
-    are considered as gold standard. A RegulonDB binding events was
-    deemed identified if a binding event was estimated at a $\pm$ \Sexpr{ext}
-    vicinity of it.}
+  \caption{Comparison of the number of predicted events (left),
+    identified targets (middle) and resolution (right) among ChIP-exo,
+    PE ChIP-Seq and SE ChIP-Seq. RegulonDB annotations are considered
+    as gold standard. A RegulonDB binding events was deemed identified
+    if a binding event was estimated at a $\pm$ \Sexpr{ext} vicinity
+    of it.}
   \label{fig:saturation_rif}
 \end{figure}
 
+% \textbf{ChIP-exo, PE ChIP-Seq and SE ChIP-Seq comparison at varying
+%   sequencing depth} 
 
 \newpage
 
