@@ -122,28 +122,28 @@
 
   \begin{abstract}
 
-  ChIP-exo is a modification of the ChIP-Seq protocol for high
-  resolution mapping of transcription factor binding sites. Although
-  many aspect of the ChIP-exo data analysis are similar to those of
-  ChIP-Seq, ChIP-exo presents a number of unique challenges. We
-  present a quality control pipeline that analyzes ChIP-exo's strand
-  imbalance and library complexity. Assessment of these biases and
-  artifacts are facilitated through diagnostic plots and summary
-  statistics calculated over regions of the genome with varying levels
-  of coverage.
+    ChIP-exo is a modification of the ChIP-Seq protocol for high
+    resolution mapping of transcription factor binding sites. Although
+    many aspect of the ChIP-exo data analysis are similar to those of
+    ChIP-Seq, ChIP-exo presents a number of unique challenges. We
+    present a quality control pipeline that analyzes a ChIP-exo
+    experiment's strand imbalance, enrichment and library
+    complexity. Assessment of these characteristics are facilitated
+    through diagnostic plots and summary statistics calculated over
+    regions of the genome with varying levels of coverage.
 
-  We systematically evaluated diverse aspects of ChIP-exo and found
-  the following characteristics: First, ChIP-exo's background is quite
-  different from ChIP-Seq's. Second, although often assumed in
-  ChIP-exo data analysis methods, the ``peak pair'' assumptions does
-  not hold locally in actual ChIP-exo data. Third, we for the first
-  time compared Paired End (PE) ChIP-Seq with ChIP-exo and found that
-  both protocols are comparable in resolutions and sensitivity for
-  closely located binding events, but as the distance between binding
-  events increases ChIP-exo shows higher sensitivity that PE
-  ChIP-Seq. Finally, at fixed sequencing depths, ChIP-exo provides
-  higher sensitivity, specificity and spatial resolution than PE
-  ChIP-Seq.
+    We systematically evaluated diverse aspects of ChIP-exo and found
+    the following characteristics: First, ChIP-exo's background is
+    quite different from ChIP-Seq's. Second, although often assumed in
+    ChIP-exo data analysis methods, the ``peak pair'' assumptions does
+    not hold locally in actual ChIP-exo data. Third, we for the first
+    time compared Paired End (PE) ChIP-Seq with ChIP-exo and found
+    that both protocols are comparable in resolutions and sensitivity
+    for closely located binding events, but as the distance between
+    binding events increases ChIP-exo shows higher sensitivity that PE
+    ChIP-Seq. Finally, at fixed sequencing depths, ChIP-exo provides
+    higher sensitivity, specificity and spatial resolution than PE
+    ChIP-Seq.
 
   \end{abstract}
 
@@ -190,13 +190,14 @@ in both strands, locally there may be more reads in one strand than in
 the other. To address this challenges, we suggest a collection of
 quality control visualizations to understand which of this biases are
 present in a ChIP-exo experiment and globally asses the enrichment and
-library complexity of a ChIP-exo sample. We gathered ChIP-exo data from
-diverse organisms: CTCF factor in human \cite{exo1}; ER factor in
+library complexity of a ChIP-exo sample. We gathered ChIP-exo data
+from diverse organisms: CTCF factor in human \cite{exo1}; ER factor in
 human and FoxA1 factor in mouse (Serandour et al., 2013
-\cite{exoillumina}); and generated $\sig$ factor in Escherichia Coli
-(\emph{E. Coli}) under aerobic ($ + O_2$) condition, and treated by
-rifampicin by 0 and 20 minutes (courtesy of Professor Robert Landick's
-lab). %% note to self, we may add more experiments here
+\cite{exoillumina}); GR in IMR90, K562 and U20S cell lines (Starick et
+al., 2015 \cite{starick15}) and generated $\sig$ factor in Escherichia
+Coli (\emph{E. Coli}) under aerobic ($ + O_2$) condition, and treated
+by rifampicin by 0 and 20 minutes (courtesy of Professor Robert
+Landick's lab). %% note to self, we may add more experiments here
 
 Most of current ChIP-Seq quality control (QC) guidelines (Landt et
 al., \cite{encode_qc}) may not be applicable on ChIP-exo, additionally
@@ -223,7 +224,7 @@ reverse strand might construct peak pairs around bound proteins, of
 which heights were implicitly assumed to be symmetric. Hence, they
 used the ``peak pair method'' that predicts the midpoint of two modes
 of peak pairs as potential binding sites. Mace (Wang et al, 20114
-\cite{mace}), CexoR (Madrigal, 2015 \cite{cexor}) and peakzilla
+\cite{mace}), CexoR (Madrigal, 2015 \cite{cexor}) and Peakzilla
 (Bardet et al., 2013 \cite{peakzilla}), recently developed ChIP-exo
 data analysis methods are also based on this peak pair
 assumption. However, appropriateness of such assumption was not fully
@@ -306,19 +307,51 @@ the number of fragments sequenced from each strand.
 \begin{table}[h!]
 %% need to fix format
   \centering
-<<table1,include = TRUE,echo = FALSE,eval = TRUE>>=
+<<table1,include = FALSE,echo = FALSE,eval = TRUE>>=
+  library(data.table)
   load("../data/paper_tables/Landick_rif_summary.RData")
   load("../data/paper_tables/Landick_aero_summary.RData")
   load("../data/paper_tables/pugh_ctcf.RData")
   load("../data/paper_tables/Carroll_mm9_FoxA1.RData")
   load("../data/paper_tables/Meijsing_hg19_GR.RData")
   load("../data/paper_tables/Carroll_hg19_ER.RData")
-  do.call(rbind,list(landick_aero,
-                     landick_rif,
-                     pugh_ctcf,
-                     carroll_mm9_FoxA1,
-                     meijing_hg19_GR,
-                     carroll_hg19_ER))
+  landick_aero[,Organism := "E.Coli"]
+  landick_aero[,Replicate := c(1,2,1,2)]
+  landick_aero[,TF := "Sig70"]
+  landick_aero[ ,cond := c(rep("Aerobic",2),rep("Anaerobic", 2))]
+  landick_rif[,Organism := "E.Coli"]
+  landick_rif[,Replicate := c(1,1,2,2)]
+  landick_rif[,TF := "Sig70"]
+  landick_rif[ ,cond := rep(c("Rif-0min","Rif-20min"),each = 2)]
+  pugh_ctcf[,Organism := "Human"]
+  pugh_ctcf[,Replicate := 1]
+  pugh_ctcf[,TF := "CTCF"]
+  pugh_ctcf[ ,cond := "HeLA"]
+  carroll_mm9_FoxA1[,Organism := "Mouse"]
+  carroll_mm9_FoxA1[,Replicate := c(3,1,2)]
+  carroll_mm9_FoxA1[,TF := "Fox A1"]
+  carroll_mm9_FoxA1[ ,cond := "Mouse Liver"]
+  meijing_hg19_GR[,Organism := "Human"]
+  meijing_hg19_GR[,Replicate := 1]
+  meijing_hg19_GR[, TF := "GR"]
+  meijing_hg19_GR[,cond := c("IMR90","K562","U20S")]
+  carroll_hg19_ER[,Organism := "Human"]  
+  carroll_hg19_ER[,Replicate := c(1,3,2)]
+  carroll_hg19_ER[,TF := "ER"]
+  carroll_hg19_ER[ ,cond := "MCF-7"]
+  A <- do.call(rbind,list(landick_aero,
+                     landick_rif[order(Replicate)],
+                     pugh_ctcf[order(Replicate)],
+                     carroll_mm9_FoxA1[order(Replicate)],
+                     meijing_hg19_GR[order(Replicate)],
+                     carroll_hg19_ER[order(Replicate)]))
+  A[,nsc := unlist(nsc)]
+  setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
+  A[,files := NULL]
+  setnames(A,names(A),c("Organism","IP/TF","Condition/Cell","Rep.","Depth","PBC","NSC"))
+@ 
+<<table2,include = TRUE,echo = FALSE, eval = TRUE >>= 
+  A
 @ 
 \caption{Usual quality control indicators applied to the gathered
   ChIP-exo samples.  PBC stands for PCR Bottleneck Coefficient (0 -
@@ -594,32 +627,29 @@ uses.\footnote{For here we may probably use only 933 as part of the
 \label{sec:conc}
 
 We made a systematic exploration of several ChIP-exo experiments and
-provide a list of factors that reflect the quality of a ChIP-exo
-experiment and we provide a QC pipeline which is capable of assessing
-the balance between the enrichment and the library complexity of a
-ChIP-exo experiment. Additionally, a set of diagnostics was established
-to assess the an experiment's quality. The QC pipeline only requires a
-set of aligned reads to give a global overview of a ChIP-exo
-experiment, this overview coincides with more elaborate analysis, such
-as motif detection in a set of high quality regions or resolution
-analysis given a set of annotations as gold-standard.
+provided a list of factors that reflect the quality of a ChIP-exo
+experiment and we developed a QC pipeline which is capable of
+assessing the balance between the enrichment and the library
+complexity of a ChIP-exo experiment. Additionally, a set of
+diagnostics was established to assess the quality of a ChIP-exo
+experiment. The QC pipeline only requires a set of aligned reads to
+give a global overview of a ChIP-exo experiment, this overview
+coincides with more elaborate analysis that is computationally more
+expensive to perform or requires additional inputs that may not be
+available, such as motif detection in a set of high quality regions or
+resolution analysis given a set of annotations as gold-standard.
 
 To the extent of our knowledge, we made for the fist time a comparison
 between ChIP-exo and PE ChIP-Seq. Using a set of annotations as
 gold-standard, we showed that both protocols are comparable in
 resolution and that for regions with more than one binding site,
 ChIP-exo is more sensitive than both SE and PE ChIP-Seq. We made a
-systematic comparison between fixed depth ChIP-exo, PE ChIP-Seq and SE
+methodical comparison between fixed depth ChIP-exo, PE ChIP-Seq and SE
 ChIP-Seq, and we probed that for sufficiently complex libraries,
 ChIP-exo experiments can outperform PE and SE ChIP-Seq in number of
 identified targets and resolution. Using the ChIP-exo QC pipeline, we
 show how to diagnose if the library complexity of ChIP-exo experiment
 is adequate.
-
-
-
-
-
 
 
 \section{Methods}
@@ -643,6 +673,10 @@ experiment from the PE ones by taking one of both ends randomly
 following a $\mbox{Ber}(0.5)$ model. 
 
 \subsection*{Saturation analysis of ChIP-exo, PE ChIP-Seq and SE ChIP-Seq.}
+
+To perform the saturation analysis, we sub-sampled $N$ fragments for
+both ChIP-exo and SE ChIP-Seq protocols. For PE ChIP-Seq we
+sub-sampled $N$ pairs or $N/2$ fragments. For all the experiments under a certain condition, we 
 
 
 

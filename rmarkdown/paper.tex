@@ -170,28 +170,28 @@
 
   \begin{abstract}
 
-  ChIP-exo is a modification of the ChIP-Seq protocol for high
-  resolution mapping of transcription factor binding sites. Although
-  many aspect of the ChIP-exo data analysis are similar to those of
-  ChIP-Seq, ChIP-exo presents a number of unique challenges. We
-  present a quality control pipeline that analyzes ChIP-exo's strand
-  imbalance and library complexity. Assessment of these biases and
-  artifacts are facilitated through diagnostic plots and summary
-  statistics calculated over regions of the genome with varying levels
-  of coverage.
+    ChIP-exo is a modification of the ChIP-Seq protocol for high
+    resolution mapping of transcription factor binding sites. Although
+    many aspect of the ChIP-exo data analysis are similar to those of
+    ChIP-Seq, ChIP-exo presents a number of unique challenges. We
+    present a quality control pipeline that analyzes a ChIP-exo
+    experiment's strand imbalance, enrichment and library
+    complexity. Assessment of these characteristics are facilitated
+    through diagnostic plots and summary statistics calculated over
+    regions of the genome with varying levels of coverage.
 
-  We systematically evaluated diverse aspects of ChIP-exo and found
-  the following characteristics: First, ChIP-exo's background is quite
-  different from ChIP-Seq's. Second, although often assumed in
-  ChIP-exo data analysis methods, the ``peak pair'' assumptions does
-  not hold locally in actual ChIP-exo data. Third, we for the first
-  time compared Paired End (PE) ChIP-Seq with ChIP-exo and found that
-  both protocols are comparable in resolutions and sensitivity for
-  closely located binding events, but as the distance between binding
-  events increases ChIP-exo shows higher sensitivity that PE
-  ChIP-Seq. Finally, at fixed sequencing depths, ChIP-exo provides
-  higher sensitivity, specificity and spatial resolution than PE
-  ChIP-Seq.
+    We systematically evaluated diverse aspects of ChIP-exo and found
+    the following characteristics: First, ChIP-exo's background is
+    quite different from ChIP-Seq's. Second, although often assumed in
+    ChIP-exo data analysis methods, the ``peak pair'' assumptions does
+    not hold locally in actual ChIP-exo data. Third, we for the first
+    time compared Paired End (PE) ChIP-Seq with ChIP-exo and found
+    that both protocols are comparable in resolutions and sensitivity
+    for closely located binding events, but as the distance between
+    binding events increases ChIP-exo shows higher sensitivity that PE
+    ChIP-Seq. Finally, at fixed sequencing depths, ChIP-exo provides
+    higher sensitivity, specificity and spatial resolution than PE
+    ChIP-Seq.
 
   \end{abstract}
 
@@ -238,13 +238,14 @@ in both strands, locally there may be more reads in one strand than in
 the other. To address this challenges, we suggest a collection of
 quality control visualizations to understand which of this biases are
 present in a ChIP-exo experiment and globally asses the enrichment and
-library complexity of a ChIP-exo sample. We gathered ChIP-exo data from
-diverse organisms: CTCF factor in human \cite{exo1}; ER factor in
+library complexity of a ChIP-exo sample. We gathered ChIP-exo data
+from diverse organisms: CTCF factor in human \cite{exo1}; ER factor in
 human and FoxA1 factor in mouse (Serandour et al., 2013
-\cite{exoillumina}); and generated $\sig$ factor in Escherichia Coli
-(\emph{E. Coli}) under aerobic ($ + O_2$) condition, and treated by
-rifampicin by 0 and 20 minutes (courtesy of Professor Robert Landick's
-lab). %% note to self, we may add more experiments here
+\cite{exoillumina}); GR in IMR90, K562 and U20S cell lines (Starick et
+al., 2015 \cite{starick15}) and generated $\sig$ factor in Escherichia
+Coli (\emph{E. Coli}) under aerobic ($ + O_2$) condition, and treated
+by rifampicin by 0 and 20 minutes (courtesy of Professor Robert
+Landick's lab). %% note to self, we may add more experiments here
 
 Most of current ChIP-Seq quality control (QC) guidelines (Landt et
 al., \cite{encode_qc}) may not be applicable on ChIP-exo, additionally
@@ -271,7 +272,7 @@ reverse strand might construct peak pairs around bound proteins, of
 which heights were implicitly assumed to be symmetric. Hence, they
 used the ``peak pair method'' that predicts the midpoint of two modes
 of peak pairs as potential binding sites. Mace (Wang et al, 20114
-\cite{mace}), CexoR (Madrigal, 2015 \cite{cexor}) and peakzilla
+\cite{mace}), CexoR (Madrigal, 2015 \cite{cexor}) and Peakzilla
 (Bardet et al., 2013 \cite{peakzilla}), recently developed ChIP-exo
 data analysis methods are also based on this peak pair
 assumption. However, appropriateness of such assumption was not fully
@@ -354,28 +355,29 @@ the number of fragments sequenced from each strand.
 \begin{table}[h!]
 %% need to fix format
   \centering
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-##                files    nreads        pbc      nsc
-## 1      edsn931_Sig70  13961493 0.13994203 103.4239
-## 2      edsn933_Sig70  14810838 0.16339252 162.8002
-## 3      edsn935_Sig70  16108774 0.13535422 153.5088
-## 4      edsn937_Sig70  13636541 0.15322537 172.5815
-## 5     edsn1311_Sig70    902921 0.26895580 13.76908
-## 6     edsn1314_Sig70   1852124 0.25908459 17.91882
-## 7     edsn1317_Sig70   2104427 0.25841987  29.6083
-## 8     edsn1320_Sig70  11548572 0.15107930 13.08626
-## 9               CTCF  48478450 0.45796889 16.02482
-## 10         ERR336935  22421729 0.10683407 72.04243
-## 11         ERR336942  22210461 0.65622704 21.28197
-## 12         ERR336956  23307557 0.79962169 60.42191
-## 13 IMR90_GR_chip-exo  47443803 0.29785605 8.860176
-## 14  K562_GR_chip-exo 116518000 0.05047634 4.117883
-## 15  U2OS_GR_chip-exo   3255111 0.77142141 10.05883
-## 16         ERR336933   9289835 0.80825680 19.87523
-## 17         ERR336938  12464836 0.82035947 18.72806
-## 18         ERR336950  11041833 0.80241200 21.48509
+##     Organism  IP/TF Condition/Cell Rep.     Depth        PBC        NSC
+##  1:   E.Coli  Sig70        Aerobic    1  13961493 0.13994203 103.423876
+##  2:   E.Coli  Sig70        Aerobic    2  14810838 0.16339252 162.800188
+##  3:   E.Coli  Sig70      Anaerobic    1  16108774 0.13535422 153.508809
+##  4:   E.Coli  Sig70      Anaerobic    2  13636541 0.15322537 172.581549
+##  5:   E.Coli  Sig70       Rif-0min    1    902921 0.26895580  13.769077
+##  6:   E.Coli  Sig70       Rif-0min    1   1852124 0.25908459  17.918825
+##  7:   E.Coli  Sig70      Rif-20min    2   2104427 0.25841987  29.608305
+##  8:   E.Coli  Sig70      Rif-20min    2  11548572 0.15107930  13.086255
+##  9:    Human   CTCF           HeLA    1  48478450 0.45796889  16.024817
+## 10:    Mouse Fox A1    Mouse Liver    1  22210461 0.65622704  21.281972
+## 11:    Mouse Fox A1    Mouse Liver    2  23307557 0.79962169  60.421912
+## 12:    Mouse Fox A1    Mouse Liver    3  22421729 0.10683407  72.042428
+## 13:    Human     GR          IMR90    1  47443803 0.29785605   8.860176
+## 14:    Human     GR           K562    1 116518000 0.05047634   4.117883
+## 15:    Human     GR           U20S    1   3255111 0.77142141  10.058834
+## 16:    Human     ER          MCF-7    1   9289835 0.80825680  19.875232
+## 17:    Human     ER          MCF-7    2  11041833 0.80241200  21.485094
+## 18:    Human     ER          MCF-7    3  12464836 0.82035947  18.728062
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -643,32 +645,29 @@ uses.\footnote{For here we may probably use only 933 as part of the
 \label{sec:conc}
 
 We made a systematic exploration of several ChIP-exo experiments and
-provide a list of factors that reflect the quality of a ChIP-exo
-experiment and we provide a QC pipeline which is capable of assessing
-the balance between the enrichment and the library complexity of a
-ChIP-exo experiment. Additionally, a set of diagnostics was established
-to assess the an experiment's quality. The QC pipeline only requires a
-set of aligned reads to give a global overview of a ChIP-exo
-experiment, this overview coincides with more elaborate analysis, such
-as motif detection in a set of high quality regions or resolution
-analysis given a set of annotations as gold-standard.
+provided a list of factors that reflect the quality of a ChIP-exo
+experiment and we developed a QC pipeline which is capable of
+assessing the balance between the enrichment and the library
+complexity of a ChIP-exo experiment. Additionally, a set of
+diagnostics was established to assess the quality of a ChIP-exo
+experiment. The QC pipeline only requires a set of aligned reads to
+give a global overview of a ChIP-exo experiment, this overview
+coincides with more elaborate analysis that is computationally more
+expensive to perform or requires additional inputs that may not be
+available, such as motif detection in a set of high quality regions or
+resolution analysis given a set of annotations as gold-standard.
 
 To the extent of our knowledge, we made for the fist time a comparison
 between ChIP-exo and PE ChIP-Seq. Using a set of annotations as
 gold-standard, we showed that both protocols are comparable in
 resolution and that for regions with more than one binding site,
 ChIP-exo is more sensitive than both SE and PE ChIP-Seq. We made a
-systematic comparison between fixed depth ChIP-exo, PE ChIP-Seq and SE
+methodical comparison between fixed depth ChIP-exo, PE ChIP-Seq and SE
 ChIP-Seq, and we probed that for sufficiently complex libraries,
 ChIP-exo experiments can outperform PE and SE ChIP-Seq in number of
 identified targets and resolution. Using the ChIP-exo QC pipeline, we
 show how to diagnose if the library complexity of ChIP-exo experiment
 is adequate.
-
-
-
-
-
 
 
 \section{Methods}
@@ -687,6 +686,10 @@ experiment from the PE ones by taking one of both ends randomly
 following a $\mbox{Ber}(0.5)$ model. 
 
 \subsection*{Saturation analysis of ChIP-exo, PE ChIP-Seq and SE ChIP-Seq.}
+
+To perform the saturation analysis, we sub-sampled $N$ fragments for
+both ChIP-exo and SE ChIP-Seq protocols. For PE ChIP-Seq we
+sub-sampled $N$ pairs or $N/2$ fragments. For all the experiments under a certain condition, we 
 
 
 
@@ -887,15 +890,15 @@ during model fitting for all methods.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-##                         files   nreads       pbc      nsc
-## pet.1 edsn1396_Sig70.sort.bam 13445022 0.9426179 8.865244
-## pet.2 edsn1398_Sig70.sort.bam 16538920 0.9378843 7.031836
-## pet.3 edsn1400_Sig70.sort.bam 11642722 0.8891744 10.77284
-## pet.4 edsn1402_Sig70.sort.bam 16854026 0.9407020 7.936239
-## set.1 edsn1396_Sig70.sort.bam  6722511 0.6632742  9.01779
-## set.2 edsn1398_Sig70.sort.bam  8269460 0.5594449 7.179539
-## set.3 edsn1400_Sig70.sort.bam  5821361 0.6472382 10.89898
-## set.4 edsn1402_Sig70.sort.bam  8427013 0.5895118 8.124717
+##                      files   nreads       pbc      nsc
+## 1: edsn1396_Sig70.sort.bam 13445022 0.9426179 8.865244
+## 2: edsn1398_Sig70.sort.bam 16538920 0.9378843 7.031836
+## 3: edsn1400_Sig70.sort.bam 11642722 0.8891744 10.77284
+## 4: edsn1402_Sig70.sort.bam 16854026 0.9407020 7.936239
+## 5: edsn1396_Sig70.sort.bam  6722511 0.6632742  9.01779
+## 6: edsn1398_Sig70.sort.bam  8269460 0.5594449 7.179539
+## 7: edsn1400_Sig70.sort.bam  5821361 0.6472382 10.89898
+## 8: edsn1402_Sig70.sort.bam  8427013 0.5895118 8.124717
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
