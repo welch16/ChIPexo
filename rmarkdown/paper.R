@@ -62,7 +62,7 @@
   topM <- 300
 
 
-## ----table_chipseq,include = TRUE,echo = FALSE,eval = TRUE---------------
+## ----table_chipseq1,include = TRUE,echo = FALSE,eval = TRUE--------------
   load("../data/paper_tables/Landick_rif_chipseq_summary.RData")
   do.call(rbind,chipseq)
 
