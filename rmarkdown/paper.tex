@@ -91,13 +91,13 @@
   ChIP-exo experiments}
 
 \author[
-   addressref={aff6},                   % id's of addresses, e.g. {aff1,aff2}
-   email={chungd@musc.edu}   % email address
-]{\inits{DC}\fnm{Dongjun} \snm{Chung}}
-\author[
    addressref={aff1},
    email={welch@stat.wisc.edu}
-]{\inits{RW}\fnm{Rene} \snm{Welch}}
+]{\inits{RW}\fnm{Rene} \snm{Welch}\thanks{These two authors contributed equally}\normalfont\textsuperscript{,}}
+\author[
+   addressref={aff6},                   % id's of addresses, e.g. {aff1,aff2}
+   email={chungd@musc.edu}   % email address
+]{\inits{DC}\fnm{Dongjun} \snm{Chung\normalfont\textsuperscript{[1],}}}
 \author[
    addressref={aff3},
    email={ong@cs.wisc.edu}
@@ -115,6 +115,7 @@
    corref={aff1},
    email={keles@stat.wisc.edu}
 ]{\inits{SK}\fnm{S\"und\"uz} \snm{Kele\c{s}}}
+
 
 
 \address[id=aff1]{%                           % unique id
@@ -455,11 +456,14 @@ binding sites identification. Figures \ref{fig:comp}C and
 \ref{fig:comp}D display the bin-level average read counts against
 mappability and GC content. Each data point is obtained by averaging
 the read counts across bins with the same mappability of GC
-content. These results indicate that binding site identification in
-ChIP-exo sample might also benefit from the use of methods that take
-into account of apparent sequence biases such as mappability and GC
-content.
-
+content. In Figure \ref{fig:comp}C it is shown that the ChIP-exo tag
+counts linearly increases with the mappability score and in Figure
+\ref{fig:comp}D it is shown that for GC - content below 0.6, the mean
+ChIP tag count increases and for GC - content greater than 0.6 it
+shows a decreasing trend.These results indicate that binding site
+identification in ChIP-exo sample might also benefit from the use of
+methods that take into account of apparent sequence biases such as
+mappability and GC content.
 
 \subsection{ChIP-exo Quality Control Pipeline}
 
@@ -751,7 +755,7 @@ events using the dPeak model with a maximum number of 5 binding
 events. We considered RegulonDB annotation as gold-standard;
 Resolution is defined as the minimum distance from an annotation to an
 estimated binding events and Sensitivity is defined as the fraction of
-annotation in a are within 20 bp from an estimated binding event.
+annotation in a are within 15 bp from an estimated binding event.
 
 \subsection*{Saturation analysis of ChIP-exo, PE ChIP-Seq and SE ChIP-Seq.}
 
@@ -766,7 +770,7 @@ number of top sample peaks such that a binding events was estimated
 using the sampled reads and the dPeak's model; the number of predicted
 events is the total quantity of binding events estimated using the
 dPeak's model; the number of identified targets are number of
-gold-standard annotations within 20 bp from an estimated binding
+gold-standard annotations within 15 bp from an estimated binding
 events; and the resolution is defined as the minimum distance from a
 gold-standard annotation to an estimated binding event. We repeated
 this analysis for ten seeds and reported the median between all those
@@ -800,6 +804,13 @@ during model fitting for all methods. We were unable to use CexoR
 
 \bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
 \bibliography{chip_exo_paper}
+\nocite{exo_gb}
+\nocite{maplot1}
+\nocite{maplot2}
+\nocite{chipbeyond}
+
+% \nocite{esl}
+
 
 \newpage
 
@@ -822,20 +833,23 @@ during model fitting for all methods. We were unable to use CexoR
   \includegraphics[width = .46\textwidth]{../figs/for_paper/forward_strand_ratio_comp_old.pdf}
 \includegraphics[width = .46\textwidth,page = 1]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
   \includegraphics[width = .46\textwidth,page = 2]{../figs/for_paper/eukaryotic_bias_CTCF.pdf}
-  \caption{ A) Hexbin plot of PE ChIP-Seq bin counts VS ChIP-exo bin
+  \caption{ A) Hexbin plot of PE ChIP-Seq bin counts vs ChIP-exo bin
     counts. B) Forward Strand Ratio densities for SE ChIP-Seq and
-    ChIP-exo peaks. C) ChIP tag counts increase linearly as
-    mappability scores increases. D) ChIP tag counts increase linearly
-    as GC content score increases when GC content is less than 0.6 and
-    then ChIP tag counts decrease as GC content increases. D)
-    Percentage of sites with at least p.value.}
+    ChIP-exo peaks. C) Mappability score vs mean ChIP tag counts with
+    0.95 confidence bands. D) GC - content score vs mean ChIP tag
+    counts with 0.95 confidence bands.}
   \label{fig:comp}
 \end{figure}
+
+% ChIP tag counts increase linearly as mappability scores
+% increases. D) ChIP tag counts increase linearly as GC content score
+% increases when GC content is less than 0.6 and then ChIP tag counts
+% decrease as GC content increases. D) Percentage of sites with at
+% least p.value.
 
 \newpage
 
 \begin{figure}[h!]
-  \centering
   \centering
   \includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram2.pdf}
   \caption{Flowchart of the ChIP-exo quality control pipeline.}
@@ -851,14 +865,14 @@ during model fitting for all methods. We were unable to use CexoR
   \includegraphics[width = .3 \textwidth,page = 1]{../figs/FOXA1_mm9_fimo/FOXA1_summaries_by_replicate.pdf}
   \includegraphics[width = .3 \textwidth,page = 3]{../figs/FOXA1_mm9_fimo/FOXA1_summaries_by_replicate.pdf}
   \includegraphics[width = .3 \textwidth,page = 1]{../figs/FOXA1_mm9_fimo/FOXA1_log10pval_cumulative_nmotifs.pdf}
-  \caption{Using the mouse-FoxA1 experiment from \cite{exoillumina}:
-    A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$, in general
-    we can see a slight separation into two strong arms, one
-    corresponds to low $\mbox{ARC}$ and varying $\mbox{URCR}$, and for
-    the other $\mbox{URCR}$ decreases as $\mbox{ARC}$ increases. B)
-    Number of candidate sites for each replicate. C) Percentage of
-    candidate sites where the FoxA1 motif was detected. D) 
- }
+  \caption{Using the mouse FoxA1 experiment from \cite{exoillumina}:
+    A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$, there is a
+    slight separation into two strong arms, one corresponds to low
+    $\mbox{ARC}$ and varying $\mbox{URCR}$, and for the other
+    $\mbox{URCR}$ decreases as $\mbox{ARC}$ increases. B) Number of
+    candidate sites for each replicate. C) Percentage of candidate
+    sites where the FoxA1 motif was detected. D) Cumulative
+    proportion of detected motifs by replicate.}
   \label{fig:enrich}
 \end{figure}
 
@@ -877,7 +891,7 @@ during model fitting for all methods. We were unable to use CexoR
     the proportion of regions that are formed by two strands or only
     one, in a good sample the single-stranded regions are going to be
     filtered out quickly as in the middle row. C)
-    $-log_{10}(\text{p.value})$ of testing if the imbalance
+    $-\log_{10}(\text{p.value})$ of testing if the imbalance
     distributions differs when ChIP-exo regions overlap their peaks.}
   \label{fig:strand}
 \end{figure}
@@ -940,6 +954,7 @@ during model fitting for all methods. We were unable to use CexoR
 \section*{Supplement}
 \label{sec:supp}
 
+\emph{Note: I am not sure wheter to include several figures on this supplement}
 
 \begin{table}[h!]
 %% need to fix format
@@ -1075,16 +1090,11 @@ during model fitting for all methods. We were unable to use CexoR
   \label{fig:exoQC_sat4}
 \end{figure}
 
-\newpage
 
 
 
 
-% \nocite{exo_gb}
-%  \nocite{maplot1}
-% \nocite{maplot2}
-% \nocite{chipbeyond}
-% \nocite{esl}
+
 
 
 \end{document}
