@@ -20,10 +20,10 @@ figs_dir <- "figs/for_paper"
 
 dir.create(figs_dir,showWarnings = FALSE, recursive = TRUE)
 base_dir <- "/p/keles/ChIPexo/volume6/K12"
-FDR <- "FDR5"
+FDR <- "FDR1"
 edsn <- c("1311","1314","1317","1320","931","933")
 max_dist <- 50
-topM <- 300
+topM <- 50
 mc <- detectCores()
 
 ### methods directories
@@ -95,6 +95,9 @@ rm(files)
 
 files <- list.files(gem_dir,recursive = TRUE)
 files <- files[grep(FDR,files)]
+if(FDR == "FDR1"){
+  files <- files[grep("FDR10",files,invert = TRUE)]
+}
 files <- files[grep("bed",files)]
 files <- files[grep("insig",files,invert = TRUE)]
 files <- files[grep("event",files)]
@@ -120,6 +123,9 @@ files <- list.files(file.path(base_dir,"downstream"),recursive = TRUE)
 files <- files[grep("peak",files)]
 files <- files[grep("exo",files)]
 files <- files[grep(FDR,files)]
+if(FDR == "FDR1"){
+  files <- files[grep("FDR10",files,invert =TRUE)]
+}
 
 mosaics <- lapply(file.path(base_dir,"downstream",files),read.table)
 mosaics <- lapply(mosaics,data.table)
@@ -132,23 +138,42 @@ rm(files)
 
 mosaics <- lapply(mosaics,function(x,topM)x[order(-aveChipCount)][1:topM],topM)
 mosaics_ranges <- lapply(mosaics,function(x) x[,IRanges(start = peakStart, end = peakStop)])
+names(mosaics_ranges) <- edsn
 
 ### B) dPeak sites
 files <- list.files(file.path(base_dir,"downstream"),recursive = TRUE)
 files <- files[grep("exo",files)]
 files <- files[grep("sites",files)]
 files <- files[grep(FDR,files)]
+if(FDR == "FDR1"){
+  files <- files[grep("FDR10",files,invert = TRUE)]
+}
+files_mot <- files[grep("motif",files)]
+files <- files[grep("motif",files,invert = TRUE)]
 
 dpeak <- lapply(file.path(base_dir,"downstream",files),read.table,header = TRUE)
 dpeak <- lapply(dpeak,data.table)
 names(dpeak) <- edsn
 rm(files)
 
+dpeak_mot <- lapply(file.path(base_dir,"downstream",files_mot),read.table,header = TRUE)
+dpeak_mot <- lapply(dpeak_mot,data.table)
+names(dpeak_mot) <- edsn
+rm(files_mot)
+
+dpeak_mot <- lapply(dpeak_mot,function(x){
+  setnames(x,names(x),c("chrID","siteStart","siteEnd","siteName","siteStrength"))
+  return(x)})
+
+
+### C)dPeak sites with motif init
+
 tab1 <- do.call(rbind,list(peakzilla = sapply(peakzilla,nrow),
                            mace = sapply(mace,nrow),
                            gem = sapply(gem,nrow),
                            mosaics = sapply(mosaics,nrow),
-                           dpeak = sapply(dpeak,nrow)))
+                           dpeak = sapply(dpeak,nrow),
+                           dpeak_mot = sapply(dpeak_mot,nrow)))
 tab1
 
 ######################################################################################
@@ -176,6 +201,8 @@ peakzilla_ranges <- lapply(peakzilla,covert2IRanges,"peakzilla")
 mace_ranges <- lapply(mace,covert2IRanges,"mace")
 gem_ranges <- lapply(gem,covert2IRanges,"gem")
 dpeak_ranges <- lapply(dpeak,covert2IRanges,"dpeak")
+dpeak_mot_ranges <- lapply(dpeak_mot,covert2IRanges,"dpeak")
+
 
 ######################################################################################
 
@@ -208,7 +235,7 @@ clean_list <- function(predictions)
   return(out)
 }
 
-compare_predictions <- function(peakzilla,mace,gem,dpeak,peaks,annots,max_dist)
+compare_predictions <- function(peakzilla,mace,gem,dpeak,dpeak_mot,peaks,annots,max_dist)
 {
   peaks <- split(peaks,1:length(peaks))
   annots_in_peaks <- separate_sites(peaks,annots)
@@ -218,6 +245,7 @@ compare_predictions <- function(peakzilla,mace,gem,dpeak,peaks,annots,max_dist)
   mace_in_peaks <- separate_sites(peaks,mace,idx)
   gem_in_peaks <- separate_sites(peaks,gem,idx)
   dpeak_in_peaks <- separate_sites(peaks,dpeak,idx)
+  dpeak_mot_in_peaks <- separate_sites(peaks,dpeak_mot,idx)
   
   peakzilla_reso <- mcmapply(resolution,annots_in_peaks,peakzilla_in_peaks,
     MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
@@ -227,12 +255,16 @@ compare_predictions <- function(peakzilla,mace,gem,dpeak,peaks,annots,max_dist)
     MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
   dpeak_reso <- mcmapply(resolution,annots_in_peaks,dpeak_in_peaks,
     MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
+  dpeak_mot_reso <- mcmapply(resolution,annots_in_peaks,dpeak_mot_in_peaks,
+    MoreArgs = list(max_dist),mc.cores = mc,SIMPLIFY = FALSE)
+
   peakzilla_reso <- data.table(method = "Peakzilla",reso = clean_list(peakzilla_reso))
   mace_reso <- data.table(method = "Mace",reso = clean_list(mace_reso))
   gem_reso <- data.table(method = "Gem",reso = clean_list(gem_reso))
   dpeak_reso <- data.table(method = "dPeak",reso = clean_list(dpeak_reso))
+  dpeak_mot_reso <- data.table(method = "dPeak (motif)",reso = clean_list(dpeak_mot_reso))
 
-  out <- do.call(rbind,list(peakzilla_reso,mace_reso,gem_reso,dpeak_reso))
+  out <- do.call(rbind,list(peakzilla_reso,mace_reso,gem_reso,dpeak_reso,dpeak_mot_reso))
   return(out)
 }
 
@@ -241,12 +273,13 @@ reso <- mapply(compare_predictions,
                mace_ranges,
                gem_ranges,
                dpeak_ranges,
+               dpeak_mot_ranges,
                mosaics_ranges,
                MoreArgs = list(annots,max_dist),SIMPLIFY = FALSE)
 reso <- mapply(function(x,y)copy(x)[,dataset := y],reso,edsn,SIMPLIFY = FALSE)
 reso <- do.call(rbind,reso)
 
-pdf(file = file.path("figs/for_paper",paste0("sig70_methods_comparison_",FDR,"_topM",topM,".pdf")))
+pdf(file = file.path("figs/for_paper",paste0("sig70_methods_comparison_",FDR,"_topM",topM,"_wMotif.pdf")))
 ggplot(reso,aes_string("method","reso",fill = "method"))+geom_boxplot(outlier.shape = NA)+
   scale_fill_brewer(palette = "Pastel1")+facet_wrap(~ dataset,nrow = 2 )+
   theme_bw()+theme(legend.position = "none",axis.text.x = element_text(angle = 30))+
@@ -254,4 +287,3 @@ ggplot(reso,aes_string("method","reso",fill = "method"))+geom_boxplot(outlier.sh
   xlab("Methods")+ylab("Resolution")
 dev.off()
 
-  ## geom_jitter(aes(colour = method),size = 1.2)+scale_color_brewer(palette = "Set1")+

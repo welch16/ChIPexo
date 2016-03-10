@@ -56,7 +56,7 @@ dpeak_call <- function(peaksfile,readsfile,motif)
 dpeakEst <- mapply(dpeak_call,file.path(peak_dir,peak_files),
        file.path(read_dir,read_files),dp_motifs,SIMPLIFY = FALSE)
 
-save(dpeakExt,file = "dpeak_sites_motif.RData")
+save(dpeakEst,file = "dpeak_sites_motif.RData")
 
 out_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo/motif_init/FDR1"
 dir.create(out_dir,recursive = TRUE)
