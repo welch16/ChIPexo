@@ -327,28 +327,30 @@ analysis with any of the available methods.
 \section{Results and discussion}
 \label{sec:results}
 
-\subsection{Deeply sequence E. Coli $\sig$ ChIP-exo and ChIP-Seq data}
+\subsection{Deeply sequenced E. Coli $\sig$ ChIP-exo and ChIP-Seq data}
  
 $\sig$ factor is a transcription initiation factor of housekeeping
-genesin E. Coli. In this organism's genomes, many promoters contain
+genes in E. Coli. In this organism's genomes, many promoters contain
 multiple transcription start sites (TSS) and these TSS are often
 closely spaced (10 $\sim$ 150 bp). These closely spaced binding sites
 are considered to be multiple ``switches'' that differentially
 regulate gene expression under diverse growth conditions
 \cite{regulondb}. Therefore, investigation of ChIP-exo's potential for
-identification and differentiation of closely spaced binding sites are
+identification and differentiation of closely spaced binding sites is
 invaluable for elucidating the transcriptional networks of prokaryotic
 genomes.
 
-\subsection{Current ChIP-Seq guidelines and quality metrics on ChIP-exo data}
+\subsection{Application of current ChIP-Seq QC guidelines on ChIP-exo
+  data}
 
-We started our exploration by investigating the suitability of the
-current state-of-the-art QC pipelines for ChIP-Seq for ChIP-exo. Table
-\ref{tab:qc} contains measures that are commonly calculated for
-ChIP-Seq samples: PCR Bottleneck Coefficient (PBC) and the Normalized
-Strand Cross-Correlation (NSC) are calculated as in \cite{encode_qc}.
-Additionally, we calculated the Forward Strand Ratio (FSR) to compare
-the number of fragments sequenced from each strand.
+We started our exploration by investigating whether the current
+state-of-the-art QC pipelines for ChIP-Seq are suitable for
+ChIP-exo. Table \ref{tab:qc} contains measures that are commonly
+calculated for ChIP-Seq samples: PCR Bottleneck Coefficient (PBC) and
+the Normalized Strand Cross-Correlation (NSC) are calculated as in
+\cite{encode_qc}. We omitted the Relative Strand Cross-Correlation
+(RSC) which is another commonly used QC measure because a typical
+ChIP-exo experiment is not accompanied by an input sample.
 
 %% We can observe that the PBC is low, hence it would be incorrectly
 %% suggested to repeat the experiment.
@@ -357,59 +359,70 @@ the number of fragments sequenced from each strand.
 %% need to fix format
   \centering
 
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-##     Organism  IP/TF Condition/Cell Rep.     Depth        PBC        NSC
-##  1:   E.Coli  Sig70        Aerobic    1  13961493 0.13994203 103.423876
-##  2:   E.Coli  Sig70        Aerobic    2  14810838 0.16339252 162.800188
-##  3:   E.Coli  Sig70      Anaerobic    1  16108774 0.13535422 153.508809
-##  4:   E.Coli  Sig70      Anaerobic    2  13636541 0.15322537 172.581549
-##  5:   E.Coli  Sig70       Rif-0min    1    902921 0.26895580  13.769077
-##  6:   E.Coli  Sig70       Rif-0min    1   1852124 0.25908459  17.918825
-##  7:   E.Coli  Sig70      Rif-20min    2   2104427 0.25841987  29.608305
-##  8:   E.Coli  Sig70      Rif-20min    2  11548572 0.15107930  13.086255
-##  9:    Human   CTCF           HeLA    1  48478450 0.45796889  16.024817
-## 10:    Mouse Fox A1    Mouse Liver    1  22210461 0.65622704  21.281972
-## 11:    Mouse Fox A1    Mouse Liver    2  23307557 0.79962169  60.421912
-## 12:    Mouse Fox A1    Mouse Liver    3  22421729 0.10683407  72.042428
-## 13:    Human     GR          IMR90    1  47443803 0.29785605   8.860176
-## 14:    Human     GR           K562    1 116518000 0.05047634   4.117883
-## 15:    Human     GR           U20S    1   3255111 0.77142141  10.058834
-## 16:    Human     ER          MCF-7    1   9289835 0.80825680  19.875232
-## 17:    Human     ER          MCF-7    2  11041833 0.80241200  21.485094
-## 18:    Human     ER          MCF-7    3  12464836 0.82035947  18.728062
+##     Organism  IP/TF Condition/Cell Rep.       Depth    PBC      NSC
+##  1:   E.Coli  Sig70        Aerobic    1  13,961,493 0.1399 103.4239
+##  2:   E.Coli  Sig70        Aerobic    2  14,810,838 0.1634 162.8002
+##  3:   E.Coli  Sig70      Anaerobic    1  16,108,774 0.1354 153.5088
+##  4:   E.Coli  Sig70      Anaerobic    2  13,636,541 0.1532 172.5815
+##  5:   E.Coli  Sig70       Rif-0min    1     902,921 0.2690  13.7691
+##  6:   E.Coli  Sig70       Rif-0min    1   1,852,124 0.2591  17.9188
+##  7:   E.Coli  Sig70      Rif-20min    2   2,104,427 0.2584  29.6083
+##  8:   E.Coli  Sig70      Rif-20min    2  11,548,572 0.1511  13.0863
+##  9:    Human   CTCF           HeLA    1  48,478,450 0.4580  16.0248
+## 10:    Mouse Fox A1    Mouse Liver    1  22,210,461 0.6562  21.2820
+## 11:    Mouse Fox A1    Mouse Liver    2  23,307,557 0.7996  60.4219
+## 12:    Mouse Fox A1    Mouse Liver    3  22,421,729 0.1068  72.0424
+## 13:    Human     GR          IMR90    1  47,443,803 0.2979   8.8602
+## 14:    Human     GR           K562    1 116,518,000 0.0505   4.1179
+## 15:    Human     GR           U20S    1   3,255,111 0.7714  10.0588
+## 16:    Human     ER          MCF-7    1   9,289,835 0.8083  19.8752
+## 17:    Human     ER          MCF-7    2  11,041,833 0.8024  21.4851
+## 18:    Human     ER          MCF-7    3  12,464,836 0.8204  18.7281
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-\caption{Usual quality control indicators applied to the gathered
-  ChIP-exo samples.  PBC stands for PCR Bottleneck Coefficient (0 -
-  0.5 is severe bottlenecking, 0.5 - 0.8 is moderate bottlenecking,
-  0.8 - 0.9 is mild bottlenecking, while 0.9 - 1 is no bottlenecking),
-  NSC for Normalized Strand Cross-Correlation and FSR for Forward
-  Strand Ratio. We omitted the Relative Strand Cross-Correlation (RSC)
-  because a typical ChIP-exo experiment is not accompanied by an input
-  file. $\sig$ samples were given by Dr. Landick's Lab, FoxA1 and ER
-  samples are from Serandour et al., 2013 \cite{exoillumina} and CTCF
-  sample is from Rhee and Pugh, 2011 \cite{exo1}}
+\caption{\textbf{Current QC metrics applied to ChIP-exo data.} PBC
+  stands for PCR Bottleneck Coefficient and NSC for Normalized Strand
+  Cross-Correlation.}
   \label{tab:qc} %% need to make this table
 \end{table}
 
-It is of special importance to notice that the values of PBC are quite
-low, hence it would be necessary to repeat these experiments by
-following ChIP-seq guidelines. On the other hand, in a good ChIP-Seq
-experiment the SCC is maximized at the fragment length, and a
-``phantom peak'' would be also present at the experiment's read length
-(\cite{encode_qc} and \cite{strandcc}). However, in ChIP-exo's case
-these two peaks are confounded. Hence an enrichment measure based in
-SCC such as the NSC is harder to interpret. In Figure
-\ref{fig:scc_exo} we observe that both local maxima are hard to
-differentiate in the SCC curves for the $\sig$ ChIP-exo datasets used to
-calculate the NSC values in Table \ref{tab:qc}.
+DNA libraries generated by the ChIP-exo protocol seem to be less
+complex than the libraries generated by ChIP-Seq, since the possible
+number of positions to which the reads can be aligned is being reduced
+due to the exonuclease digestion, hence considerable amounts of reads
+are being mapped to specific positions. This affects the
+interpretation of the PBC, since for ChIP-Seq low PBC values indicate
+that the same read has been copied by the amplification process and
+aligned multiple times to the same position; while for ChIP-exo when
+several reads are aligned to the same position are not necessarily the
+same read amplified, but several reads that their $5\prime$ end was
+digested to the same position before the amplification step. It is of
+special importance to notice that for several ChIP-exo datasets, the
+PBC values are quite low. Therefore, by blindly following ChIP-Seq
+guidelines those experiment could have been considered as not useful
+and repeated. 
 
-% % According to ENCODE's quality metrics, NSC values close
-% % to one corresponds to low enrichment samples or bad quality datasets
-
+The Strand Cross-Correlation (SCC) introduced by Kharchenko et al.,
+2008 \cite{strandcc} is the most commonly used quality measure in
+ChIP-Seq. It is calculated as the correlation between both strand
+coverages, where each one is shifted $\delta / 2$ bp towards the
+$3\prime$ direction. In general it measures how well the reads mapped
+to each strand are clustered around the locations where the proteins
+are binding to the DNA, and usually it is expected to observed two
+local maxima, one when the profiles are shifted by the average read
+length and another when the profiles are shifted by the unobserved
+fragment length. In a good ChIP-Seq dataset the last one is also the
+SCC global maxima. However, in ChIP-exo's case these two peaks are
+confounded. Hence the Normalized Strand Cross-Correlation (NSC) which
+is a measure based on the SCC is harder to interpret. Figure
+\ref{fig:scc_exo} shows that both local maxima are hard to
+differentiate in the SCC curves for the $\sig$ ChIP-exo datasets used
+to calculate the NSC values in Table \ref{tab:qc}.
 
 \subsection{Comparison with ChIP-Seq data}
 
@@ -420,9 +433,9 @@ identification between ChIP-exo and ChIP-Seq data. In order to compare
 distribution of signal and background between ChIP-exo and ChIP-Seq
 data, we calculated ChIP tag counts across the genome by counting the
 number of reads mapping to each of 150 non-overlapping
-window after extending reads by 150 to their 3' end
-directions. ChIP tag counts in ChIP-exo data were linearly related to
-ChIP tag counts in ChIP-Seq data for the regions with high ChIP tag
+window after extending reads by 150 to their $3\prime$
+end directions. ChIP tag counts in ChIP-exo data were linearly related
+to ChIP tag counts in ChIP-Seq data for the regions with high ChIP tag
 counts (Figure \ref{fig:comp}A). This implies that signals for
 potential binding sites are well reproducible between ChIP-exo and
 ChIP-Seq data. On the other hand, there was clear difference in the
@@ -697,7 +710,54 @@ is adequate.
 
 \subsection*{Growth conditions.}
 
+
 \subsection*{ChIP-exo experiments.}
+
+
+\subsection*{Definition of current ChIP-Seq QC guidelines.}
+
+\subsubsection*{PCR Bottleneck Coefficient.}
+
+The PCR Bottleneck coefficient is a measure of library complexity in
+ChIP-Seq data:
+
+\begin{align}
+  \mbox{PBC} = \frac{\text{Nr. of positions to which exactly one
+      unique mapping read is aligned}}{\text{Nr. of positions to
+      which at least one unique mapping read is aligned}} \nonumber
+\end{align}
+
+For human and mouse genome, the ENCODE project states that a PBC value
+in the 0 - 0.5 range indicates severe bottlenecking, in the 0.5 - 0.8
+range moderate bottlenecking, in the 0.8 - 0.9 range indicates mild
+bottlenecking and in the 0.9 - 1 range indicates that there is no
+presence of bottlenecking.
+
+\subsubsection*{Strand Cross-Correlation.}
+
+The strand cross-correlation was proposed by Kharchenko et al., 2008
+\cite{strandcc} and it may be one of the most used of the ChIP-Seq QC
+metrics. The SCC curve is defined as:
+
+\begin{align}
+  y(\delta) = \sum_c w_c r\left[ n_c^+ \left(x + \frac{\delta}{2}
+    \right), n_c^- \left( x- \frac{\delta}{2} \right)\right],
+\label{scc}
+\end{align}
+
+where $y(\delta)$ is the SCC for a strand shift $\delta$, $r$ is the
+Pearson correlation, $w_c$ is the proportion of reads mapped to
+chromosome $c$ and $n_c^S$ is the read count vector for strand $S$ and
+chromosome $c$. Additionally, two QC metrics are defined:
+
+\begin{align}
+  \mbox{NSC} &= \frac{\max_\delta y(\delta)}{\min_\delta y(\delta)}, \label{nsc} \\
+  \mbox{RSC} &= \frac{\max_\delta y(\delta) -
+    y_{\text{bgd}}}{y_{\text{rl}} - y_{\text{bgd}}}. \label{rsc}
+\end{align}
+
+where $y_{\text{bgd}}$ is the background SCC level and $y_{\text{rl}}$
+is the SCC ``phantom peak'' value.
 
 \subsection*{ChIP-Seq quality control metrics and Strand
   Cross-Correlation.}
@@ -962,7 +1022,7 @@ during model fitting for all methods. We were unable to use CexoR
   \includegraphics[width = .9\textwidth]{../figs/for_paper/sig70_methods_comparison_FDR5_topM300.pdf}
   \caption{Comparison of the resolution between dPeak, Gem, Mace and
     Peakzilla methods. Resolution is defined as the minimum distance
-    between a RegulonDB annotation an a predicted binding event.}
+    between a RegulonDB annotation and a predicted binding event.}
   \label{fig:methods_comp}
 \end{figure}
 

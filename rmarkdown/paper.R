@@ -39,6 +39,9 @@
   A[,nsc := unlist(nsc)]
   setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
   A[,files := NULL]
+  A[,nreads := prettyNum(nreads,big.mark = ",")]
+  A[,pbc := round(pbc,4)]
+  A[,nsc := round(nsc,4)]
   setnames(A,names(A),c("Organism","IP/TF","Condition/Cell","Rep.","Depth","PBC","NSC"))
 
 ## ----table2,include = TRUE,echo = FALSE, eval = TRUE---------------------
