@@ -1,4 +1,5 @@
 
+
 % \VignetteEngine{knitr::knitr}
 \documentclass{bmcart}\usepackage[]{graphicx}\usepackage[]{color}
 %% maxwidth is the original width if it is less than linewidth
@@ -472,18 +473,22 @@ We evaluated ChIP-exo data for CTCF factor from human genome
 binding sites identification. Figures \ref{fig:comp}C and
 \ref{fig:comp}D display the bin-level average read counts against
 mappability and GC content. Each data point is obtained by averaging
-the read counts across bins with the same mappability of GC
+the read counts across bins with the same mappability of GC -
 content. In Figure \ref{fig:comp}C it is shown that the ChIP-exo tag
 counts linearly increases with the mappability score and in Figure
 \ref{fig:comp}D it is shown that for GC - content below 0.6, the mean
 ChIP tag count increases and for GC - content greater than 0.6 it
-shows a decreasing trend.
-
-
-These results indicate that binding site identification in ChIP-exo
-sample might also benefit from the use of methods that take into
-account of apparent sequence biases such as mappability and GC
-content.
+shows a decreasing trend. Kuan et al., 2011 \cite{mosaics} studied the
+presence of the mappability and GC - content biases in ChIP-Seq's
+background. It is not surprising to see these biases also present in
+ChIP-exo data, since ChIP-Seq and ChIP-exo signal seems to be linearly
+correlated for enriched regions (Figure \ref{fig:comp}A). Rozowsky et
+al., 2009 \cite{peakseq} and Valouev et al., 2008 \cite{quest} provide
+in depth analysis of the mappability and GC - content biases for
+ChIP-Seq respectively. Finally, these results indicate that binding
+site identification for ChIP-exo data benefits from using methods that
+take into account of apparent sequence biases such as mappability and
+GC content.
 
 \subsection{ChIP-exo Quality Control Pipeline}
 
@@ -783,7 +788,7 @@ et al., 2009 \cite{peakseq}:
 where $\delta_i$ is the indicator if the base at coordinate $i$ can be
 mapped uniquely by a 32 bp sequence at position $i$, and $L$ is the
 expected fragment length. GC - content score is defined analogously,
-where $\delta_i$ represents the ocurrence of a G or C at the $i$-th
+where $\delta_i$ represents the occurrence of a G or C at the $i$-th
 position in the genome. 
 
 The mappability and GC - content scores for a bin are defined as the
