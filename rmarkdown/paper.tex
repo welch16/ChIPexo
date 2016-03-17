@@ -1,3 +1,4 @@
+
 % \VignetteEngine{knitr::knitr}
 \documentclass{bmcart}\usepackage[]{graphicx}\usepackage[]{color}
 %% maxwidth is the original width if it is less than linewidth
@@ -70,6 +71,7 @@
 % \hypersetup{linkcolor=black}
 
 \usepackage{wrapfig}
+
 
 % \usepackage{authblk}
 \usepackage[utf8]{inputenc} %unicode support
@@ -436,10 +438,11 @@ number of reads mapping to each of 150 non-overlapping
 window after extending reads by 150 to their $3\prime$
 end directions. ChIP tag counts in ChIP-exo data were linearly related
 to ChIP tag counts in ChIP-Seq data for the regions with high ChIP tag
-counts (Figure \ref{fig:comp}A). This implies that signals for
-potential binding sites are well reproducible between ChIP-exo and
-ChIP-Seq data. On the other hand, there was clear difference in the
-background distribution between them. In ChIP-Seq data reads were
+counts (Upper part of Figure \ref{fig:comp}A). This implies that
+signals for potential binding sites are well reproducible between
+ChIP-exo and ChIP-Seq data. On the other hand, there was clear
+difference in the background distribution between them (lower part of
+Figure \ref{fig:comp}A). Specifically, in ChIP-Seq data reads were
 almost uniformly distributed over background (non-binding) regions and
 the ChIP tag counts in there regions were significantly larger than
 zero. In contrast, in ChIP-exo data, there was larger variation in
@@ -452,15 +455,16 @@ genome is expected to be background.
 We next evaluated the ``peak pair'' assumption from Rhee and Pugh,
 2011 \cite{exo1}, i.e. a peak of reads in the forward strand is
 usually paired with a peak of reads in the reverse strand that is
-located in the other site of the binding site. Wang et al., 2014
+located in the other site of the binding site. Note that currently
+available ChIP-exo data analysis methods, such as Wang et al., 2014
 \cite{mace}, Madrigal 2015 \cite{cexor} and Bardet et al., 2013
-\cite{peakzilla} proposed method rely in this assumption. In order to
-evaluate this assumption, we reviewed the proportion of reads in the
-forward strand in candidate regions (i.e. regions with at least one
-binding site) in $\sig$ ChIP-exo data. We found that strands of reads
-were much less balanced in ChIP-exo data than in ChIP-Seq data in
-these regions with potential binding sites (Fig. \ref{fig:comp}B) and
-this indicates that the peak pair assumption might not hold in real
+\cite{peakzilla} rely on this assumption. In order to evaluate this
+assumption, we reviewed the proportion of reads in the forward strand
+in ChIP-exo peaks such as at least one binding site is predicted in
+both ChIP-exo and ChIP-Seq data. We found that strands of reads were
+much less balanced in ChIP-exo data than in ChIP-Seq data in these
+regions with potential binding sites (Fig. \ref{fig:comp}B) and this
+indicates that the peak pair assumption might not hold in real
 ChIP-exo data.
 
 We evaluated ChIP-exo data for CTCF factor from human genome
@@ -473,10 +477,13 @@ content. In Figure \ref{fig:comp}C it is shown that the ChIP-exo tag
 counts linearly increases with the mappability score and in Figure
 \ref{fig:comp}D it is shown that for GC - content below 0.6, the mean
 ChIP tag count increases and for GC - content greater than 0.6 it
-shows a decreasing trend.These results indicate that binding site
-identification in ChIP-exo sample might also benefit from the use of
-methods that take into account of apparent sequence biases such as
-mappability and GC content.
+shows a decreasing trend.
+
+
+These results indicate that binding site identification in ChIP-exo
+sample might also benefit from the use of methods that take into
+account of apparent sequence biases such as mappability and GC
+content.
 
 \subsection{ChIP-exo Quality Control Pipeline}
 
@@ -497,9 +504,9 @@ Average Read Coverage (ARC) and the Unique Read Coverage Rate (URCR)
 which are defined as follows:
 
 \begin{align*}
-  \text{ARC} &= \dfrac{\text{Nr. of reads in the region}}{\text{Width of the region}} \\
+  \text{ARC} &= \dfrac{\text{Nr. of reads in the region}}{\text{Width of the region}}, \\
   \text{URCR} &= \dfrac{\text{Nr. of reads in the region mapped to
-      exactly one position}}{\text{Nr. of reads in the region}}
+      exactly one position}}{\text{Nr. of reads in the region}}.
 \end{align*}
 
 Using the Fox A1 in mouse liver cell lines from \cite{exoillumina} and
@@ -716,6 +723,11 @@ is adequate.
 
 \subsection*{Definition of current ChIP-Seq QC guidelines.}
 
+The statistics in Table \ref{tab:qc} and the SCC curves from Figure
+\ref{fig:scc_exo} were calculated with the \textbf{ChIPUtils} package
+version 0.99.0, available in
+\url{https://github.com/welch16/ChIPUtils}. 
+
 \subsubsection*{PCR Bottleneck Coefficient.}
 
 The PCR Bottleneck coefficient is a measure of library complexity in
@@ -759,14 +771,23 @@ chromosome $c$. Additionally, two QC metrics are defined:
 where $y_{\text{bgd}}$ is the background SCC level and $y_{\text{rl}}$
 is the SCC ``phantom peak'' value.
 
-\subsection*{ChIP-Seq quality control metrics and Strand
-  Cross-Correlation.}
+\subsection*{Mappability and GC content scores.}
 
-The statistics in Table \ref{tab:qc} and the SCC curves from Figure
-\ref{fig:scc_exo} where calculated with the \textbf{ChIPUtils} package
-version 0.99.0, available in
-\url{https://github.com/welch16/ChIPUtils}.
+To define the mappability score we follow the definition from Rozowsky
+et al., 2009 \cite{peakseq}:
 
+\begin{align}
+  m_i &= \sum_{k = i - L +1}^{i + L - 1} \frac{\delta_k }{2L - 1}.
+\end{align}
+
+where $\delta_i$ is the indicator if the base at coordinate $i$ can be
+mapped uniquely by a 32 bp sequence at position $i$, and $L$ is the
+expected fragment length. GC - content score is defined analogously,
+where $\delta_i$ represents the ocurrence of a G or C at the $i$-th
+position in the genome. 
+
+The mappability and GC - content scores for a bin are defined as the
+average of the scores across the nucleotides in the bin.
 
 \subsection*{ChIP-exo quality control pipeline.}
 
@@ -896,9 +917,9 @@ during model fitting for all methods. We were unable to use CexoR
 \begin{figure}[h!]
 \centering
 \includegraphics[width = .8\textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/figs/for_paper/EColi_strand_cross_corr.pdf}
-\caption{SCC curves for $\sig$ samples. The ``phantom peak'' and the
-  summit that corresponds to the read and fragment length respectively
-  are confounded due to the exonuclease digestion.}
+\caption{\textbf{SCC curves for $\sig$ samples.} The ``phantom peak''
+  and the summit that corresponds to the read and fragment length
+  respectively are confounded due to the exonuclease digestion.}
   \label{fig:scc_exo}
 \end{figure}
 
