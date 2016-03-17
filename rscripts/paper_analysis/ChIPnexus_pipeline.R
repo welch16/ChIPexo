@@ -10,13 +10,23 @@ library(scales)
 library(RColorBrewer)
 
 
-bam_dir <- "/p/keles/ChIPexo/volume4/zeitlinger_data/bam"
+bam_dir <- "/p/keles/ChIPexo/volume4/zeitlinger_data/bam/sortbam"
 files <- list.files(bam_dir)
 
-load_all("~/Desktop/Docs/Code/ChIPexoQual")
-mc <- detectCores()
+files <- files[grep("bai",files,invert = TRUE)]
 
-nexus <- lapply(file.path(bam_dir,files),create_exo_experiment,calc_summary = TRUE,parallel = TRUE,mc = mc)
+groups <- split(files,sapply(strsplit(files,"rep"),function(x)x[1]))
+names(groups) <- sapply(names(groups),function(x)substr(x,1,nchar(x) - 1))
+
+k <- 1
+prefix <- names(groups)[k]
+
+files <- sort(groups[[prefix]])
+
+load_all("~/Desktop/Docs/Code/ChIPexoQual")
+
+mc <- 20
+nexus <- lapply(file.path(bam_dir,files),create_exo_experiment,calc_summary = TRUE,parallel = TRUE,mc.cores = mc)
 stats <- lapply(nexus,summary_stats)
 names(stats) <- gsub(".bam","",files)
 
@@ -76,11 +86,7 @@ label <- lapply(stats,label_DT,values = values,prop = TRUE)
 
 name_and_join <- function(list)
 {
-  if(is.null(names)){
-    names(list) <- as.character(1:length(list))
-  }
-
-  list <- mapply(function(x,y)x[,cond := y],list,names(list),SIMPLIFY = FALSE)
+  list <- mapply(function(x,y)x[,repl := y],list,paste0("Rep-",1:length(list)),SIMPLIFY = FALSE)
   out <- do.call(rbind,list)
 
   return(out)
@@ -95,10 +101,8 @@ stats2 <- name_and_join(stats2)
 
 r <- viridis::viridis(1e3, option = "D")
 
-prefix <- gsub(".bam","",files)
-
-pdf(file = file.path(figsdir,paste(prefix,"enrichment.pdf",sep = "_")))
-ggplot(stats,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ cond)+
+pdf(file = file.path(figsdir,paste(prefix,"enrichment.pdf",sep = "_")),height = 4,width = 6)
+ggplot(stats,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ repl)+
   scale_x_continuous(limits = c(0,4))+
   scale_y_continuous(limits = c(0,1))+
   theme_bw()+theme(legend.position = "top")+
@@ -106,8 +110,8 @@ ggplot(stats,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ con
   xlab("Average read coverage (ARC)")+ylab("Unique read coverage rate (URCR)")
 dev.off()
 
-pdf(file = file.path(figsdir,paste(prefix,"enrichment_noSingleStrand.pdf",sep = "_")))
-ggplot(stats2,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ cond)+
+pdf(file = file.path(figsdir,paste(prefix,"enrichment_noSingleStrand.pdf",sep = "_")),height = 4,width = 6)
+ggplot(stats2,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ repl)+
   scale_x_continuous(limits = c(0,4))+
   scale_y_continuous(limits = c(0,1))+
   theme_bw()+theme(legend.position = "top")+
@@ -115,8 +119,8 @@ ggplot(stats2,aes(ave_reads,cover_rate))+stat_binhex(bins = 70)+facet_grid( ~ co
   xlab("Average read coverage (ARC)")+ylab("Unique read coverage rate (URCR)")
 dev.off()
 
-pdf(file = file.path(figsdir,paste(prefix,"MA_plot.pdf",sep = "_")))
-ggplot(stats2,aes(M,A))+stat_binhex(bins = 70)+facet_grid( ~ cond)+
+pdf(file = file.path(figsdir,paste(prefix,"MA_plot.pdf",sep = "_")),height = 4,width = 6)
+ggplot(stats2,aes(M,A))+stat_binhex(bins = 70)+facet_grid( ~ repl)+
   theme_bw()+theme(legend.position = "top")+
   scale_fill_gradientn(colours = r,trans = 'log10',labels=trans_format('log10',math_format(10^.x)) )+
   xlab("M")+ylab("A")+ylim(-10,10)
@@ -125,7 +129,7 @@ dev.off()
 
 pdf(file = file.path(figsdir,paste(prefix,"fsr_surv.pdf",sep ="_")))
 ggplot(fsr,aes(depth,fsr,colour = as.factor(quantiles)))+geom_line(size = 1)+
-  theme_bw()+theme(legend.position = "top")+facet_grid(cond ~ .)+
+  theme_bw()+theme(legend.position = "top")+facet_grid(repl ~ .)+
   scale_color_brewer(palette = "Dark2",name = "")+
   xlab("Minimum number of reads")+ylab("Forward Strand Ratio \n (FSR)")+
   xlim(0,300)+ylim(0,1)
@@ -133,7 +137,7 @@ dev.off()
 
 pdf(file = file.path(figsdir,paste(prefix,"fsr_surv_noSingleStrand.pdf",sep ="_")))
 ggplot(fsr2,aes(depth,fsr,colour = as.factor(quantiles)))+geom_line(size = 1)+
-  theme_bw()+theme(legend.position = "top")+facet_grid(cond ~ .)+
+  theme_bw()+theme(legend.position = "top")+facet_grid(repl ~ .)+
   scale_color_brewer(palette = "Dark2",name = "")+
   xlab("Minimum number of reads")+ylab("Forward Strand Ratio \n (FSR)")+
   xlim(0,300)+ylim(0,1)
@@ -141,7 +145,7 @@ dev.off()
 
 pdf(file = file.path(figsdir,paste(prefix,"label_surv.pdf",sep ="_")))
 ggplot(label,aes(values,value,fill = variable))+geom_bar(stat = "identity")+
-  theme_bw()+theme(legend.position = "top")+facet_grid(cond ~ .)+
+  theme_bw()+theme(legend.position = "top")+facet_grid(repl ~ .)+
   scale_fill_brewer(palette = "Pastel1",name = "Strand composition")+
   xlab("Minimum number of reads")+ylab("Proportion of islands")
 dev.off()
