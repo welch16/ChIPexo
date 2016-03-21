@@ -168,7 +168,8 @@ dt[ , Dataset := plyr::mapvalues( Dataset ,
         from = c("ChIP-exo","ChIP-seq (PET)","ChIP-seq (SET)"),
         to = c("ChIP-exo","ChIP-seq (PE)","ChIP-seq (SE)"))]
 
-p1 = ggplot(dt,aes(delta,colour = Dataset))+geom_density(size=1)+facet_grid(Dataset~.)+
+p1 = ggplot(dt,aes(delta,colour = Dataset))+stat_density(size=1,geom = "line")+
+  facet_grid(Dataset~.)+
   theme_bw()+theme(legend.position = "none",plot.title = element_text(hjust = 0))+
   scale_color_manual( values = brewer.pal(3,"Set1")[c(1,3)])+
   ylab("")+xlab("delta estimate")
@@ -182,7 +183,8 @@ dt[ , Dataset := plyr::mapvalues( Dataset ,
         from = c("ChIP-exo","ChIP-seq (PET)","ChIP-seq (SET)"),
         to = c("ChIP-exo","ChIP-seq (PE)","ChIP-seq (SE)"))]
 
-p2 = ggplot(dt,aes(sigma,colour = Dataset))+geom_density(size=1)+facet_grid(Dataset~.)+
+p2 = ggplot(dt,aes(sigma,colour = Dataset))+stat_density(size=1,geom = "line")+
+  facet_grid(Dataset~.)+
   theme_bw()+theme(legend.position = "none",plot.title = element_text(hjust = 0))+
   scale_color_manual(values = brewer.pal(3,"Set1")[c(1,3)])+ylab("")+
   xlab("sigma estimate")
