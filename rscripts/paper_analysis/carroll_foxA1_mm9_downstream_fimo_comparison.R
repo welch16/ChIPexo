@@ -98,23 +98,43 @@ figs_dir <- "figs/FOXA1_mm9_fimo"
 dir.create(figs_dir,showWarnings = FALSE)
 
 pdf(file = file.path(figs_dir,"FOXA1_summaries_by_replicate.pdf"))
-ggplot(DTsummary,aes(rep,nMotif,fill = rep))+geom_bar(stat = "identity",colour = "black")+
-  theme_bw()+theme(legend.position = "none")+
-  xlab("Replicates")+ylab("Number of Motif occurrences")+scale_fill_brewer(palette = "Pastel1")
-ggplot(DTsummary,aes(rep,nSites,fill = rep))+geom_bar(stat = "identity",colour = "black")+
-  theme_bw()+theme(legend.position = "none")+
-  xlab("Replicates")+ylab("Number of FoxA1 binding events")+scale_fill_brewer(palette = "Pastel1")
-ggplot(DTsummary,aes(rep,Motif_perc,fill = rep))+geom_bar(stat = "identity",colour = "black")+
-  scale_y_continuous(labels = percent)+theme_bw()+theme(legend.position = "none")+
-  xlab("Replicates")+ylab("Percentage of sites with FoxA1 motif")+scale_fill_brewer(palette = "Pastel1")
+ggplot(DTsummary,aes(rep,nMotif,fill = rep))+
+  geom_bar(stat = "identity",colour = "black")+
+  theme_bw()+
+  theme(legend.position = "none",plot.title = element_text(hjust = 0,size = 32),
+        axis.text = element_text(size = 24),
+        axis.title = element_text(size = 26))+
+  xlab("Replicates")+ylab("Number of Motif occurrences")+
+  scale_fill_brewer(palette = "Pastel1")+ggtitle("B")
+ggplot(DTsummary,aes(rep,nSites,fill = rep))+
+  geom_bar(stat = "identity",colour = "black")+
+  theme_bw()+
+  theme(legend.position = "none",plot.title = element_text(hjust = 0,size = 32),
+        axis.text = element_text(size = 24),
+        axis.title = element_text(size = 26))+
+  xlab("Replicates")+ylab("Number of FoxA1 binding events")+
+  scale_fill_brewer(palette = "Pastel1")
+ggplot(DTsummary,aes(rep,Motif_perc,fill = rep))+
+  geom_bar(stat = "identity",colour = "black")+
+  scale_y_continuous(labels = percent)+
+  theme_bw()+
+  theme(legend.position = "none",plot.title = element_text(hjust = 0,size = 32),
+        axis.text = element_text(size = 24),
+        axis.title = element_text(size = 26))+  
+  xlab("Replicates")+ylab("Percentage of sites with FoxA1 motif")+
+  scale_fill_brewer(palette = "Pastel1")+ggtitle("C")
 dev.off()
 
 
 ### cummulative plots
 
 pdf(file = file.path(figs_dir,"FOXA1_log10pval_density.pdf"))
-ggplot(DT,aes(-log10(p.value),fill = rep))+geom_histogram(aes(y = ..density..),colour = "black")+theme_bw()+
-  theme(legend.position = "none")+scale_fill_brewer(palette = "Pastel1")+facet_grid( rep ~ . ,scales = "free_y")+
+ggplot(DT,aes(-log10(p.value),fill = rep))+
+  geom_histogram(aes(y = ..density..),colour = "black")+
+  theme_bw()+
+  theme(legend.position = "none")+
+  scale_fill_brewer(palette = "Pastel1")+
+  facet_grid( rep ~ . ,scales = "free_y")+
   scale_x_continuous(limits = c(4,5.5))+ylab("Density")
 dev.off()
 
@@ -139,12 +159,20 @@ nmotifs <- lapply(pvals,function(p,DT,DTsummary){
   out},DT,DTsummary)
 nmotifs <- do.call(rbind,nmotifs)
 
+
 pdf(file = file.path(figs_dir,"FOXA1_log10pval_cumulative_nmotifs.pdf"))
-p <- ggplot(nmotifs,aes(-log10(p) , motif_perc_cumm,colour = rep))+geom_line()+theme_bw()+
-  theme(legend.position = "top")+
-  scale_color_brewer(palette = "Set1",guide = guide_legend(title = "Replicate"))+
-  scale_y_continuous(labels = percent)+xlab("-log10(p.value)")+
-  ylab("Percentage of detected motifs")
+p <- ggplot(nmotifs,aes(-log10(p) , motif_perc_cumm,colour = rep))+
+  geom_line(size = 1)+theme_bw()+
+  theme(legend.position = c(1,1),
+        legend.justification = c(1,1),
+        plot.title = element_text(hjust = 0,size = 32),
+        axis.text = element_text(size = 24),
+        axis.title = element_text(size = 26),
+        legend.text = element_text(size = 20))+
+  scale_color_brewer(palette = "Set1",guide = guide_legend(title = ""))+
+  scale_y_continuous(labels = percent)+
+  xlab("-log10(p.value)")+
+  ylab("Percentage of detected motifs")+ggtitle("D")
 p
 p + scale_x_continuous(limits = c(4,5))
 dev.off()

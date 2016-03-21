@@ -296,6 +296,10 @@ library(grid)
 library(gridExtra)
 library(RColorBrewer)
 
+    ## axis.text = element_text(size = 24),
+    ## axis.title = element_text(size = 26))+
+
+
 p1 <- ggplot(dt1,aes(nreads,candre, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+
   scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+
@@ -304,20 +308,20 @@ p1 <- ggplot(dt1,aes(nreads,candre, colour = Dataset))+
   ylim(0,600)
 p2 <- ggplot(dt2,aes(nreads,predre, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+
-  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+    
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
+  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+    
   xlab("Number of reads (million)")+ylab("Number of predicted events")+
   ylim(0,1500)
 p3 <- ggplot(dt3,aes(nreads,iden, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+
-  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+  
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
+  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+  
   xlab("Number of reads (million)")+ylab("Number of identified targets")+
   ylim(0,250)
 p4 <- ggplot(dt4,aes(nreads,resol, colour = Dataset))+
   geom_line(size = 1.2)+theme_bw()+
-  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+  
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
+  scale_color_brewer(palette = "Set1",name="",guide = guide_legend(nrow = 2))+  
   xlab("Number of reads (million)")+ylab("Resolution")+
   ylim(0,50)
 
@@ -330,7 +334,11 @@ print(p4)
 dev.off()
 
 pdf(file = "figs/for_paper/saturation_analysis_old.pdf")
-grid.arrange(p1,p2,p3,p4,nrow =2)
+grid.arrange(
+  p1+ggtitle("A"),
+  p2+ggtitle("B"),
+  p3+ggtitle("C"),
+  p4+ggtitle("D"),nrow =2)
 dev.off()
 
 

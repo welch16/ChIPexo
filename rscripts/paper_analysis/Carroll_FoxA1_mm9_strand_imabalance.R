@@ -107,9 +107,20 @@ pvals[, depth := minD]
 library(reshape2)
 pvals <- melt(pvals,id.vars = "depth",variable.name = "Replicate",value.name = "p.value")
 
+save(pvals,file = "wilcoxon_pvals.RData")
 
 pdf(file = "figs/for_paper/Carroll_FSR_depth_VS_pvalWilcoxon.pdf")
 ggplot(pvals,aes(depth,-log10(p.value),colour = Replicate))+
-  geom_point(size = 5)+geom_line(size = .5,linetype = 2)+xlim(50,150)+ylim(0,75)+
-  theme_bw()+theme(legend.position = "top")+scale_color_brewer(palette = "Set1")
+  geom_point(size = 5)+
+  geom_line(size = .5,linetype = 2)+
+  xlim(50,150)+ylim(0,75)+
+  theme_bw()+
+  theme(legend.position = "top",
+    plot.title = element_text(hjust = 0,size = 24),
+    axis.text = element_text(size = 20),
+    axis.title = element_text(size = 22),
+    legend.text = element_text(size = 20),
+    legend.title = element_text(size = 22))+
+  scale_color_brewer(palette = "Set1")+ggtitle("C")+
+  xlab("Min. number of reads")
 dev.off()
