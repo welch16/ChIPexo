@@ -59,9 +59,6 @@ stats <- summary_stats(exo)
 
 rm(exo)
 
-N <- 1e4
-M <- 1e3
-
 samp <- function(stats,M)
 {
   idx <- sample( nrow(stats),M)
