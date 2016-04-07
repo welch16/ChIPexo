@@ -216,11 +216,13 @@ enrichment and library complexity of a ChIP-exo sample. We gathered
 ChIP-exo data from diverse organisms: CTCF factor in human
 \cite{exo1}; ER factor in human and FoxA1 factor in mouse (Serandour
 et al., 2013 \cite{exoillumina}); Glucocorticoid receptor (GR) in
-IMR90, K562 and U20S cell lines (Starick et al., 2015
-\cite{starick15}).Furthermore, we also generated ChIP-exo and ChIP-Seq
-data for $\sig$ factor in \emph{Escherichia Coli} (\emph{E. Coli})
-measured under aerobic ($ + O_2$) condition, and treated by rifampicin
-by 0 and 20 minutes (courtesy of Professor Robert Landick's lab).
+IMR90, K562 and U2OS cell lines (Starick et al., 2015
+\cite{starick15}); TATA-box Binding Protein (TBP) in K562 cell lines
+(Venters and Pugh, 2013 \cite{venters13}). Furthermore, we also
+generated ChIP-exo and ChIP-Seq data for $\sig$ factor in
+\emph{Escherichia Coli} (\emph{E. Coli}) measured under aerobic ($ +
+O_2$) condition, and treated by rifampicin by 0 and 20 minutes
+(courtesy of Professor Robert Landick's lab).
 
 In order to obtain the potential benefits of ChIP-exo on protein
 binding site identification, it is critical to use algorithms that
@@ -326,6 +328,7 @@ ChIP-exo experiment is not accompanied by an input sample.
   load("../data/paper_tables/Carroll_mm9_FoxA1.RData")
   load("../data/paper_tables/Meijsing_hg19_GR.RData")
   load("../data/paper_tables/Carroll_hg19_ER.RData")
+  load("../data/paper_tables/Venters_hg19_TBP.RData")
   landick_aero[,Organism := "E.Coli"]
   landick_aero[,Replicate := c(1,2,1,2)]
   landick_aero[,TF := "Sig70"]
@@ -350,12 +353,19 @@ ChIP-exo experiment is not accompanied by an input sample.
   carroll_hg19_ER[,Replicate := c(1,3,2)]
   carroll_hg19_ER[,TF := "ER"]
   carroll_hg19_ER[ ,cond := "MCF-7"]
+  venters_hg19_TBP[,Organism := "Human"]
+  venters_hg19_TBP[,cond := "K562"]
+  venters_hg19_TBP[,Replicate := 1:3]
+  venters_hg19_TBP[,TF := "TBP"]
+
+  ## this creates the table
   A <- do.call(rbind,list(landick_aero,
                      landick_rif[order(Replicate)],
                      pugh_ctcf[order(Replicate)],
                      carroll_mm9_FoxA1[order(Replicate)],
                      meijing_hg19_GR[order(Replicate)],
-                     carroll_hg19_ER[order(Replicate)]))
+                     carroll_hg19_ER[order(Replicate)],
+                     venters_hg19_TBP[order(Replicate)]))
   A[,nsc := unlist(nsc)]
   setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
   A[,files := NULL]
@@ -519,6 +529,8 @@ the genome, calculates common ChIP-Seq QC metrics in ChIP-exo regions
 locally and allows the interpretation of these metrics by the use of
 diagnostic plots.
 
+
+
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 
 In ChIP-exo experiments, background fragments are often digested by
@@ -581,6 +593,17 @@ experiment is more unbalanced than those for the enriched regions. In
 conclusion, Figure \ref{fig:strand} shows that the global FSR does not
 represent the experiment's local strand imbalance, hence the ``peak
 pair'' assumption does not hold locally in ChIP-exo data. 
+
+\subsubsection{Analysis of ChIP-Nexus data with the QC pipeline}
+
+ChIP-nexus developed by He et al., 2015 \cite{chipnexus} is a
+modification of the ChIP-exo protocol, where both sequencing adaptors
+are ligated at the $3\prime$ end of the ChIP fragments. Then,
+exonuclease digestion and DNA self-circularization with circLigase,
+and restriction enzyme cutting between the two adaptors to create the
+final library that is amplified. 
+
+
 
 \subsection{Comparison with ChIP-Seq data using dPeak}
 

@@ -12,7 +12,7 @@ rscripts/scripts/npos_depth_regression.R $dr/ERR336956.sort.bam $outdir/carroll_
 rscripts/scripts/npos_depth_regression.R $dr/ERR336935.sort.bam $outdir/carroll_mouse_Rep3.RData $M $N
 
 # carroll human
-dr=/p/keles/ChIPexo/volume4/carroll_data/human
+dr=/p/keles/ChIPexo/volume4/carroll_data/human/bamfiles
 
 rscripts/scripts/npos_depth_regression.R $dr/ERR336933.sort.bam $outdir/carroll_human_Rep1.RData $M $N
 rscripts/scripts/npos_depth_regression.R $dr/ERR336950.sort.bam $outdir/carroll_human_Rep2.RData $M $N
@@ -63,3 +63,13 @@ dr=/p/keles/ChIPexo/volume4/venters_data/sortbam
 rscripts/scripts/npos_depth_regression.R $dr/TBP_K562_Rep1.sort.bam $outdir/venters_TBP_K562_Rep1.RData $M $N
 rscripts/scripts/npos_depth_regression.R $dr/TBP_K562_Rep2.sort.bam $outdir/venters_TBP_K562_Rep2.RData $M $N
 rscripts/scripts/npos_depth_regression.R $dr/TBP_K562_Rep3.sort.bam $outdir/venters_TBP_K562_Rep3.RData $M $N
+
+# meijsing GR
+dr=/p/keles/ChIPexo/volume4/meijsing_data/
+
+rscripts/scripts/npos_depth_regression.R $dr/IMR90_GR_chip-exo.sort.bam $outdir/meijsing_GR_IMR90_Rep1.RData $M $N
+rscripts/scripts/npos_depth_regression.R $dr/K562_GR_chip-exo.sort.bam $outdir/meijsing_GR_K562_Rep1.RData $M $N
+rscripts/scripts/npos_depth_regression.R $dr/U2OS_GR_chip-exo.sort.bam $outdir/meijsing_GR_U2OS_Rep1.RData $M $N
+
+
+

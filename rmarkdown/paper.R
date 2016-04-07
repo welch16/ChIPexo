@@ -6,6 +6,7 @@
   load("../data/paper_tables/Carroll_mm9_FoxA1.RData")
   load("../data/paper_tables/Meijsing_hg19_GR.RData")
   load("../data/paper_tables/Carroll_hg19_ER.RData")
+  load("../data/paper_tables/Venters_hg19_TBP.RData")
   landick_aero[,Organism := "E.Coli"]
   landick_aero[,Replicate := c(1,2,1,2)]
   landick_aero[,TF := "Sig70"]
@@ -30,12 +31,19 @@
   carroll_hg19_ER[,Replicate := c(1,3,2)]
   carroll_hg19_ER[,TF := "ER"]
   carroll_hg19_ER[ ,cond := "MCF-7"]
+  venters_hg19_TBP[,Organism := "Human"]
+  venters_hg19_TBP[,cond := "K562"]
+  venters_hg19_TBP[,Replicate := 1:3]
+  venters_hg19_TBP[,TF := "TBP"]
+
+  ## this creates the table
   A <- do.call(rbind,list(landick_aero,
                      landick_rif[order(Replicate)],
                      pugh_ctcf[order(Replicate)],
                      carroll_mm9_FoxA1[order(Replicate)],
                      meijing_hg19_GR[order(Replicate)],
-                     carroll_hg19_ER[order(Replicate)]))
+                     carroll_hg19_ER[order(Replicate)],
+                     venters_hg19_TBP[order(Replicate)]))
   A[,nsc := unlist(nsc)]
   setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
   A[,files := NULL]

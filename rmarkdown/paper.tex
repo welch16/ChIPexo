@@ -264,11 +264,13 @@ enrichment and library complexity of a ChIP-exo sample. We gathered
 ChIP-exo data from diverse organisms: CTCF factor in human
 \cite{exo1}; ER factor in human and FoxA1 factor in mouse (Serandour
 et al., 2013 \cite{exoillumina}); Glucocorticoid receptor (GR) in
-IMR90, K562 and U20S cell lines (Starick et al., 2015
-\cite{starick15}).Furthermore, we also generated ChIP-exo and ChIP-Seq
-data for $\sig$ factor in \emph{Escherichia Coli} (\emph{E. Coli})
-measured under aerobic ($ + O_2$) condition, and treated by rifampicin
-by 0 and 20 minutes (courtesy of Professor Robert Landick's lab).
+IMR90, K562 and U2OS cell lines (Starick et al., 2015
+\cite{starick15}); TATA-box Binding Protein (TBP) in K562 cell lines
+(Venters and Pugh, 2013 \cite{venters13}). Furthermore, we also
+generated ChIP-exo and ChIP-Seq data for $\sig$ factor in
+\emph{Escherichia Coli} (\emph{E. Coli}) measured under aerobic ($ +
+O_2$) condition, and treated by rifampicin by 0 and 20 minutes
+(courtesy of Professor Robert Landick's lab).
 
 In order to obtain the potential benefits of ChIP-exo on protein
 binding site identification, it is critical to use algorithms that
@@ -390,6 +392,10 @@ ChIP-exo experiment is not accompanied by an input sample.
 ## 16:    Human     ER          MCF-7    1   9,289,835 0.8083  19.8752
 ## 17:    Human     ER          MCF-7    2  11,041,833 0.8024  21.4851
 ## 18:    Human     ER          MCF-7    3  12,464,836 0.8204  18.7281
+## 19:    Human    TBP           K562    1  61,046,382 0.1232  12.0117
+## 20:    Human    TBP           K562    2  94,314,770 0.1682   7.9398
+## 21:    Human    TBP           K562    3 114,282,270 0.1464   9.2566
+##     Organism  IP/TF Condition/Cell Rep.       Depth    PBC      NSC
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -539,6 +545,8 @@ the genome, calculates common ChIP-Seq QC metrics in ChIP-exo regions
 locally and allows the interpretation of these metrics by the use of
 diagnostic plots.
 
+
+
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 
 In ChIP-exo experiments, background fragments are often digested by
@@ -601,6 +609,17 @@ experiment is more unbalanced than those for the enriched regions. In
 conclusion, Figure \ref{fig:strand} shows that the global FSR does not
 represent the experiment's local strand imbalance, hence the ``peak
 pair'' assumption does not hold locally in ChIP-exo data. 
+
+\subsubsection{Analysis of ChIP-Nexus data with the QC pipeline}
+
+ChIP-nexus developed by He et al., 2015 \cite{chipnexus} is a
+modification of the ChIP-exo protocol, where both sequencing adaptors
+are ligated at the $3\prime$ end of the ChIP fragments. Then,
+exonuclease digestion and DNA self-circularization with circLigase,
+and restriction enzyme cutting between the two adaptors to create the
+final library that is amplified. 
+
+
 
 \subsection{Comparison with ChIP-Seq data using dPeak}
 
