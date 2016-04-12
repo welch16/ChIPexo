@@ -1,3 +1,4 @@
+
 % \VignetteEngine{knitr::knitr}
 \documentclass{bmcart}
 
@@ -34,7 +35,6 @@
 \usepackage[utf8]{inputenc} %unicode support
 
 \newcommand{\sig}{\sigma^{70}}
-
 
 \begin{document}
 
@@ -132,8 +132,8 @@
     resolution mapping of transcription factor binding sites. Although
     many aspect of the ChIP-exo data analysis are similar to those of
     ChIP-Seq, ChIP-exo presents a number of unique challenges. We
-    present a quality control pipeline that analyzes a ChIP-exo
-    experiment's strand imbalance, enrichment and library
+    present a quality control pipeline that analyzes a ChIP-exo and
+    ChIP-nexus experiment's strand imbalance, enrichment and library
     complexity. Assessment of these characteristics are facilitated
     through diagnostic plots and summary statistics calculated over
     regions of the genome with varying levels of coverage.
@@ -155,8 +155,9 @@
 
 \begin{keyword}
   \kwd{ChIP-exo}
-  \kwd{Quality Control}
+  \kwd{ChIP-nexus}
   \kwd{ChIP-Seq}
+  \kwd{Quality Control}
   \kwd{Spatial Resolution}
   \kwd{Transcription Factor}  
   \kwd{Binding Site Identification on High-Res}
@@ -166,6 +167,11 @@
 \end{abstractbox}
 
 \end{frontmatter}
+
+% \newpage
+
+% \tableofcontents
+% \listoffigures
 
 \newpage
 
@@ -194,7 +200,7 @@ more tightly around the binding proteins than in a ChIP-Seq
 experiment; in a PE ChIP-Seq experiment both ends are observed while
 in a SE ChIP-Seq experiment only the $5\prime$ end.
 
-% Reffers to... First, DNA libraries... I think that these might be
+% Refers to... First, DNA libraries... I think that these might be
 % too much details for the introduction. How about discussing them in
 % the results when we investigate the related
 
@@ -329,6 +335,8 @@ ChIP-exo experiment is not accompanied by an input sample.
   load("../data/paper_tables/Meijsing_hg19_GR.RData")
   load("../data/paper_tables/Carroll_hg19_ER.RData")
   load("../data/paper_tables/Venters_hg19_TBP.RData")
+  load("../data/paper_tables/ChIPnexus_dm3.RData")
+  load("../data/paper_tables/ChIPnexus_hg19.RData")
   landick_aero[,Organism := "E.Coli"]
   landick_aero[,Replicate := c(1,2,1,2)]
   landick_aero[,TF := "Sig70"]
@@ -357,7 +365,14 @@ ChIP-exo experiment is not accompanied by an input sample.
   venters_hg19_TBP[,cond := "K562"]
   venters_hg19_TBP[,Replicate := 1:3]
   venters_hg19_TBP[,TF := "TBP"]
-
+  chipnexus_dm3[, Organism := "D. Melanogaster"]
+  chipnexus_dm3[, cond := c(rep("Embryo",4),rep("S2",4))]
+  chipnexus_dm3[, Replicate := rep(1:2,4)]
+  chipnexus_dm3[, TF := c(rep("Dorsal",2),rep("Twist",2),rep("Max",2),rep("MyC",2))]
+  chipnexus_K562[ , Organism := "Human"]
+  chipnexus_K562[ , cond  := "K562"]
+  chipnexus_K562[ , Replicate := 1:2]
+  chipnexus_K562[ , TF := "TBP"]
   ## this creates the table
   A <- do.call(rbind,list(landick_aero,
                      landick_rif[order(Replicate)],
@@ -366,13 +381,20 @@ ChIP-exo experiment is not accompanied by an input sample.
                      meijing_hg19_GR[order(Replicate)],
                      carroll_hg19_ER[order(Replicate)],
                      venters_hg19_TBP[order(Replicate)]))
-  A[,nsc := unlist(nsc)]
-  setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
-  A[,files := NULL]
-  A[,nreads := prettyNum(nreads,big.mark = ",")]
-  A[,pbc := round(pbc,4)]
-  A[,nsc := round(nsc,4)]
-  setnames(A,names(A),c("Organism","IP/TF","Condition/Cell","Rep.","Depth","PBC","NSC"))
+  B <- do.call(rbind,list(chipnexus_dm3,
+                     chipnexus_K562))
+  format_tab <- function(A){
+    A[,nsc := unlist(nsc)]
+    setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
+    A[,files := NULL]
+    A[,nreads := prettyNum(nreads,big.mark = ",")]
+    A[,pbc := round(pbc,4)]
+    A[,nsc := round(nsc,4)]
+    setnames(A,names(A),c("Organism","IP/TF","Condition/Cell","Rep.","Depth","PBC","NSC"))
+    return(A)}
+
+  A <- format_tab(A)
+  B <- format_tab(B)
 @ 
 
 <<table2,include = TRUE,echo = FALSE, eval = TRUE >>= 
@@ -529,8 +551,6 @@ the genome, calculates common ChIP-Seq QC metrics in ChIP-exo regions
 locally and allows the interpretation of these metrics by the use of
 diagnostic plots.
 
-
-
 \subsubsection{Enrichment and library complexity in ChIP-exo data}
 
 In ChIP-exo experiments, background fragments are often digested by
@@ -594,16 +614,98 @@ conclusion, Figure \ref{fig:strand} shows that the global FSR does not
 represent the experiment's local strand imbalance, hence the ``peak
 pair'' assumption does not hold locally in ChIP-exo data. 
 
-\subsubsection{Analysis of ChIP-Nexus data with the QC pipeline}
+\subsubsection{Analysis of ChIP-nexus data with the QC pipeline}
 
 ChIP-nexus developed by He et al., 2015 \cite{chipnexus} is a
-modification of the ChIP-exo protocol, where both sequencing adaptors
-are ligated at the $3\prime$ end of the ChIP fragments. Then,
-exonuclease digestion and DNA self-circularization with circLigase,
-and restriction enzyme cutting between the two adaptors to create the
-final library that is amplified. 
+modification to the ChIP-exo protocol, where both sequencing adaptors
+are ligated at the $3\prime$ end of the ChIP fragments. Then, after
+exonuclease digestion, DNA self-circularization with circLigase, and
+restriction enzyme cutting between the two adaptors, the final library
+is amplified. In Table \ref{tab:nexus} we show the usual ChIP-Seq QC
+metrics to ChIP-nexus data and found that the conclusions made for
+ChIP-exo data still holds, the NSC is high but when plotting the SCC
+the fragment and read length peaks are confounded and the PBC may
+indicate severe bottlenecking but it is caused by the exonuclease
+enzyme digestion which reduces the number of positions where the
+reads can be aligned. 
 
+\begin{table}[h!]
+  \centering
+<<table3,include = TRUE,echo = FALSE, eval = TRUE >>= 
+  B
+@ 
+\caption{\textbf{Current QC metrics applied to ChIP-nexus data.} PBC
+  stands for PCR Bottleneck Coefficient and NSC for Normalized Strand
+  Cross-Correlation.}
+  \label{tab:nexus}
+\end{table}
 
+We applied the QC pipeline to the ChIP-nexus experiments and found
+that the overall pattern seen in the visualizations is similar to a
+high quality ChIP-exo experiment. Figure \ref{fig:nexus}A illustrates
+a typical pattern of the ARC vs. URCR plot with ChIP-nexus data: Both
+arms seems to be more narrow and therefore the separation between them
+seems to be more noticeable, this seems reasonable since libraries
+generated by ChIP-nexus usually yields higher complexity than
+libraries generated by ChIP-exo. Additionally, while in ChIP-exo
+experiments is common to observe regions formed by undigested
+fragments in only one strand, we can observe that in ChIP-nexus
+experiment the occurrence of this type of regions is reduced. Figure
+\ref{fig:nexus}B shows that in a ChIP-nexus experiment the FSR
+distribution approximates the median more quickly than in a ChIP-exo
+experiment and Figure \ref{fig:nexus}C we observe that most of these
+single-stranded regions are formed by few fragments, which means that
+good ChIP-nexus experiment are less likely to show very imbalanced
+regions. 
+
+\subsection{Evaluating ChIP-exo and ChIP-nexus data}
+
+<<all_param,include = FALSE,echo = FALSE,eval = TRUE>>=
+
+  Ntimes <- prettyNum(1e4,big.mark = ",")
+  Msamp <- prettyNum(1e3,big.mark = ",")
+  thresh1 <- 10
+
+@ 
+
+We applied the QC pipeline to all ChIP-exo and ChIP-nexus datasets
+listed in Tables \ref{tab:qc} and \ref{tab:nexus}, that way we
+partitioned the reads of each experiment into the undigested regions
+by keeping the regions formed by at least one fragment. Figure
+\ref{fig:enrich_all}A shows compares the slope of the following model:
+
+\begin{align}
+  \mbox{depth} = \beta \times \text{(\# of unique positions)} +\epsilon  \nonumber
+\end{align}
+
+when sampling \Sexpr{Msamp} regions and repeating this process
+\Sexpr{Ntimes} times for every ChIP-exo and ChIP-nexus experiment. The
+slope can be interpreted as the change in depth as number of unique
+position varies. This parameter measures the library complexity on a
+ChIP-exo experiment, since when it is high it means that several
+fragments are being aligned to the same position in the genome. 
+
+Figures \ref{fig:enrich_all}B and \ref{fig:enrich_all}C shows the
+parameters of the following model:
+
+\begin{align}
+  \mbox{URCR} = \frac{\kappa}{\mbox{ARC}} + \eta + \epsilon \nonumber
+\end{align}
+
+considering only the regions composed by 10 or more aligned reads,
+that way the model reflects the enriched arm of the ARC vs. URCR
+visualization. The intercept $\eta$ can be interpreted as the
+theoretical $\mbox{URCR}$ for relatively high depth regions and the
+slope $\kappa$ can be interpreted as the decay in $\mbox{URCR}$ as the
+$\mbox{ARC}$ increases. That way experiments with low complexity are
+showing low values for both parameters. We considered a linear model
+between the estimated parameters for each experiment and it's
+respective depth for which we were able to asses that there is not
+significant relationship between the estimated parameters and the
+interaction between depth and organism for each experiment. Hence,
+these parameters may be used as indicators of the overall quality of
+ChIP-exo experiment, but as with the SCC it is recommendable to also
+visualize the SCC curve.
 
 \subsection{Comparison with ChIP-Seq data using dPeak}
 
@@ -777,7 +879,6 @@ provides a rigorous, easily interpretable, computationally efficient
 framework to diagnose if the library complexity of a ChIP-exo
 experiment is adequate.
 
-
 \section{Methods}
 \label{sec:methods}
 
@@ -790,6 +891,9 @@ experiment is adequate.
 
 \subsection*{Growth conditions.}
 
+\color{red}
+\emph{need to add this part}
+\color{black}
 
 \subsection*{ChIP-exo experiments.}
 
@@ -886,14 +990,30 @@ FIMO's command line 4.9.1 version \cite{fimo}.
 For every ChIP-exo experiment, we partitioned the experiment into the
 non-digested regions using the QC pipeline. For each region we
 calculated the FSR defined as the ratio between the number of forward
-stranded reads and the total number of reads in a region. 
-
-Then we
+stranded reads and the total number of reads in a region. Then we
 transformed the FSR into an imbalance index is defined as:
 
 \[
 \mbox{Imbalance index} = -\log_{10} (4 \times \mbox{FSR} \times (1 - \mbox{FSR}))
 \]
+
+We used the imbalance index to asses if the regions considered by the
+QC pipeline are less imbalanced when they overlap peak regions. Since
+the strand imbalance distribution for both classes have the same
+median and differ in the tails, this transformation separates the
+tails from the median. Hence, when we reject the hypothesis of the
+distribution being the same for both classes, it means that the class
+of region that don't overlap peaks shows heavier tails than its
+complement. \footnote{not sure if I should add the FSR densities for
+  both classes in the supplement to prove this statement}
+
+\subsection*{Evaluation of QC visualizations}
+
+
+{\color{blue} \emph{need to describe figure \ref{fig:enrich_all}
+}
+\color{black}
+
 
 \subsection*{Construction of a SE ChIP-Seq from a PE ChIP-Seq experiment.}
 
@@ -1068,7 +1188,6 @@ during model fitting for all methods. We were unable to use CexoR
 
 \newpage
 
-
 \begin{figure}[h!]
   \centering  
   \includegraphics[width = .9\textwidth,page = 1]{../figs/Carroll_mice_for_paper/Strand_imbalance.pdf} 
@@ -1089,6 +1208,40 @@ during model fitting for all methods. We were unable to use CexoR
 
 \newpage
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .8\textwidth]{../figs/ChIPnexus/ChIPnexus_S2_MyC_enrichment.pdf}
+\newline
+  \includegraphics[width = .4\textwidth]{../figs/ChIPnexus/ChIPnexus_S2_MyC_fsr_surv.pdf}  
+  \includegraphics[width = .4\textwidth]{../figs/ChIPnexus/ChIPnexus_S2_MyC_label_surv.pdf}  
+  \caption{\textbf{ChIP-exo QC pipeline on ChIP-nexus data.} A)
+    Enrichment vs. library complexity, B) Strand imbalance and C)
+    Single-strand region analysis for the MyC experiment in S2 cell
+    lines in \emph{D. Melanogaster} from He et al., 2015
+    \cite{chipnexus}}
+  \label{fig:nexus}
+\end{figure}
+
+\newpage
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .9  \textwidth,page = 1]{../figs/test_quantify/slope_npos_depth_boxplot.pdf}
+  \includegraphics[width = .9  \textwidth,page = 1]{../figs/test_quantify/arc_urcr_param_regression.pdf}
+  \includegraphics[width = .9  \textwidth,page = 2]{../figs/test_quantify/arc_urcr_param_regression.pdf}
+  \caption{A) Comparison of change in depth as the number of unique
+    position obtained by sampling \Sexpr{Msamp} regions and fitting
+    the model $\mbox{depth} = \beta \times \text{(\# unique
+      positions)}$, and repeating this process \Sexpr{Ntimes} times. B)
+    Intercept and C) Slope in the the $\mbox{URCR} = k / \mbox{ARC} +
+    b$ model for the regions formed by more than 10 aligned
+    positions.}
+  \label{fig:enrich_all}
+\end{figure}
+
+
+\newpage
 \begin{figure}[h!]
   \centering
   \includegraphics[width = .46\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
@@ -1154,7 +1307,18 @@ during model fitting for all methods. We were unable to use CexoR
   \centering
 <<table_chipseq1,include = TRUE,echo = FALSE,eval = TRUE>>=
   load("../data/paper_tables/Landick_rif_chipseq_summary.RData")
-  do.call(rbind,chipseq)
+  chipseq$set <- chipseq$set[,Organism := "E.Coli"]
+  chipseq$set <- chipseq$set[,Replicate := c(1,1,2,2)]
+  chipseq$set <- chipseq$set[,TF := "Sig70"]
+  chipseq$set <- chipseq$set[ ,cond := rep(c("Rif-0min","Rif-20min"),each = 2)]
+  chipseq$pet <- chipseq$pet[,Organism := "E.Coli"]
+  chipseq$pet <- chipseq$pet[,Replicate := c(1,1,2,2)]
+  chipseq$pet <- chipseq$pet[,TF := "Sig70"]
+  chipseq$pet <- chipseq$pet[ ,cond := rep(c("Rif-0min","Rif-20min"),each = 2)]
+  chipseq <- lapply(chipseq,format_tab)
+  chipseq <- do.call(rbind,chipseq)
+  chipseq <- chipseq[, Protocol := rep(c("PE","SE"),each = 4)]
+  chipseq
 @ 
 \caption{Same QC metrics as in table \ref{tab:qc} but applied to
   Landick's chipseq data of the rif experiment}
@@ -1276,3 +1440,5 @@ during model fitting for all methods. We were unable to use CexoR
 
 \end{document}
 
+
+% LocalWords:  Ntimes

@@ -7,6 +7,8 @@
   load("../data/paper_tables/Meijsing_hg19_GR.RData")
   load("../data/paper_tables/Carroll_hg19_ER.RData")
   load("../data/paper_tables/Venters_hg19_TBP.RData")
+  load("../data/paper_tables/ChIPnexus_dm3.RData")
+  load("../data/paper_tables/ChIPnexus_hg19.RData")
   landick_aero[,Organism := "E.Coli"]
   landick_aero[,Replicate := c(1,2,1,2)]
   landick_aero[,TF := "Sig70"]
@@ -35,7 +37,14 @@
   venters_hg19_TBP[,cond := "K562"]
   venters_hg19_TBP[,Replicate := 1:3]
   venters_hg19_TBP[,TF := "TBP"]
-
+  chipnexus_dm3[, Organism := "D. Melanogaster"]
+  chipnexus_dm3[, cond := c(rep("Embryo",4),rep("S2",4))]
+  chipnexus_dm3[, Replicate := rep(1:2,4)]
+  chipnexus_dm3[, TF := c(rep("Dorsal",2),rep("Twist",2),rep("Max",2),rep("MyC",2))]
+  chipnexus_K562[ , Organism := "Human"]
+  chipnexus_K562[ , cond  := "K562"]
+  chipnexus_K562[ , Replicate := 1:2]
+  chipnexus_K562[ , TF := "TBP"]
   ## this creates the table
   A <- do.call(rbind,list(landick_aero,
                      landick_rif[order(Replicate)],
@@ -44,13 +53,20 @@
                      meijing_hg19_GR[order(Replicate)],
                      carroll_hg19_ER[order(Replicate)],
                      venters_hg19_TBP[order(Replicate)]))
-  A[,nsc := unlist(nsc)]
-  setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
-  A[,files := NULL]
-  A[,nreads := prettyNum(nreads,big.mark = ",")]
-  A[,pbc := round(pbc,4)]
-  A[,nsc := round(nsc,4)]
-  setnames(A,names(A),c("Organism","IP/TF","Condition/Cell","Rep.","Depth","PBC","NSC"))
+  B <- do.call(rbind,list(chipnexus_dm3,
+                     chipnexus_K562))
+  format_tab <- function(A){
+    A[,nsc := unlist(nsc)]
+    setcolorder(A, c("Organism","TF","cond","Replicate","nreads","pbc","nsc","files"))
+    A[,files := NULL]
+    A[,nreads := prettyNum(nreads,big.mark = ",")]
+    A[,pbc := round(pbc,4)]
+    A[,nsc := round(nsc,4)]
+    setnames(A,names(A),c("Organism","IP/TF","Condition/Cell","Rep.","Depth","PBC","NSC"))
+    return(A)}
+
+  A <- format_tab(A)
+  B <- format_tab(B)
 
 ## ----table2,include = TRUE,echo = FALSE, eval = TRUE---------------------
   A
@@ -59,6 +75,16 @@
 
   bin_size <- 150
   frag_len <- 150
+
+
+## ----table3,include = TRUE,echo = FALSE, eval = TRUE---------------------
+  B
+
+## ----all_param,include = FALSE,echo = FALSE,eval = TRUE------------------
+
+  Ntimes <- prettyNum(1e4,big.mark = ",")
+  Msamp <- prettyNum(1e3,big.mark = ",")
+  thresh1 <- 10
 
 
 ## ----comp_param,include = FALSE,echo = FALSE, eval = TRUE----------------
@@ -75,5 +101,16 @@
 
 ## ----table_chipseq1,include = TRUE,echo = FALSE,eval = TRUE--------------
   load("../data/paper_tables/Landick_rif_chipseq_summary.RData")
-  do.call(rbind,chipseq)
+  chipseq$set <- chipseq$set[,Organism := "E.Coli"]
+  chipseq$set <- chipseq$set[,Replicate := c(1,1,2,2)]
+  chipseq$set <- chipseq$set[,TF := "Sig70"]
+  chipseq$set <- chipseq$set[ ,cond := rep(c("Rif-0min","Rif-20min"),each = 2)]
+  chipseq$pet <- chipseq$pet[,Organism := "E.Coli"]
+  chipseq$pet <- chipseq$pet[,Replicate := c(1,1,2,2)]
+  chipseq$pet <- chipseq$pet[,TF := "Sig70"]
+  chipseq$pet <- chipseq$pet[ ,cond := rep(c("Rif-0min","Rif-20min"),each = 2)]
+  chipseq <- lapply(chipseq,format_tab)
+  chipseq <- do.call(rbind,chipseq)
+  chipseq <- chipseq[, Protocol := rep(c("PE","SE"),each = 4)]
+  chipseq
 
