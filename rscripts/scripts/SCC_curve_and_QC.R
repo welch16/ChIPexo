@@ -18,6 +18,10 @@ if("--help" %in% args){
 
       Name of the file, where the output is gonna be saved
 
+   -- summaryfile
+
+      Name of the file, where a collection of ChIP-Seq QC metrics are gonna be saved
+
    -- sizefile
 
       File without header and with two column indicating the
@@ -40,13 +44,14 @@ if("--help" %in% args){
    
 ");q()}
 
-stopifnot(length(args) == 5)
+stopifnot(length(args) == 6)
 
 bamfile <- args[1]
 outfile <- args[2]
-sizefile <- args[3]
-isPET <- as.logical(args[4])
-maxShift <- as.numeric(args[5])
+summaryfile <- args[3]
+sizefile <- args[4]
+isPET <- as.logical(args[5])
+maxShift <- as.numeric(args[6])
 
 stopifnot(file.exists(bamfile))
 stopifnot(maxShift > 0)
@@ -78,4 +83,49 @@ scc <- strand_cross_corr(reads,shift = 1:maxShift,
 write.table(format(scc,digits = 6),file = outfile,quote = FALSE,
    sep = "\t",row.names = FALSE,col.names = TRUE)            
 
+strand_ratio <- function(reads){
+  fwd <- length(dt2gr(do.call(rbind,readsF(reads))))
+  bwd <- length(dt2gr(do.call(rbind,readsR(reads))))
+  out <- fwd / (fwd + bwd)
+  return(out)
+}
+  
+read_length <- function(reads){
+  fwd <- dt2gr(do.call(rbind,readsF(reads)))
+  bwd <- dt2gr(do.call(rbind,readsR(reads)))
+  out <- c(fwd,bwd)
+  out <- table(width(out))
+  out <- as.numeric(names(which.max(out)))
+  return(out)
+}
 
+
+NSC <- function(scc)scc[,max(cross.corr) /min(cross.corr)]
+
+RSC1 <- function(scc,read_length){
+  out <- scc[,max(cross.corr)] / scc[shift == read_length, (cross.corr)]
+  return(out)
+}
+
+RSC2 <- function(scc,read_length){
+  mm <- scc[,min(cross.corr)]
+  out <- (scc[,max(cross.corr)] - mm) /( scc[shift == read_length, (cross.corr)] - mm)
+  return(out)
+}
+
+
+rl <- read_length(reads)
+fl <- scc[which.max(cross.corr),(shift)]
+
+
+summary <- data.table(depth = nreads(reads),
+                      PBC = PBC(reads),
+                      FSR = strand_ratio(reads),
+                      read_length = rl,
+                      frag_length = fl,
+                      NSC =  NSC(scc),
+                      RSC1 = RSC1(scc,rl),
+                      RSC2 = RSC2(scc,rl))
+                      
+write.table(format(scc,digits = 6),file = summaryfile,quote = FALSE,
+   sep = "\t",row.names = FALSE,col.names = TRUE)            
