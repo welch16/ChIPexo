@@ -20,6 +20,15 @@ if("--help" %in% args){
 
       RData file used to store the run and estimated parameters.
 
+  -- nreads
+
+      Number of reads to sample. If there is no value supplied, then the
+      whole set of reads is going to be used.
+
+   -- seed
+
+      Seed to be used
+
    -- help
 
       Show the help file.
@@ -30,7 +39,8 @@ if("--help" %in% args){
    
 ");q()}
 
-stopifnot(length(args) == 2)
+stopifnot(length(args) <= 4)
+stopifnot(length(args) > 1)
 
 library(GenomicAlignments)
 library(parallel)
@@ -43,9 +53,20 @@ load_all("~/Desktop/Docs/Code/ChIPexoQual")
 bamfile <- args[1]
 outfile <- args[2]
 
+if(length(args) >= 3){
+  nreads <- as.numeric(args[3])
+}else{
+  nreads <- NULL
+}
+
+if(length(args) == 4){
+  set.seed(args[4])
+}
+
 mc <- detectCores()
 
-exo <- create_exo_experiment(bamfile,parallel = TRUE,mc.cores = mc)
+exo <- create_exo_experiment(bamfile,nreads = nreads,
+  parallel = TRUE,mc.cores = mc)
 stats <- summary_stats(exo)
 
 ext_stats <- list()
