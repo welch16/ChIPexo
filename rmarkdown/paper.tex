@@ -61,6 +61,7 @@
 \usetikzlibrary{shapes,arrows}
 \usepackage{float}
 \usepackage{verbatim}
+
 % \usepackage{hyperref}
 % \hypersetup{
 %      colorlinks   = true,
@@ -70,8 +71,6 @@
 % \hypersetup{linkcolor=black}
 % \hypersetup{linkcolor=black}
 
-\usepackage{wrapfig}
-
 \newcommand{\beginsupplement}{%
         \setcounter{table}{0}
         \renewcommand{\thetable}{S\arabic{table}}%
@@ -79,15 +78,12 @@
         \renewcommand{\thefigure}{S\arabic{figure}}%
      }
 
-
 % \usepackage{authblk}
 \usepackage[utf8]{inputenc} %unicode support
 
 \newcommand{\sig}{\sigma^{70}}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-
-%\maketitle
 
 \begin{frontmatter}
 
@@ -100,7 +96,7 @@
 \author[
    addressref={aff1},
    noteref={n1},
-   email={welch@stat.wisc.edu}   
+   email={welch@stat.wisc.edu}      
 ]{\inits{RW}\fnm{Rene} \snm{Welch} }
 \author[
    addressref={aff6},        % id's of addresses, e.g. {aff1,aff2}
@@ -217,10 +213,50 @@
 
 \end{frontmatter}
 
-% \newpage
 
-% \tableofcontents
-% \listoffigures
+\newpage
+
+outline
+
+\begin{enumerate}
+\item Available data, the motivation of this part is two fold:
+  \begin{itemize}
+  \item we want to list all data sets we obtained
+  \item we want to emphasize that for the sig70 datasets we have a
+    unique design that allows us to compare chip exo with SE and PE
+    chipseq , the later one for the first time
+  \end{itemize}
+\item comparison with chip seq ? with and without dpeak ?
+\item only in methods. list the align algorithm used
+\item chip seq qc metrics
+\item chip exo qc pipeline, description and justification of the steps
+\begin{itemize}
+\item need to justify the sampling step. for this we may use the depth
+  table and add the factor to normalize one depth to another. explain
+  the confounding of pcr amplification and the reduction of the number
+  of possible mappable positions.
+\item case study with FoxA1, analysis of enrichment vs library
+  complexity and analysis and the strand imbalance tools. in methods
+  we need to add which tests did we perform to show that the pipeline
+  works. how do we expect from the diagnostics and how to interpret
+  the plots.
+\item analysis of why the pipeline works. in methods need to specify
+  how and in results need to specify why it works, and what are the
+  conclusions from it
+\end{itemize}
+\item high resolution analysis with chip exo and comparison with PE
+  chip seq
+  \begin{itemize}
+  \item justify what do we used dpeak (in methods need to list the
+    other methods used). perhaps we can add gof plots in
+    supplement. we also want to compare with the same method,
+    therefore we can use the fact that dpeak have a unified model for
+    PE and SE dpeak
+  \item after comparing with other methods we can compare with PE and
+    SE ChIP-seq, this comparison gives also resolution and sensitivity
+  \item compare samples under same budget of reads
+  \end{itemize} 
+\end{enumerate}
 
 \newpage
 
@@ -277,7 +313,11 @@ IMR90, K562 and U2OS cell lines (Starick et al., 2015
 generated ChIP-exo and ChIP-Seq data for $\sig$ factor in
 \emph{Escherichia Coli} (\emph{E. Coli}) measured under aerobic ($ +
 O_2$) condition, and treated by rifampicin by 0 and 20 minutes
-(courtesy of Professor Robert Landick's lab).
+(courtesy of Professor Robert Landick's lab). Additionally we gathered
+the ChIP-nexus from TATA-box Binding Protein (TBP) in K562 cell lines;
+MyC and Max in S2 cell lines in \emph{Drosophila Melanogaster}
+(\emph{D. Melanogaster}); Twist and Dorsal in \emph{D. Melanogaster}
+embryo cell lines (He et al., 2015 \cite{chipnexus}).
 
 In order to obtain the potential benefits of ChIP-exo on protein
 binding site identification, it is critical to use algorithms that
@@ -357,8 +397,11 @@ identification and differentiation of closely spaced binding sites is
 invaluable for elucidating the transcriptional networks of prokaryotic
 genomes.
 
-\subsection{Application of current ChIP-Seq QC guidelines on ChIP-exo
+\subsection{Quality Control of ChIP-exo and ChIP-nexus data}
+
+\subsubsection{Application of current ChIP-Seq QC guidelines on ChIP-exo
   data}
+
 
 We started our exploration by investigating whether the current
 state-of-the-art QC pipelines for ChIP-Seq are suitable for
@@ -375,6 +418,7 @@ ChIP-exo experiment is not accompanied by an input sample.
 \begin{table}[h!]
 %% need to fix format
   \centering
+%% need to re-build this table
 
 
 \begin{knitrout}
@@ -445,7 +489,7 @@ is a measure based on the SCC is harder to interpret. Figure
 differentiate in the SCC curves for the $\sig$ ChIP-exo datasets used
 to calculate the NSC values in Table \ref{tab:qc}.
 
-\subsection{Comparison with ChIP-Seq data}
+\subsubsection{Comparison with ChIP-Seq data}
 
 
 
@@ -508,7 +552,7 @@ site identification for ChIP-exo data benefits from using methods that
 take into account of apparent sequence biases such as mappability and
 GC content.
 
-\subsection{ChIP-exo Quality Control Pipeline}
+\subsubsection{ChIP-exo Quality Control Pipeline}
 
 Figure \ref{fig:qcdiagram} shows a flowchart for the ChIP-exo QC
 pipeline. In the first step, we partition the genome by keeping the
@@ -552,7 +596,8 @@ the genome, calculates common ChIP-Seq QC metrics in ChIP-exo regions
 locally and allows the interpretation of these metrics by the use of
 diagnostic plots.
 
-\subsubsection{Enrichment and library complexity in ChIP-exo data}
+\textbf{Enrichment and library complexity in ChIP-exo data}
+
 
 In ChIP-exo experiments, background fragments are often digested by
 the exonuclease enzyme, therefore the balance between the enrichment
@@ -578,7 +623,7 @@ and finally in \ref{fig:enrich}D we observe that the first and third
 replicate can detect the FoxA1 motif with the same significance, while
 the second replicate does not.
 
-\subsubsection{Strand imbalance in ChIP-exo data}
+\textbf{Strand imbalance in ChIP-exo data}
 
 The strand imbalance assessment is based in the observation that the
 enriched regions usually are composed of a higher quantity of reads,
@@ -615,7 +660,7 @@ conclusion, Figure \ref{fig:strand} shows that the global FSR does not
 represent the experiment's local strand imbalance, hence the ``peak
 pair'' assumption does not hold locally in ChIP-exo data. 
 
-\subsubsection{Analysis of ChIP-nexus data with the QC pipeline}
+\textbf{Analysis of ChIP-nexus data with the QC pipeline}
 
 ChIP-nexus developed by He et al., 2015 \cite{chipnexus} is a
 modification to the ChIP-exo protocol, where both sequencing adaptors
@@ -673,7 +718,7 @@ single-stranded regions are formed by few fragments, which means that
 good ChIP-nexus experiment are less likely to show very imbalanced
 regions. 
 
-\subsection{Evaluating ChIP-exo and ChIP-nexus data}
+\subsubsection{Evaluating ChIP-exo and ChIP-nexus data}
 
 
 
@@ -716,7 +761,10 @@ these parameters may be used as indicators of the overall quality of
 ChIP-exo experiment, but as with the SCC it is recommendable to also
 visualize the SCC curve.
 
-\subsection{Comparison with ChIP-Seq data using dPeak}
+\subsection{High Resolution Binding Site Identification with dPeak and
+  ChIP-exo}
+
+\subsubsection{Comparison with ChIP-Seq data using dPeak}
 
 
 
@@ -744,7 +792,7 @@ sensitive than both ChIP-exo and PE ChIP-Seq. Figure
 in resolution, while both protocols significantly outperform SE
 ChIP-Seq.
 
-\subsection{Systematic comparison of ChIP-Seq vs ChIP-exo under
+\subsubsection{Systematic comparison of ChIP-Seq vs ChIP-exo under
   varying sequencing depth}
 
 Previously, ChIP-exo and SE ChIP-Seq have been compared only at a
@@ -821,7 +869,7 @@ resolution.
 % repeat the same analysis for both replicates under the two rif
 % conditions.
 
-\subsection{dPeak outperforms competing methods in discovering closely
+\subsubsection{dPeak outperforms competing methods in discovering closely
   spaced binding events from ChIP-exo and ChIP-Seq data}
 
 Figure \ref{fig:methods_comp} compares the resolution defined as the
@@ -888,13 +936,96 @@ experiment is adequate.
 
 
 
-\subsection*{Growth conditions.}
+
+outline
+
+\begin{enumerate}
+\item Available data, the motivation of this part is two fold:
+  \begin{itemize}
+  \item we want to list all data sets we obtained
+  \item we want to emphasize that for the sig70 datasets we have a
+    unique design that allows us to compare chip exo with SE and PE
+    chipseq , the later one for the first time
+  \end{itemize}
+\item comparison with chip seq ? with and without dpeak ?
+\item only in methods. list the align algorithm used
+\item chip seq qc metrics
+\item chip exo qc pipeline, description and justification of the steps
+\begin{itemize}
+\item need to justify the sampling step. for this we may use the depth
+  table and add the factor to normalize one depth to another. explain
+  the confounding of pcr amplification and the reduction of the number
+  of possible mappable positions.
+\item case study with FoxA1, analysis of enrichment vs library
+  complexity and analysis and the strand imbalance tools. in methods
+  we need to add which tests did we perform to show that the pipeline
+  works. how do we expect from the diagnostics and how to interpret
+  the plots.
+\item analysis of why the pipeline works. in methods need to specify
+  how and in results need to specify why it works, and what are the
+  conclusions from it
+\end{itemize}
+\item high resolution analysis with chip exo and comparison with PE
+  chip seq
+  \begin{itemize}
+  \item justify what do we used dpeak (in methods need to list the
+    other methods used). perhaps we can add gof plots in
+    supplement. we also want to compare with the same method,
+    therefore we can use the fact that dpeak have a unified model for
+    PE and SE dpeak
+  \item after comparing with other methods we can compare with PE and
+    SE ChIP-seq, this comparison gives also resolution and sensitivity
+  \item compare samples under same budget of reads
+  \end{itemize} 
+\end{enumerate}
+
+
+
+\subsection*{Considered data.}
+
+
+
+
+\subsubsection*{Growth conditions of generated data.}
 
 \color{red}
 \emph{need to add this part}
 \color{black}
 
-\subsection*{ChIP-exo experiments.}
+\subsubsection{ChIP-exo and ChIP-nexus experiments.}
+
+
+% While the number of ChIP-exo data keeps increasing, characteristics of
+% ChIP-exo data are not fully investigated yet. First, DNA libraries
+% generated by the ChIP-exo protocol seem to be less complex than the
+% libraries generated by ChIP-Seq (Mahony et al., 2015
+% \cite{exo_review}). Second, although there are roughly the same amount
+% of reads in both strands, locally there may be more reads in one
+% strand than in the other. Finally, most of current ChIP-Seq quality
+% control (QC) guidelines (Landt et al., \cite{encode_qc}) may not be
+% applicable on ChIP-exo, while there are not established QC pipelines
+% for ChIP-exo; previous ChIP-exo analyses used ChIP-Seq samples to
+% compare the resolution between experiments (\cite{exo1},
+% \cite{exoillumina}, \cite{exo2})). To address these challenges, we
+% suggest a collection of quality control visualizations to interrogate
+% these biases in a ChIP-exo experiment and globally asses the
+% enrichment and library complexity of a ChIP-exo sample. We gathered
+% ChIP-exo data from diverse organisms: CTCF factor in human
+% \cite{exo1}; ER factor in human and FoxA1 factor in mouse (Serandour
+% et al., 2013 \cite{exoillumina}); Glucocorticoid receptor (GR) in
+% IMR90, K562 and U2OS cell lines (Starick et al., 2015
+% \cite{starick15}); TATA-box Binding Protein (TBP) in K562 cell lines
+% (Venters and Pugh, 2013 \cite{venters13}). Furthermore, we also
+% generated ChIP-exo and ChIP-Seq data for $\sig$ factor in
+% \emph{Escherichia Coli} (\emph{E. Coli}) measured under aerobic ($ +
+% O_2$) condition, and treated by rifampicin by 0 and 20 minutes
+% (courtesy of Professor Robert Landick's lab). Additionally we gathered
+% the ChIP-nexus from TATA-box Binding Protein (TBP) in K562 cell lines;
+% MyC and Max in S2 cell lines in \emph{Drosophila Melanogaster}
+% (\emph{D. Melanogaster}); Twist and Dorsal in \emph{D. Melanogaster}
+% embryo cell lines (He et al., 2015 \cite{chipnexus}).
+
+
 
 
 \subsection*{Definition of current ChIP-Seq QC guidelines.}
@@ -1006,13 +1137,20 @@ of region that don't overlap peaks shows heavier tails than its
 complement. \footnote{not sure if I should add the FSR densities for
   both classes in the supplement to prove this statement}
 
-\subsection*{Evaluation of QC visualizations}
+% \subsection*{Evaluation of QC visualizations}
 
+% Each boxplot in Figure \ref{fig:enrich_all}A, was created by sampling
+% Msamp of the regions generated and fitting the model:
 
-{\color{blue} \emph{need to describe figure \ref{fig:enrich_all}
-}
-\color{black}
+% \begin{align*}
+%   \mbox{depth} = \beta \times \text{(\# unique
+%       positions)}
+% \end{align*}
 
+% and repeating the process Ntimes times. 
+
+%     Intercept and C) Slope in the the $\mbox{URCR} = k / \mbox{ARC} +
+%     b$ model f
 
 \subsection*{Construction of a SE ChIP-Seq from a PE ChIP-Seq experiment.}
 
@@ -1078,10 +1216,13 @@ by using the 300 peaks with higher average ChIP tag count to
 avoid potential false positive based on the exploratory
 analysis. These regions were also explicitly provided to the GEM
 algorithm as candidate regions. Default tuning parameters were used
-during model fitting for all methods. We were unable to use CexoR
-\cite{cexor} to estimate ChIP-exo binding sites.
+during model fitting for all methods. We downloaded \textbf{CexoR}
+\cite{cexor} version on its 1.8 version from \emph{bioconductor} but
+were unable to use it for the $\sig$ experiments.
 
-\bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
+
+ % Style BST file (bmc-mathphys, vancouver, spbasic).
+\bibliographystyle{vancouver}
 \bibliography{chip_exo_paper}
 \nocite{exo_gb}
 \nocite{maplot1}
@@ -1099,15 +1240,23 @@ during model fitting for all methods. We were unable to use CexoR
   \centering
   \includegraphics[width =
   .95 \textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/figs/for_paper/chip_explanation_withEnzyme.pdf}
-  \caption{\textbf{Description of ChIP-exo, SE ChIP-Seq and PE
-      ChIP-Seq:} A TF is bound to the forward (red) and backward
-    (blue) strand of the DNA. Then, is sonicated: For ChIP-exo a
-    exonuclease enzyme (orange hexagon) trims the $5\prime$ ends of
-    each DNA fragment to a fixed distance from the bound protein,
-    finally is subjected to Immunoprecipitation and amplification. For
-    both ChIP-exo and SE ChIP-Seq an adapter is ligated (green
-    triangles) at the $5\prime$ ends, while for PE ChIP-Seq is ligated
-    to both ends.}
+  % \caption{\textbf{Description of ChIP-exo, SE ChIP-Seq and PE
+  %     ChIP-Seq:} A TF is bound to the forward (red) and backward
+  %   (blue) strand of the DNA. Then, is sonicated: For ChIP-exo a
+  %   exonuclease enzyme (orange hexagon) trims the $5\prime$ ends of
+  %   each DNA fragment to a fixed distance from the bound protein,
+  %   finally is subjected to Immunoprecipitation and amplification. For
+  %   both ChIP-exo and SE ChIP-Seq an adapter is ligated (green
+  %   triangles) at the $5\prime$ ends, while for PE ChIP-Seq is ligated
+  %   to both ends.}
+  \caption{A TF is bound to the forward (red) and backward (blue)
+    strand of the DNA. Then, is sonicated: For ChIP-exo a exonuclease
+    enzyme (orange hexagon) trims the $5\prime$ ends of each DNA
+    fragment to a fixed distance from the bound protein, finally is
+    subjected to Immunoprecipitation and amplification. For both
+    ChIP-exo and SE ChIP-Seq an adapter is ligated (green triangles)
+    at the $5\prime$ ends, while for PE ChIP-Seq is ligated to both
+    ends.}
   \label{fig:chip_diagram}
 \end{figure}
 \newpage
@@ -1115,9 +1264,12 @@ during model fitting for all methods. We were unable to use CexoR
 \begin{figure}[h!]
 \centering
 \includegraphics[width = .8\textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/figs/for_paper/EColi_strand_cross_corr.pdf}
-\caption{\textbf{SCC curves for $\sig$ samples.} The ``phantom peak''
-  and the summit that corresponds to the read and fragment length
-  respectively are confounded due to the exonuclease digestion.}
+% \caption{\textbf{SCC curves for $\sig$ samples.} The ``phantom peak''
+%   and the summit that corresponds to the read and fragment length
+%   respectively are confounded due to the exonuclease digestion.}
+\caption{SCC curves for $\sig$ samples. The ``phantom peak'' and the
+  summit that corresponds to the read and fragment length respectively
+  are confounded due to the exonuclease digestion.}
   \label{fig:scc_exo}
 \end{figure}
 
@@ -1148,8 +1300,24 @@ during model fitting for all methods. We were unable to use CexoR
 \begin{figure}[h!]
   \centering
   \includegraphics[width = \textwidth]{../figs/for_paper/coverage_diagram3.pdf}
-  \caption{\textbf{Flowchart of the ChIP-exo quality control
-      pipeline.} A) ARC vs. URCR, this plot presents a global view of
+  % \caption{\textbf{Flowchart of the ChIP-exo quality control
+  %     pipeline.} A) ARC vs. URCR, this plot presents a global view of
+  %   the balance between library complexity and enrichment. There are
+  %   two arms: First, one with low ARC, which corresponds to regions
+  %   formed by few aligned positions; Second, where the URCR decreases
+  %   as the ARC increases. B) Min. depth vs Proportions of regions,
+  %   this plot shows the strand composition for all the regions formed
+  %   by a min. number of reads. Regions with low depth tend to be
+  %   formed by undigested reads from one unique strand, while regions
+  %   with higher signal are usually formed by reads in both strands. C)
+  %   Min depth vs. FSR, this plot depicts how quickly the FSR's
+  %   distribution approximate the median. In a high quality sample, the
+  %   median is around 0.5, and the other quantiles reach that value
+  %   quickly.}
+  \caption{The ChIP-exo reads are partitioned by keeping the regions
+    in the genome formed by the undigested fragments. For each region,
+    we calculate a collection of summary statistics, which are
+    visualized as A) ARC vs. URCR, this plot presents a global view of
     the balance between library complexity and enrichment. There are
     two arms: First, one with low ARC, which corresponds to regions
     formed by few aligned positions; Second, where the URCR decreases
@@ -1213,9 +1381,15 @@ during model fitting for all methods. We were unable to use CexoR
 \newline
   \includegraphics[width = .4\textwidth]{../figs/ChIPnexus/ChIPnexus_S2_MyC_fsr_surv.pdf}  
   \includegraphics[width = .4\textwidth]{../figs/ChIPnexus/ChIPnexus_S2_MyC_label_surv.pdf}  
-  \caption{\textbf{ChIP-exo QC pipeline on ChIP-nexus data.} A)
-    Enrichment vs. library complexity, B) Strand imbalance and C)
-    Single-strand region analysis for the MyC experiment in S2 cell
+  % \caption{\textbf{ChIP-exo QC pipeline on ChIP-nexus data.} A)
+  %   Enrichment vs. library complexity, B) Strand imbalance and C)
+  %   Single-strand region analysis for the MyC experiment in S2 cell
+  %   lines in \emph{D. Melanogaster} from He et al., 2015
+  %   \cite{chipnexus}}
+  \caption{We applied the QC pipeline on ChIP-nexus data. A) ARC
+    vs. URCR hexbin plots, B) FSR distribution quantiles and C)
+    Stacked histogram with the proportion of regions composed by
+    fragments on a single strand for the MyC experiment in S2 cell
     lines in \emph{D. Melanogaster} from He et al., 2015
     \cite{chipnexus}}
   \label{fig:nexus}
@@ -1245,11 +1419,11 @@ during model fitting for all methods. We were unable to use CexoR
   \centering
   \includegraphics[width = .46\textwidth]{../figs/for_paper/sensitivity_exo_olda_data.pdf}
   \includegraphics[width = .46\textwidth]{../figs/for_paper/resolution_by_dataset_old_data.pdf}
-   \caption{Comparison of (A) sensitivity and (B) resolution between
-     ChIP-exo and ChIP-Seq data. Sensitivity is defined as the
-     proportion of RegulonDB annotations identified using each
-     data. Resolution is defined as the distance between RegulonDB
-     annotation and its closest prediction.}
+  \caption{Comparison of A) sensitivity and B) resolution between
+    ChIP-exo and ChIP-Seq data. Sensitivity is defined as the
+    proportion of RegulonDB annotations identified using each
+    data. Resolution is defined as the distance between RegulonDB
+    annotation and its closest prediction.}
   \label{fig:reso_all}
 \end{figure}
 
@@ -1258,11 +1432,11 @@ during model fitting for all methods. We were unable to use CexoR
 \begin{figure}[h]
   \centering
   \includegraphics[width = .9\textwidth]{../figs/for_paper/saturation_analysis_old.pdf}
-  \caption{Comparison of the number of candidate regions (A),
-    predicted events (B), identified targets (C) and resolution (D)
-    among ChIP-exo, PE ChIP-Seq and SE ChIP-Seq. RegulonDB annotations
-    are considered as a gold standard. A gold standard binding events
-    was deemed identified if a binding event was estimated at a $\pm$
+  \caption{Comparison of the number of A) candidate regions, B)
+    predicted events, C) identified targets and D) resolution among
+    ChIP-exo, PE ChIP-Seq and SE ChIP-Seq. RegulonDB annotations are
+    considered as a gold standard. A gold standard binding events was
+    deemed identified if a binding event was estimated at a $\pm$
     15 vicinity of it.}
   \label{fig:design}
 \end{figure}
@@ -1319,8 +1493,8 @@ during model fitting for all methods. We were unable to use CexoR
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-\caption{Same QC metrics as in table \ref{tab:qc} but applied to
-  Landick's chipseq data of the rif experiment}
+\caption{Usual ChIP-Seq QC metrics as in table \ref{tab:qc} but
+  applied to Landick's chipseq data of the rif experiment}
 \end{table}
 
 \begin{figure}[h!]
@@ -1399,8 +1573,9 @@ during model fitting for all methods. We were unable to use CexoR
 \begin{figure}[h!]
   \centering
   \includegraphics[width = .9\textwidth,page = 1]{../figs/saturation/K12_alignment/sig70_rif_enrichment.pdf}
-  \caption{A) ARC vs URCR hexbin plots of Rep-1 and rif-0min from $\sig$ experiment when 100K to 900K reads are being
-    sampled for each panel. }
+  \caption{ARC vs URCR hexbin plots of Rep-1 and rif-0min from $\sig$
+    experiment when 100K to 900K reads are being sampled for each
+    panel. }
   \label{fig:exoQC_sat1}
 \end{figure}
 
