@@ -127,5 +127,5 @@ summary <- data.table(depth = nreads(reads),
                       RSC1 = RSC1(scc,rl),
                       RSC2 = RSC2(scc,rl))
                       
-write.table(format(scc,digits = 6),file = summaryfile,quote = FALSE,
+write.table(format(summary,digits = 6),file = summaryfile,quote = FALSE,
    sep = "\t",row.names = FALSE,col.names = TRUE)            
