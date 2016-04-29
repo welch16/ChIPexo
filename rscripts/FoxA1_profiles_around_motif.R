@@ -325,6 +325,12 @@ venn2[,prop := only_stat / both ]
 ## on the other hand, rep3 shows more regions with motif, even though the 
 ## proportion is not higher.
 
+top_K <- function(var,K){
+  return(sort(var,decreasing = TRUE)[1:min(K,length(var))])
+}
+
+all_fimo[,top_K(-log10(pval),100),by = rep]
+
 
 all_fimo <- do.call(rbind,mapply(function(x,y)x[,rep := y],
   fimo,c("Rep-3","Rep-1","Rep-2"),SIMPLIFY = FALSE))                    
@@ -338,10 +344,24 @@ ggplot(all_fimo,aes(-log10(pval),colour = rep))+stat_ecdf(geom = "line")+
   theme_bw()+theme(legend.position = "top")+
   scale_color_brewer(palette = "Set1",name = "Replicate")+
   ylab("Empirical CDF")
-ggplot(all_fimo,aes(-log10(qval),colour = rep))+stat_ecdf(geom = "line")+
+K <- 1000
+ggplot(all_fimo[,top_K(score,K),by = rep],aes(V1,colour = rep))+
+  stat_ecdf(geom = "line")+xlab("score")+
   theme_bw()+theme(legend.position = "top")+
   scale_color_brewer(palette = "Set1",name = "Replicate")+
-  ylab("Empirical CDF")
+  ylab("Empirical CDF")+ggtitle(paste("Top",K,"scores"))
+K <- 2000
+ggplot(all_fimo[,top_K(score,K),by = rep],aes(V1,colour = rep))+
+  stat_ecdf(geom = "line")+xlab("score")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_color_brewer(palette = "Set1",name = "Replicate")+
+  ylab("Empirical CDF")+ggtitle(paste("Top",K,"scores"))
+K <- 2400
+ggplot(all_fimo[,top_K(score,K),by = rep],aes(V1,colour = rep))+
+  stat_ecdf(geom = "line")+xlab("score")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_color_brewer(palette = "Set1",name = "Replicate")+
+  ylab("Empirical CDF")+ggtitle(paste("Top",K,"scores"))
 dev.off()
 
 pdf(file = file.path(figs_dir,"FoxA1_barplots.pdf"))
