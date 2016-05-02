@@ -174,27 +174,43 @@
 
     ChIP-exo is a modification of the ChIP-Seq protocol for high
     resolution mapping of transcription factor binding sites. Although
-    many aspect of the ChIP-exo data analysis are similar to those of
+    many aspects of the ChIP-exo data analysis are similar to those of
     ChIP-Seq, ChIP-exo presents a number of unique challenges. We
-    present a quality control pipeline that analyzes a ChIP-exo and
-    ChIP-nexus experiment's strand imbalance, enrichment and library
-    complexity. Assessment of these characteristics are facilitated
+    present a quality control pipeline to evaluate a number of key
+    issues including strand imbalance, library complexity and
+    enrichment. Assessment of these characteristics are facilitated
     through diagnostic plots and summary statistics calculated over
     regions of the genome with varying levels of coverage.
 
-    We systematically evaluated diverse aspects of ChIP-exo and found
-    the following characteristics: First, ChIP-exo's background is
-    quite different from ChIP-Seq's. Second, although often assumed in
-    ChIP-exo data analysis methods, the ``peak pair'' assumptions does
-    not hold locally in actual ChIP-exo data. Third, we for the first
-    time compared Paired End (PE) ChIP-Seq with ChIP-exo and found
-    that both protocols are comparable in resolutions and sensitivity
-    for closely located binding events, but as the distance between
-    binding events increases ChIP-exo shows higher sensitivity that PE
-    ChIP-Seq. Finally, at fixed sequencing depths, ChIP-exo provides
-    higher sensitivity, specificity and spatial resolution than PE
-    ChIP-Seq.
+    The pipeline explores and quantifies these aspects by partitioning
+    the experiment reads into a collection of regions, calculating a
+    series of summary statistics for each region, providing
+    visualizations and calculating measures to globally asses the
+    quality of a ChIP-exo experiment. We provide guidelines to
+    distinguish libraries with low complexity from deeply sequenced
+    experiments by the use of the QC pipeline. We demonstrate that the
+    ChIP-exo QC pipeline it is also applicable to ChIP-nexus data,
+    showing that those experiments present higher quality than
+    ChIP-exo experiments under similar conditions.
 
+    We compared ChIP-exo with Paired End (PE) and Single End (SE)
+    ChIP-Seq and found the following characteristics: First, although
+    often assumed in ChIP-exo data analysis methods, the ``peak pair''
+    assumptions does not hold locally in actual ChIP-exo data. Second,
+    we for the first time compared PE ChIP-Seq with ChIP-exo and found
+    that at fixed sequencing depths, ChIP-exo provides higher
+    sensitivity, specificity and spatial resolution than PE
+    ChIP-Seq. Finally, we show that ChIP-exo and PE ChIP-Seq are
+    comparable in sensitivity for closely located binding events, but
+    as the average distance between binding events increases, ChIP-exo
+    show higher sensitivity than PE ChIP-Seq.
+
+    % both protocols are comparable in resolutions and sensitivity for
+    % closely located binding events, but as the distance between
+    % binding events increases ChIP-exo shows higher sensitivity that
+    % PE ChIP-Seq. Finally, at fixed sequencing depths, ChIP-exo
+    % provides higher sensitivity, specificity and spatial resolution
+    % than PE ChIP-Seq.
   \end{abstract}
 
 \begin{keyword}
@@ -214,6 +230,8 @@
 
 
 \newpage
+
+\color{blue}
 
 outline
 
@@ -256,6 +274,8 @@ outline
   \item compare samples under same budget of reads
   \end{itemize} 
 \end{enumerate}
+
+\color{black}
 
 \newpage
 
