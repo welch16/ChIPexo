@@ -1,9 +1,3 @@
-## ----comp_param , include = FALSE,echo = FALSE,eval = TRUE---------------
-
-  bin_size <- 150
-  frag_len <- 150
-
-
 ## ----table1,include = FALSE,echo = FALSE,eval = FALSE--------------------
 #    library(data.table)
 #    load("../data/paper_tables/Landick_rif_summary.RData")
@@ -91,6 +85,12 @@
 
   fdr <- 0.01
   topM <- 300
+
+
+## ----comp_param , include = FALSE,echo = FALSE,eval = TRUE---------------
+
+  bin_size <- 150
+  frag_len <- 150
 
 
 ## ----table_chipseq1,include = FALSE,echo = FALSE,eval = FALSE------------
