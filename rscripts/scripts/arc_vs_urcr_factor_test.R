@@ -16,7 +16,7 @@ if("--help" %in% args){
 
    -- outdir
 
-      Dri where the pdf file with plots is gonna be saved
+      Dir where the pdf file with plots is gonna be saved
 
   Author:
 
