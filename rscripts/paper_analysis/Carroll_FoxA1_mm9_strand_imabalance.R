@@ -121,6 +121,6 @@ ggplot(pvals,aes(depth,-log10(p.value),colour = Replicate))+
     axis.title = element_text(size = 22),
     legend.text = element_text(size = 20),
     legend.title = element_text(size = 22))+
-  scale_color_brewer(palette = "Set1")+ggtitle("C")+
+  scale_color_brewer(palette = "Set1",name = "")+ggtitle("C")+
   xlab("Min. number of reads")
 dev.off()
