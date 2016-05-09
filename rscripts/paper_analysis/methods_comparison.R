@@ -22,8 +22,9 @@ dir.create(figs_dir,showWarnings = FALSE, recursive = TRUE)
 base_dir <- "/p/keles/ChIPexo/volume6/K12"
 FDR <- "FDR5"
 edsn <- c("1311","1314","1317","1320","931","933")
-max_dist <- 50
-topM <- 300
+max_dist <- 40
+topM <- 400
+strength <- 4e3
 mc <- detectCores()
 
 ### methods directories
@@ -138,9 +139,11 @@ files <- list.files(file.path(base_dir,"downstream"),recursive = TRUE)
 files <- files[grep("exo",files)]
 files <- files[grep("sites",files)]
 files <- files[grep(FDR,files)]
+files <- files[grep("motif",files,invert = TRUE)]
 
 dpeak <- lapply(file.path(base_dir,"downstream",files),read.table,header = TRUE)
 dpeak <- lapply(dpeak,data.table)
+dpeak <- lapply(dpeak,function(x)x[siteStrength > strength])
 names(dpeak) <- edsn
 rm(files)
 
@@ -246,12 +249,31 @@ reso <- mapply(compare_predictions,
 reso <- mapply(function(x,y)copy(x)[,dataset := y],reso,edsn,SIMPLIFY = FALSE)
 reso <- do.call(rbind,reso)
 
-pdf(file = file.path("figs/for_paper",paste0("sig70_methods_comparison_",FDR,"_topM",topM,".pdf")))
-ggplot(reso,aes_string("method","reso",fill = "method"))+geom_boxplot(outlier.shape = NA)+
-  scale_fill_brewer(palette = "Pastel1")+facet_wrap(~ dataset,nrow = 2 )+
-  theme_bw()+theme(legend.position = "none",axis.text.x = element_text(angle = 30))+
-  coord_cartesian(ylim = c(-max_dist*.05,max_dist*1.05))+
-  xlab("Methods")+ylab("Resolution")
+## pdf(file = file.path("figs/for_paper",paste0("sig70_methods_comparison_",FDR,"_topM",topM,".pdf")))
+## ggplot(reso,aes_string("method","reso",fill = "method"))+geom_boxplot(outlier.shape = NA)+
+##   scale_fill_brewer(palette = "Pastel1")+facet_wrap(~ dataset,nrow = 2 )+
+##   theme_bw()+theme(legend.position = "none",axis.text.x = element_text(angle = 30))+
+##   coord_cartesian(ylim = c(-max_dist*.05,max_dist*1.05))+
+##   xlab("Methods")+ylab("Resolution")
+## dev.off()
+
+## pdf(file = file.path("figs/for_paper",paste0("sig70_methods_comparison_",FDR,"_topM",topM,".pdf")))
+
+pdf(file = file.path("figs/for_paper",paste0("methods_comp_",FDR,"_topM",topM,".pdf")),height = 4,width = 4)
+ggplot(reso[dataset %in% c("931")],aes_string("method","reso",fill = "method"))+geom_boxplot(outlier.shape = NA)+
+  scale_fill_brewer(palette = "Pastel1")+
+  theme_bw()+
+  theme(legend.position = "none",axis.text.x = element_text(angle = 30),
+        plot.title = element_text(hjust = 0))+
+  xlab("Methods")+ylab("Resolution")+ylim(0,30)+ggtitle("A")
+ggplot(reso[dataset %in% c("933")],aes_string("method","reso",fill = "method"))+geom_boxplot(outlier.shape = NA)+
+  scale_fill_brewer(palette = "Pastel1")+
+  theme_bw()+
+  theme(legend.position = "none",axis.text.x = element_text(angle = 30),
+        plot.title = element_text(hjust = 0))+
+  xlab("Methods")+ylab("Resolution")+ylim(0,30)+ggtitle("B")
 dev.off()
 
+
   ## geom_jitter(aes(colour = method),size = 1.2)+scale_color_brewer(palette = "Set1")+
+tab1
