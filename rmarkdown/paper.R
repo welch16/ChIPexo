@@ -68,13 +68,6 @@
 #    A <- format_tab(A)
 #    B <- format_tab(B)
 
-## ----all_param,include = FALSE,echo = FALSE,eval = TRUE------------------
-
-  Ntimes <- prettyNum(1e4,big.mark = ",")
-  Msamp <- prettyNum(1e3,big.mark = ",")
-  thresh1 <- 10
-
-
 ## ----comp_param,include = FALSE,echo = FALSE, eval = TRUE----------------
 
   id_dist <- 20
@@ -85,6 +78,9 @@
 
   fdr <- 0.01
   topM <- 300
+  Ntimes <- prettyNum(1e4,big.mark = ",")
+  Msamp <- prettyNum(1e3,big.mark = ",")
+  thresh1 <- 10
 
 
 ## ----comp_param , include = FALSE,echo = FALSE,eval = TRUE---------------
