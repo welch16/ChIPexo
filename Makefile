@@ -86,6 +86,10 @@ rmarkdown/paper.pdf:rmarkdown/paper.tex
 rmarkdown/paper.tex:rmarkdown/paper.Rnw
 	cd rmarkdown;R CMD Sweave --engine=knitr::knitr --pdf $(<F);cd ..
 
+paper/paper.pdf:paper/paper.tex
+	cd paper;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
+
+
 rmarkdown/supplement.pdf:rmarkdown/supplement.tex
 	cd rmarkdown;pdflatex $(<F);bibtex $(<F);pdflatex $(<F);pdflatex $(<F);cd ..
 
