@@ -1,0 +1,11 @@
+There were 50 or more warnings (use warnings() to see the first 50)
+Error in intersect(repl[[w]], finalsetini) : 
+  error in evaluating the argument 'x' in selecting a method for function 'intersect': Error in repl[[w]] : subscript out of bounds    
+
+## the error in the code seems to come from this, which makes me think that only works for mode than one replicate
+
+finalset <- repl[[1]]
+    for (w in 2:NT) {
+        finalsetini <- finalset
+        finalset <- intersect(repl[[w]], finalsetini)
+    }

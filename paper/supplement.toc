@@ -1,0 +1,4 @@
+\contentsline {section}{\numberline {1}Comparison of ChIP-exo with ChIP-Seq data.}{2}
+\contentsline {section}{\numberline {2}SCC curves for ChIP-exo and ChIP-nexus data.}{5}
+\contentsline {section}{\numberline {3}QC pipeline applied to ChIP-exo and ChIP-nexus data.}{9}
+\contentsline {subsection}{\numberline {3.1}FoxA1 peak overlaps with high quality regions.}{27}

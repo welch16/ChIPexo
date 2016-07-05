@@ -1,0 +1,83 @@
+This is BibTeX, Version 0.99d (TeX Live 2011)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: paper.aux
+The style file: vancouver.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=5001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: chip_exo_paper.bib
+Warning--entry type for "strandcc" isn't style-file defined
+--line 116 of file chip_exo_paper.bib
+I was expecting a `,' or a `}'---line 264 of file chip_exo_paper.bib
+ :   
+ :   journal = {Nucleic Acids Research},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 333 of file chip_exo_paper.bib
+ :   
+ :   year = 2008}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 353 of file chip_exo_paper.bib
+ :   
+ :   journal = {Bioinformatics},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 428 of file chip_exo_paper.bib
+ :   
+ :   journal = {Genome Research},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+`journal' is a missing field, not a string, for entry regulondb
+while executing---line 1865 of file vancouver.bst
+Warning--empty journal in regulondb
+Warning--empty year in regulondb
+Warning--empty author and editor in strandcc
+Warning--missing publisher in strandcc
+`journal' is a missing field, not a string, for entry fimo
+while executing---line 1865 of file vancouver.bst
+Warning--empty journal in fimo
+Warning--empty year in fimo
+You've used 32 entries,
+            3170 wiz_defined-function locations,
+            764 strings with 12339 characters,
+and the built_in function-call counts, 76923 in all, are:
+= -- 9388
+> -- 564
+< -- 0
++ -- 317
+- -- 141
+* -- 6902
+:= -- 8281
+add.period$ -- 121
+call.type$ -- 32
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 38
+duplicate$ -- 5084
+empty$ -- 7554
+format.name$ -- 171
+if$ -- 17793
+int.to.chr$ -- 0
+int.to.str$ -- 32
+missing$ -- 332
+newline$ -- 159
+num.names$ -- 32
+pop$ -- 671
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 673
+stack$ -- 0
+substring$ -- 17417
+swap$ -- 570
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 6
+while$ -- 297
+width$ -- 34
+write$ -- 313
+(There were 6 error messages)

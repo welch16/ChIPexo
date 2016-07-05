@@ -1,0 +1,1431 @@
+\documentclass{bmcart}
+
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{tabu}
+\usepackage{multirow}
+
+\usepackage{soul}
+
+\newcommand{\beginsupplement}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{S\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{S\arabic{figure}}%
+     }
+
+% \usepackage{authblk}
+\usepackage[utf8]{inputenc} %unicode support
+
+\newcommand{\sig}{\sigma^{70}}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\begin{fmbox}
+\dochead{Draft}
+
+\title{Data exploration, quality control and statistical analysis of
+  ChIP-exo experiments}
+
+\author[
+   addressref={aff1},
+   noteref={n1},
+   email={welch@stat.wisc.edu}      
+]{\inits{RW}\fnm{Rene} \snm{Welch} }
+\author[
+   addressref={aff6},        % id's of addresses, e.g. {aff1,aff2}
+   noteref={n1},
+   email={chungd@musc.edu}   % email address
+]{\inits{DC}\fnm{Dongjun} \snm{Chung} } 
+\author[
+   addressref={aff3},
+   email={ong@cs.wisc.edu}
+]{\inits{IO}\fnm{Irene} \snm{Ong}}
+\author[
+   addressref={aff3,aff4},
+   email={jagrass@wisc.edu}
+]{\inits{JG}\fnm{Jeffrey} \snm{Grass}}
+\author[
+   addressref={aff3,aff4,aff5},
+   email={landick@bact.wisc.edu}
+]{\inits{RL}\fnm{Robert} \snm{Landick}}
+\author[
+   addressref={aff1,aff2},
+   corref={aff1},
+   email={keles@stat.wisc.edu}
+]{\inits{SK}\fnm{S\"und\"uz} \snm{Kele\c{s}}}
+
+\address[id=aff1]{%                           % unique id
+  \orgname{Department of Statistics, University of Wisconsin Madison}, % university, etc
+  \street{1300 University Avenue},                     %
+  %\postcode{}                                % post or zip code
+  \city{Madison},                              % city
+  \cny{WI}                                    % country
+}
+
+\address[id=aff2]{%
+  \orgname{Department of Biostatistics and Medical Informatics, University of Wisconsin Madison},
+  \street{600 Highland Avenue},
+%  \postcode{24105}
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff3]{
+  \orgname{Great Lakes Bioenergy Research Center, University of Wisconsin Madison},
+  \street{1552 University Avenue},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff4]{
+  \orgname{Department of Biochemistry, University of Wisconsin Madison},
+  \street{433 Babcock Drive},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff5]{
+  \orgname{Department of Bacteriology, University of Wisconsin Madison},
+  \street{1550 Linden Drive},
+  \city{Madison},
+  \cny{WI}
+}
+\address[id=aff6]{
+  \orgname{Department of Public Health Sciences, Medical University of South Carolina},
+  \street{135 Cannon Street},
+  \city{Charleston},
+  \cny{SC}
+}
+
+\begin{artnotes}
+\note[id=n1]{These two authors contributed equally.} % note, connected to author
+\end{artnotes}
+
+
+\end{fmbox}
+
+\begin{abstractbox}
+
+  \begin{abstract}
+
+    ChIP-exo is a modification of the ChIP-Seq protocol for high
+    resolution mapping of transcription factor binding sites. Although
+    many aspects of the ChIP-exo data analysis are similar to those of
+    ChIP-Seq, ChIP-exo presents a number of unique challenges. We
+    present a quality control pipeline to evaluate a number of key
+    issues including strand imbalance, library complexity and
+    enrichment. Assessment of these characteristics are facilitated
+    through diagnostic plots and summary statistics calculated over
+    regions of the genome with varying levels of coverage.
+
+    The pipeline explores and quantifies these aspects by partitioning
+    the experiment reads into a collection of regions, calculating a
+    series of summary statistics for each region, providing
+    visualizations and calculating measures to globally asses the
+    quality of a ChIP-exo experiment. We provide guidelines to
+    distinguish libraries with low complexity from deeply sequenced
+    experiments by the use of the QC pipeline. We demonstrate that the
+    ChIP-exo QC pipeline it is also applicable to ChIP-nexus data,
+    showing that those experiments present higher quality than
+    ChIP-exo experiments under similar conditions.
+
+    We compared ChIP-exo with Paired End (PE) and Single End (SE)
+    ChIP-Seq and found the following characteristics: First, although
+    often assumed in ChIP-exo data analysis methods, the ``peak pair''
+    assumptions does not hold locally in actual ChIP-exo data. Second,
+    we for the first time compared PE ChIP-Seq with ChIP-exo and found
+    that at fixed sequencing depths, ChIP-exo provides higher
+    sensitivity, specificity and spatial resolution than PE
+    ChIP-Seq. Finally, we show that ChIP-exo and PE ChIP-Seq are
+    comparable in sensitivity for closely located binding events, but
+    as the average distance between binding events increases, ChIP-exo
+    show higher sensitivity than PE ChIP-Seq.
+
+  \end{abstract}
+
+\begin{keyword}
+  \kwd{ChIP-exo}
+  \kwd{ChIP-nexus}
+  \kwd{ChIP-Seq}
+  \kwd{Quality Control}
+  \kwd{Spatial Resolution}
+  \kwd{Transcription Factor}  
+  \kwd{Binding Site Identification on High-Res}
+  \kwd{Deconvolution}
+\end{keyword}
+
+\end{abstractbox}
+
+\end{frontmatter}
+
+\newpage
+
+\section*{Background}
+\label{sec:intro}
+
+ChIP-exo (Chromatin Immunoprecipitation followed by exonuclease
+digestion and next generation sequencing) Rhee and Pugh, 2011
+\nocite{exo1} is the state-of-the-art experiment developed to attain
+single base-pair resolution of protein binding site identification and
+it is considered as a powerful alternative to popularly used ChIP-Seq
+(Chromatin Immunoprecipitation coupled with next generation
+sequencing) assay. ChIP-exo experiments first capture millions of DNA
+fragments (150 - 250 bp in length) that the protein under study
+interacts with using random fragmentation of DNA and a
+protein-specific antibody. Then, exonuclease is introduced to trim the
+$5\prime$ end of each DNA fragment to a fixed distance from the bound
+protein compared to ChIP-Seq. This step is unique to ChIP-exo and
+could potentially provide significantly higher spatial resolution
+compared to ChIP-Seq. Finally, high throughput sequencing of a small
+region (36 to 100 bp) at the $5\prime$ end of each fragment generates
+millions of reads. Figure \ref{fig:chip_diagram} illustrates the
+differences between ChIP-exo, Single End (SE) ChIP-Seq and Paired End
+(PE) ChIP-Seq: The $5\prime$ ends of a ChIP-exo experiment are located
+more tightly around the binding proteins than in a ChIP-Seq
+experiment; in a PE ChIP-Seq experiment both ends are observed while
+in a SE ChIP-Seq experiment only the $5\prime$ end.
+
+ChIP-nexus (Chromatin Immunoprecipitation followed by exonuclease
+digestion, unique barcode, single ligation and next generation
+ligation) He et al., 2015 \nocite{chipnexus} is a modification to the
+ChIP-exo protocol, where both sequencing adaptors are ligated at the
+end of the ChIP fragments. Then, after exonuclease digestion, DNA
+self-circularization with circLigase, and restriction enzyme cutting
+between the two adaptors, the final library is amplified. ChIP-nexus
+arises as an alternative to ChIP-exo as it provides the possibility of
+attaining higher resolution analysis and yields higher complexity
+libraries.
+
+While the number of ChIP-exo data keeps increasing, characteristics of
+ChIP-exo data are not fully investigated yet. First, DNA libraries
+generated by the ChIP-exo protocol are expected to be less complex than the
+libraries generated by ChIP-Seq (Mahony et al.,
+2015\nocite{exo_review}). Second, although there are roughly the same
+amount of reads in both strands, locally there may be more reads in
+one strand than in the other. Finally, most of current ChIP-Seq
+quality control (QC) guidelines (Landt et al., 2012\nocite{encode_qc})
+may not be applicable on ChIP-exo, while there are not established QC
+pipelines for ChIP-exo; previous ChIP-exo analyses used ChIP-Seq
+samples to compare the resolution between experiments
+\cite{exo1,exoillumina,exo2}. To address these challenges, we suggest
+a collection of quality control visualizations to interrogate these
+biases in a ChIP-exo experiment and globally asses the enrichment and
+library complexity of a ChIP-exo sample and a procedure to distinguish
+low complexity libraries from deeply sequenced experiments. This
+aspect is unique to ChIP-exo, since the exonuclease enzyme it is
+expected to digested the reads that are not bound to a transcription
+factor, therefore the number of bases where a ChIP-exo fragment could
+be potentially aligned is reduced. That way, in a high quality
+ChIP-exo experiment is possible to observe a large amount of reads to
+be aligned to unique position due to genomic signal instead of PCR
+artifacts.
+
+In order to obtain the potential benefits of ChIP-exo on protein
+binding site identification, it is critical to use algorithms that
+could fully utilize information available in ChIP-exo data. Rhee and
+Pugh, 2011 \nocite{exo1} discussed that reads in the forward and reverse
+strand might construct peak pairs around bound proteins, of which
+heights were implicitly assumed to be symmetric. Based on this
+rationale, they used the ``peak pair method'' that predicts the
+midpoint of two modes of peak pairs as potential binding
+sites. Recently developed ChIP-exo data analysis methods, such as Mace
+(Wang et al, 20114\nocite{mace}), CexoR (Madrigal, 2015\nocite{cexor})
+and Peakzilla (Bardet et al., 2013\nocite{peakzilla}), are also based
+on this peak pair assumption. However, appropriateness of such
+assumption was not fully evaluated in the literature yet. Furthermore,
+it is still unknown which factors could affect protein binding site
+identification using ChIP-exo data. In order to address this problem,
+we investigated various aspects of ChIP-exo data by contrasting them
+with their respective ChIP-Seq experiments.
+
+Currently, research on statistical methods for ChIP-exo data is still
+in its very early stage. Although many methods have been proposed to
+identify protein binding sites from ChIP-Seq data (reviewed by
+Wilbanks and Facciotti, 2012\nocite{evaluation} and Pepke and Wold,
+2009 \nocite{computation}), such as MACS (Zhang et al.,
+2008\nocite{macs}), CisGenome (Ji et al., 2008\nocite{cisgenome}) and
+MOSAiCS (Kuan et al., 2009\nocite{mosaics}), these approaches might
+not fully utilize potentials of ChIP-exo data for high resolution
+identification of protein binding sites. Specifically these approaches
+reveal protein binding sites only in lower resolution, i.e., at an
+interval of hundreds to thousands of base pairs. Furthermore, they
+implicitly assume that there is only one ``mode'' or ``predicted
+binding location'' per this wide genomic interval. More recently,
+deconvolution algorithms such as Deconvolution (Lun et al.,
+2009\cite{csdeconv}), GEM (Guo et al., 2012\nocite{gem}, an improved
+version of Guo et al., 2010\nocite{gps} ) and PICS (Zhang et al.,
+2010\nocite{pics}) have been proposed to identify binding sites in
+higher resolution using ChIP-Seq data. However, most of them are still
+not tailored for ChIP-exo and PE and SE ChIP-Seq data in a unified
+framework and as a result, currently available methods are not
+appropriate for fair comparison between ChIP-exo and ChIP-Seq. To
+address these limitations, we developed and utilized an improved
+version of dPeak (Chung et al., 2013\nocite{dpeak}), a high resolution
+binding site identification (deconvolution) algorithm that we
+previously developed for PE and SE ChIP-Seq data, so that it can also
+handle ChIP-exo data. The dPeak algorithm implements a probabilistic
+model that accurately describes the ChIP-exo and ChIP-Seq data
+generation process.
+
+Some of the key findings in this work are as follows. First, we
+demonstrate that the ``peak pair'' assumption of Rhee and Pugh,
+2013\nocite{exo2} does not hold well in real ChIP-exo data. Second, we
+found that when analyzing ChIP-exo data and the Input control is not
+available, it is useful to adjust for GC content and mappability
+biases to improve peak calling and binding site identification. Third,
+we evaluated several methods to identify binding events and dPeak
+performs competitively respect to GEM and MACE when analyzing ChIP-exo
+data. Finally, when comparable number of reads is used for both
+ChIP-exo and ChIP-Seq , dPeak coupled with ChIP-exo data provides
+resolution comparable to PE ChIP-Seq and both significantly improve
+the resolution of protein binding identification compared to SE-based
+analysis with any of the available methods.
+
+\section*{Results and discussion}
+\label{sec:results}
+
+\subsection*{Publicly available and novel datasets}
+
+We generated $\sig$ factor ChIP-exo, PE and SE ChIP-Seq experiments in
+\emph{E. Coli} under aerobic ($+O_2$) and anaerobic ($-O_2$)
+conditions in glucose minimal media on the HiSeq2000 and Illumina GA
+IIx platforms. Similarly, we generated $\sig$ factor ChIP-exo, PE and
+SE (generated \emph{in silico}) ChIP-Seq experiments in \emph{E. Coli}
+under aerobic ($+O_2$) conditions where rifampicin was applied for 20
+minutes and a control sample (without rifampicin being applied). We
+used these experimental designs for comparisons of ChIP-exo and PE
+ChIP-Seq assays of high resolution analysis and binding site
+identification. This comparison benefits from using $\sig$ for this
+study since is a transcription initiation factor of housekeeping genes
+in \emph{E. Coli}. In this organism's genomes, many promoters contain
+multiple transcription start sites (TSS) and these TSS are often
+closely spaced (10 $\sim$ 150 bp). These closely spaced binding sites
+are considered to be multiple ``switches'' that differentially
+regulate gene expression under diverse growth conditions
+\cite{regulondb}.
+
+Additionally, we gathered ChIP-exo data from diverse organisms: CTCF
+factor in human HeLa cell lines \cite{exo1}; ER factor in human MCF-7
+cell lines \cite{exoillumina}; GR factor in IMR90, K562 and U2OS human
+cell lines \cite{starick15}; TBP factor in human K562 cell lines
+\cite{venters13}. Additionally, we also gathered the ChIP-nexus
+experiments provided by He et al., 2014: TBP in human K562 cell lines,
+MyC and Max in S2 \emph{D. Melanogaster} cell lines and, Twist and
+Dorsal in \emph{D. Melanogaster} embryo cell lines.
+
+\subsection*{Comparison with ChIP-Seq data}
+
+We first compared various factors that could affect binding site
+identification between ChIP-exo and ChIP-Seq data by using the
+ChIP-exo reads from the first biological sample and first replicate
+grown under aerobic condition (first line from Table \ref{tab:qc_sig})
+and a SE ChIP-Seq replicate grown under the same conditions. In order
+to compare distribution of signal and background between ChIP-exo and
+ChIP-Seq data, we counted the number of extended reads mapping to a
+partition of the genome into non-overlapping bins. ChIP tag counts in
+ChIP-exo data were linearly related to ChIP tag counts in ChIP-Seq
+data for the regions with high ChIP tag counts (Upper part of Figure
+\ref{fig:comp}A). This implies that signals for potential binding
+sites are well reproducible between ChIP-exo and ChIP-Seq data. On the
+other hand, there was a clear difference in the background
+distribution between them (lower part of Figure
+\ref{fig:comp}A). Specifically, in ChIP-Seq data reads were almost
+uniformly distributed over background (non-binding) regions and the
+ChIP tag counts in there regions were significantly larger than
+zero. In contrast, in ChIP-exo data, there was larger variation in
+ChIP tag counts among background regions and ChIP tag counts were much
+lower in these regions compared to ChIP-Seq data. There were also
+large proportion of regions without any read in ChIP-exo data. These
+results indicate that for ChIP-exo data a much smaller portion of the
+genome is expected to be background. Therefore, methods that
+specifically model the background distribution must take into account
+that ChIP-exo's background is going to be composed by a smaller
+proportion of the reads in the experiment.
+
+Using the same experiment, we next evaluated the ``peak pair''
+assumption from Rhee and Pugh, 2011\nocite{exo1}, i.e. a peak of reads
+in the forward strand is usually paired with a peak of reads in the
+reverse strand that is located in the other site of the binding
+site. Note that currently available ChIP-exo data analysis methods,
+such as Wang et al., 2014\nocite{mace}, Madrigal 2015\nocite{cexor}
+and Bardet et al., 2013\nocite{peakzilla} rely on this assumption. In
+order to evaluate this assumption, we reviewed the proportion of reads
+in the forward strand in high quality ChIP-exo peaks such as at least
+one binding site is predicted in both ChIP-exo and ChIP-Seq data. We
+found that strands of reads were much less balanced in ChIP-exo data
+than in ChIP-Seq data in these regions with potential binding sites
+(Fig. \ref{fig:comp}B) and this indicates that the peak pair
+assumption might not hold in ChIP-exo data. This is caused by either
+the enzyme digestion or the strength at which the protein binds to the
+DNA: Although it is expected for the exonuclease enzyme to digest the
+ChIP fragments starting by their $5\prime$ ends and stopping when
+finding a binding event, it may not be able to reach and digest every
+fragment in the ChIP sample. On the other hand, if the protein is not
+bound to both DNA strand, the enzyme may completely digest the
+fragment. Finally both effect are increased by the PCR amplification.
+
+We evaluated ChIP-exo data for CTCF factor from human genome
+\cite{exo1} to investigate issues specific to eukaryotic genomes for
+binding sites identification. Figures \ref{fig:comp}C and
+\ref{fig:comp}D display the bin-level average read counts against
+mappability and GC content. Each data point is obtained by averaging
+the read counts across bins with the same mappability of GC -
+content. In Figure \ref{fig:comp}C it is shown that the ChIP-exo tag
+counts linearly increases with the mappability score and in Figure
+\ref{fig:comp}D it is shown that for GC - content below 0.6, the mean
+ChIP tag count increases and for GC - content greater than 0.6 it
+shows a decreasing trend. Benjamini and Speed,
+2011\nocite{benjamini2011} and Kuan et al., 2011\nocite{mosaics}
+studied the presence of the mappability and GC - content biases in
+ChIP-Seq's background. It is not surprising to see these biases also
+present in ChIP-exo data, since ChIP-Seq and ChIP-exo signal seems to
+be linearly correlated for enriched regions (Figure
+\ref{fig:comp}A). Rozowsky et al., 2009\nocite{peakseq} and Valouev et
+al., 2008\nocite{quest} provide in depth analysis of the mappability
+and GC - content biases for ChIP-Seq respectively. Finally, these
+results indicate that binding site identification for ChIP-exo data
+benefits from using methods that take into account of apparent
+sequence biases such as mappability and GC content, mostly when an
+Input sample is not available.
+
+\subsection*{Application of ENCODE quality metrics to ChIP-exo and
+  ChIP-nexus data}
+
+We continued our exploration by investigating whether the current
+state-of-the-art QC pipelines for ChIP-Seq are suitable for ChIP-exo
+and ChIP-nexus. In Tables \ref{tab:qc_sig} and \ref{tab:qc} we
+calculated a collection of the commonly used ChIP-Seq QC metrics using
+the ChIP-exo and ChIP-nexus experiments instead: Normalized Strand
+Cross-Correlation (NSC), Relative Strand Cross-Correlation and PCR
+Bottleneck Coefficient (PBC) defined as in
+\url{https://genome.ucsc.edu/ENCODE/qualityMetrics.html}\nocite{encode_qc}.
+
+\arrayrulewidth=.1mm 
+
+\begin{table}[h!]
+  \centering
+  \begin{tabu} to\linewidth{X[-1,m,c]|X[-1]|X[-1]|X[-1,m,c]|X[-1]|X[-1]|X[-1]|X[-1]}
+    \firsthline
+    \textbf{Bio Sample} & \textbf{Condition} & \textbf{Treatment} & \textbf{Rep.} & \textbf{Depth} & \textbf{NSC} & \textbf{RSC} & 
+    \textbf{PBC}\\
+    \hline 
+    \multirow{4}{1em}{1} & Aerobic & No Rif. & 1 & 13,961,493 & 103.15 & 2.0193 & 0.1399 \\
+    & Aerobic & No Rif. & 2 & 14,810,838 & 162.70 & 1.7805 & 0.1633 \\
+    & Anaerobic & No Rif. & 1 &  16,108,774 & 153.51 & 1.8035 & 0.1353 \\
+    & Anaerobic & No Rif. & 2 &  13,636,541 & 172.59 & 2.014 & 0.1532 \\ 
+    \hline
+    \multirow{4}{1em}{2} & Aerobic & No Rif. & 1 & 902,921 & 13.77 & 1.1270 & 0.2689\\
+    & Aerobic & Rif. 20 min & 1 & 1,852,124 & 17.91 & 1.5275 & 0.2590\\
+    & Aerobic & No Rif. & 2 & 2,104,427 & 29.60 & 1.2844 & 0.2584\\
+    & Aerobic & Rif. 20 min & 2 & 11,548,572 & 13.08 & 1.5122 & 0.1510 \\
+    \lasthline
+    \end{tabu}
+    \caption{Current QC metrics applied to generated \emph{E. Coli} $\sig$ samples. NSC stands for Normalized 
+             Strand Cross-Correlation, RSC stands for Relative Strand Cross-Correlation and PBC stands for 
+             PCR Bottleneck Coefficient.}
+\label{tab:qc_sig}
+\end{table}
+
+\begin{table}[h!]
+  \centering
+  \begin{tabu} to\linewidth{X[1.3]|X[2.2]|X[-1]|X[1.3]|X[-1,m,c]|X[1.8]|X[-1]|X[-1]|X[-1]}
+    \firsthline
+    \textbf{Protocol} & \textbf{Organism} & \textbf{TF} & \textbf{Cell line} & \textbf{Rep.} &
+    \textbf{Depth} & \textbf{NSC} & \textbf{RSC} &   \textbf{PBC} \\ 
+    \hline
+    \multirow{13}{1em}{ChIP-exo} & Human & CTCF & HeLa & & 48,478,450 & 16.02 & 1.1960 & 0.4579 \\
+    & \multirow{3}{1em}{Human} & \multirow{3}{1em}{ER} & \multirow{3}{3em}{MCF-7} & 1 & 9,289,835 & 
+    19.87 & 1.0127 & 0.8082 \\
+    &  &  & & 2 & 11,041,833 & 21.48& 1.0063 & 0.8024\\
+    &  &  & & 3 & 12,464,836 & 18.72& 1.0100 & 0.8203 \\    
+    &  \multirow{3}{1em}{Mouse} & \multirow{3}{1em}{FoxA1} & \multirow{3}{1em}{Liver} & 1 & 22,210,461 & 21.28 & 1.1104 &  0.6562 \\
+    &  & & & 2 & 23,307,557 & 60.42 & 1.1604 & 0.7996 \\ 
+    &  & & & 3 & 22,421,72  & 72.04 & 1.1975 & 0.1068 \\
+    & \multirow{3}{1em}{Human} & \multirow{3}{1em}{GR} & IMR90 & & 47,443,803 & 8.86  & 1.3678 & 0.2978 \\
+    & &  & K562 & & 116,518,000   & 4.11 & 1.0441 &0.0504 \\
+    & &  & U2OS & & 3,255,111 &  10.05 & 1.0288 & 0.7714 \\
+    & \multirow{3}{1em}{Human} & \multirow{3}{1em}{TBP} & \multirow{3}{1em}{K562} &1 & 61,046,382 &  12.01  & 1.1119
+ & 0.1232 \\
+    & & & &2 & 94,314,770 & 7.93 & 1.0299 & 0.1681 \\
+    & & & & 3 & 114,282,270 & 9.25 & 1.1027 & 0.1464\\
+\hline
+\multirow{10}{1em}{ChIP-nexus} & \multirow{8}{1em}{D.Melanogaster} &
+       \multirow{2}{1em}{Dorsal} & \multirow{4}{1em}{embryo} & 1 &   8,863,170 &  7.27 & 1.0402 &  0.6766 \\
+ & & &  & 2 & 10,003,562 & 7.19 & 1.0672 & 0.5656\\
+ & &  \multirow{2}{1em}{Twist} & & 1 & 18,244,203 & 5.82 &  1.1637 &  0.6592 \\
+ & & &  & 2 & 52,546,982 & 5.27  &  1.1805  & 0.4549 \\
+ & & \multirow{2}{1em}{Max} & \multirow{4}{1em}{S2} & 1 & 18,320,743 & 3.60 & 1.3628 & 0.5178  \\
+ & & & & 2 & 24,965,642  & 3.47 & 1.0138 & 0.2124\\
+ & & \multirow{2}{1em}{MyC} & & 1 & 7,832,034 & 5.92 & 1.0115 &  0.3935  \\
+ & & & &  2 & 22,824,467 & 5.76 & 1.0045 & 0.1879\\
+ & \multirow{2}{1em}{Human} & \multirow{2}{1em}{TBP} & \multirow{2}{1em}{K562} & 1 &  
+              33,708,245 & 32.16 & 1.1712 & 0.3102 \\
+ & &  &  & 2 & 129,675,001 & 32.70 &  1.2455 & 0.0492 \\
+    \lasthline
+  \end{tabu}
+  \caption{Current QC metrics applied to gathered data. NSC stands for Normalized 
+    Strand Cross-Correlation, RSC stands for Relative Strand Cross-Correlation and PBC stands for 
+    PCR Bottleneck Coefficient.}  
+\label{tab:qc}
+\end{table}
+
+DNA libraries generated by ChIP-exo and ChIP-nexus protocols are
+expected to be less complex than the libraries generated by ChIP-Seq,
+since the possible number of positions to which the reads can be
+aligned is being reduced due to the exonuclease digestion,
+considerable amounts of reads are being mapped to specific
+positions. This affects the interpretation of the PBC, since for
+ChIP-Seq low PBC values indicate that the same read has been copied by
+the amplification process and aligned multiple times to the same
+position; while for ChIP-exo and ChIP-nexus when several reads are
+aligned to the same position are not necessarily the same read
+amplified, but several reads that their $5\prime$ end was digested to
+the same position before the amplification step. It is of special
+importance to notice that for deeply sequenced ChIP-exo and ChIP-nexus
+experiments, the PBC values are quite low, which by following the
+ChIP-Seq guidelines it would indicate that those experiment show
+severe bottlenecking problems, which may incorrectly suggest that the
+positions with a large amount of aligned reads are being caused by PCR
+amplification rather than observed genomic signal.
+
+The Strand Cross-Correlation (SCC) introduced by Kharchenko et al.,
+2008\nocite{strandcc} is the most commonly used quality measure in
+ChIP-Seq. In general it measures how well the reads mapped to each
+strand are clustered around the locations where the proteins are
+binding to the DNA, and usually it is expected to observed two local
+maxima, one when the profiles are shifted by the average read length
+and another when the profiles are shifted by the unobserved fragment
+length. In a high quality ChIP-Seq dataset the last one is also the
+SCC global maxima. On the other hand, as a thought experiment in an
+idealized ChIP-exo experiment where the ChIP fragments are digested
+until they found the binding protein and this protein bound to the
+whole motif sequence, then the SCC would a flat function with a jump
+at the motif length; since usually this is not the case, we also
+expect to observe a local maxima at the read length. Figure
+\ref{fig:scc_exo} shows the SCC curves for the CTCF factor from human
+genome: The ChIP-exo curve shows a local maxima at the motif and read
+lengths, while the SE ChIP-Seq curves have a local maxima at the read
+length and a global maxima at the unobserved fragment
+length. Therefore, in ChIP-exo's cases both peaks are likely to be
+confounded. Hence measures based in the SCC such as the Normalized
+Strand Cross-Correlation (NSC) or the Relative Strand
+Cross-Correlation (RSC) are harder to interpret.
+
+\subsubsection*{ChIP-exo Quality Control Pipeline}
+
+We first show the overall pipeline and consecutively discuss
+individual components with a case study using the FoxA1 factor in
+mouse liver cell lines generated by Serandour et al., 2013, and
+finally we show the evaluation of the ChIP-exo and ChIP-nexus samples
+with the QC pipeline. Figure \ref{fig:qcdiagram} shows a flowchart for
+the ChIP-exo QC pipeline. Given a sample of ChIP-exo or ChIP-nexus
+reads, in the first step, we partition the genome by keeping the
+non-digested ChIP-exo regions. Then, for each region it counts the
+number of fragments that compose the region and the number of
+positions to which the reads are being mapped to in each strand. With
+these values it calculates the following summary statistics:
+
+\begin{align*}
+  \text{ARC} &= \dfrac{\text{Nr. of reads in the region}}{\text{Width of the region}}, \\
+  \text{URCR} &= \dfrac{\text{Nr. of reads in the region mapped to
+      exactly one position}}{\text{Nr. of reads in the region}}, \\
+  \text{FSR} &= \dfrac{\text{Nr. of fwd. strand reads in the
+      region}}{\text{Number of reads in the region}}.
+\end{align*}
+
+Then it creates several visualizations designed to diagnose the
+quality level of a ChIP-exo sample. Figure \ref{fig:qcdiagram}A shows
+the typical behavior of the ARC vs. URCR plot. In general, the plot
+depicts two strong arms: One on the left with low ARC values and
+varying URCR which corresponds to ChIP-exo's background, regions that
+are usually composed by scattered reads that were not digested during
+the exonuclease step; and another one where the URCR decreases as the
+ARC increases, which corresponds to regions that are usually enriched
+and as the URCR decreases the library complexity does it as well, on
+the other hand high URCR values correspond to regions composed reads
+aligned to few positions. Finally we quantify we quantify the
+relationship between library complexity by the use of two indexes that
+represent the change in the number of unique positions per regions and
+the change in of the width of a regions as the depth changes. Figures
+\ref{fig:qcdiagram}B and \ref{fig:qcdiagram}C analyze the strand
+imbalance bias in a ChIP-exo experiment: The first one depicts how
+quickly the regions exclusively formed by fragments in one strand are
+being filtered out as regions with higher depth are observed, in a
+high quality sample the proportion of regions composed by only one
+strand is expected to decrease as higher depth regions are considered,
+while in a lower quality dataset this proportions remains
+approximately constant; and the second one shows how quickly the FSR's
+distribution approach the median, since in a high quality sample it is
+expected for the median to be approximately 0.5 and the enriched
+regions are going to be composed by fragments sequenced from both
+strands.
+
+\textbf{Analysis of enrichment and library complexity in FoxA1
+  ChIP-exo data}
+
+In ChIP-exo experiments, background fragments are often digested by
+the exonuclease enzyme, therefore the balance between the enrichment
+and library complexity of an experiment is a key factor determining
+the sample's data quality.
+
+Using the Fox A1 in mouse liver cell lines generated by Serandour et
+al., 2013\nocite{exoillumina} and these two quantities, we explored
+the relationship between library complexity and experiment
+enrichment. In Figure \ref{fig:enrich}A we present ARC vs. URCR plots
+for all three replicates. The first and third replicate show a defined
+decreasing trend in the $\mbox{URCR}$ as the $\mbox{ARC}$ increases
+which indicates that this samples exhibit a higher enrichment than the
+second replicate. On the other hand, the overall $\mbox{URCR}$ level
+from the first two replicates is higher than the third replicate's
+level, which indicates that its libraries are more complex than the
+third replicate since three experiment are comparable in depth.
+
+Considering the regions and summary statistics we obtained a set of
+candidate sites for each replicate, the total number of candidate
+sites is shown in Figure \ref{fig:enrich}B. For this sites, we
+extracted the sequence and searched for the FoxA1 motif using
+\textbf{FIMO} \cite{fimo}. Figure \ref{fig:enrich}C shows the fraction
+of candidate site where a motif was found. The first replicate
+outperforms the rest in both number of candidate sites and proportion
+of sites with motif; on the other hand we can see that the second
+replicate candidate sites are more likely to contain the motif
+sequence, but there more candidate sites in the third replicate than
+in the second. Finally, Figure \ref{fig:enrich}D shows the average
+profiles around the coordinate where the motif was found in the
+candidate sites: We can observe that the signal is more delimited for
+the first and third replicates than the second one, but overall the
+signal pattern is reproducible in the three ChIP-exo
+experiments. Figures \ref{fig:enrich}E, \ref{fig:enrich}F and
+\ref{fig:enrich}G show the purity of the motif found by visualizing
+the sequence to which the motif was matched. All these observations
+together shows the following findings: First, observing a defined
+decreasing trend in $\mbox{URCR}$ as $\mbox{ARC}$ increases implies
+than the sample is more enriched, therefore a higher amount of
+candidate sites. Second, for experiments that are not deeply
+sequenced, low $\mbox{URCR}$ values represent low complexity which
+decreases the amount of sites of motif found but it doesn't modify the
+read distribution around the motif. Finally, libraries with higher
+complexity returns sequences with a better motif match.
+
+\textbf{Analysis of strand imbalance in FoxA1 ChIP-exo data}
+
+The strand imbalance assessment is based in the observation that the
+enriched regions usually are composed of a higher quantity of reads,
+therefore we examined the FSR as the regions with lower depth are
+being filtered out. This indicator is of particular importance, as it
+evaluates the ``peak pair'' assumption that the original ChIP-exo
+paper suggested and multiple ChIP-exo data analysis methods rely
+on. For every ChIP-exo experiment, we calculated the global FSR and
+noticed that for all experiments is roughly $0.5$, which means there
+are approximately the same amount of reads in both strands.
+
+In order to study the strand imbalance of the FoxA1 factor ChIP-exo
+experiments in mouse liver generated by Serandour et al.,
+2013\nocite{exoillumina} we considered the visualizations shown in
+Figure \ref{fig:strand}: Figure \ref{fig:strand}A presents the FSR's
+behavior as the lower depth regions are being filtered out, while
+Figure \ref{fig:strand}B) shows the proportion of regions that are
+composed by reads from both strands against the regions formed by
+reads in exclusively one strand. In a high quality dataset, it is
+expected for all quantiles to quickly converging towards the median
+(in panel A) or the regions formed by reads in one strand (either
+forward or backward) to be formed by few fragments (in panel
+B). 
+
+Additionally, it is worth mentioning that the background in a ChIP-exo
+experiment is expected to be formed by the undigested ChIP fragments
+that are not bound to a protein, hence it is for the reads in both
+strand to be imbalanced in a background region. Figure
+\ref{fig:strand}C compares the strand imbalance when ChIP-exo regions
+overlap with high quality peaks. It is noticeable that for regions
+composed by a large amount of reads, it is harder to distinguish their
+peaks by considering only the strand imbalance, hence in a high
+quality ChIP-exo experiment the background is expected to show a
+higher imbalance that the enriched regions. In conclusion, Figure
+\ref{fig:strand} shows that the global FSR does not accurately
+represent a ChIP-exo experiment's strand imbalance locally, hence the
+``peak pair'' assumption does not completely hold in every ChIP-exo
+enriched region.
+
+\subsubsection*{Evaluation of ChIP-exo and ChIP-nexus data with QC
+  pipeline}
+
+We evaluated every experiment listed in Tables \ref{tab:qc_sig} and
+\ref{tab:qc} with the QC pipeline. For each experiment, we explored
+the relationship between depth, width and the number of unique
+positions to summarize the shape obtained in the $\mbox{ARC}$
+vs. $\mbox{URCR}$ visualization. Figure \ref{fig:eval}A shows the
+overall change in depth as the number of unique positions varies for
+the gathered experiment in eukaryotic genomes. This parameter can be
+interpreted as the inverse of $\gamma$ in equation (\ref{mod}), which
+can is also the experiment's large depth $\mbox{URCR}$. In a high
+quality ChIP-exo experiment, it is expected in the $\mbox{ARC}$
+vs. $\mbox{URCR}$ plot to observe two arms, one with low $\mbox{ARC}$
+and varying $\mbox{URCR}$ and another that with a decreasing
+$\mbox{URCR}$ as $\mbox{ARC}$ increases that stabilizes in
+$\gamma$. When the ChIP-exo experiment is not deeply sequenced, high
+values in Figure \ref{fig:eval} indicate that the library complexity
+from the experiment is low. On the other hand, low values corresponds
+to higher quality ChIP-exo experiment.
+
+Figure \ref{fig:eval}B shows the average read coverage bias when the
+experiment's sequencing depth is large/ Under perfect digestion
+setting, most of the reads aligned to binding regions are going to be
+accumulated around a binding event, which suggest to be unlikely to
+observe as the sequencing depth increases to observe a reads being
+aligned to another position that was not previously covered. Low
+quality ChIP-exo experiment exhibit more scattered reads in both
+strands across the genome; therefore it is more likely to observe
+consider reads that align to position in the genome that were not
+previously covered. We can compare the second replicate from the human
+ChIP-nexus experiment against both second and third replicates from
+the TBP factor experiment in K562 cell lines. The sequencing depth of
+this three experiment is comparable but the large depth $\mbox{ARC}$'s
+bias is considerably higher for both ChIP-exo experiments.
+
+The interaction between these two parameters represents the quality of
+a ChIP-exo and ChIP-nexus experiment. When either the adjusted
+$\mbox{ARC}$ or the $\mbox{ARC}$'s bias is large, then it is suggested
+to sub-sample reads from the experiment and then evaluate the
+sub-sampled experiment with the QC pipeline. Considering the TBP
+factor ChIP-exo \cite{venters13} and ChIP-nexus \cite{chipnexus}
+experiment in human K562 cell lines, we sub-sampled 20M to 50M reads
+to cover the sequencing depth's range from all the human experiments
+that were considered in this study and evaluated them with QC
+pipeline. Figure \ref{fig:eval}C exhibits an increasing trend in the
+high-depth adjusted $\mbox{ARC}$ in every panel, where the ChIP-nexus
+trend being considerable lower than both ChIP-exo replicates. On the
+other hand, in Figure \ref{fig:eval}D the bias remains approximately
+constant in ChIP-nexus sub-samples, while it increases for both
+ChIP-exo replicates. This suggest that the ChIP-exo replicates have
+low library complexity and overall lower quality than the ChIP-nexus
+experiment, regardless to the fact that all three experiment are
+deeply sequenced with more than 100 million reads each.
+
+\subsection*{High Resolution Binding Site Identification with dPeak and
+  ChIP-exo}
+
+\subsubsection*{dPeak outperforms competing methods in discovering closely
+  spaced binding events from ChIP-exo and ChIP-Seq data}
+
+After we determined which biases could affect a ChIP-exo experiment's
+quality we decided to proceed and examine binding sites in high
+resolution on high quality ChIP-exo experiments. We examined first
+both aerobic replicates from the \emph{E.Coli} first biosample.
+
+Figures \ref{fig:methods_comp}A and \ref{fig:methods_comp}B compares
+binding sites calculated with Peakzilla \cite{peakzilla}, MACE
+\cite{mace}, GEM \cite{gem} and dPeak \cite{dpeak} in resolution,
+where the resolution is defined as the distance from a RegulonDB
+annotation to its closest prediction. For the first replicate (Figure
+\ref{fig:methods_comp}A), the resolution calculated with all methods
+is comparable, while dPeak outperforms the rest in resolution when
+using the second replicate as seen in Figure \ref{fig:methods_comp}B. 
+
+Additionally, Figures \ref{fig:methods_comp}C and
+\ref{fig:methods_comp}D compares the densities of the parameters
+estimated by dPeak for ChIP-exo and SE ChIP-Seq data. As expected, the
+$\delta$ parameter which measures the average distance from the
+$5\prime$ ends to their respective binding events and the $\sigma$
+parameter which is a measure from the reads dispersion around their
+respective binding events are lower for ChIP-exo than for SE
+ChIP-Seq. Therefore, we can asses that dPeak is accurately
+representing that the ChIP-exo fragments are allocated more tightly
+around the transcription factor binding sites.
+
+\subsubsection*{Systematic comparison of ChIP-Seq vs ChIP-exo under
+  varying sequencing depth}
+
+Previously, ChIP-exo and SE ChIP-Seq have been compared only at a
+fixed depth level in the literature, while they did not include PE
+ChIP-Seq as well either. In order to address this limitation in
+previous studies, we sampled a fixed amount of reads for each of the
+ChIP-exo, PE ChIP-Seq and SE ChIP-Seq datasets of the $\sig$ samples
+($N$ reads for both ChIP-exo experiment and $N/2$ or $N$ pairs for PE
+ChIP-Seq to assume more realistic situation of a fixed
+cost). Additionally, it is worth noticing that for PE ChIP-Seq we
+sampled both ends of the fragment, hence for each sequencing depth we
+are sampling the half amount of pairs for PE ChIP-Seq than for
+ChIP-exo or SE ChIP-Seq.
+
+Figure \ref{fig:design} illustrates the behavior of each data type in
+$\sig$ experiment under aerobic condition when comparable number of
+reads is used for all of ChIP-exo, SE ChIP-Seq and PE ChIP-Seq. In
+Figure \ref{fig:design}A we show the number of candidate regions
+defined as the number of regions where a binding event was identified
+in a collection of high quality peaks; in Figure \ref{fig:design}B we
+depict the number of binding events; in Figure \ref{fig:design}C we
+show the number of identified targets, where a RegulonDB was
+considered identified if a binding event was identified in a 15 bp
+vicinity of it; and finally Figure \ref{fig:design}D show the
+resolution defined as the distance from a RegulonDB annotation to the
+closest dPeak prediction. It is remarkable that even when the number
+of candidate peaks or the number of predicted events is lower for
+ChIP-exo, it outperforms both PE and SE ChIP-Seq in number of
+identified targets and resolution.
+
+This may suggest that with ChIP-exo less false positive peaks are
+being called and that when the targets are being identified, dPeak
+estimates binding locations closer to the true location. Additionally,
+we can see that as the read depth increases, all four indicator seem
+to stabilize and hit a plateau earlier than the cases for ChIP-Seq,
+which may indicate that with ChIP-exo a smaller amount of reads is
+needed to identify the same number of targets than ChIP-Seq, but it
+may be also possible that this is an artifact occurring due to
+ChIP-exo's lower library complexity. 
+
+
+\subsubsection*{Comparison with ChIP-Seq data using dPeak}
+
+Figure \ref{fig:reso_all} shows comparisons among ChIP-exo, PE
+ChIP-Seq and SE ChIP-Seq. We considered the RegulonDB data as ground
+truth, since those are the most recent annotation on \emph{E. Coli}. A
+RegulonDB annotation (Salgado et al, 2012\nocite{regulondb}) was
+considered to be identified if the distance from the closest dPeak
+binding site estimate was less that or equal to 20 bp. That way, the
+sensitivity is defined as the proportion of RegulonDB annotations
+identified in a peak and the resolution is defined as the minimum
+distance between a RegulonDB annotation and the closest dPeak binding
+site estimate. Figure \ref{fig:reso_all}A shows that the sensitivity
+increases as the mean distance between binding events increases. When
+the binding events in a peak are closer to each other, both ChIP-exo
+and PE ChIP-Seq are comparable, as the distance increases ChIP-exo
+identifies a higher proportion of the RegulonDB annotations;
+additionally SE ChIP-Seq is significantly less sensitive than both
+ChIP-exo and PE ChIP-Seq. Figure \ref{fig:reso_all}B shows that
+ChIP-exo and PE ChIP-Seq are comparable in resolution, while both
+protocols significantly outperform SE ChIP-Seq.
+
+\section*{Conclusions}
+\label{sec:conc}
+
+We made a systematic exploration of several ChIP-exo experiments. We
+provided a list of factors that reflect the quality of a ChIP-exo
+experiment and we developed a QC pipeline which is capable of
+assessing the balance between the enrichment and the library
+complexity of a ChIP-exo experiment. Additionally, a set of
+diagnostics was established to assess the quality of a ChIP-exo
+experiment. While the QC pipeline only requires a set of aligned reads
+to give a global overview of a ChIP-exo experiment, this overview
+coincides with more elaborate analysis that is computationally more
+expensive to perform or requires additional inputs that may not be
+available, such as motif detection in a set of high quality regions or
+resolution analysis given a set of annotations as gold-standard.
+
+We studied the shared biases between ChIP-exo and ChIP-Seq data, and
+noticed that for eukaryotic genomes the relationship between ChIP-Seq
+data and either the mappability or the GC content scores are still
+present in ChIP-exo. We also examined ChIP-exo's background and
+noticed that is significantly different from the ChIP-Seq one, since
+it consists of only a small quantity of fragments that was not
+digested by the exonuclease enzyme. Additionally, we showed that we
+have unbalanced number of reads in forward and reverse strands, and
+that in a lower quality ChIP-exo experiment those regions are going to
+be harder to differentiate from the possibly enriched regions.
+
+To the extent of our knowledge, we made for the fist time a comparison
+between ChIP-exo and PE ChIP-Seq. Using a set of annotations as
+gold-standard, we showed that both protocols are comparable in
+resolution and that for regions with more than one binding site,
+ChIP-exo is more sensitive than both SE and PE ChIP-Seq. We made a
+rigorous comparison between fixed depth ChIP-exo, PE ChIP-Seq and SE
+ChIP-Seq, and we probed that for sufficiently complex libraries,
+ChIP-exo experiments can outperform PE and SE ChIP-Seq in number of
+identified targets and resolution. The proposed ChIP-exo QC pipeline
+provides a rigorous, easily interpretable, computationally efficient
+framework to diagnose if the library complexity of a ChIP-exo
+experiment is adequate.
+
+\section*{Methods}
+\label{sec:methods}
+
+\subsection*{Considered data.}
+
+% To asses the validity of the ChIP-exo QC pipeline several experiments
+% were considered.
+
+\subsubsection*{Growth conditions of generated data.}
+
+We generated ChIP-exo and PE ChIP-Seq samples from $\sig$ in
+\emph{E.Coli}. For each PE ChIP-Seq experiment, a \emph{in silico} SE
+version was obtained by randomly sampling one of the two ends in each
+fragment. 
+
+{\color{red}\emph{need to add the growth conditions}}
+
+\subsubsection*{ChIP-exo and ChIP-nexus experiments.}
+
+We gathered a collection of ChIP-exo experiments spanning different
+cell lines and transcription factors: CTCF in HeLA cells \cite{exo1},
+ER in MCF-7 cells \cite{exoillumina}, TBP in K562 cells
+\cite{venters13}, GR in IMR90, K562 and U2OS in K562 cells
+\cite{starick15} and FoxA1 in mouse liver cells
+\cite{exoillumina}. Additionally we used the ChIP-nexus experiments
+generated for He et al., 2015: TBP in human K562, MyC and Max factors
+in S2 cell lines in \emph{D. Melanogaster}; Twist and Dorsal factors
+in \emph{D. Melanogaster} embryo cell lines.
+
+The read files were aligned following the instructions provided in
+their respective sources when available. Otherwise we used
+\emph{bowtie} in its 1.1.2 version.
+
+\subsection*{Comparison with ChIP-Seq data}
+
+Using the $\sig$ sample grown under aerobic condition for ChIP-exo and
+SE ChIP-Seq. We partitioned the \emph{E.Coli} genome into
+non-overlaping bins of length 150, and for each bin we counted how
+many ChIP-exo and SE ChIP-Seq extended reads overlapped each bin. The
+reads were extended by 150 bp to their $3\prime$ directions.
+
+To model the strand imbalance, we called a set of high quality peaks
+for ChIP-exo and SE ChIP-Seq (with $\mbox{GC content + Mappability}$
+and $\mbox{Input only}$ models respectively), such that each peak
+contained at least one binding event (found by using \textbf{dPeak}
+with at most 5 binding events in each peak). For each peak, we
+calculated the FSR as:
+
+\begin{align*}
+    \mbox{FSR} &= \frac{\text{Nr. of fwd. strand reads mapped to the region}}                 {\text{Total nr. of reads mapped to the region}} 
+\end{align*}
+
+We estimated the $\mbox{FSR}$'s densities by using R's \emph{density}
+function using its default parameters, which computes gaussian kernel
+density estimates.
+
+\subsection*{Definition of current ChIP-Seq QC guidelines.}
+
+% scc and related
+% change table to have pbc at the end
+
+We considered the definitions of ChIP-Seq QC guidelines provided in
+Landt et al., 2012 which are also listed in
+\url{https://genome.ucsc.edu/ENCODE/qualityMetrics.html}.
+
+\subsubsection*{Strand Cross-Correlation.}
+
+The strand cross-correlation was proposed by Kharchenko et al.,
+2008\nocite{strandcc} and it may be one of the most used of the
+ChIP-Seq QC metrics. The SCC curve is defined as:
+
+\begin{align}
+  y(\delta) = \sum_c w_c r\left[ n_c^+ \left(x + \frac{\delta}{2}
+    \right), n_c^- \left( x- \frac{\delta}{2} \right)\right],
+\label{scc}
+\end{align}
+
+where $y(\delta)$ is the SCC for a strand shift $\delta$, $r$ is the
+Pearson correlation, $w_c$ is the proportion of reads mapped to
+chromosome $c$ and $n_c^S$ is the read count vector for strand $S$ and
+chromosome $c$. The following QC metrics are used to summarize the shape of the SCC curve:
+
+\begin{align}
+  \mbox{NSC} &= \frac{\max_\delta y(\delta)}{\min_\delta y(\delta)}, \label{nsc} \\
+  \mbox{RSC} &= \frac{\max_\delta y(\delta) -
+    y_{\text{bgd}}}{y_{\text{rl}} - y_{\text{bgd}}}. \label{rsc}
+\end{align}
+
+where $y_{\text{bgd}}$ is estimated as the background SCC level is
+defined as $y_{\text{bgd}} = \min_\delta y(\delta)$ and
+$y_{\text{rl}}$ is the value of the SCC curve when the shift equals
+the experiment's read length. It is worth noticing that in Landt et
+al., 2012 the RSC is defined as:
+
+\begin{align*}
+  \mbox{RSC} &= \frac{\max_\delta y(\delta)}{y_{\text{rl}}}.  
+\end{align*}
+
+In ChIP-exo data, both definitions are equivalent since in a typical
+ChIP-exo experiment $y_{\text{bgd}}$ is approximately zero.
+
+\subsubsection*{PCR Bottleneck Coefficient.}
+
+The PCR Bottleneck coefficient is a measure of library complexity in
+ChIP-Seq data:
+
+\begin{align}
+  \mbox{PBC} = \frac{\text{Nr. of positions to which exactly one
+      unique mapping read is aligned}}{\text{Nr. of positions to
+      which at least one unique mapping read is aligned}} \nonumber
+\end{align}
+
+For human and mouse genome, the ENCODE project states that a PBC value
+in the 0 - 0.5 range indicates severe bottlenecking, in the 0.5 - 0.8
+range moderate bottlenecking, in the 0.8 - 0.9 range indicates mild
+bottlenecking and in the 0.9 - 1 range indicates that there is no
+presence of bottlenecking.
+
+These QC guidelines were calculated with the \textbf{ChIPUtils}
+package in its 0.99.0 version (available in
+\url{https://github.com/welch16/ChIPUtils}). This package provides an
+easy to use interface to calculate basic quality control metrics and
+diagnostic plots for ChIP-Seq data.
+
+\subsection*{ChIP-exo quality control pipeline.}
+
+The ChIP-exo QC pipeline requires a set of aligned reads from a
+ChIP-exo (or ChIP-nexus) experiment. Then:
+
+\begin{enumerate}
+\item Partitions the experiment's coverage by keeping the regions
+  formed by one or more aligned reads.
+\item For each region, it counts the number of reads that are being
+  aligned to the region and the number of positions to which at least
+  one mapping read is aligned in each strand.
+\item For each region, it calculates the following statistics:
+  \begin{align*}
+    \mbox{ARC} &= \frac{\text{Total nr. of reads mapped to the region}}{\text{Width of the region}} \\
+    \mbox{URCR} &= \frac{\text{Total nr. of position that at least
+        one read is aligned in the region}}{\text{Total nr. of reads mapped 
+              to the region}} \\
+    \mbox{FSR} &= \frac{\text{Nr. of fwd. strand reads mapped to the region}}                 {\text{Total nr. of reads mapped to the region}} 
+  \end{align*}
+\item The ChIP-exo QC pipeline creates visualizations to summarize the
+  summary statistics and calculates the contribution of the number of
+  unique position and the width to the number of reads per region by
+  randomly sampling $M$ regions to fit the model:
+  \begin{align*}
+    \mbox{depth} = \beta_1 \mbox{npos} + \beta_2 \mbox{width} + \varepsilon
+  \end{align*}
+  where $\varepsilon \sim N(0,\sigma^2)$, $\beta_1$ and $\beta_2$ are
+  the contribution from the number of unique positions and width to
+  the total number of reads per regions respectively; this process is
+  repeated independently $N$ times. 
+\end{enumerate}
+
+We implemented this ChIP exo QC pipeline in the \emph{ChIPexoQual} R
+package, additionally it generates visualizations as seen in Figure
+\ref{fig:qcdiagram}. We used its 1.0 version which is available in
+\url{https://github.com/welch16/ChIPexoqual}.
+
+\textbf{Interpretation of the linear model in the QC pipeline}
+
+The linear model:
+
+\begin{align*}
+  \mbox{depth} = \beta_1 \mbox{npos} + \beta_2 \mbox{width}
+\end{align*}
+
+where $\mbox{npos}$ and $\mbox{width}$ denote the region's number of
+unique position where the reads are aligned to and the region's width
+respectively. Is a re-parametrization of the following relationship:
+
+\begin{align}
+  \mbox{URCR} = \frac{\kappa}{\mbox{ARC}} + \gamma
+\label{mod}
+\end{align}
+
+with $\beta_1 = 1 / \gamma$ and $\beta_2 = - \kappa / \gamma$. In this
+setting, $\gamma$ can be considered as the large - depth
+$\mbox{URCR}$, i.e. the ratio between the number of unique positions
+and depth as the depth limits to infinity. On the other hand, to
+interpret $\beta_2 = - \kappa / \gamma $, by expressing $\kappa$ as a
+function of $\mbox{ARC}$ and $\mbox{URCR}$ and assuming that $\gamma$
+is already estimated, we can observe the following identities:
+
+\begin{align*}
+  \kappa &= \frac{\mbox{npos}}{\mbox{width}} - \gamma \mbox{ARC} \\
+  \frac{\kappa}{\gamma} &= \frac{1}{\gamma} \frac{\mbox{npos}}{\mbox{width}} - \mbox{ARC} 
+\end{align*}
+
+This is important: $\gamma$ approximates the $\mbox{URCR}$ as the
+sequencing depth increases, which implies that $- \kappa / \gamma$ can
+be interpreted as the large sequencing depth bias of the $\mbox{ARC}$
+since as the depth increases, the first term of $\kappa / \gamma$ is
+going to approximate the average read coverage:
+
+\begin{align*}
+  \frac{\mbox{npos}}{\mbox{width}} \times \lim_{d \rightarrow
+    \infty} \frac{d }{\mbox{npos}} \sim \mbox{ARC} 
+\end{align*}
+
+Therefore, $\beta_2 = - \kappa / \gamma$ is interpreted as the
+$\mbox{ARC}$ bias as the sequencing depth increases.
+
+
+\subsubsection*{Motif analysis of FoxA1 enriched regions}
+
+For each replicate, we used the ChIP-exo QC pipeline to partition the
+mouse genome into a set of regions with their respective summary
+statistics; we filtered them into collections of high quality regions
+by:
+
+\begin{enumerate}
+\item Removing the regions formed by reads on only one strand.
+\item Removing regions with reads aligned to at most 15 unique
+  positions.
+\item Removing regions with less that 100 reads.
+\end{enumerate}
+
+Then we used \textbf{FIMO} on its 4.9.1 version \cite{fimo} to find
+the FoxA1 motif (with id MA0148.1 in the core JASPAR database).
+
+\subsubsection*{Imbalance test of FoxA1 replicates}
+
+For each replicate, we used the ChIP-exo QC pipeline to partition the
+mouse genome into a set of regions with their respective summary
+statistics. We filtered the regions with reads in only one strand and
+we transformed the FSR into an \emph{Imbalance index} that is zero
+when the region is perfectly balanced and infinity when it consists of
+reads in one strand exclusively:
+
+\begin{align*}
+  \mbox{Imbalance index} = -\log_{10} (4 \times \mbox{FSR} \times (1 -
+  \mbox{FSR}))
+\end{align*}
+
+We divided the ChIP-exo regions onto two classes by considering
+whether it overlaps a ChIP-exo peak of not. For each replicate we
+called peaks with the $\mbox{GC content} + \mbox{Mappability}$ model
+from MOSAiCS \cite{mosaics} (version 2.9.7) with bin size and fragment
+length of 200 bp. We called peaks with an FDR of $5\%$, a threshold of
+100 and a maximum gap size of 200 bp. We further filtered the peaks by
+keeping only the peaks with an average ChIP count of 200 extended
+reads.
+
+To show that the class that don't overlap with peaks exhibits heavier
+tails, we used a Wilcoxon test over the \emph{Imbalance index}.
+
+\subsubsection*{GC - content and Mappability}
+
+To define the mappability score we follow the definition from Rozowsky
+et al., 2009:
+
+\begin{align*}
+  m_i &= \sum_{k = i - L +1}^{i + L - 1} \frac{\delta_k }{2L - 1}.
+\end{align*}
+
+where $\delta_i$ is the indicator if the base at coordinate $i$ can be
+mapped uniquely by a 32 bp sequence at position $i$, and $L$ is the
+expected fragment length. GC - content score is defined analogously,
+where $\delta_i$ represents the occurrence of a G or C at the $i$-th
+position in the genome. 
+
+The mappability and GC - content scores for a bin are defined as the
+average of the scores across the nucleotides in the bin.
+
+% Hence, when we reject the hypothesis of the
+% distribution being the same for both classes, it means that the class
+% of region that don't overlap peaks shows heavier tails than its
+% complement. \footnote{not sure if I should add the FSR densities for
+%   both classes in the supplement to prove this statement}
+
+% \subsection*{Construction of a SE ChIP-Seq from a PE ChIP-Seq experiment.}
+
+% For the rif-treatment ChIP-Seq experiments, we sampled SE ChIP-Seq
+% experiment from the PE ones by taking one of both ends randomly
+% following with equal probability.
+
+\subsection*{High resolution analysis with ChIP-exo}
+
+We considered RegulonDB \cite{regulondb} annotations as gold-standard
+and considered an annotation as being identified if the distance to a
+estimated binding events is less or equal than 20 bp. We defined the
+resolution as the distance from an annotation to its closest
+predictions and the sensitivity as the fraction of identified
+annotations in a genomic region.
+
+\subsubsection*{Method comparison for ChIP-exo.}
+
+We compared dPeak, Chung et al., 2013; GEM, Guo et al., 2012; MACE,
+Wang et al., 2014 and Peazilla, Bardet et al., 2013 for the ChIP-exo
+data analysis. For the dPeak algorithm we used the R package
+\textbf{dPeak} version 2.0.1 which is available from
+\url{https://github.com/dongjunchung/dpeak}. For the GEM algorithm, we
+used it's Java implementation version 2.6 which is available from
+\url{http://groups.csail.mit.edu/cgs/gem/}. For the Mace algorithm, we
+used it Python implementation version 1.2, which is available from
+\url{http://dldcc-web.brc.bcm.edu/lilab/MACE/docs/html/}. For the
+Peakzilla algorithm, we used the version available in
+\url{https://github.com/steinmann/peakzilla}. Candidate regions for
+\textbf{dPeak} and \textbf{GEM} were identified for each replicate of
+ChIP-exo data using the \textbf{MOSAiCS} algorithm \cite{mosaics} (one
+sample analysis using false discovery rate of 1\%) implemented as an R
+package \textbf{mosaics} version 2.9.7 (available from
+\emph{bioconductor}). We further filtered out candidate regions by
+using the 400 peaks with higher average ChIP tag count to avoid
+potential false positive based on the exploratory analysis. These
+regions were also explicitly provided to the GEM algorithm as
+candidate regions. Default tuning parameters were used during model
+fitting for all methods. We downloaded \textbf{CexoR} \cite{cexor} on
+its 1.8 version from \emph{bioconductor} but were unable to use it for
+the $\sig$ experiments.
+
+\subsubsection*{dPeak analysis of $\sig$ ChIP-exo and ChIP-Seq data.}
+
+We compared the estimated binding events predicted by the
+\textbf{MOSAiCS} + \textbf{dPeak} pipeline using reads generated by
+ChIP-exo, PE and SE ChIP-Seq protocols. We called peaks at a $5\%$ FDR
+level using \textbf{MOSAiCS} (the $\mbox{GC content} +
+\mbox{Mappability}$ model for ChIP-exo and the $\mbox{Input only}$
+model for PE and SE ChIP-Seq). Then, we deconvolved the peak into
+binding events with \textbf{dPeak} (version 2.0.1) by considering a
+maximum of 5 binding sites on each peak. To avoid false positives we
+only considered ChIP-exo peaks with average ChIP counts greater than
+3000 that overlapped both the SE and PE ChIP-Seq peaks, we considered
+other cutoff values but still obtained results similar to what we
+presented in this paper.
+
+\subsubsection*{Saturation analysis of ChIP-exo, PE ChIP-Seq and SE ChIP-Seq.}
+
+We sub-sampled $N$ fragments for both ChIP-exo and SE ChIP-Seq
+protocols. For PE ChIP-Seq we sub-sampled $N$ pairs or $N/2$
+fragments. For each seed, we called peaks using MOSAiCS \cite{mosaics}
+($\mbox{GC content} + \mbox{Mappability}$ for ChIP-exo and
+$\mbox{Input only}$ for SE and PE ChIP-Seq) for the maximum sample
+size and to avoid false positives we considered only the top 500 peaks
+for each data protocol. We defined the number of candidate regions as
+the number of top sample peaks such that a binding events was
+estimated using the sampled reads and the dPeak's model; the number of
+predicted events is the total quantity of binding events estimated
+using the dPeak's model; the number of identified targets are number
+of gold-standard annotations within 15 bp from an estimated binding
+events; and the resolution is defined as the minimum distance from a
+gold-standard annotation to an estimated binding event. We repeated
+this analysis for ten seeds and reported the median between all those
+values.
+
+ % Style BST file (bmc-mathphys, vancouver, spbasic).
+\bibliographystyle{vancouver}
+\bibliography{chip_exo_paper}
+\nocite{exo_gb}
+\nocite{maplot1}
+\nocite{maplot2}
+\nocite{chipbeyond}
+\nocite{meme}
+
+% \nocite{esl}
+
+
+\newpage
+
+\section{Figures}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width =
+  .95 \textwidth]{figures/fig1/chip_explanation_withEnzyme.pdf}
+  % \caption{\textbf{Description of ChIP-exo, SE ChIP-Seq and PE
+  %     ChIP-Seq:} A TF is bound to the forward (red) and backward
+  %   (blue) strand of the DNA. Then, is sonicated: For ChIP-exo a
+  %   exonuclease enzyme (orange hexagon) trims the $5\prime$ ends of
+  %   each DNA fragment to a fixed distance from the bound protein,
+  %   finally is subjected to Immunoprecipitation and amplification. For
+  %   both ChIP-exo and SE ChIP-Seq an adapter is ligated (green
+  %   triangles) at the $5\prime$ ends, while for PE ChIP-Seq is ligated
+  %   to both ends.}
+  \caption{A TF is bound to the forward (red) and backward (blue)
+    strand of the DNA. Then, is sonicated: For ChIP-exo a exonuclease
+    enzyme (orange hexagon) trims the $5\prime$ ends of each DNA
+    fragment to a fixed distance from the bound protein, finally is
+    subjected to Immunoprecipitation and amplification. For both
+    ChIP-exo and SE ChIP-Seq an adapter is ligated (green triangles)
+    at the $5\prime$ ends, while for PE ChIP-Seq is ligated to both
+    ends.}
+  \label{fig:chip_diagram}
+\end{figure}
+\newpage
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .46\textwidth,page = 3]{figures/fig2/ChIPseqPET_ChIPexo_tagCount_comparison.pdf}
+  \includegraphics[width =.46\textwidth]{figures/fig2/forward_strand_ratio_comp_old.pdf}
+  \includegraphics[width = .46\textwidth,page = 1]{figures/fig2/eukaryotic_bias_CTCF.pdf}
+  \includegraphics[width = .46\textwidth,page = 2]{figures/fig2/eukaryotic_bias_CTCF.pdf}
+  \caption{ A) Hexbin plot of PE ChIP-Seq bin counts vs ChIP-exo bin
+    counts. B) Forward Strand Ratio densities for SE ChIP-Seq and
+    ChIP-exo peaks. C) Mappability score vs mean ChIP tag counts with
+    0.95 confidence bands. D) GC - content score vs mean ChIP tag
+    counts with 0.95 confidence bands.}
+  \label{fig:comp}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = .8 \textwidth]{figures/fig3/scc_ctcf2.pdf}
+% \includegraphics[width = .8\textwidth]{/p/keles/ChIPexo/volume3/ChIPexo/figs/for_paper/EColi_strand_cross_corr.pdf}
+% \caption{\textbf{SCC curves for $\sig$ samples.} The ``phantom peak''
+%   and the summit that corresponds to the read and fragment length
+%   respectively are confounded due to the exonuclease digestion.}
+\caption{SCC curves for human CTCF on HeLa cell lines.  The SCC curve
+  for the ChIP-exo sample from \cite{exo1} is shown in the left panel,
+  and the SCC for ChIP-Seq samples from
+  \textbf{https://www.encodeproject.org/experiments/ENCSR000AOA/} are
+  shown in the right panel. The ChIP-exo curve shows local maxima at
+  the motif and read length. Both SE ChIP-Seq curves are maximized at
+  the fragments length and show a local maxima at its read length. }
+  \label{fig:scc_exo}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = \textwidth]{figures/fig4/coverage_diagram3.pdf}
+  % \caption{\textbf{Flowchart of the ChIP-exo quality control
+  %     pipeline.} A) ARC vs. URCR, this plot presents a global view of
+  %   the balance between library complexity and enrichment. There are
+  %   two arms: First, one with low ARC, which corresponds to regions
+  %   formed by few aligned positions; Second, where the URCR decreases
+  %   as the ARC increases. B) Min. depth vs Proportions of regions,
+  %   this plot shows the strand composition for all the regions formed
+  %   by a min. number of reads. Regions with low depth tend to be
+  %   formed by undigested reads from one unique strand, while regions
+  %   with higher signal are usually formed by reads in both strands. C)
+  %   Min depth vs. FSR, this plot depicts how quickly the FSR's
+  %   distribution approximate the median. In a high quality sample, the
+  %   median is around 0.5, and the other quantiles reach that value
+  %   quickly.}
+  \caption{The ChIP-exo reads are partitioned by keeping the regions
+    in the genome formed by the undigested fragments. For each region,
+    we calculate a collection of summary statistics, which are
+    visualized as A) ARC vs. URCR, this plot presents a global view of
+    the balance between library complexity and enrichment. There are
+    two arms: First, one with low ARC, which corresponds to regions
+    formed by few aligned positions; Second, where the URCR decreases
+    as the ARC increases. B) Min. depth vs Proportions of regions,
+    this plot shows the strand composition for all the regions formed
+    by a min. number of reads. Regions with low depth tend to be
+    formed by undigested reads from one unique strand, while regions
+    with higher signal are usually formed by reads in both strands. C)
+    Min depth vs. FSR, this plot depicts how quickly the FSR's
+    distribution approximate the median. In a high quality sample, the
+    median is around 0.5, and the other quantiles reach that value
+    quickly.}
+  \label{fig:qcdiagram}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .9  \textwidth,page = 1]{figures/fig5/FoxA1_enrichment.pdf}
+  \newline
+  \includegraphics[width = .23 \textwidth, page = 1]{figures/fig5/FoxA1_barplots.pdf}
+  \includegraphics[width = .23 \textwidth, page = 3]{figures/fig5/FoxA1_barplots.pdf}
+  \includegraphics[width =.4\textwidth]{figures/fig5/FoxA1_profiles_around_motif.pdf}
+  \includegraphics[width = .3\textwidth,page = 2]{figures/fig5/FoxA1_matched_motif_sequence.pdf}
+  \includegraphics[width = .3\textwidth,page = 3]{figures/fig5/FoxA1_matched_motif_sequence.pdf}
+  \includegraphics[width = .3\textwidth,page = 1]{figures/fig5/FoxA1_matched_motif_sequence.pdf}
+  \caption{Using the mouse FoxA1 experiment from \cite{exoillumina}:
+    A) Hexbin plots of $\mbox{ARC}$ against $\mbox{URCR}$, there is a
+    slight separation into two strong arms, one corresponds to low
+    $\mbox{ARC}$ and varying $\mbox{URCR}$, and for the other
+    $\mbox{URCR}$ decreases as $\mbox{ARC}$ increases. B) Number of
+    candidate sites for each replicate. C) Percentage of candidate
+    sites where the FoxA1 motif was detected. D) Average coverage
+    around FoxA1 motif. Base distribution for matched sequence for
+    Rep-1 (E), Rep-2 (F) and Rep-3 (G).}
+  \label{fig:enrich}
+\end{figure}
+
+{\color{red} \emph{need to add labels for each figure and think about
+    order, in the supplement we have ecdf from fimo score or pval, and
+    overlaps with peaks called by mosaics.
+\newline
+Also, need to change labels from repk to Rep-k
+}}
+
+\newpage
+
+\begin{figure}[h!]
+  \centering  
+  \includegraphics[width = .9\textwidth,page = 1]{figures/fig6/Strand_imbalance.pdf} 
+  \newline
+  \includegraphics[width = .9\textwidth,page = 2]{figures/fig6/Strand_imbalance.pdf} 
+  \includegraphics[width = .4\textwidth]{figures/fig6/Carroll_FSR_depth_VS_pvalWilcoxon.pdf}
+  \caption{Strand imbalance using the mouse FoxA1 experiment from
+    \cite{exoillumina}: A) FSR distribution quantiles as the lower
+    depth regions are being filtered out, all quantiles approach to
+    the median as the lower bound increases. B) Stacked histogram with
+    the proportion of regions that are formed by two strands or only
+    one, in a good sample the single-stranded regions are going to be
+    filtered out quickly as in the middle row. C)
+    $-\log_{10}(\text{p.value})$ of testing if the imbalance
+    distributions differs when ChIP-exo regions overlap their peaks.}
+  \label{fig:strand}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .9  \textwidth,page = 1]{figures/fig7/QC_pipeline_eval_boxplot.pdf}
+\newline
+  \includegraphics[width = .9  \textwidth,page = 2]{figures/fig7/QC_pipeline_eval_boxplot.pdf}
+\newline
+  \includegraphics[width = .45  \textwidth,page = 1]{figures/fig7/K562_TBP_sample.pdf}
+  \includegraphics[width = .45  \textwidth,page = 2]{figures/fig7/K562_TBP_sample.pdf}
+  \caption{Comparison of adjusted Average Read Coverage and
+    $\mbox{ARC}$ bias for eukaryotic genome ChIP-exo and ChIP-nexus
+    experiment. A) Boxplot of adjusted $\mbox{ARC}$. B) Boxplot of
+    large sequencing depth $\mbox{ARC}$'s bias. Comparison of
+    sub-sampled ChIP-exo and ChIP-nexus experiments of TBP factor in
+    human K562 cell lines: C) Adjusted $\mbox{ARC}$ and D) $\mbox{ARC}$'s
+    bias.}
+  \label{fig:eval}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .45\textwidth,page = 1]{figures/fig8/methods_comp_FDR5_topM400.pdf}
+  \includegraphics[width = .45\textwidth,page = 2]{figures/fig8/methods_comp_FDR5_topM400.pdf}
+   \includegraphics[width = .45\textwidth,page = 1]{figures/fig8/sigma_delta_old_densities.pdf}
+   \includegraphics[width = .45\textwidth,page = 2]{figures/fig8/sigma_delta_old_densities.pdf}   
+  \caption{Comparison of the resolution between dPeak, Gem, Mace and
+    Peakzilla methods with \emph{E.Coli} aerobic experiment from the
+    first biosample A) Replicate 1 and B) Replicate 2. Resolution is
+    defined as the minimum distance between a RegulonDB annotation and
+    a predicted binding event. C) $\delta$ parameter in dPeak measures
+    average distance of the reads to their respective binding site. In
+    ChIP-exo data, reads were located much closer to the binding site
+    than in SET ChIP-Seq. D) $\sigma$ parameter measure the dispersion
+    of reads around each binding site. In ChIP-exo data, reads showed
+    less variation around the their respective binding sites compared
+    to SET ChIP-Seq.}
+  \label{fig:methods_comp}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = .9\textwidth]{figures/fig9/saturation_analysis_old.pdf}
+  \caption{Comparison of the number of A) candidate regions, B)
+    predicted events, C) identified targets and D) resolution among
+    ChIP-exo, PE ChIP-Seq and SE ChIP-Seq. RegulonDB annotations are
+    considered as a gold standard. A gold standard binding events was
+    deemed identified if a binding event was estimated at a $\pm$ 15
+    vicinity of it.}
+  \label{fig:design}
+\end{figure}
+
+\newpage
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width = .46\textwidth]{figures/fig10/sensitivity_exo_olda_data.pdf}
+  \includegraphics[width = .46\textwidth]{figures/fig10/resolution_by_dataset_old_data.pdf}
+  \caption{Comparison of A) sensitivity and B) resolution between
+    ChIP-exo and ChIP-Seq data. Sensitivity is defined as the
+    proportion of RegulonDB annotations identified using each
+    data. Resolution is defined as the distance between RegulonDB
+    annotation and its closest prediction.}
+  \label{fig:reso_all}
+\end{figure}
+
+
+\end{document}
+
+
+% LocalWords:  Ntimes overlaping gaussian repk

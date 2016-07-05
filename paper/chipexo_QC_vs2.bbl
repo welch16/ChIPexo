@@ -1,0 +1,168 @@
+\begin{thebibliography}{10}
+
+\bibitem{exo1}
+Rhee HS, Pugh F.
+\newblock Comprehensive genome-wide protein-{DNA} interactions detected at
+  single-nucleotide resolution.
+\newblock Cell. 2011;.
+
+\bibitem{chipnexus}
+He Q, Johnston J, Zeitlinger J.
+\newblock {ChIP}-nexus enables improved detection of in vivo transcription
+  factor binding footprints.
+\newblock Nature Biotechnology. 2014;.
+
+\bibitem{exo_review}
+Mahony S, Franklin PB.
+\newblock Protein-{DNA} binding in high-resolution.
+\newblock Critical Reviews in Biochemistry and Molecular Biology. 2015;.
+
+\bibitem{mace}
+Wang L, Chen J, Wang C, Uusk\"ula-Reimand L, Chen K, Medina-Rivera A, et~al.
+\newblock {MACE}: model based analysis of {ChIP}-exo.
+\newblock Nucleic Acids Research. 2014;.
+
+\bibitem{cexor}
+Madrigal P.
+\newblock {CexoR}: an {R/Bioconductor} package to uncover high-resolution
+  protein-{DNA} interactions in {ChIP}-exo replicates.
+\newblock EMBnetjournal. 2015;.
+
+\bibitem{peakzilla}
+Bardet AF, Steinmann J, Bafna S, Knoblich JA, Zeitlinger J, Stark A.
+\newblock Identification of transcription factor binding sites from {ChIP-Seq}
+  data at high resolution.
+\newblock Bioinformatics. 2013;.
+
+\bibitem{encode_qc}
+Landt S, Marinov G, Kundaje A, Kheradpour P, Pauli F, Batzoglou S, et~al.
+\newblock {ChIP-Seq} guidelines and practices of the {ENCODE} and {modENCODE}
+  consortia.
+\newblock Genome Research. 2012;.
+
+\bibitem{dpeak}
+Chung D, Park D, Myers K, Grass J, Kiley P, Landick R, et~al.
+\newblock {dPeak}, High Resolution Identification of Transcription Factor
+  Binding Sites from {PET} and {SET} {ChIP-Seq} Data.
+\newblock PlOS, Computational Biology. 2013;.
+
+\bibitem{gem}
+Guo Y, Mahony S, Gifford DK.
+\newblock High resolution genome wide binding event finding and {Motif}
+  discovery reals transcription factor spatial bindings constraints.
+\newblock PLOS, Computational Biology. 2012;.
+
+\bibitem{exoillumina}
+Serandour A, Gordon B, Cohen J, Carroll J.
+\newblock Development of and {Illumina}-based {ChIP}-exonuclease method
+  provides insight into {FoxA1}-{DNA} binding properties.
+\newblock Genome Biology. 2013;.
+
+\bibitem{starick15}
+Starick SR, Ibn-Salem J, Jurk M, Hernandez C, Love MI, Chung HR, et~al.
+\newblock {ChIP}-exo signal associated with {DNA}-binding motifs provides
+  insight into the genomic binding of the glucocorticoid receptor and
+  cooperating transcription factors.
+\newblock Genome Research. 2015;.
+
+\bibitem{venters13}
+Venters BJ, Pugh F.
+\newblock Genomic organization of human transcription initiation complexes.
+\newblock Nature. 2013;.
+
+\bibitem{regulondb}
+Salgado H, Peralta-Gil M, Gama-Castro S, Santos-Zavaleta A, Mu{\~{n}}iz-Rascado
+  L, Garc\'ia-Sotelo Js, et~al.
+\newblock {RegulonDB v8.0}: omics data sets, evolutionary conservation,
+  regulatory phrases, cross-validated gold standards and more;.
+
+\bibitem{benjamini2011}
+Benjamin Y, Speed TP.
+\newblock {Summarizing} and correcting the {GC} content bias in high-throughput
+  sequencing.
+\newblock Nucleic Acids Research. 2011;.
+
+\bibitem{mosaics}
+Kuan PF, Chung D, Pan G, Thomson JA, Stewart R, Kele\c{s} S.
+\newblock A Statistical Framework for the Analysis of {ChIP-Seq} Data.
+\newblock Journal of the American Statistical Association. 2009;.
+
+\bibitem{quest}
+Valouev A, Johnson D, Sundquist A, Medina C, Anton E, Batzoglou S, et~al.
+\newblock {Genome}-wide analysis of transcription factor binding sites based on
+  {ChIP-Seq} data.
+\newblock Nature, Methods. 2008;.
+
+\bibitem{strandcc}
+Kharchenko P, Tolstorukov M, Park P. Design and analysis of {ChIP-Seq}
+  experiments for {DNA}-binding proteins; 2008.
+
+\bibitem{fimo}
+Grant C, Bailey T, Noble WS.
+\newblock {FIMO}: Scanning for occurrences of a given motif;.
+
+\bibitem{zhang16}
+Zhang Q, Zeng X, Younkin S, Kawli T, Snyder MP, Kele\c{s} S.
+\newblock Systematic evaluation of the impact of {ChIP}-seq read designs on
+  genome coverage, peak identification, and allele-specific binding detection.
+\newblock BMC Bioinformatics. 2016;.
+
+\bibitem{neidhardt74}
+Neidhardt FC, Bloch PL, Smith DF.
+\newblock Culture {Medium} for {Enterobacteria}.
+\newblock Journal of Bacteriology. 1974;.
+
+\bibitem{bowtie}
+Langmead B, Trapnell C, Mihal P, Salzberg SL.
+\newblock Ultrafast and memory-efficient alignment of short {DNA} sequences to
+  the human genome.
+\newblock Genome Biology. 2009;.
+
+\bibitem{jaspar}
+Mathelier A, Fornes O, Arenillas DJ, Chen Cy, Denay G, Lee J, et~al.
+\newblock {JASPAR} 2016: a major expansion and update of the open-access
+  database of transcription factor binding profiles.
+\newblock Nucleic Acids Research. 2016;.
+
+\bibitem{robinson14}
+Robinson DG, Storey JD.
+\newblock {subSeq}: Determining appropiate sequencing depth through efficient
+  read subsampling.
+\newblock Bioinformatics. 2014;.
+
+\bibitem{exo_gb}
+Mendenhall EM, Bernstein BE.
+\newblock {DNA}-protein interactions in high definition.
+\newblock Genome Biology. 2012;.
+
+\bibitem{maplot1}
+Irizarry R, Hobbs B, Collin F, Beazer-Barclay Y, Antonellis K, Scherf U, et~al.
+\newblock Exploration, normalization, and summaries of high density
+  oligonucleotide array probe level data.
+\newblock Biostatistics. 2003;.
+
+\bibitem{maplot2}
+Bolstad B, Irizarry R, \^{A}strand M, Speed T.
+\newblock A comparison of normalization methods for high density
+  oligonucleotide array data based on variance and bias.
+\newblock Bioinformatics. 2003;.
+
+\bibitem{chipbeyond}
+Furey TS.
+\newblock {ChIP}-seq and beyond: new and improved methodologies to detect and
+  characterize protein-{DNA} interactions.
+\newblock Nature Reviews: Genetics. 2012;.
+
+\bibitem{meme}
+Bailey TL, Elkan C.
+\newblock Fitting a mixture model by expectation maximization to discover
+  motifs in biopolymers.
+\newblock Proceedings of the Second International Conference in Intelligent
+  Systems for Molecular Biology. 1994;.
+
+\bibitem{encode1}
+{The ENCODE Project Consortium}.
+\newblock An integrated encyclopedia of DNA elements in the human genome.
+\newblock Nature. 2011;.
+
+\end{thebibliography}
