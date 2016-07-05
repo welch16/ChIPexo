@@ -1,32 +1,27 @@
 #1/bin/sh
 
 basedir=/p/keles/ChIPexo/volume4/tbp_analysis
-seqexodir=$basedir/sequences/chipexo
-seqnexusdir=$basedir/sequences/chipnexus
+seqdir=$basedir/sequences
 
 motifdr=/p/keles/MEME/motif_databases
 db=JASPAR_CORE_2009.meme
 motifdb=$motifdr/$db
 
-fimoexodir=$basedir/fimo/chipexo
-fimonexusdir=$basedir/fimo/chipnexus
+seq1=$seqdir/venters_TBP_K562_Rep1sequences.s
+seq2=$seqdir/venters_TBP_K562_Rep2sequences.s
+seq3=$seqdir/venters_TBP_K562_Rep3sequences.s
+seq4=$seqdir/chipnexus_K562_TBP_Rep1sequences.s
+seq5=$seqdir/chipnexus_K562_TBP_Rep2sequences.s
+
+fimodir=$basedir/fimo
 
 ## motif1
-
 motif=MA0108.1
 
-fimo -oc $fimoexodir/Rep1_TBP1 --motif $motif $motifdb $seqexodir/TBP_K562_Rep1.sequences.fna
-fimo -oc $fimoexodir/Rep2_TBP1 --motif $motif $motifdb $seqexodir/TBP_K562_Rep2.sequences.fna
-fimo -oc $fimoexodir/Rep3_TBP1 --motif $motif $motifdb $seqexodir/TBP_K562_Rep3.sequences.fna
-fimo -oc $fimonexusdir/Rep1_TBP1 --motif $motif $motifdb $seqnexusdir/ChIPnexus_K562_TBP_rep1.sequences.fna
-fimo -oc $fimonexusdir/Rep2_TBP1 --motif $motif $motifdb $seqnexusdir/ChIPnexus_K562_TBP_rep2.sequences.fna
+fimo -oc $fimodir/venters_Rep1_jaspar --thresh 1e-2 --motif $motif $motifdb $seq1 &
+fimo -oc $fimodir/venters_Rep2_jaspar --thresh 1e-2 --motif $motif $motifdb $seq2 &
+fimo -oc $fimodir/venters_Rep3_jaspar --thresh 1e-2 --motif $motif $motifdb $seq3 &
+fimo -oc $fimodir/nexus_Rep1_jaspar --thresh 1e-2 --motif $motif $motifdb $seq4 &
+fimo -oc $fimodir/nexus_Rep2_jaspar --thresh 1e-2 --motif $motif $motifdb $seq5 &
 
-## motif2
 
-motif=MA0108.1
-
-fimo -oc $fimoexodir/Rep1_TBP2 --motif $motif $motifdb $seqexodir/TBP_K562_Rep1.sequences.fna
-fimo -oc $fimoexodir/Rep2_TBP2 --motif $motif $motifdb $seqexodir/TBP_K562_Rep2.sequences.fna
-fimo -oc $fimoexodir/Rep3_TBP2 --motif $motif $motifdb $seqexodir/TBP_K562_Rep3.sequences.fna
-fimo -oc $fimonexusdir/Rep1_TBP2 --motif $motif $motifdb $seqnexusdir/ChIPnexus_K562_TBP_rep1.sequences.fna
-fimo -oc $fimonexusdir/Rep2_TBP2 --motif $motif $motifdb $seqnexusdir/ChIPnexus_K562_TBP_rep2.sequences.fna

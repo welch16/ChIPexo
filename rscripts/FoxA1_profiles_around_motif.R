@@ -380,6 +380,33 @@ ggplot(venn2,aes(rep,prop,fill = rep))+geom_bar(stat = "identity")+
 dev.off()
 
 
+fimo2 <- fimo
+names(fimo2) <- c("Rep-3","Rep-1","Rep-2")
 
 
+topK <- c(50,250,100,500,1000,2000)
 
+filter_topK <- function(fimo,K){
+  fimo[order(-score)][1:K]
+}
+
+fimo2 <- mapply(function(x,y)x[,repl := y],fimo2,
+                names(fimo2),SIMPLIFY = FALSE)
+
+dt_list <- lapply(topK,
+  function(k,fimo2){
+    out <- lapply(fimo2,filter_topK,k)
+    out <- do.call(rbind,out)
+    out[,K := k]
+    return(out)},fimo2)
+dt <- do.call(rbind,dt_list)
+
+pdf(file = "figs/FoxA1_fimo_score.pdf",width =12 ,height = 5)
+ggplot(dt,aes(repl,score,fill = repl))+
+  geom_boxplot(outlier.size = NA)+
+  facet_grid( . ~ K)+theme_bw()+
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 75,hjust = 1))+
+  scale_fill_brewer(palette = "Pastel1")+
+  xlab("Replicate")+ylab("FIMO score")
+dev.off()

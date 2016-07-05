@@ -11,11 +11,12 @@ library(viridis)
 library(grid)
 library(gridExtra)
 
-dr <- "/p/keles/ChIPexo/volume3/CarrollData/mouse"
+dr <- "/p/keles/ChIPexo/volume4/carroll_data/mouse"
 files <- list.files(dr)
 
 files <- files[grep("bam",files)]
 files <- files[grep("bai",files,invert = TRUE)]
+files <- files[grep("sort",files)]
 
 files <- file.path(dr,files)
 
@@ -130,8 +131,8 @@ p <- ggplot(stats , aes( ave_reads,cover_rate))+stat_binhex(bins = 50)+
   scale_fill_gradientn(colours = r,trans = "log10",
     labels = trans_format("log10",math_format(10^.x)))+xlim(0,4)+ylim(0,1)+
   theme_bw()+theme(legend.position = "top",plot.title = element_text(hjust = 0))+
-  xlab("Average read coverage (ARC)")+
-  ylab("Unique read coverage rate (URCR)")
+  xlab("Average Read Coefficient (ARC)")+
+  ylab("Unique Read Coefficient (URC)")
 print(p)
 print( p  %+% stats[ npos > 10])  ## npos > 10 
 print( p  %+% stats[ npos > 30]) ## npos > 30
@@ -203,12 +204,12 @@ make_plots <- function(arc,urcr,p,regs,reads,data)
   plots[[2]] <- p +
     geom_point(data = point,aes(x = ave_reads,y = cover_rate),fill = "orange",colour = "orange", size = 4,shape =16)
 
-  plots[[3]] <- ggplot(loc_cc,aes(shift,cross.corr))+
-    geom_point(size = 2,shape = 1)+
-    geom_line(linetype = 2)+
-    theme_bw()+theme(plot.title = element_text(hjust = 0))+ylab("local Strand Cross Correlation")+
-    geom_smooth(method = "loess",se = FALSE,size = 2)+
-    geom_abline(slope = 0,intercept = 0,linetype = 3,size = 1,colour = "grey")
+  ## plots[[3]] <- ggplot(loc_cc,aes(shift,cross.corr))+
+  ##   geom_point(size = 2,shape = 1)+
+  ##   geom_line(linetype = 2)+
+  ##   theme_bw()+theme(plot.title = element_text(hjust = 0))+ylab("local Strand Cross Correlation")+
+  ##   geom_smooth(method = "loess",se = FALSE,size = 2)+
+  ##   geom_abline(slope = 0,intercept = 0,linetype = 3,size = 1,colour = "grey")
 
   return(plots)
   
@@ -223,7 +224,7 @@ plots <- mcmapply(make_plots,arcs,urcrs,
 
 enrich <- lapply(plots,function(x)x[[2]])
 cover <- lapply(plots,function(x)x[[1]])
-local_scc <- lapply(plots,function(x)x[[3]])
+## local_scc <- lapply(plots,function(x)x[[3]])
 
 pdf(file = "figs/for_paper/enrichment_example.pdf",width = 5,height = 5)
 a <- lapply(enrich,print)

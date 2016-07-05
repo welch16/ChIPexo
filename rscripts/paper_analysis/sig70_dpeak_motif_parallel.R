@@ -16,7 +16,7 @@ mc <- 22
 ## read_files <- read_files[grep("sort",read_files)]
 ## read_files <- read_files[grep("bai",read_files,invert = TRUE)]
 
-fdr <- "FDR1/"
+fdr <- "FDR5/"
 peak_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo"
 peak_files <- list.files(peak_dir,recursive = TRUE)
 idx <- lapply(edsn,grep,peak_files)
@@ -46,4 +46,4 @@ dp_motifs <- lapply(peak_tmp,dpeakMotif,refGenome=Ecoli,memeArgument = memeArg,f
 
 names(dp_motifs) <- basename(peak_files)
 
-save(dp_motifs,file = file.path(motif_dir,"Sig70_motifs_par.RData"))
+save(dp_motifs,file = file.path(motif_dir,"Sig70_motifs_FDR5.RData"))

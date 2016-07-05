@@ -42,6 +42,8 @@ if("--help" %in% args){
 stopifnot(length(args) <= 4)
 stopifnot(length(args) > 1)
 
+u1 <- proc.time()
+
 library(GenomicAlignments)
 library(parallel)
 library(devtools)
@@ -49,6 +51,12 @@ library(data.table)
 library(broom)
 
 load_all("~/Desktop/Docs/Code/ChIPexoQual")
+
+u2 <- proc.time()
+
+## bamfile = "/p/keles/ChIPexo/volume4/carroll_data/mouse/ERR336935.sort.bam"
+## outfile = "./test.RData"
+## nreads = NULL
 
 bamfile <- args[1]
 outfile <- args[2]
@@ -72,5 +80,16 @@ stats <- summary_stats(exo)
 ext_stats <- list()
 ext_stats[["stats"]] <- stats
 ext_stats[["nreads"]] <- length(reads(exo))
+ext_stats[["param"]] 
+ext_stats[["exec.times"]] <- data.table()
 
+u3 <- proc.time()
+
+u = list(u2 - u1,u3 - u2)
+
+write.table(data.table(Reduce(rbind,u)),file = file.path("data/times",
+                              gsub(".RData","_time.txt",basename(outfile))),
+            quote = FALSE,row.names = FALSE,col.names = TRUE,
+            sep = "\t")
+                                   
 save(ext_stats,file = outfile)

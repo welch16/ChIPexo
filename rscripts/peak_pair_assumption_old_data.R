@@ -207,7 +207,9 @@ balance1 <- sapply( fit.exo1@fragSet, function(x)
 	} else {
 		return( NA )
 	} )
-balance1 <- balance1[ peak.R1[,5] > 3000 ]
+nsites1 <- sapply(fit.exo1@optMu,length)
+
+balance1 <- balance1[ peak.R1[,5] > 3000  ]
 
 balance2 <- sapply( fit.exo2@fragSet, function(x) 
 	if ( !is.na(x[1,1]) ) {
@@ -234,12 +236,16 @@ dt[ ,seq := plyr::mapvalues(seq , from = c("exo","set"),
        to = c("ChIP-exo","ChIP-Seq (SE)"))]
 
 pdf(file = "figs/for_paper/forward_strand_ratio_comp_old.pdf",width = 4 ,height  = 4)
-ggplot(dt , aes(fratio, colour = seq))+geom_density()+
+ggplot(dt , aes(fratio, colour = seq))+stat_density(geom = "line")+
   theme_bw()+scale_color_manual(values = brewer.pal(3,"Set1")[c(1,3)],name = "")+
   theme(legend.position = "top",plot.title = element_text(hjust = 0))+
   xlab("Ratio of forward strand reads")+
   ylab("Density")+geom_vline(xintercept = .5,linetype = 2)+ggtitle("B")
 dev.off()
+
+
+
+
 
 
 
@@ -368,3 +374,56 @@ plot( density(sigma.SET), xlim=c(0,100),
 	xlab="sigma estimate", main="ChIP-seq (SET)",
 	cex.axis=1.5, cex.lab=1.5, cex.main=1.5 )
 dev.off()
+
+
+
+# strand balance 1 site
+
+
+balance1 <- sapply( fit.exo1@fragSet, function(x) 
+	if ( !is.na(x[1,1]) ) {
+		return( mean( x[,3]=="F" ) )
+	} else {
+		return( NA )
+	} )
+nsites1 <- sapply(fit.exo1@optMu,length)
+
+balance1 <- balance1[ peak.R1[,5] > 3000 & nsites1  == 1 ]
+
+balance2 <- sapply( fit.exo2@fragSet, function(x) 
+	if ( !is.na(x[1,1]) ) {
+		return( mean( x[,3]=="F" ) )
+	} else {
+		return( NA )
+	} )
+nsites2 <- sapply(fit.exo2@optMu,length)
+balance2 <- balance2[ peak.R2[,5] > 3000 & nsites2 == 1 ]
+
+balanceSet <- sapply(fit.SET@fragSet ,function(x)
+	if ( !is.na(x[1,1]) ) {
+		return( mean( x[,3]=="F" ) )
+	} else {
+		return( NA )
+	} )
+nfrag = sapply(fit.SET@fragSet, nrow)
+
+nsitesSET <- sapply(fit.SET@optMu,length)
+
+balanceSet = balanceSet[nfrag > 3e3 & nsitesSET == 1]
+
+dt1 = data.table(seq = "exo", fratio = balance1)
+dt2 = data.table(seq = "set",fratio = balanceSet)
+dt = rbind(dt1,dt2)
+
+dt[ ,seq := plyr::mapvalues(seq , from = c("exo","set"),
+       to = c("ChIP-exo","ChIP-Seq (SE)"))]
+
+pdf(file = "figs/for_paper/forward_strand_ratio_comp_old_1site.pdf",
+    width = 4 ,height  = 4)
+ggplot(dt , aes(fratio, colour = seq))+stat_density(geom = "line")+
+  theme_bw()+scale_color_manual(values = brewer.pal(3,"Set1")[c(1,3)],name = "")+
+  theme(legend.position = "top",plot.title = element_text(hjust = 0))+
+  xlab("Ratio of forward strand reads")+
+  ylab("Density")+geom_vline(xintercept = .5,linetype = 2)+ggtitle("B")
+dev.off()
+

@@ -58,6 +58,7 @@ match_peak_sites <- function(peak_file,bs_files)
 
 merge_peak_sites <- function(peaks,bs,fdr,sites)
 {
+
   bs <- copy(bs)  
   bs <- merge(bs,peaks[,c("V1","V2","V3","peakId"),with = FALSE],by = "peakId")
   setnames(bs,names(bs),c(names(bs)[1:5],"peak_seqnames","peak_start","peak_end"))
@@ -78,9 +79,9 @@ merge_peak_sites <- function(peaks,bs,fdr,sites)
   bs <- cbind(bs,sites)
   bs <- bs[order(start)]
 
+
   bs[ , site := .5 * (start  + end - 1)]
-  bs[, dist := min(abs(site - site_start ),
-         abs(site - site_end))]
+  bs[, dist := pmin(abs(site - site_start ), abs(site - site_end))]
 
   bs[,fdr := fdr]
 
@@ -297,20 +298,168 @@ sens1 <- function(samp,what,ext)
   return(out)
 }
 
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR10"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "20min",repli = 1)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif20min_rep1_fdr10.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
 minStrength <- 1e3
 ext <- 10
 FDR <- "FDR5"
-sens <- sensitivity(summaries,FDR,minStrength,ext)
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "20min",repli = 1)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif20min_rep1_fdr5.pdf"))
 ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
-  geom_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
-  ylim(0,1)+xlim(0,400)+scale_color_brewer(palette = "Set1")+theme_bw()+
-  theme(legend.position = "top")
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
 dev.off()
 
-## ggplot(summaries,aes(strength,colour = seq))+stat_density(geom = "line")+
-##   facet_grid( repl  ~ rif)+
-##   scale_x_log10()+scale_color_brewer(palette = "Set1")+
-##   theme_bw()+theme(legend.position = "top"); dev.off()
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR10"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "20min",repli = 2)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif20min_rep2_fdr10.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR5"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "20min",repli = 2)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif20min_rep2_fdr5.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+
+####
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR10"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "0min",repli = 1)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif0min_rep1_fdr10.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR5"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "0min",repli = 1)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif0min_rep1_fdr5.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR10"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "0min",repli = 2)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif0min_rep2_fdr10.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR5"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "0min",repli = 2)
+pdf(file.path(figs_dir,"sensitivity_sig70_rif0min_rep2_fdr5.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+##
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR5"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "20min")
+pdf(file.path(figs_dir,"sensitivity_sig70_rif20min_fdr5.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+
+minStrength <- 1e3
+ext <- 10
+FDR <- "FDR5"
+sens <- sensitivity(summaries,FDR,minStrength,ext,rifm = "0min")
+pdf(file.path(figs_dir,"sensitivity_sig70_rif0min_fdr5.pdf"))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracPred,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Predicted")+coord_cartesian(xlim = c(0,350))
+ggplot(sens[!(aveDist > 200 & nIden == 0)],aes(aveDist,fracAnnot,colour = seq))+geom_point()+
+  stat_smooth(method = "rlm",se = FALSE,fulrange = TRUE)+
+  ylim(0,1)+scale_color_brewer(palette = "Set1")+theme_bw()+
+  theme(legend.position = "top")+ggtitle("Annotated")+coord_cartesian(xlim = c(0,350))
+dev.off()
+
+
+
+
+
+
 
 
 

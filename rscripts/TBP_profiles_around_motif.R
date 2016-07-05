@@ -5,31 +5,23 @@ library(data.table)
 library(GenomicAlignments)
 library(devtools)
 library(parallel)
+library(ggplot2)
+library(scales)
+library(RColorBrewer)
 
-motif <- "TBP"
+## parameters for plots
+window_length <- 25
+sm <- 1
+topM <- 5000
 
-load_all("~/Desktop/Docs/Code/ChIPexoQual")
+## fimo results
 
-data_dir1 <- "/p/keles/ChIPexo/volume4/venters_data/sortbam"
-files1 <- list.files(data_dir1,
-       pattern = "sort.bam",full.names = TRUE,include.dirs = TRUE)
+fimo_dr <- "/p/keles/ChIPexo/volume4/tbp_analysis/fimo"
+files <- list.files(fimo_dr,pattern = "fimo.txt",recursive = TRUE,
+                    full.names = TRUE)
 
-files1 <- files1[grep("bai",files1,invert = TRUE)]
-files1 <- files1[grep(motif,files1)]
-
-data_dir2 <- "/p/keles/ChIPexo/volume4/zeitlinger_data/bam/sortbam"
-files2 <- list.files(data_dir2,
-       pattern = "sort.bam",full.names = TRUE,include.dirs = TRUE)
-
-files2 <- files2[grep("bai",files2,invert = TRUE)]
-files2 <- files2[grep(motif,files2)]
-
-fimo_dir <- "/p/keles/ChIPexo/volume4/tbp_analysis/fimo"
-fimo_files <- list.files(fimo_dir,pattern = "txt",recursive = TRUE,
-                         include.dirs = TRUE,full.names = TRUE)
-fimo <- mclapply(fimo_files,read.table,mc.cores = 12)
-fimo <- lapply(fimo,data.table)
-names(fimo) <- basename(dirname(fimo_files))
+fimo <- lapply(files,fread)
+names(fimo) <- basename(dirname(files))
 
 fimo <- lapply(fimo,function(x){
   setnames(x,names(x),c("motifID","sequenceID",
@@ -58,15 +50,22 @@ fimo <- lapply(fimo,function(x){
   x[,end := end_from_fimo(sequenceID)]
   return(x)})
 
-fimo <- lapply(fimo,function(x)x[order(seqnames,start,end)])
+## loading and formating reads
 
-window_length <- 25
-sm <- 1
+nexusdir <- "/p/keles/ChIPexo/volume4/zeitlinger_data/bam/sortbam"
+nexusfiles <- list.files(nexusdir,recursive = TRUE,full.names = TRUE,
+                         pattern = "K562")
+exodir <- "/p/keles/ChIPexo/volume4/venters_data/sortbam"
+exofiles <- list.files(exodir,recursive = TRUE,full.names = TRUE,
+                       pattern = "TBP")
+readfiles <- c(nexusfiles,exofiles)
+readfiles <- readfiles[grep("bai",readfiles,invert = TRUE)]
+rm(nexusdir,nexusfiles,exodir,exofiles)
 
-files <- c(files1,files2)
+reads <- mclapply(readfiles,readGAlignments,param = NULL,mc.cores = 5)
+reads <- mclapply(reads,as,"GRanges",mc.cores =5)
 
-reads <- mclapply(files,readGAlignments,param = NULL,mc.cores = 5)
-reads <- mclapply(reads,as,"GRanges",mc.cores = 5)
+## create coverage for both strands
 
 fwd_cover <- mclapply(reads,function(x,smooth = 1){
   ff <- subset(x,as.character(strand(x)) == "+")
@@ -78,31 +77,26 @@ bwd_cover <- mclapply(reads,function(x,smooth = 1){
   ff <- resize(ff,smooth)
   return(coverage(ff))},smooth = sm,mc.cores = 5)
 
-qv <- 1
-fimo2 <- fimo[grep("TBP1",names(fimo))]
+## select motifs with topM scores
+topM <- 8000
+regions <- lapply(fimo,function(x,topM){
+  x <- copy(x)[,summit := ifelse(strand == "+",start + motifStart,
+                  start + motifEnd)]
+  out <- x[,GRanges(seqnames = seqnames ,
+                    ranges = IRanges(start = summit,width =1),
+                    strand = strand)]
+  out <- resize(out,2*window_length + 1,fix = "center")
+  idx <- sort(x$score,index.return = TRUE,decreasing = TRUE)$ix
+  return(out[idx[1:topM]])  
+},topM)
 
-fwd_regions <- lapply(fimo2,function(x,window_length,qv){
-  y <- copy(x)[strand == "+"]
-  y <- y[qval <= qv]
-  out <- y[,GRanges(seqnames = seqnames,
-                    ranges = IRanges(start = start + motifStart,
-                      width = 1))]
-  out <- resize(out,width =2*window_length + 1,fix = "center")
-  return(out)
-},window_length,qv)
-
-bwd_regions <- lapply(fimo2,function(x,window_length,qv){
-  y <- copy(x)[strand == "-"]
-  y <- y[qval <= qv]
-  out <- y[,GRanges(seqnames = seqnames,
-                    ranges = IRanges(start = start + motifEnd,
-                      width = 1))]
-  out <- resize(out,width =2*window_length,fix = "center")
-  return(out)
-},window_length,qv)
-
-
-fwd_all <- mapply(function(cover,region,wl){
+fwd_regions <- lapply(regions,function(x)
+  subset(x,as.character(strand(x)) == "+"))
+bwd_regions <- lapply(regions,function(x)
+  subset(x,as.character(strand(x)) == "-"))
+                                       
+fwd_all <- mapply(function(cover,region){
+  wl <- window_length
   mat <- cover[region]
   mat <- lapply(mat,as.vector)
   nms <- paste0(as.character(seqnames(region)),":",
@@ -111,9 +105,10 @@ fwd_all <- mapply(function(cover,region,wl){
     data.table(coord = -wl : wl, counts = x , name = nm)
   },mat,nms,MoreArgs = list(wl),SIMPLIFY = FALSE,mc.cores = 10)
   return(do.call(rbind,DT))
-},fwd_cover,fwd_regions,MoreArgs = list(window_length),SIMPLIFY = FALSE)
+},fwd_cover,fwd_regions,SIMPLIFY = FALSE)
 
-bwd_all <- mapply(function(cover,region,wl){
+bwd_all <- mapply(function(cover,region){
+  wl <- window_length
   mat <- cover[region]
   mat <- lapply(mat,as.vector)
   nms <- paste0(as.character(seqnames(region)),":",
@@ -122,7 +117,7 @@ bwd_all <- mapply(function(cover,region,wl){
     data.table(coord = -wl : wl, counts = x , name = nm)
   },mat,nms,MoreArgs = list(wl),SIMPLIFY = FALSE,mc.cores = 10)
   return(do.call(rbind,DT))
-},bwd_cover,bwd_regions,MoreArgs = list(window_length),SIMPLIFY = FALSE)
+},bwd_cover,bwd_regions,SIMPLIFY = FALSE)
 
 
 fwd_DT <- lapply(fwd_all,function(x)x[,mean(counts),by = coord])
@@ -139,28 +134,45 @@ profile <- function(fwd,bwd,depth,repl,sour){
 }
 
 DT <- do.call(rbind,mapply(profile,fwd_DT,
-                           bwd_DT,sapply(reads,length),
-                           c("Rep-1","Rep-2","Rep-3","Rep-1","Rep-2"),
-                           c(rep("ChIP-exo",3),rep("ChIP-nexus",2)),
-                           SIMPLIFY = FALSE))
+  bwd_DT,sapply(reads,length),
+  c("Rep-1","Rep-2","Rep-1","Rep-2","Rep-3"),
+  c(rep("ChIP-nexus",2),rep("ChIP-exo",3)),
+  SIMPLIFY = FALSE))
 
 library(RColorBrewer)
 
 r <- brewer.pal(name = "Set1",n = 3)[1:2]
 figs_dir <- "figs/for_paper"
 
-pdf(file = file.path(figs_dir,"TBP1_profiles_around_motif.pdf"),
+pdf(file = file.path(figs_dir,
+  paste0("TBP_profiles_around_motif_",topM,".pdf")),
     width= 8,height = 7)
-ggplot(DT,aes(coord,V1,colour = strand))+
+ggplot(DT,aes(coord,V1,colour = strand,linetype = rep))+
   geom_line()+
     scale_color_manual(values = rev(r))+theme_bw()+
     theme(legend.position = "top")+
   xlab("Position around motif start")+ylab("Average counts")+
-  facet_grid( seq + rep  ~ . ,scales = "free")
+  facet_grid( seq   ~ . ,scales = "free")
+dev.off()
+
+pdf(file = file.path(figs_dir,
+  paste0("TBP_profiles_around_motif_",topM,"_.pdf")),
+    width= 8,height = 7)
+ggplot(DT,aes(coord,V1,colour = strand,linetype = rep))+
+  geom_line()+
+    scale_color_manual(values = rev(r))+theme_bw()+
+    theme(legend.position = "top")+
+  xlab("Position around motif start")+ylab("Average counts")+
+  facet_grid( seq +rep  ~ . ,scales = "free")
 dev.off()
 
 
-sequences <- lapply(fimo2,function(x)x[,.(sequenceID,pval,qval,sequence)])
+sequences <- lapply(fimo,function(x,topM){
+  x <- copy(x)[,.(sequenceID,pval,qval,score,sequence)]
+  idx <- sort(x$score,decreasing = TRUE,index.return = TRUE)$ix
+  out <- x[idx[1:topM]]
+  return(out)},topM)
+
 
 seqDT <- mapply(function(sequ,nm){  
   motifLength <- unique(sequ[,nchar(as.character(sequence))])
@@ -172,12 +184,14 @@ seqDT <- mapply(function(sequ,nm){
     out[,name := nm]
   },1:motifLength,chars,MoreArgs = list(sequ),SIMPLIFY = FALSE)
   return(do.call(rbind,dt_list))
-},sequences,c("ChIP-exo_rep1","ChIP-exo_rep2","ChIP-nexus_rep1",
-              "ChIP-nexus_rep2","ChIP-nexus_rep3"),SIMPLIFY = FALSE)
+},sequences,c("ChIP-nexus_Rep1","ChIP-nexus_Rep2",
+              "ChIP-exo_Rep1","ChIP-exo_Rep2","ChIP-exo_Rep3"),
+                SIMPLIFY = FALSE)
 
 r <- brewer.pal(name = "Set1",n = 7)
 
-pdf(file = file.path(figs_dir,"TBP1_matched_motif_sequence.pdf"),
+pdf(file = file.path(figs_dir,
+    paste0("TBP_matched_motif_sequence_",topM,".pdf")),
     width = 3,height = 6 )
 lapply(seqDT,function(x){
   mm <- x[,max(position)]
@@ -192,21 +206,21 @@ ggplot(x,aes(position,sequenceID,fill = fill))+
 })
 dev.off()
 
-all_fimo <- do.call(rbind,mapply(function(x,y)x[,rep := y],
-  fimo,c("ChIP-exo_rep1","ChIP-exo_rep2","ChIP-nexus_rep1",
-              "ChIP-nexus_rep2","ChIP-nexus_rep3"),SIMPLIFY = FALSE))                    
+## all_fimo <- do.call(rbind,mapply(function(x,y)x[,rep := y],
+##   fimo,c("ChIP-exo_rep1","ChIP-exo_rep2","ChIP-nexus_rep1",
+##               "ChIP-nexus_rep2","ChIP-nexus_rep3"),SIMPLIFY = FALSE))                    
 
-pdf(file = file.path(figs_dir,"TBP1_fimo_ECDF_score.pdf"))
-ggplot(all_fimo,aes(score,colour = rep))+stat_ecdf(geom = "line")+
-  theme_bw()+theme(legend.position = "top")+
-  scale_color_brewer(palette = "Set1",name = "Replicate")+
-  ylab("Empirical CDF")
-ggplot(all_fimo,aes(-log10(pval),colour = rep))+stat_ecdf(geom = "line")+
-  theme_bw()+theme(legend.position = "top")+
-  scale_color_brewer(palette = "Set1",name = "Replicate")+
-  ylab("Empirical CDF")
-ggplot(all_fimo,aes(-log10(qval),colour = rep))+stat_ecdf(geom = "line")+
-  theme_bw()+theme(legend.position = "top")+
-  scale_color_brewer(palette = "Set1",name = "Replicate")+
-  ylab("Empirical CDF")
-dev.off()
+## pdf(file = file.path(figs_dir,"TBP1_fimo_ECDF_score.pdf"))
+## ggplot(all_fimo,aes(score,colour = rep))+stat_ecdf(geom = "line")+
+##   theme_bw()+theme(legend.position = "top")+
+##   scale_color_brewer(palette = "Set1",name = "Replicate")+
+##   ylab("Empirical CDF")
+## ggplot(all_fimo,aes(-log10(pval),colour = rep))+stat_ecdf(geom = "line")+
+##   theme_bw()+theme(legend.position = "top")+
+##   scale_color_brewer(palette = "Set1",name = "Replicate")+
+##   ylab("Empirical CDF")
+## ggplot(all_fimo,aes(-log10(qval),colour = rep))+stat_ecdf(geom = "line")+
+##   theme_bw()+theme(legend.position = "top")+
+##   scale_color_brewer(palette = "Set1",name = "Replicate")+
+##   ylab("Empirical CDF")
+## dev.off()

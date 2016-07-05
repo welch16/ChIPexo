@@ -127,8 +127,12 @@ DT <- coeffs[grepl("K562",name)][!grepl("mei",name)]
 
 
 DT <- merge(DT,meta,by = "name") %>%
-  filter(name != "chipnexus_K562_TBP_Rep1") %>%
-  filter(!grepl("venters_TBP_K562_Rep1",name))
+    filter(name != "chipnexus_K562_TBP_Rep1")
+
+
+  ## filter(!grepl("venters_TBP_K562_Rep1",name))
+
+
 
 figs_dir <- "figs/for_paper"
 
@@ -194,6 +198,8 @@ dev.off()
 
 
 
+
+
 pdf(file = file.path(figs_dir,"K562_TBP_sample.pdf"),width = 6,height = 4)
 p1 <- ggplot(DT[term == "npos"],aes(samp,estimate,
                   colour = paste0(protocol,repl)))+
@@ -205,7 +211,7 @@ p1 <- ggplot(DT[term == "npos"],aes(samp,estimate,
                    axis.title.x = element_blank(),
                    plot.title = element_text(hjust = 0),
                    strip.background = element_blank())+
-  scale_color_manual(values = r[c(4,4,7)])+ggtitle("C")+  
+  scale_color_manual(values = r[c(4,4,4,7)])+ggtitle("C")+  
   geom_abline(slope = 0 ,intercept = 1,linetype = 2 ,colour = "darkgrey")+
   ylab("Adjusted Average Read Coverage")
 p2 <- ggplot(DT[term == "width"],aes(samp,-estimate,
@@ -218,9 +224,151 @@ p2 <- ggplot(DT[term == "width"],aes(samp,-estimate,
                    plot.title = element_text(hjust = 0),
                    strip.background = element_blank())+
   ylim(-1,5)+ylab("Average Read Coverage Bias")+
-  scale_color_manual(values = r[c(4,4,7)])+ggtitle("D")+
+  scale_color_manual(values = r[c(4,4,4,7)])+ggtitle("D")+
   geom_abline(slope = 0 ,intercept = 0,linetype = 2 ,colour = "darkgrey")
 p1
 p2
 dev.off()
 
+DT <- DT %>% filter(samp != "complete")
+
+
+DT <- DT %>% select(term,estimate,protocol,repl,samp,lab)
+coeff <- group_by(DT,term,protocol,repl,samp)
+out <- summarize(coeff,
+   med = ifelse(term == "npos",1,-1) * median(estimate),
+   mean = ifelse(term == "npos",1,-1) * mean(estimate),
+   sd = sd(estimate),
+   trim = ifelse(term == "npos",1,-1) * mean(estimate,trim = .1))
+
+   ## , 
+
+
+out <- out %>% mutate(samp2 = as.numeric(gsub("M","",samp)))
+
+library(gridExtra)
+
+
+p1 <- ggplot(out[term == "npos"],aes(samp2,
+             mean,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+scale_y_log10()+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 1,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param1")                              
+p2 <- ggplot(out[term == "width"],aes(samp2,
+             mean,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 0,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param2")
+m1 <- ggplot(out[term == "npos"],aes(samp2,
+             med,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+scale_y_log10()+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 1,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param1")
+m2 <- ggplot(out[term == "width"],aes(samp2,
+             med,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 0,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param2")
+t1 <- ggplot(out[term == "npos"],aes(samp2,
+             trim,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+scale_y_log10()+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 1,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param1")
+t2 <- ggplot(out[term == "width"],aes(samp2,
+             trim,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 0,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param2")
+q1 <- ggplot(out[term == "npos"],aes(samp2,
+             sd,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+scale_y_log10()+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 1,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param1")
+q2 <- ggplot(out[term == "width"],aes(samp2,
+             sd,
+             shape = repl,
+             linetype = repl,
+             colour = protocol))+
+  geom_point(size = 3)+geom_line(size = .5)+
+  scale_linetype_discrete(guide = "none")+
+  geom_abline(slope = 0,intercept = 0,linetype = 2)+
+  scale_color_manual(values = r[c(4,7)],guide = "none")+
+  scale_shape_discrete(solid = FALSE,name = "Replicate")+
+  theme_bw()+theme(legend.position = "top")+
+  scale_x_continuous(labels = paste0(seq(20,50,by = 10),"M"))+
+  xlab("Number of reads")+ylab("param2")
+
+
+pdf(file = file.path(figs_dir,"TBP_param_depth_trend.pdf"),width = 8,height=4)
+grid.arrange(p1,p2,nrow = 1)
+grid.arrange(m1,m2,nrow = 1)
+grid.arrange(t1,t2,nrow = 1)
+grid.arrange(q1,q2,nrow = 1)
+dev.off()
+
+pdf(file = file.path(figs_dir,"TBP_param_depth_trend2.pdf"),width = 4,height=4)
+p1
+p2
+m1
+m2
+t1
+t2
+q1
+q2
+dev.off()

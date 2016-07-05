@@ -1,5 +1,4 @@
 
-
 rm(list = ls())
 library(viridis)
 library(data.table)
@@ -9,24 +8,26 @@ library(devtools)
 library(parallel)
 load_all("~/Desktop/Docs/Code/ChIPexoQual")
 
-indir <- "/p/keles/ChIPexo/volume4/carroll_data/mouse"
-files <- list.files(indir)
-files <- files[grep("sort",files)]
-files <- files[grep("bai",files,invert= TRUE)]
+indir <- "data/ChIPexo_QC_runs"
+files <- list.files(indir,full.names = TRUE)
+
+files <- files[grepl("carr",files) & grepl("mous",files)]
+
 mc <- detectCores()
 
-expts <- lapply(file.path(indir,files),create_exo_experiment,
-                calc_summary = TRUE,height = 1,parallel = TRUE,mc = mc)
-names(expts) <- plyr::mapvalues(gsub(".sort.bam","",files),from = c("ERR336935","ERR336942","ERR336956"),
-                                to = c("Rep-3","Rep-1","Rep-2"))
+load_stat <- function(x)
+{
+  load(x)
+  ext_stats$stats
+}
 
-stats <- lapply(expts,summary_stats)
 
+stats <- mclapply(files,load_stat,mc.cores = mc)
+names(stats) <- paste("Rep",1:3,sep = "-")
 peakdir <- "/p/keles/ChIPexo/volume4/carroll_data/mouse/peaks"
 peaks <- list.files(peakdir)
-peaks <- lapply(file.path(peakdir,peaks),read.table)
-peaks <- lapply(peaks,data.table)
-names(peaks) <- names(expts)
+peaks <- lapply(file.path(peakdir,peaks),fread)
+names(peaks) <- names(stats)
 
 peak_ranges <- lapply(peaks,function(x)
                       x[V8 > 200,GRanges(seqnames = V1,
@@ -50,6 +51,9 @@ pdf(file = file.path(figs_dir,"Carroll_mouse_FoxA1_ForwardStrandRatio_by_rep.pdf
 ggplot(stat_peaks[f > 0 & r > 0],aes(repl,fsr,fill = repl))+geom_boxplot(outlier.shape = NA)+
   scale_fill_brewer(palette = "Pastel1")+theme_bw()+theme(legend.position = "none")+
   xlab("Replicate")+ylab("Forward Strand Ratio (FSR)")
+ggplot(stat_peaks[f > 0 & r > 0],aes(repl,-log10(4* fsr * (1 - fsr)),fill = repl))+geom_boxplot(outlier.shape = NA)+
+  scale_fill_brewer(palette = "Pastel1")+theme_bw()+theme(legend.position = "none")+
+  xlab("Replicate")+ylab("Forward Strand Ratio (FSR)")+ylim(0,.2)
 dev.off()
 
 
@@ -107,7 +111,7 @@ pvals[, depth := minD]
 library(reshape2)
 pvals <- melt(pvals,id.vars = "depth",variable.name = "Replicate",value.name = "p.value")
 
-save(pvals,file = "wilcoxon_pvals.RData")
+save(pvals,file = "data/wilcoxon_pvals.RData")
 
 pdf(file = "figs/for_paper/Carroll_FSR_depth_VS_pvalWilcoxon.pdf")
 ggplot(pvals,aes(depth,-log10(p.value),colour = Replicate))+
@@ -124,3 +128,131 @@ ggplot(pvals,aes(depth,-log10(p.value),colour = Replicate))+
   scale_color_brewer(palette = "Set1",name = "")+ggtitle("C")+
   xlab("Min. number of reads")
 dev.off()
+
+library(scales)
+
+
+wilcoxon_dt <- function(minD,stats)
+{
+  dt <- stats[,.(depth,fsr,imb,overlap,repl)]
+  dt <- dt[depth > minD]
+
+  dt[,dd := minD]
+
+  return(dt)
+}
+
+
+
+wilcoxon_plots <- function(minD,stats,imbalance = FALSE)
+{
+  dt <- stats[,.(depth,fsr,imb,overlap,repl)]
+  dt <- dt[depth > minD]
+
+  out <- ggplot(dt,aes_string("overlap",
+                              ifelse(imbalance,"imb","fsr"),
+                              fill = "repl"))+
+      geom_boxplot(outlier.size = NA)+theme_bw()+
+      theme(legend.position = "top")+
+      scale_fill_brewer(palette = "Pastel1")+
+      ggtitle(minD)+facet_wrap(  ~ repl,nrow = 1)
+  if(imbalance){
+    out <- out + scale_y_log10()+ylab("imbalance index")
+  }else{
+    out <- out + ylim(0,1)+ylab("forward strand ratio")
+  }
+  print(out)
+}
+
+
+
+
+stats[,imb := imbalance_idx(fsr)]
+
+
+minD <- seq(50,200,by = 10)
+dt_list <- mclapply(minD,wilcoxon_dt,stats,mc.cores = 20)
+
+dt <- do.call(rbind,dt_list)
+
+pdf(file = "figs/strand_imbalance_FoxA1.pdf",width = 12,height = 5)
+ggplot(dt,aes(repl,imb,fill = overlap))+  
+      geom_boxplot(outlier.size = NA,width = .8,position = "dodge")+
+  theme_bw()+
+      theme(legend.position = "top",
+            axis.text.x = element_text(angle = 75,hjust  = 1))+
+      scale_fill_brewer(name = "Overlap",palette = "Pastel2")+
+      scale_y_log10(limits = c(1e-5,1e1))+
+  ylab("Strand Imbalance")+facet_grid(. ~ dd)+
+  xlab("Replicate")
+ggplot(dt[dd %in% c(50,100,150,200)],aes(repl,imb,fill = overlap))+  
+      geom_boxplot(outlier.size = NA,width = .8,position = "dodge")+
+  theme_bw()+
+      theme(legend.position = "top",
+            axis.text.x = element_text(angle = 75,hjust  = 1))+
+      scale_fill_brewer(name = "Overlap",palette = "Pastel2")+
+      scale_y_log10(limits = c(1e-5,1e1))+
+  ylab("Strand Imbalance")+facet_grid(. ~ dd)+
+  xlab("Replicate")
+dev.off()
+
+
+pdf("strand_ratio.pdf")
+plots <- lapply(minD,wilcoxon_plots,stats,imbalance = FALSE)
+dev.off()
+pdf("imbalance.pdf")
+plots <- lapply(minD,wilcoxon_plots,stats,imbalance = TRUE)
+dev.off()
+
+library(dplyr)
+
+clean_test <- function(minD,stats,repli,lb,ub){
+
+  dt <- stats[repli] %>% filter( f > 0 & r > 0) %>%
+    filter(depth > minD) %>% filter(between(fsr,lb,ub))
+  dt <- select(dt,imb,fsr,overlap)
+
+  tests <- list()
+  tests[[1]] <- dt[,broom::tidy(wilcox.test( imb ~ overlap))]
+  
+  imb1 <- dt %>% filter(overlap == "yes") %>% select(imb)
+  imb2 <- dt %>% filter(overlap == "no") %>% select(imb)
+  
+  tests[[2]] <- broom::tidy( ks.test(imb1[[1]],imb2[[1]]))
+
+  tests <- lapply(tests,data.table)
+
+  names(tests) <- c("wilcox","ks")
+
+  tests <- mapply(function(x,y)x[, test := y ],tests,names(tests),
+                  SIMPLIFY = FALSE)
+  tests <- do.call(rbind,tests)
+
+  tests[,repl := repli]
+  tests[,depth := minD]
+                  
+  return(tests)
+  
+  
+}
+
+minD <- seq(10,500,by = 10)
+
+rep1 <- mclapply(minD,clean_test,stats,"Rep-1",.1,.9,
+                 mc.cores = mc) 
+rep2 <- mclapply(minD,clean_test,stats,"Rep-2",.1,.9,
+                 mc.cores = mc) 
+rep3 <- mclapply(minD,clean_test,stats,"Rep-3",.1,.9,
+                 mc.cores = mc)
+
+tests <- do.call(rbind,
+  list(do.call(rbind,rep1),
+       do.call(rbind,rep2),
+       do.call(rbind,rep3)))
+
+save(tests,file = "data/carroll_mouse_imbalance_test.RData")
+
+
+
+
+

@@ -39,6 +39,8 @@ if("--help" %in% args){
 
 stopifnot(length(args) == 4)
 
+u1 <- proc.time()
+
 library(GenomicAlignments)
 library(parallel)
 library(devtools)
@@ -47,14 +49,25 @@ library(broom)
 
 load_all("~/Desktop/Docs/Code/ChIPexoQual")
 
+u2 <- proc.time()
+
 infile <- args[1]
 outfile <- args[2]
 M <- as.numeric(args[3])
 N <- as.numeric(args[4])
 
+timefile <- file.path("data/times",
+                      gsub(".RData","_time.txt",basename(infile)))
+M <- 1e3
+N <- 1e4
+
+
+
 mc <- detectCores()
 
 load(infile)
+
+u3 <- proc.time()
 
 stats <- ext_stats[[1]]
 
@@ -69,5 +82,13 @@ samp <- function(stats,nreg)
 
 coeff <- mclapply(1:N,function(i)samp(stats,M),mc.cores = mc)
 coeff <- do.call(rbind,coeff)
+
+u4 <- proc.time()
+
+u <- list(u2 - u1,u3 - u2,u4 - u3)
+
+write.table(Reduce(rbind,u),file = timefile,quote = FALSE,
+            append = TRUE,col.names = FALSE,row.names = FALSE,
+            sep = "\t")
 
 save(coeff,file = outfile)

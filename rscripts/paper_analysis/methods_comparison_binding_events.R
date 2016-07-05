@@ -287,3 +287,32 @@ reso <- mapply(function(x,y)copy(x)[,dataset := y],reso,edsn,SIMPLIFY = FALSE)
 reso <- do.call(rbind,reso)
 
 save(reso,file = "data/Resolution_method_with_peaks.RData")
+
+pdf(file = "figs/gem_dpeak_reso/nr_sites.pdf",height = 12,width = 4)
+ggplot(melt(dcast.data.table(reso[dataset == 931], value.var = "reso",
+     formula = peak + dataset ~ method,
+     fun.aggregate = length)
+),aes( variable,peak , fill = factor(value)))+geom_tile()+
+  theme_bw()+
+  theme(legend.position = "top",axis.text.x = element_text(angle = 90))+
+  scale_fill_brewer(palette = "Pastel1",name = "nsites")
+dev.off()
+
+reso2 <- dcast.data.table(reso[dataset == 931], value.var = "reso",
+     formula = peak + dataset ~ method,
+     fun.aggregate = length)
+aux <- strsplit(reso2[,(peak)],"-")
+dt <- data.table(sq = "U00096",
+   start = sapply(aux,function(x)as.numeric(x[1])),
+   end = sapply(aux,function(x)as.numeric(x[2])))
+
+dt[start == 0, start := 1]
+
+write.table(dt,
+ file = "/p/keles/ChIPexo/volume6/K12/other_methods/dpeak_test/peak_to_check_dpeak.txt",
+ quote = FALSE,row.names = FALSE,col.names = FALSE,sep = "\t")
+
+u <- dt[, paste0(sq,":",start,"-",end)]
+write.table(u,
+ file = "/p/keles/ChIPexo/volume6/K12/other_methods/dpeak_test/peak_to_check_gem.txt",
+ quote = FALSE,row.names = FALSE,col.names = FALSE,sep = "\t")

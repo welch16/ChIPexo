@@ -19,7 +19,7 @@ read_files <- do.call(c,lapply(idx,function(x)read_files[x]))
 read_files <- read_files[grep("sort",read_files)]
 read_files <- read_files[grep("bai",read_files,invert = TRUE)]
 
-fdr <- "FDR1/"
+fdr <- "FDR5/"
 peak_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo"
 peak_files <- list.files(peak_dir,recursive = TRUE)
 idx <- lapply(edsn,grep,peak_files)
@@ -33,7 +33,7 @@ peaks <- lapply(peaks,function(x)x[,V1 := "NC_010473"])
 
 mc <- detectCores()
 motif_file <- "/p/keles/ChIPexo/volume6/K12/motif_dpeak/Sig70_motifs.RData"
-motif_file_par <- "/p/keles/ChIPexo/volume6/K12/motif_dpeak/Sig70_motifs_par.RData"
+motif_file_par <- "/p/keles/ChIPexo/volume6/K12/motif_dpeak/Sig70_motifs_FDR5.RData"
 
 load(motif_file_par) ## dp_motifs
 
@@ -58,7 +58,7 @@ dpeakEst <- mapply(dpeak_call,file.path(peak_dir,peak_files),
 
 save(dpeakEst,file = "dpeak_sites_motif.RData")
 
-out_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo/motif_init/FDR1"
+out_dir <- "/p/keles/ChIPexo/volume6/K12/downstream/ChIPexo/motif_init/FDR5"
 dir.create(out_dir,recursive = TRUE)
 
 out_files <- gsub("_peaks.txt","_sites.txt",basename(peak_files))

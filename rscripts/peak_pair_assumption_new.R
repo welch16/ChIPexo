@@ -3,7 +3,7 @@ rm(list = ls())
 
 library(mosaics)
 library(ChIPUtils)
-
+library(data.table)
 library(dpeak)
 
 exo_file <- "/p/keles/ChIPexo/volume3/LandickData/ChIPexo/edsn931_042814_qc.sorted.bam"
