@@ -1,30 +1,16 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.9.8)  5 JUL 2016 15:02
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.12.16)  5 JUL 2016 20:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**chipexo_QC_vs2
+**chipexo_QC_vs2.tex
 (./chipexo_QC_vs2.tex
 LaTeX2e <2011/06/27>
-Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, ge
-rman-x-2011-07-01, ngerman-x-2011-07-01, afrikaans, ancientgreek, ibycus, arabi
-c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
-h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
-h, french, galician, german, ngerman, swissgerman, monogreek, greek, hungarian,
- icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, marathi, or
-iya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, kurmanji,
- lao, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk, pol
-ish, portuguese, romanian, russian, sanskrit, serbian, serbianc, slovak, sloven
-ian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, welsh, loaded
-.
+Babel <3.9h> and hyphenation patterns for 78 languages loaded.
 (./bmcart.cls
 Document Class: bmcart 2014/01/24BioMed Central class (VS)
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/article.
-cls
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/size10.c
-lo
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -41,32 +27,26 @@ File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \mathindent=\dimen103
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/graphics/keyv
-al.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks14
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/xcolor/xcolor
-.sty
+(/usr/share/texmf/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/latexconfig/c
-olor.cfg
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
 File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
 Package xcolor Info: Driver file: pdftex.def on input line 225.
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/pdftex-def/pd
-ftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/in
-fwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/message (HO)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/lt
-xcmds.sty
-Package: ltxcmds 2011/04/18 v1.20 LaTeX kernel commands for general use (HO)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count87
 )
@@ -80,9 +60,8 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/lastpage/last
-page.sty
-Package: lastpage 2011/09/01 v1.2k Refers to last page's name (HMM; JPG)
+(/usr/share/texlive/texmf-dist/tex/latex/lastpage/lastpage.sty
+Package: lastpage 2013/01/28 v1.2l Refers to last page's name (HMM; JPG)
 )
 \c@thanks=\count88
 \bmcfloat@box=\box26
@@ -96,54 +75,48 @@ Package: lastpage 2011/09/01 v1.2k Refers to last page's name (HMM; JPG)
 \authors@list=\toks15
 \keywords@list=\toks16
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/html/url.sty
-Package: url 1999/03/02  ver 1.4  Verb mode for urls, email addresses, and file
- names
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip10
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsmath/amsma
-th.sty
-Package: amsmath 2000/07/18 v2.13 AMS math features
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip43
 
 For additional information on amsmath, use the `?' option.
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsmath/amste
-xt.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2000/06/29 v2.01
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsmath/amsge
-n.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks17
 \ex@=\dimen105
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsmath/amsbs
-y.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d
 \pmbraise@=\dimen106
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsmath/amsop
-n.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
 \inf@bad=\count92
-LaTeX Info: Redefining \frac on input line 211.
+LaTeX Info: Redefining \frac on input line 210.
 \uproot@=\count93
 \leftroot@=\count94
-LaTeX Info: Redefining \overline on input line 307.
+LaTeX Info: Redefining \overline on input line 306.
 \classnum@=\count95
 \DOTSCASE@=\count96
-LaTeX Info: Redefining \ldots on input line 379.
-LaTeX Info: Redefining \dots on input line 382.
-LaTeX Info: Redefining \cdots on input line 467.
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
 \Mathstrutbox@=\box30
 \strutbox@=\box31
 \big@size=\dimen107
-LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \macc@depth=\count97
 \c@MaxMatrixCols=\count98
-\dotsspace@=\muskip10
+\dotsspace@=\muskip11
 \c@parentequation=\count99
 \dspbrk@lvl=\count100
 \tag@help=\toks18
@@ -161,12 +134,11 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
 \multlinegap=\skip44
 \multlinetaggap=\skip45
 \mathdisplay@stack=\toks21
-LaTeX Info: Redefining \[ on input line 2666.
-LaTeX Info: Redefining \] on input line 2667.
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amscls/amsthm
-.sty
-Package: amsthm 2009/07/02 v2.20.1
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty
+Package: amsthm 2004/08/06 v2.20
 \thm@style=\toks22
 \thm@bodyfont=\toks23
 \thm@headfont=\toks24
@@ -177,32 +149,26 @@ Package: amsthm 2009/07/02 v2.20.1
 \thm@headsep=\skip48
 \dth@everypar=\toks27
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsfonts/amss
-ymb.sty
-Package: amssymb 2009/06/22 v3.00
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsfonts/amsf
-onts.sty
-Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
-(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/graphics/grap
-hicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/graphics/grap
-hics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/graphics/trig
-.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/latexconfig/g
-raphics.cfg
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
 File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
 Package graphics Info: Driver file: pdftex.def on input line 91.
@@ -210,420 +176,336 @@ Package graphics Info: Driver file: pdftex.def on input line 91.
 \Gin@req@height=\dimen114
 \Gin@req@width=\dimen115
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/frontendlayer/
-tikz.sty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/basiclayer/pgf
-.sty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/utilities/pgfr
-cs.sty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-futil-common.tex
+(/usr/share/texmf/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texmf/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texmf/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfutil-common.tex
 \pgfutil@everybye=\toks28
-\pgfutil@tempdima=\dimen116
-\pgfutil@tempdimb=\dimen117
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-futil-common-lists.tex))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-futil-latex.def
+)
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfutil-latex.def
 \pgfutil@abb=\box32
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/ms/everyshi.s
-ty
+(/usr/share/texlive/texmf-dist/tex/latex/ms/everyshi.sty
 Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-frcs.code.tex
-Package: pgfrcs 2013/12/20 v3.0.0 (rcs-revision 1.28)
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfrcs.code.tex
+Package: pgfrcs 2010/10/25 v2.10 (rcs-revision 1.24)
 ))
-Package: pgf 2013/12/18 v3.0.0 (rcs-revision 1.14)
+Package: pgf 2008/01/15 v2.10 (rcs-revision 1.12)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/basiclayer/pgf
-core.sty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/systemlayer/pg
-fsys.sty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/systemlayer/
-pgfsys.code.tex
-Package: pgfsys 2013/11/30 v3.0.0 (rcs-revision 1.47)
+(/usr/share/texmf/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texmf/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys.code.tex
+Package: pgfsys 2010/06/30 v2.10 (rcs-revision 1.37)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-fkeys.code.tex
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeys.code.tex
 \pgfkeys@pathtoks=\toks29
 \pgfkeys@temptoks=\toks30
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-fkeysfiltered.code.tex
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
 \pgfkeys@tmptoks=\toks31
 ))
-\pgf@x=\dimen118
-\pgf@y=\dimen119
-\pgf@xa=\dimen120
-\pgf@ya=\dimen121
-\pgf@xb=\dimen122
-\pgf@yb=\dimen123
-\pgf@xc=\dimen124
-\pgf@yc=\dimen125
+\pgf@x=\dimen116
+\pgf@y=\dimen117
+\pgf@xa=\dimen118
+\pgf@ya=\dimen119
+\pgf@xb=\dimen120
+\pgf@yb=\dimen121
+\pgf@xc=\dimen122
+\pgf@yc=\dimen123
 \w@pgf@writea=\write3
 \r@pgf@reada=\read1
 \c@pgf@counta=\count104
 \c@pgf@countb=\count105
 \c@pgf@countc=\count106
 \c@pgf@countd=\count107
-\t@pgf@toka=\toks32
-\t@pgf@tokb=\toks33
-\t@pgf@tokc=\toks34
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/systemlayer/
-pgf.cfg
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgf.cfg
 File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
 )
-Driver file for pgf: pgfsys-pdftex.def
+Package pgfsys Info: Driver file for pgf: pgfsys-pdftex.def on input line 900.
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/systemlayer/
-pgfsys-pdftex.def
-File: pgfsys-pdftex.def 2013/07/18  (rcs-revision 1.33)
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+File: pgfsys-pdftex.def 2009/05/22  (rcs-revision 1.26)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/systemlayer/
-pgfsys-common-pdf.def
-File: pgfsys-common-pdf.def 2013/10/10  (rcs-revision 1.13)
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def
+File: pgfsys-common-pdf.def 2008/05/19  (rcs-revision 1.10)
 )))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/systemlayer/
-pgfsyssoftpath.code.tex
-File: pgfsyssoftpath.code.tex 2013/09/09  (rcs-revision 1.9)
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2008/07/18  (rcs-revision 1.7)
 \pgfsyssoftpath@smallbuffer@items=\count108
 \pgfsyssoftpath@bigbuffer@items=\count109
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/systemlayer/
-pgfsysprotocol.code.tex
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
 File: pgfsysprotocol.code.tex 2006/10/16  (rcs-revision 1.4)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcore.code.tex
-Package: pgfcore 2010/04/11 v3.0.0 (rcs-revision 1.7)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2010/04/11 v2.10 (rcs-revision 1.7)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-.code.tex
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-calc.code.tex
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-util.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-parser.code.tex
-\pgfmath@dimen=\dimen126
+(/usr/share/texmf/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen124
 \pgfmath@count=\count110
 \pgfmath@box=\box33
-\pgfmath@toks=\toks35
-\pgfmath@stack@operand=\toks36
-\pgfmath@stack@operation=\toks37
+\pgfmath@toks=\toks32
+\pgfmath@stack@operand=\toks33
+\pgfmath@stack@operation=\toks34
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.code.tex
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.basic.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.trigonometric.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.random.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.comparison.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.base.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.round.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.misc.code.tex)
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-functions.integerarithmetics.code.tex)))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-float.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.basic.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.trigonometric.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.random.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.comparison.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.base.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.round.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex)))
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathfloat.code.tex
 \c@pgfmathroundto@lastzeros=\count111
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorepoints.code.tex
-File: pgfcorepoints.code.tex 2013/10/07  (rcs-revision 1.27)
-\pgf@picminx=\dimen127
-\pgf@picmaxx=\dimen128
-\pgf@picminy=\dimen129
-\pgf@picmaxy=\dimen130
-\pgf@pathminx=\dimen131
-\pgf@pathmaxx=\dimen132
-\pgf@pathminy=\dimen133
-\pgf@pathmaxy=\dimen134
-\pgf@xx=\dimen135
-\pgf@xy=\dimen136
-\pgf@yx=\dimen137
-\pgf@yy=\dimen138
-\pgf@zx=\dimen139
-\pgf@zy=\dimen140
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
+File: pgfcorepoints.code.tex 2010/04/09  (rcs-revision 1.20)
+\pgf@picminx=\dimen125
+\pgf@picmaxx=\dimen126
+\pgf@picminy=\dimen127
+\pgf@picmaxy=\dimen128
+\pgf@pathminx=\dimen129
+\pgf@pathmaxx=\dimen130
+\pgf@pathminy=\dimen131
+\pgf@pathmaxy=\dimen132
+\pgf@xx=\dimen133
+\pgf@xy=\dimen134
+\pgf@yx=\dimen135
+\pgf@yy=\dimen136
+\pgf@zx=\dimen137
+\pgf@zy=\dimen138
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorepathconstruct.code.tex
-File: pgfcorepathconstruct.code.tex 2013/10/07  (rcs-revision 1.29)
-\pgf@path@lastx=\dimen141
-\pgf@path@lasty=\dimen142
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2010/08/03  (rcs-revision 1.24)
+\pgf@path@lastx=\dimen139
+\pgf@path@lasty=\dimen140
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorepathusage.code.tex
-File: pgfcorepathusage.code.tex 2013/12/13  (rcs-revision 1.23)
-\pgf@shorten@end@additional=\dimen143
-\pgf@shorten@start@additional=\dimen144
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex
+File: pgfcorepathusage.code.tex 2008/04/22  (rcs-revision 1.12)
+\pgf@shorten@end@additional=\dimen141
+\pgf@shorten@start@additional=\dimen142
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorescopes.code.tex
-File: pgfcorescopes.code.tex 2013/10/09  (rcs-revision 1.44)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2010/09/08  (rcs-revision 1.34)
 \pgfpic=\box34
 \pgf@hbox=\box35
 \pgf@layerbox@main=\box36
 \pgf@picture@serial@count=\count112
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcoregraphicstate.code.tex
-File: pgfcoregraphicstate.code.tex 2013/09/19  (rcs-revision 1.11)
-\pgflinewidth=\dimen145
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2008/04/22  (rcs-revision 1.9)
+\pgflinewidth=\dimen143
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcoretransformations.code.tex
-File: pgfcoretransformations.code.tex 2013/10/10  (rcs-revision 1.17)
-\pgf@pt@x=\dimen146
-\pgf@pt@y=\dimen147
-\pgf@pt@temp=\dimen148
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex
+File: pgfcoretransformations.code.tex 2009/06/10  (rcs-revision 1.11)
+\pgf@pt@x=\dimen144
+\pgf@pt@y=\dimen145
+\pgf@pt@temp=\dimen146
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorequick.code.tex
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
 File: pgfcorequick.code.tex 2008/10/09  (rcs-revision 1.3)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcoreobjects.code.tex
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex
 File: pgfcoreobjects.code.tex 2006/10/11  (rcs-revision 1.2)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorepathprocessing.code.tex
-File: pgfcorepathprocessing.code.tex 2013/09/09  (rcs-revision 1.9)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2008/10/09  (rcs-revision 1.8)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorearrows.code.tex
-File: pgfcorearrows.code.tex 2013/11/07  (rcs-revision 1.40)
-\pgfarrowsep=\dimen149
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex
+File: pgfcorearrows.code.tex 2008/04/23  (rcs-revision 1.11)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcoreshade.code.tex
-File: pgfcoreshade.code.tex 2013/07/15  (rcs-revision 1.15)
-\pgf@max=\dimen150
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2008/11/23  (rcs-revision 1.13)
+\pgf@max=\dimen147
 \pgf@sys@shading@range@num=\count113
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcoreimage.code.tex
-File: pgfcoreimage.code.tex 2013/07/15  (rcs-revision 1.18)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2010/03/25  (rcs-revision 1.16)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcoreexternal.code.tex
-File: pgfcoreexternal.code.tex 2013/07/15  (rcs-revision 1.20)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
+File: pgfcoreexternal.code.tex 2010/09/01  (rcs-revision 1.17)
 \pgfexternal@startupbox=\box37
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorelayers.code.tex
-File: pgfcorelayers.code.tex 2013/07/18  (rcs-revision 1.7)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2010/08/27  (rcs-revision 1.2)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcoretransparency.code.tex
-File: pgfcoretransparency.code.tex 2013/09/30  (rcs-revision 1.5)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex
+File: pgfcoretransparency.code.tex 2008/01/17  (rcs-revision 1.2)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/basiclayer/p
-gfcorepatterns.code.tex
-File: pgfcorepatterns.code.tex 2013/11/07  (rcs-revision 1.5)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
+File: pgfcorepatterns.code.tex 2009/07/02  (rcs-revision 1.3)
 )))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/modules/pgfm
-oduleshapes.code.tex
-File: pgfmoduleshapes.code.tex 2013/10/31  (rcs-revision 1.34)
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+File: pgfmoduleshapes.code.tex 2010/09/09  (rcs-revision 1.13)
 \pgfnodeparttextbox=\box38
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/modules/pgfm
-oduleplot.code.tex
-File: pgfmoduleplot.code.tex 2013/07/31  (rcs-revision 1.12)
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+File: pgfmoduleplot.code.tex 2010/10/22  (rcs-revision 1.8)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/compatibility/
-pgfcomp-version-0-65.sty
-Package: pgfcomp-version-0-65 2007/07/03 v3.0.0 (rcs-revision 1.7)
-\pgf@nodesepstart=\dimen151
-\pgf@nodesepend=\dimen152
+(/usr/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
+Package: pgfcomp-version-0-65 2007/07/03 v2.10 (rcs-revision 1.7)
+\pgf@nodesepstart=\dimen148
+\pgf@nodesepend=\dimen149
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/compatibility/
-pgfcomp-version-1-18.sty
-Package: pgfcomp-version-1-18 2007/07/23 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
+Package: pgfcomp-version-1-18 2007/07/23 v2.10 (rcs-revision 1.1)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/utilities/pgff
-or.sty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/utilities/pgfk
-eys.sty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-fkeys.code.tex))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/latex/pgf/math/pgfmath.s
-ty
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-.code.tex))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/utilities/pg
-ffor.code.tex
-Package: pgffor 2013/12/13 v3.0.0 (rcs-revision 1.25)
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/math/pgfmath
-.code.tex)
-\pgffor@iter=\dimen153
-\pgffor@skip=\dimen154
-\pgffor@stack=\toks38
-\pgffor@toks=\toks39
+(/usr/share/texmf/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texmf/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texmf/tex/generic/pgf/utilities/pgffor.code.tex
+Package: pgffor 2010/03/23 v2.10 (rcs-revision 1.18)
+\pgffor@iter=\dimen150
+\pgffor@skip=\dimen151
+\pgffor@stack=\toks35
+\pgffor@toks=\toks36
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/tikz.code.tex
-Package: tikz 2013/12/13 v3.0.0 (rcs-revision 1.142)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+Package: tikz 2010/10/13 v2.10 (rcs-revision 1.76)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/pg
-flibraryplothandlers.code.tex
-File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.0 (rcs-revision 1.20)
+(/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2010/05/31 v2.10 (rcs-revision 1.15)
 \pgf@plot@mark@count=\count114
-\pgfplotmarksize=\dimen155
+\pgfplotmarksize=\dimen152
 )
-\tikz@lastx=\dimen156
-\tikz@lasty=\dimen157
-\tikz@lastxsaved=\dimen158
-\tikz@lastysaved=\dimen159
-\tikzleveldistance=\dimen160
-\tikzsiblingdistance=\dimen161
+\tikz@lastx=\dimen153
+\tikz@lasty=\dimen154
+\tikz@lastxsaved=\dimen155
+\tikz@lastysaved=\dimen156
+\tikzleveldistance=\dimen157
+\tikzsiblingdistance=\dimen158
 \tikz@figbox=\box39
-\tikz@figbox@bg=\box40
-\tikz@tempbox=\box41
-\tikz@tempbox@bg=\box42
+\tikz@tempbox=\box40
 \tikztreelevel=\count115
 \tikznumberofchildren=\count116
 \tikznumberofcurrentchild=\count117
 \tikz@fig@count=\count118
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/modules/pgfm
-odulematrix.code.tex
-File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+File: pgfmodulematrix.code.tex 2010/08/24  (rcs-revision 1.4)
 \pgfmatrixcurrentrow=\count119
 \pgfmatrixcurrentcolumn=\count120
 \pgf@matrix@numberofcolumns=\count121
 )
 \tikz@expandcount=\count122
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibrarytopaths.code.tex
-File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.0 (rcs-revision 1.2)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopat
+hs.code.tex
+File: tikzlibrarytopaths.code.tex 2008/06/17 v2.10 (rcs-revision 1.2)
 )))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryshapes.code.tex
-File: tikzlibraryshapes.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshape
+s.code.tex
+File: tikzlibraryshapes.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryshapes.geometric.code.tex
-File: tikzlibraryshapes.geometric.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshape
+s.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/sh
-apes/pgflibraryshapes.geometric.code.tex
-File: pgflibraryshapes.geometric.code.tex 2008/06/26 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/libraries/shapes/pgflibraryshapes.geometric.c
+ode.tex
+File: pgflibraryshapes.geometric.code.tex 2008/06/26 v2.10 (rcs-revision 1.1)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryshapes.misc.code.tex
-File: tikzlibraryshapes.misc.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshape
+s.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/sh
-apes/pgflibraryshapes.misc.code.tex
-File: pgflibraryshapes.misc.code.tex 2013/07/18 v3.0.0 (rcs-revision 1.5)
+(/usr/share/texmf/tex/generic/pgf/libraries/shapes/pgflibraryshapes.misc.code.t
+ex
+File: pgflibraryshapes.misc.code.tex 2008/10/07 v2.10 (rcs-revision 1.3)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryshapes.symbols.code.tex
-File: tikzlibraryshapes.symbols.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshape
+s.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/sh
-apes/pgflibraryshapes.symbols.code.tex
-File: pgflibraryshapes.symbols.code.tex 2013/09/11 v3.0.0 (rcs-revision 1.6)
+(/usr/share/texmf/tex/generic/pgf/libraries/shapes/pgflibraryshapes.symbols.cod
+e.tex
+File: pgflibraryshapes.symbols.code.tex 2009/10/27 v2.10 (rcs-revision 1.3)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryshapes.arrows.code.tex
-File: tikzlibraryshapes.arrows.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshape
+s.arrows.code.tex
+File: tikzlibraryshapes.arrows.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/sh
-apes/pgflibraryshapes.arrows.code.tex
-File: pgflibraryshapes.arrows.code.tex 2008/06/26 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/libraries/shapes/pgflibraryshapes.arrows.code
+.tex
+File: pgflibraryshapes.arrows.code.tex 2008/06/26 v2.10 (rcs-revision 1.1)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryshapes.callouts.code.tex
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/sh
-apes/pgflibraryshapes.callouts.code.tex))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryshapes.multipart.code.tex
-File: tikzlibraryshapes.multipart.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshape
+s.callouts.code.tex
+(/usr/share/texmf/tex/generic/pgf/libraries/shapes/pgflibraryshapes.callouts.co
+de.tex))
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshape
+s.multipart.code.tex
+File: tikzlibraryshapes.multipart.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/sh
-apes/pgflibraryshapes.multipart.code.tex
-File: pgflibraryshapes.multipart.code.tex 2010/01/07 v3.0.0 (rcs-revision 1.2)
-\pgfnodepartlowerbox=\box43
-\pgfnodeparttwobox=\box44
-\pgfnodepartthreebox=\box45
-\pgfnodepartfourbox=\box46
-\pgfnodeparttwentybox=\box47
-\pgfnodepartnineteenbox=\box48
-\pgfnodeparteighteenbox=\box49
-\pgfnodepartseventeenbox=\box50
-\pgfnodepartsixteenbox=\box51
-\pgfnodepartfifteenbox=\box52
-\pgfnodepartfourteenbox=\box53
-\pgfnodepartthirteenbox=\box54
-\pgfnodeparttwelvebox=\box55
-\pgfnodepartelevenbox=\box56
-\pgfnodeparttenbox=\box57
-\pgfnodepartninebox=\box58
-\pgfnodeparteightbox=\box59
-\pgfnodepartsevenbox=\box60
-\pgfnodepartsixbox=\box61
-\pgfnodepartfivebox=\box62
+(/usr/share/texmf/tex/generic/pgf/libraries/shapes/pgflibraryshapes.multipart.c
+ode.tex
+File: pgflibraryshapes.multipart.code.tex 2010/01/07 v2.10 (rcs-revision 1.2)
+\pgfnodepartlowerbox=\box41
+\pgfnodeparttwobox=\box42
+\pgfnodepartthreebox=\box43
+\pgfnodepartfourbox=\box44
+\pgfnodeparttwentybox=\box45
+\pgfnodepartnineteenbox=\box46
+\pgfnodeparteighteenbox=\box47
+\pgfnodepartseventeenbox=\box48
+\pgfnodepartsixteenbox=\box49
+\pgfnodepartfifteenbox=\box50
+\pgfnodepartfourteenbox=\box51
+\pgfnodepartthirteenbox=\box52
+\pgfnodeparttwelvebox=\box53
+\pgfnodepartelevenbox=\box54
+\pgfnodeparttenbox=\box55
+\pgfnodepartninebox=\box56
+\pgfnodeparteightbox=\box57
+\pgfnodepartsevenbox=\box58
+\pgfnodepartsixbox=\box59
+\pgfnodepartfivebox=\box60
 )))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/frontendlaye
-r/tikz/libraries/tikzlibraryarrows.code.tex
-File: tikzlibraryarrows.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrow
+s.code.tex
+File: tikzlibraryarrows.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf/tex/generic/pgf/libraries/pg
-flibraryarrows.code.tex
-File: pgflibraryarrows.code.tex 2013/09/23 v3.0.0 (rcs-revision 1.16)
-\arrowsize=\dimen162
+(/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
+File: pgflibraryarrows.code.tex 2008/10/27 v2.10 (rcs-revision 1.9)
+\arrowsize=\dimen159
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/float/float.s
-ty
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count123
-\float@exts=\toks40
-\float@box=\box63
-\@float@everytoks=\toks41
-\@floatcapt=\box64
+\float@exts=\toks37
+\float@box=\box61
+\@float@everytoks=\toks38
+\@floatcapt=\box62
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/tools/verbati
-m.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
 Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
-\every@verbatim=\toks42
-\verbatim@line=\toks43
+\every@verbatim=\toks39
+\verbatim@line=\toks40
 \verbatim@in@stream=\read2
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/tabu/tabu.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tabu/tabu.sty
 Package: tabu 2011/02/26 v2.8 - flexible LaTeX tabulars (FC)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/tools/array.s
-ty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
 Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
-\col@sep=\dimen163
-\extrarowheight=\dimen164
-\NC@list=\toks44
+\col@sep=\dimen160
+\extrarowheight=\dimen161
+\NC@list=\toks41
 \extratabsurround=\skip49
 \backup@length=\skip50
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/varwidth/varw
-idth.sty
+(/usr/share/texlive/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
-\@vwid@box=\box65
+\@vwid@box=\box63
 \sift@deathcycles=\count124
-\@vwid@loff=\dimen165
-\@vwid@roff=\dimen166
+\@vwid@loff=\dimen162
+\@vwid@roff=\dimen163
 )
 \c@taburow=\count125
 \tabu@nbcols=\count126
@@ -631,99 +513,92 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \tabu@Xcol=\count128
 \tabu@alloc=\count129
 \tabu@nested=\count130
-\tabu@target=\dimen167
-\tabu@spreadtarget=\dimen168
-\tabu@naturalX=\dimen169
-\tabucolX=\dimen170
-\tabu@Xsum=\dimen171
-\extrarowdepth=\dimen172
-\abovetabulinesep=\dimen173
-\belowtabulinesep=\dimen174
-\tabustrutrule=\dimen175
-\tabu@thebody=\toks45
-\tabu@footnotes=\toks46
-\tabu@box=\box66
-\tabu@arstrutbox=\box67
-\tabu@hleads=\box68
-\tabu@vleads=\box69
+\tabu@target=\dimen164
+\tabu@spreadtarget=\dimen165
+\tabu@naturalX=\dimen166
+\tabucolX=\dimen167
+\tabu@Xsum=\dimen168
+\extrarowdepth=\dimen169
+\abovetabulinesep=\dimen170
+\belowtabulinesep=\dimen171
+\tabustrutrule=\dimen172
+\tabu@thebody=\toks42
+\tabu@footnotes=\toks43
+\tabu@box=\box64
+\tabu@arstrutbox=\box65
+\tabu@hleads=\box66
+\tabu@vleads=\box67
 \tabu@cellskip=\skip51
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/multirow/mult
-irow.sty
-\bigstrutjot=\dimen176
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen173
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/framed/framed
-.sty
-Package: framed 2007/10/04 v 0.95: framed or shaded text with page breaks
-\fb@frw=\dimen177
-\fb@frh=\dimen178
-\FrameRule=\dimen179
-\FrameSep=\dimen180
+(/usr/share/texlive/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip52
+\fb@frw=\dimen174
+\fb@frh=\dimen175
+\FrameRule=\dimen176
+\FrameSep=\dimen177
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/tools/xr.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/xr.sty
 Package: xr 1994/05/28 v5.02 eXternal References (DPC)
 )
 Package xr Info: IMPORTING LABELS FROM supplement.aux on input line 17.
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/was/gensymb.s
-ty
+(/usr/share/texlive/texmf-dist/tex/latex/was/gensymb.sty
 Package: gensymb 2003/07/02 v1.0 (WaS)
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/listings/list
-ings.sty
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count131
-\lst@gtempboxa=\box70
-\lst@token=\toks47
+\lst@gtempboxa=\box68
+\lst@token=\toks44
 \lst@length=\count132
-\lst@currlwidth=\dimen181
+\lst@currlwidth=\dimen178
 \lst@column=\count133
 \lst@pos=\count134
-\lst@lostspace=\dimen182
-\lst@width=\dimen183
+\lst@lostspace=\dimen179
+\lst@width=\dimen180
 \lst@newlines=\count135
 \lst@lineno=\count136
-\lst@maxwidth=\dimen184
+\lst@maxwidth=\dimen181
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/listings/lstm
-isc.sty
-File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2013/08/26 1.5b (Carsten Heinz)
 \c@lstnumber=\count137
 \lst@skipnumbers=\count138
-\lst@framebox=\box71
+\lst@framebox=\box69
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/listings/list
-ings.cfg
-File: listings.cfg 2007/02/22 1.4 listings configuration
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2013/08/26 1.5b listings configuration
 ))
-Package: listings 2007/02/22 1.4 (Carsten Heinz)
+Package: listings 2013/08/26 1.5b (Carsten Heinz)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/soul/soul.sty
+(/usr/share/texlive/texmf-dist/tex/latex/soul/soul.sty
 Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
-\SOUL@word=\toks48
-\SOUL@lasttoken=\toks49
-\SOUL@cmds=\toks50
-\SOUL@buffer=\toks51
-\SOUL@token=\toks52
-\SOUL@spaceskip=\skip52
-\SOUL@ttwidth=\dimen185
-\SOUL@uldp=\dimen186
-\SOUL@ulht=\dimen187
+\SOUL@word=\toks45
+\SOUL@lasttoken=\toks46
+\SOUL@cmds=\toks47
+\SOUL@buffer=\toks48
+\SOUL@token=\toks49
+\SOUL@spaceskip=\skip53
+\SOUL@ttwidth=\dimen182
+\SOUL@uldp=\dimen183
+\SOUL@ulht=\dimen184
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/inputenc
-.sty
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2008/03/30 v1.1d Input encoding file
-\inpenc@prehook=\toks53
-\inpenc@posthook=\toks54
+\inpenc@prehook=\toks50
+\inpenc@posthook=\toks51
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/utf8.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 Now handling font encoding OML ...
 ... no UTF-8 mapping file for font encoding OML
 Now handling font encoding T1 ...
 ... processing UTF-8 mapping file for font encoding T1
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/t1enc.df
-u
+(/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.dfu
 File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
@@ -873,8 +748,7 @@ File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
 Now handling font encoding OT1 ...
 ... processing UTF-8 mapping file for font encoding OT1
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/ot1enc.d
-fu
+(/usr/share/texlive/texmf-dist/tex/latex/base/ot1enc.dfu
 File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
@@ -905,8 +779,7 @@ File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
 Now handling font encoding OMS ...
 ... processing UTF-8 mapping file for font encoding OMS
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/omsenc.d
-fu
+(/usr/share/texlive/texmf-dist/tex/latex/base/omsenc.dfu
 File: omsenc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A7 (decimal 167)
    defining Unicode char U+00B6 (decimal 182)
@@ -929,7 +802,8 @@ Now handling font encoding U ...
    defining Unicode char U+2026 (decimal 8230)
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
-)) (./chipexo_QC_vs2.aux)
+))
+(./chipexo_QC_vs2.aux)
 \openout1 = `chipexo_QC_vs2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
@@ -945,20 +819,19 @@ LaTeX Font Info:    ... okay on input line 41.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
 LaTeX Font Info:    ... okay on input line 41.
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/context/base/supp-p
-df.mkii
+(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count139
-\scratchdimen=\dimen188
-\scratchbox=\box72
+\scratchdimen=\dimen185
+\scratchbox=\box70
 \nofMPsegments=\count140
 \nofMParguments=\count141
-\everyMPshowfont=\toks55
+\everyMPshowfont=\toks52
 \MPscratchCnt=\count142
-\MPscratchDim=\dimen189
+\MPscratchDim=\dimen186
 \MPnumerator=\count143
 \makeMPintoPDFobject=\count144
-\everyMPtoPDFconversion=\toks56
+\everyMPtoPDFconversion=\toks53
 )
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             http://www.ctan.org/tex-archive/ 
@@ -967,18 +840,15 @@ Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             http://www.ctan.org/tex-archive/ 
 (lastpage)             install/macros/latex/contrib/pageslts.tds.zip
 (lastpage)             ! on input line 41.
+ (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/pd
-ftexcmds.sty
-Package: pdftexcmds 2011/04/22 v0.16 Utilities of pdfTeX for LuaTeX (HO)
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/if
-luatex.sty
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
 Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/if
-pdf.sty
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
 Package ifpdf Info: pdfTeX in PDF mode is detected.
 )
@@ -987,29 +857,23 @@ Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
 )
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/oberdiek/epst
-opdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/oberdiek/grfe
-xt.sty
-Package: grfext 2010/08/19 v1.1 Managing graphics extensions (HO)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/kv
-definekeys.sty
-Package: kvdefinekeys 2011/04/07 v1.3 Defining keys (HO)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
 ))
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/oberdiek/kvop
-tions.sty
-Package: kvoptions 2010/12/23 v3.10 Keyval support for LaTeX options (HO)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/kv
-setkeys.sty
-Package: kvsetkeys 2011/04/07 v1.13 Key value parser (HO)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/generic/oberdiek/et
-excmds.sty
-Package: etexcmds 2011/02/16 v1.5 Prefix for e-TeX command names (HO)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
 Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
 (etexcmds)             that some package has redefined \expanded.
@@ -1020,11 +884,11 @@ Package grfext Info: Graphics extension search list:
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 452.
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/latexconfig/e
-pstopdf-sys.cfg
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
-)) ABD: EveryShipout initializing macros
+))
+ABD: EveryShipout initializing macros
 LaTeX Info: Redefining \celsius on input line 41.
 Package gensymb Info: Faking symbols for \degree and \celsius on input line 41.
 
@@ -1060,16 +924,13 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 (Font)              size <5> substituted on input line 55.
 
 LaTeX Font Info:    Try loading font information for U+msa on input line 55.
-
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsfonts/umsa
-.fd
-File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Try loading font information for U+msb on input line 55.
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/amsfonts/umsb
-.fd
-File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Try loading font information for OMS+cmss on input line 55.
 
@@ -1080,20 +941,20 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
 (Font)              for symbol `textdagger' on input line 55.
 
-\address@aff1=\toks57
-\address@aff2=\toks58
-\address@aff3=\toks59
-\address@aff4=\toks60
-\address@aff5=\toks61
-\address@aff6=\toks62
+\address@aff1=\toks54
+\address@aff2=\toks55
+\address@aff3=\toks56
+\address@aff4=\toks57
+\address@aff5=\toks58
+\address@aff6=\toks59
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/it' in size <10> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 147.
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 127.
 
 
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/it' in size <8> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 198.
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 160.
 
 
 
@@ -1101,896 +962,897 @@ Overfull \hbox (1.0pt too wide) has occurred while \output is active
  [] 
  []
 
-[1{/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-var/fonts/map/pdftex/updma
-p/pdftex.map}
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
-] [2] [3] [4]
-Overfull \hbox (2.36604pt too wide) in paragraph at lines 634--634
+] [2] [3]
+Overfull \hbox (2.36604pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/bx/n/8 Protocol| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 634--634
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
 []\OT1/cmss/bx/n/8 Cell
  []
 
 
-Overfull \hbox (11.94461pt too wide) in paragraph at lines 634--634
+Overfull \hbox (11.94461pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 ChIP- 
  []
 
 
-Overfull \hbox (3.44449pt too wide) in paragraph at lines 634--634
+Overfull \hbox (3.44449pt too wide) in paragraph at lines 269--269
 \OT1/cmss/m/n/8 exo|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1960| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.4579| 
  []
 
 
-Overfull \hbox (17.11133pt too wide) in paragraph at lines 634--634
+Overfull \hbox (17.11133pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Human|  
  []
 
 
-Overfull \hbox (2.09726pt too wide) in paragraph at lines 634--634
+Overfull \hbox (2.09726pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 ER|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0127| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.8082| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0063| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.8024| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0100| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.8203| 
  []
 
 
-Overfull \hbox (14.59186pt too wide) in paragraph at lines 634--634
+Overfull \hbox (14.59186pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Mouse|  
  []
 
 
-Overfull \hbox (13.97243pt too wide) in paragraph at lines 634--634
+Overfull \hbox (13.97243pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 FoxA1|  
  []
 
 
-Overfull \hbox (8.75012pt too wide) in paragraph at lines 634--634
+Overfull \hbox (8.75012pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Liver|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1104| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.6562| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1604| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.7996| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1975| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.1068| 
  []
 
 
-Overfull \hbox (17.11133pt too wide) in paragraph at lines 634--634
+Overfull \hbox (17.11133pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Human|  
  []
 
 
-Overfull \hbox (2.6667pt too wide) in paragraph at lines 634--634
+Overfull \hbox (2.6667pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 GR|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.3678| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.2978| 
  []
 
 
-Overfull \hbox (3.00253pt too wide) in paragraph at lines 634--634
+Overfull \hbox (3.00253pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 116,518,000| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0441| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.0504| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0288| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.7714| 
  []
 
 
-Overfull \hbox (17.11133pt too wide) in paragraph at lines 634--634
+Overfull \hbox (17.11133pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Human|  
  []
 
 
-Overfull \hbox (8.40291pt too wide) in paragraph at lines 634--634
+Overfull \hbox (8.40291pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 TBP|  
  []
 
 
-Overfull \hbox (10.15292pt too wide) in paragraph at lines 634--634
+Overfull \hbox (10.15292pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 K562|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1119| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.1232| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0299| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.1681| 
  []
 
 
-Overfull \hbox (3.00253pt too wide) in paragraph at lines 634--634
+Overfull \hbox (3.00253pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 114,282,270| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1027| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.1464| 
  []
 
 
-Overfull \hbox (11.94461pt too wide) in paragraph at lines 634--634
+Overfull \hbox (11.94461pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 ChIP- 
  []
 
 
-Overfull \hbox (11.2307pt too wide) in paragraph at lines 634--634
+Overfull \hbox (11.2307pt too wide) in paragraph at lines 269--269
 \OT1/cmss/m/n/8 nexus|  
  []
 
 
-Overfull \hbox (47.28676pt too wide) in paragraph at lines 634--634
+Overfull \hbox (47.28676pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 D.Melanogaster|  
  []
 
 
-Overfull \hbox (13.92519pt too wide) in paragraph at lines 634--634
+Overfull \hbox (13.92519pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Dorsal|  
  []
 
 
-Overfull \hbox (17.01411pt too wide) in paragraph at lines 634--634
+Overfull \hbox (17.01411pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 embryo|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0402| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.6766| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0672| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.5656| 
  []
 
 
-Overfull \hbox (11.46683pt too wide) in paragraph at lines 634--634
+Overfull \hbox (11.46683pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Twist|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1637| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.6592| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1805| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.4549| 
  []
 
 
-Overfull \hbox (6.91675pt too wide) in paragraph at lines 634--634
+Overfull \hbox (6.91675pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Max|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.3628| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.5178| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0138| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.2124| 
  []
 
 
-Overfull \hbox (8.26399pt too wide) in paragraph at lines 634--634
+Overfull \hbox (8.26399pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 MyC|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0115| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.3935| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.0045| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.1879| 
  []
 
 
-Overfull \hbox (17.11133pt too wide) in paragraph at lines 634--634
+Overfull \hbox (17.11133pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 Human|  
  []
 
 
-Overfull \hbox (8.40291pt too wide) in paragraph at lines 634--634
+Overfull \hbox (8.40291pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 TBP|  
  []
 
 
-Overfull \hbox (10.15292pt too wide) in paragraph at lines 634--634
+Overfull \hbox (10.15292pt too wide) in paragraph at lines 269--269
 []|\OT1/cmss/m/n/8 K562|  
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.1712| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.3102| 
  []
 
 
-Overfull \hbox (3.00253pt too wide) in paragraph at lines 634--634
+Overfull \hbox (3.00253pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 129,675,001| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 1.2455| 
  []
 
 
-Overfull \hbox (1.40576pt too wide) in paragraph at lines 634--634
+Overfull \hbox (1.40576pt too wide) in paragraph at lines 269--269
 []\OT1/cmss/m/n/8 0.0492| 
  []
 
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <8> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 635.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 270.
 
-Overfull \hbox (3.78711pt too wide) in paragraph at lines 685--685
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (3.78711pt too wide) in paragraph at lines 320--320
  []\OT1/cmss/bx/n/8 Rep.| 
  []
 
 
-Overfull \hbox (1.03918pt too wide) in paragraph at lines 685--685
+Overfull \hbox (1.03918pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/bx/n/8 PBC| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 103.15| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 2.0193| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.1399| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 162.70| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.7805| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.1633| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 153.51| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.8035| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.1353| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 172.59| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.1532| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 3.9582| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.3869| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 3.3045| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.3134| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 2.3863| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.5629| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 2.1362| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.5452| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.1270| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.2689| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.5275| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.2590| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.2844| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.2584| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.5122| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.1510| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.0541| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.9426| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.0157| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.9378| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.0145| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.8891| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 1.0048| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.9407| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 2.8461| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.6632| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 2.5168| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.5594| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 3.1291| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.6472| 
  []
 
 
-Overfull \hbox (4.32483pt too wide) in paragraph at lines 685--685
+Overfull \hbox (4.32483pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 2.6908| 
  []
 
 
-Overfull \hbox (7.53943pt too wide) in paragraph at lines 685--685
+Overfull \hbox (7.53943pt too wide) in paragraph at lines 320--320
 []\OT1/cmss/m/n/8 0.5895| 
  []
 
 
 LaTeX Font Warning: Font shape `OT1/cmss/bx/it' undefined
-(Font)              using `OT1/cmss/bx/n' instead on input line 690.
+(Font)              using `OT1/cmss/bx/n' instead on input line 325.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 1673
+[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 1265
 .
 
-(/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/tex/latex/base/omscmr.f
-d
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1673.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1265.
 
- [16]
-Underfull \hbox (badness 1237) in paragraph at lines 1815--1831
+
+Underfull \hbox (badness 1237) in paragraph at lines 1407--1423
 \OT1/cmr/m/n/10 We com-pared dPeak [[]] ($\OT1/cmtt/m/n/10 https : / / github .
  com / dongjunchung / dpeak$\OT1/cmr/m/n/10 , ver-sion
  []
 
 
-Overfull \hbox (16.52573pt too wide) in paragraph at lines 1815--1831
+Overfull \hbox (16.52573pt too wide) in paragraph at lines 1407--1423
 \OT1/cmr/m/n/10 [[]] ($\OT1/cmtt/m/n/10 http : / / dldcc-[]web . brc . bcm . ed
 u / lilab / MACE / docs / html/$\OT1/cmr/m/n/10 , ver-sion 1.2), peakzilla
  []
 
-[17] (./chipexo_QC_vs2.bbl [18]) [19]
-<figures/fig1/chip_explanation_withEnzyme_nexus.pdf, id=91, 513.96301pt x 438.9
+[16] (./chipexo_QC_vs2.bbl [17]) [18]
+<figures/fig1/chip_explanation_withEnzyme_nexus.pdf, id=87, 513.96301pt x 438.9
 6498pt>
 File: figures/fig1/chip_explanation_withEnzyme_nexus.pdf Graphic file (type pdf
 )
  <use figures/fig1/chip_explanation_withEnzyme_nexus.pdf>
 Package pdftex.def Info: figures/fig1/chip_explanation_withEnzyme_nexus.pdf use
-d on input line 1972.
+d on input line 1564.
 (pdftex.def)             Requested size: 162.4489pt x 138.74356pt.
 
-<figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pdf, id=92, page=3, 289.08
+<figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pdf, id=88, page=3, 289.08
 pt x 289.08pt>
 File: figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pdf Graphic file (typ
 e pdf)
 
 <use figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pdf, page 3>
 Package pdftex.def Info: figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pd
-f, page3 used on input line 1973.
+f, page3 used on input line 1565.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
 
-<figures/fig1/forward_strand_ratio_comp_old.pdf, id=93, 289.08pt x 289.08pt>
+<figures/fig1/forward_strand_ratio_comp_old.pdf, id=89, 289.08pt x 289.08pt>
 File: figures/fig1/forward_strand_ratio_comp_old.pdf Graphic file (type pdf)
 
 <use figures/fig1/forward_strand_ratio_comp_old.pdf>
 Package pdftex.def Info: figures/fig1/forward_strand_ratio_comp_old.pdf used on
- input line 1974.
+ input line 1566.
 (pdftex.def)             Requested size: 108.3011pt x 108.29886pt.
 
-<figures/fig1/scc_ctcf2.pdf, id=94, 578.16pt x 289.08pt>
+<figures/fig1/scc_ctcf2.pdf, id=90, 578.16pt x 289.08pt>
 File: figures/fig1/scc_ctcf2.pdf Graphic file (type pdf)
 
 <use figures/fig1/scc_ctcf2.pdf>
-Package pdftex.def Info: figures/fig1/scc_ctcf2.pdf used on input line 1975.
+Package pdftex.def Info: figures/fig1/scc_ctcf2.pdf used on input line 1567.
 (pdftex.def)             Requested size: 216.6022pt x 108.29886pt.
 
-<figures/fig1/eukaryotic_bias_CTCF.pdf, id=95, page=1, 289.08pt x 289.08pt>
+<figures/fig1/eukaryotic_bias_CTCF.pdf, id=91, page=1, 289.08pt x 289.08pt>
 File: figures/fig1/eukaryotic_bias_CTCF.pdf Graphic file (type pdf)
 
 <use figures/fig1/eukaryotic_bias_CTCF.pdf, page 1>
 Package pdftex.def Info: figures/fig1/eukaryotic_bias_CTCF.pdf, page1 used on i
-nput line 1976.
+nput line 1568.
 (pdftex.def)             Requested size: 144.3978pt x 144.39407pt.
 
-<figures/fig1/eukaryotic_bias_CTCF.pdf, id=96, page=2, 289.08pt x 289.08pt>
+<figures/fig1/eukaryotic_bias_CTCF.pdf, id=92, page=2, 289.08pt x 289.08pt>
 File: figures/fig1/eukaryotic_bias_CTCF.pdf Graphic file (type pdf)
 
 <use figures/fig1/eukaryotic_bias_CTCF.pdf, page 2>
 Package pdftex.def Info: figures/fig1/eukaryotic_bias_CTCF.pdf, page2 used on i
-nput line 1977.
+nput line 1569.
 (pdftex.def)             Requested size: 144.3978pt x 144.39407pt.
- [20 <./figures/fig1/chip_explanation_withEnzyme_nexus.pdf> <./figures/fig1/ChI
+ [19 <./figures/fig1/chip_explanation_withEnzyme_nexus.pdf> <./figures/fig1/ChI
 PseqPET_ChIPexo_tagCount_comparison.pdf> <./figures/fig1/forward_strand_ratio_c
 omp_old.pdf> <./figures/fig1/scc_ctcf2.pdf> <./figures/fig1/eukaryotic_bias_CTC
 F.pdf> <./figures/fig1/eukaryotic_bias_CTCF.pdf>]
-<figures/fig2/coverage_diagram4.pdf, id=133, 628.51309pt x 806.26256pt>
+<figures/fig2/coverage_diagram4.pdf, id=130, 628.51309pt x 806.26256pt>
 File: figures/fig2/coverage_diagram4.pdf Graphic file (type pdf)
 
 <use figures/fig2/coverage_diagram4.pdf>
 Package pdftex.def Info: figures/fig2/coverage_diagram4.pdf used on input line 
-2012.
+1604.
 (pdftex.def)             Requested size: 361.0pt x 463.09297pt.
 
-Overfull \hbox (12.5pt too wide) in paragraph at lines 2012--2030
+Overfull \hbox (12.5pt too wide) in paragraph at lines 1604--1622
  [][] 
  []
 
-[21 <./figures/fig2/coverage_diagram4.pdf>]
-<figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf, id=267, page=1, 650.43pt x 28
+[20 <./figures/fig2/coverage_diagram4.pdf>]
+<figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf, id=264, page=1, 650.43pt x 28
 9.08pt>
 File: figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf Graphic file (type pdf)
  <use figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf, page 1>
 Package pdftex.def Info: figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf, page1
- used on input line 2051.
+ used on input line 1643.
 (pdftex.def)             Requested size: 288.8011pt x 128.36009pt.
 
-<figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, id=268, page=3, 433.62p
+<figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, id=265, page=3, 433.62p
 t x 325.215pt>
 File: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf Graphic file (type 
 pdf)
 
 <use figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, page 3>
 Package pdftex.def Info: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf,
- page3 used on input line 2052.
+ page3 used on input line 1644.
 (pdftex.def)             Requested size: 288.8011pt x 216.61263pt.
 
-<figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, id=269, page=1, 433.62p
+<figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, id=266, page=1, 433.62p
 t x 325.215pt>
 File: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf Graphic file (type 
 pdf)
 
 <use figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, page 1>
 Package pdftex.def Info: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf,
- page1 used on input line 2053.
+ page1 used on input line 1645.
 (pdftex.def)             Requested size: 288.8011pt x 216.61263pt.
- [22 <./figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf> <./figures/fig3/Carrol
+ [21 <./figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf> <./figures/fig3/Carrol
 l_FoxA1_mouse_strand_imbalance.pdf> <./figures/fig3/Carroll_FoxA1_mouse_strand_
-imbalance.pdf>] <figures/fig4/FoxA1_barplots.pdf, id=286, page=1, 505.89pt x 50
+imbalance.pdf>] <figures/fig4/FoxA1_barplots.pdf, id=282, page=1, 505.89pt x 50
 5.89pt>
 File: figures/fig4/FoxA1_barplots.pdf Graphic file (type pdf)
 
 <use figures/fig4/FoxA1_barplots.pdf, page 1>
 Package pdftex.def Info: figures/fig4/FoxA1_barplots.pdf, page1 used on input l
-ine 2079.
+ine 1671.
 (pdftex.def)             Requested size: 83.02846pt x 83.02824pt.
 
-<figures/fig4/FoxA1_barplots.pdf, id=287, page=3, 505.89pt x 505.89pt>
+<figures/fig4/FoxA1_barplots.pdf, id=283, page=3, 505.89pt x 505.89pt>
 File: figures/fig4/FoxA1_barplots.pdf Graphic file (type pdf)
 
 <use figures/fig4/FoxA1_barplots.pdf, page 3>
 Package pdftex.def Info: figures/fig4/FoxA1_barplots.pdf, page3 used on input l
-ine 2080.
+ine 1672.
 (pdftex.def)             Requested size: 83.02846pt x 83.02824pt.
 
-<figures/fig4/FoxA1_profiles_around_motif.pdf, id=288, 578.16pt x 361.35pt>
+<figures/fig4/FoxA1_profiles_around_motif.pdf, id=284, 578.16pt x 361.35pt>
 File: figures/fig4/FoxA1_profiles_around_motif.pdf Graphic file (type pdf)
 
 <use figures/fig4/FoxA1_profiles_around_motif.pdf>
 Package pdftex.def Info: figures/fig4/FoxA1_profiles_around_motif.pdf used on i
-nput line 2081.
+nput line 1673.
 (pdftex.def)             Requested size: 144.3978pt x 90.24355pt.
 
-<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=289, page=2, 216.81pt x 433.
+<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=285, page=2, 216.81pt x 433.
 62pt>
 File: figures/fig4/FoxA1_matched_motif_sequence.pdf Graphic file (type pdf)
  <use figures/fig4/FoxA1_matched_motif_sequence.pdf, page 2>
 Package pdftex.def Info: figures/fig4/FoxA1_matched_motif_sequence.pdf, page2 u
-sed on input line 2082.
+sed on input line 1674.
 (pdftex.def)             Requested size: 90.25pt x 180.49811pt.
 
-<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=290, page=3, 216.81pt x 433.
+<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=286, page=3, 216.81pt x 433.
 62pt>
 File: figures/fig4/FoxA1_matched_motif_sequence.pdf Graphic file (type pdf)
  <use figures/fig4/FoxA1_matched_motif_sequence.pdf, page 3>
 Package pdftex.def Info: figures/fig4/FoxA1_matched_motif_sequence.pdf, page3 u
-sed on input line 2083.
+sed on input line 1675.
 (pdftex.def)             Requested size: 90.25pt x 180.49811pt.
 
-<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=291, page=1, 216.81pt x 433.
+<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=287, page=1, 216.81pt x 433.
 62pt>
 File: figures/fig4/FoxA1_matched_motif_sequence.pdf Graphic file (type pdf)
  <use figures/fig4/FoxA1_matched_motif_sequence.pdf, page 1>
 Package pdftex.def Info: figures/fig4/FoxA1_matched_motif_sequence.pdf, page1 u
-sed on input line 2084.
+sed on input line 1676.
 (pdftex.def)             Requested size: 90.25pt x 180.49811pt.
 
-<figures/fig4/FoxA1_fimo_score.pdf, id=292, page=1, 867.24pt x 361.35pt>
+<figures/fig4/FoxA1_fimo_score.pdf, id=288, page=1, 867.24pt x 361.35pt>
 File: figures/fig4/FoxA1_fimo_score.pdf Graphic file (type pdf)
 
 <use figures/fig4/FoxA1_fimo_score.pdf, page 1>
 Package pdftex.def Info: figures/fig4/FoxA1_fimo_score.pdf, page1 used on input
- line 2085.
+ line 1677.
 (pdftex.def)             Requested size: 288.8011pt x 120.33208pt.
 
-<figures/fig4/strand_imbalance_FoxA1.pdf, id=293, page=2, 867.24pt x 361.35pt>
+<figures/fig4/strand_imbalance_FoxA1.pdf, id=289, page=2, 867.24pt x 361.35pt>
 File: figures/fig4/strand_imbalance_FoxA1.pdf Graphic file (type pdf)
 
 <use figures/fig4/strand_imbalance_FoxA1.pdf, page 2>
 Package pdftex.def Info: figures/fig4/strand_imbalance_FoxA1.pdf, page2 used on
- input line 2086.
+ input line 1678.
 (pdftex.def)             Requested size: 288.8011pt x 120.33208pt.
- [23 <./figures/fig4/FoxA1_barplots.pdf> <./figures/fig4/FoxA1_barplots.pdf> <.
+ [22 <./figures/fig4/FoxA1_barplots.pdf> <./figures/fig4/FoxA1_barplots.pdf> <.
 /figures/fig4/FoxA1_profiles_around_motif.pdf> <./figures/fig4/FoxA1_matched_mo
 tif_sequence.pdf> <./figures/fig4/FoxA1_matched_motif_sequence.pdf> <./figures/
 fig4/FoxA1_matched_motif_sequence.pdf> <./figures/fig4/FoxA1_fimo_score.pdf> <.
 /figures/fig4/strand_imbalance_FoxA1.pdf>]
-<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=323, page=1, 867.24pt x 433.62pt
+<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=318, page=1, 867.24pt x 433.62pt
 >
 File: figures/fig5/QC_pipeline_eval_boxplot.pdf Graphic file (type pdf)
  <use figures/fig5/QC_pipeline_eval_boxplot.pdf, page 1>
 Package pdftex.def Info: figures/fig5/QC_pipeline_eval_boxplot.pdf, page1 used 
-on input line 2117.
+on input line 1709.
 (pdftex.def)             Requested size: 324.8978pt x 162.4483pt.
 
-<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=324, page=2, 867.24pt x 433.62pt
+<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=319, page=2, 867.24pt x 433.62pt
 >
 File: figures/fig5/QC_pipeline_eval_boxplot.pdf Graphic file (type pdf)
  <use figures/fig5/QC_pipeline_eval_boxplot.pdf, page 2>
 Package pdftex.def Info: figures/fig5/QC_pipeline_eval_boxplot.pdf, page2 used 
-on input line 2119.
+on input line 1711.
 (pdftex.def)             Requested size: 324.8978pt x 162.4483pt.
 
-<figures/fig5/TBP_param_depth_trend.pdf, id=325, page=1, 578.16pt x 289.08pt>
+<figures/fig5/TBP_param_depth_trend.pdf, id=320, page=1, 578.16pt x 289.08pt>
 File: figures/fig5/TBP_param_depth_trend.pdf Graphic file (type pdf)
 
 <use figures/fig5/TBP_param_depth_trend.pdf, page 1>
 Package pdftex.def Info: figures/fig5/TBP_param_depth_trend.pdf, page1 used on 
-input line 2121.
+input line 1713.
 (pdftex.def)             Requested size: 162.4489pt x 81.22414pt.
 
-<figures/fig5/TBP_scores_comparison.pdf, id=326, 578.16pt x 289.08pt>
+<figures/fig5/TBP_scores_comparison.pdf, id=321, 578.16pt x 289.08pt>
 File: figures/fig5/TBP_scores_comparison.pdf Graphic file (type pdf)
 
 <use figures/fig5/TBP_scores_comparison.pdf>
 Package pdftex.def Info: figures/fig5/TBP_scores_comparison.pdf used on input l
-ine 2124.
+ine 1716.
 (pdftex.def)             Requested size: 180.5pt x 90.24905pt.
- [24 <./figures/fig5/QC_pipeline_eval_boxplot.pdf> <./figures/fig5/QC_pipeline_
+ [23 <./figures/fig5/QC_pipeline_eval_boxplot.pdf> <./figures/fig5/QC_pipeline_
 eval_boxplot.pdf> <./figures/fig5/TBP_param_depth_trend.pdf> <./figures/fig5/TB
 P_scores_comparison.pdf>]
-<figures/fig6/methods_comp_FDR5_topM400.pdf, id=348, page=1, 289.08pt x 289.08p
+<figures/fig6/methods_comp_FDR5_topM400.pdf, id=342, page=1, 289.08pt x 289.08p
 t>
 File: figures/fig6/methods_comp_FDR5_topM400.pdf Graphic file (type pdf)
  <use figures/fig6/methods_comp_FDR5_topM400.pdf, page 1>
 Package pdftex.def Info: figures/fig6/methods_comp_FDR5_topM400.pdf, page1 used
- on input line 2149.
+ on input line 1741.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
 
-<figures/fig6/methods_comp_FDR5_topM400.pdf, id=349, page=2, 289.08pt x 289.08p
+<figures/fig6/methods_comp_FDR5_topM400.pdf, id=343, page=2, 289.08pt x 289.08p
 t>
 File: figures/fig6/methods_comp_FDR5_topM400.pdf Graphic file (type pdf)
  <use figures/fig6/methods_comp_FDR5_topM400.pdf, page 2>
 Package pdftex.def Info: figures/fig6/methods_comp_FDR5_topM400.pdf, page2 used
- on input line 2150.
+ on input line 1742.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
 
-<figures/fig6/sigma_delta_old_densities.pdf, id=350, page=1, 289.08pt x 289.08p
+<figures/fig6/sigma_delta_old_densities.pdf, id=344, page=1, 289.08pt x 289.08p
 t>
 File: figures/fig6/sigma_delta_old_densities.pdf Graphic file (type pdf)
  <use figures/fig6/sigma_delta_old_densities.pdf, page 1>
 Package pdftex.def Info: figures/fig6/sigma_delta_old_densities.pdf, page1 used
- on input line 2151.
+ on input line 1743.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
 
-<figures/fig6/sigma_delta_old_densities.pdf, id=351, page=2, 289.08pt x 289.08p
+<figures/fig6/sigma_delta_old_densities.pdf, id=345, page=2, 289.08pt x 289.08p
 t>
 File: figures/fig6/sigma_delta_old_densities.pdf Graphic file (type pdf)
  <use figures/fig6/sigma_delta_old_densities.pdf, page 2>
 Package pdftex.def Info: figures/fig6/sigma_delta_old_densities.pdf, page2 used
- on input line 2152.
+ on input line 1744.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
- [25 <./figures/fig6/methods_comp_FDR5_topM400.pdf> <./figures/fig6/methods_com
+ [24 <./figures/fig6/methods_comp_FDR5_topM400.pdf> <./figures/fig6/methods_com
 p_FDR5_topM400.pdf> <./figures/fig6/sigma_delta_old_densities.pdf> <./figures/f
 ig6/sigma_delta_old_densities.pdf>]
-<figures/fig7/saturation_analysis_old.pdf, id=368, 505.89pt x 505.89pt>
+<figures/fig7/saturation_analysis_old.pdf, id=360, 505.89pt x 505.89pt>
 File: figures/fig7/saturation_analysis_old.pdf Graphic file (type pdf)
 
 <use figures/fig7/saturation_analysis_old.pdf>
 Package pdftex.def Info: figures/fig7/saturation_analysis_old.pdf used on input
- line 2190.
+ line 1782.
 (pdftex.def)             Requested size: 324.8978pt x 324.90321pt.
 
-<figures/fig8/sensitivity_exo_olda_data.pdf, id=369, 252.945pt x 252.945pt>
+<figures/fig8/sensitivity_exo_olda_data.pdf, id=361, 252.945pt x 252.945pt>
 File: figures/fig8/sensitivity_exo_olda_data.pdf Graphic file (type pdf)
 
 <use figures/fig8/sensitivity_exo_olda_data.pdf>
 Package pdftex.def Info: figures/fig8/sensitivity_exo_olda_data.pdf used on inp
-ut line 2204.
+ut line 1796.
 (pdftex.def)             Requested size: 166.06242pt x 166.06421pt.
 
-<figures/fig8/resolution_by_dataset_old_data.pdf, id=370, 252.945pt x 252.945pt
+<figures/fig8/resolution_by_dataset_old_data.pdf, id=362, 252.945pt x 252.945pt
 >
 File: figures/fig8/resolution_by_dataset_old_data.pdf Graphic file (type pdf)
  <use figures/fig8/resolution_by_dataset_old_data.pdf>
 Package pdftex.def Info: figures/fig8/resolution_by_dataset_old_data.pdf used o
-n input line 2205.
+n input line 1797.
 (pdftex.def)             Requested size: 166.06242pt x 166.06421pt.
 
 
 AED: lastpage setting LastPage
-[26 <./figures/fig7/saturation_analysis_old.pdf> <./figures/fig8/sensitivity_ex
+[25 <./figures/fig7/saturation_analysis_old.pdf> <./figures/fig8/sensitivity_ex
 o_olda_data.pdf> <./figures/fig8/resolution_by_dataset_old_data.pdf>]
 (./chipexo_QC_vs2.aux)
 
@@ -2002,50 +1864,41 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 18204 strings out of 493629
- 368326 string characters out of 3134964
- 463548 words of memory out of 3000000
- 21094 multiletter control sequences out of 15000+200000
- 19852 words of font info for 76 fonts, out of 3000000 for 9000
- 831 hyphenation exceptions out of 8191
- 55i,16n,67p,1489b,540s stack positions out of 5000i,500n,10000p,200000b,50000s
-</afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmbx10.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmbx6.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_r
-hel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></afs/cs.wisc.edu/s/
-texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmmi5.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmi7.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></afs/cs.wisc.edu/s/texliv
-e-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></
-afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmr10.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmr6.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></afs/cs.wisc.edu/s/texlive-2
-011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></afs/cs.wis
-c.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmss
-10.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmss17.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmss8.pfb></afs/cs.wisc.edu/s/texlive-2011/am
-d64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></afs/cs.wisc.
-edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi1
-0.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmssi8.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmsy10.pfb></afs/cs.wisc.edu/s/texlive-2011/am
-d64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></afs/cs.wisc.edu
-/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
-></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmsy8.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/font
-s/type1/public/amsfonts/cm/cmti10.pfb></afs/cs.wisc.edu/s/texlive-2011/amd64_rh
-el5/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></afs/cs.wisc.edu/s/te
-xlive-2011/amd64_rhel5/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb></af
-s/cs.wisc.edu/s/texlive-2011/amd64_rhel5/texmf-dist/fonts/type1/urw/helvetic/uh
-vr8a.pfb>
-Output written on chipexo_QC_vs2.pdf (26 pages, 864467 bytes).
+ 16377 strings out of 493304
+ 306622 string characters out of 6139870
+ 436584 words of memory out of 5000000
+ 19436 multiletter control sequences out of 15000+600000
+ 19852 words of font info for 76 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 56i,16n,56p,2041b,540s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cmextra/cmmib8.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on chipexo_QC_vs2.pdf (25 pages, 861573 bytes).
 PDF statistics:
- 474 PDF objects out of 1000 (max. 8388607)
- 314 compressed objects within 4 object streams
+ 466 PDF objects out of 1000 (max. 8388607)
+ 312 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
  158 words of extra memory for PDF output out of 10000 (max. 10000000)
 
