@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.12.16)  5 JUL 2016 20:28
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.12.16)  6 JUL 2016 20:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1571,283 +1571,165 @@ LaTeX Font Warning: Font shape `OT1/cmss/bx/it' undefined
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 1265
+[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 1064
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1265.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1064.
 
-
-Underfull \hbox (badness 1237) in paragraph at lines 1407--1423
+ [15]
+Underfull \hbox (badness 1237) in paragraph at lines 1206--1222
 \OT1/cmr/m/n/10 We com-pared dPeak [[]] ($\OT1/cmtt/m/n/10 https : / / github .
  com / dongjunchung / dpeak$\OT1/cmr/m/n/10 , ver-sion
  []
 
 
-Overfull \hbox (16.52573pt too wide) in paragraph at lines 1407--1423
+Overfull \hbox (16.52573pt too wide) in paragraph at lines 1206--1222
 \OT1/cmr/m/n/10 [[]] ($\OT1/cmtt/m/n/10 http : / / dldcc-[]web . brc . bcm . ed
 u / lilab / MACE / docs / html/$\OT1/cmr/m/n/10 , ver-sion 1.2), peakzilla
  []
 
 [16] (./chipexo_QC_vs2.bbl [17]) [18]
-<figures/fig1/chip_explanation_withEnzyme_nexus.pdf, id=87, 513.96301pt x 438.9
-6498pt>
-File: figures/fig1/chip_explanation_withEnzyme_nexus.pdf Graphic file (type pdf
-)
- <use figures/fig1/chip_explanation_withEnzyme_nexus.pdf>
-Package pdftex.def Info: figures/fig1/chip_explanation_withEnzyme_nexus.pdf use
-d on input line 1564.
-(pdftex.def)             Requested size: 162.4489pt x 138.74356pt.
+<figures/fig1/fig1.pdf, id=87, 472.17934pt x 522.70262pt>
+File: figures/fig1/fig1.pdf Graphic file (type pdf)
 
-<figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pdf, id=88, page=3, 289.08
-pt x 289.08pt>
-File: figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pdf Graphic file (typ
-e pdf)
+<use figures/fig1/fig1.pdf>
+Package pdftex.def Info: figures/fig1/fig1.pdf used on input line 1351.
+(pdftex.def)             Requested size: 342.9489pt x 379.65555pt.
+ [19 <./figures/fig1/fig1.pdf>]
+<figures/fig2/fig2.pdf, id=141, 454.29285pt x 546.41113pt>
+File: figures/fig2/fig2.pdf Graphic file (type pdf)
 
-<use figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pdf, page 3>
-Package pdftex.def Info: figures/fig1/ChIPseqPET_ChIPexo_tagCount_comparison.pd
-f, page3 used on input line 1565.
-(pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
+<use figures/fig2/fig2.pdf>
+Package pdftex.def Info: figures/fig2/fig2.pdf used on input line 1393.
+(pdftex.def)             Requested size: 342.9489pt x 412.49202pt.
+ [20 <./figures/fig2/fig2.pdf>]
+<figures/fig3/fig3.pdf, id=234, 597.67706pt x 398.66522pt>
+File: figures/fig3/fig3.pdf Graphic file (type pdf)
 
-<figures/fig1/forward_strand_ratio_comp_old.pdf, id=89, 289.08pt x 289.08pt>
-File: figures/fig1/forward_strand_ratio_comp_old.pdf Graphic file (type pdf)
-
-<use figures/fig1/forward_strand_ratio_comp_old.pdf>
-Package pdftex.def Info: figures/fig1/forward_strand_ratio_comp_old.pdf used on
- input line 1566.
-(pdftex.def)             Requested size: 108.3011pt x 108.29886pt.
-
-<figures/fig1/scc_ctcf2.pdf, id=90, 578.16pt x 289.08pt>
-File: figures/fig1/scc_ctcf2.pdf Graphic file (type pdf)
-
-<use figures/fig1/scc_ctcf2.pdf>
-Package pdftex.def Info: figures/fig1/scc_ctcf2.pdf used on input line 1567.
-(pdftex.def)             Requested size: 216.6022pt x 108.29886pt.
-
-<figures/fig1/eukaryotic_bias_CTCF.pdf, id=91, page=1, 289.08pt x 289.08pt>
-File: figures/fig1/eukaryotic_bias_CTCF.pdf Graphic file (type pdf)
-
-<use figures/fig1/eukaryotic_bias_CTCF.pdf, page 1>
-Package pdftex.def Info: figures/fig1/eukaryotic_bias_CTCF.pdf, page1 used on i
-nput line 1568.
-(pdftex.def)             Requested size: 144.3978pt x 144.39407pt.
-
-<figures/fig1/eukaryotic_bias_CTCF.pdf, id=92, page=2, 289.08pt x 289.08pt>
-File: figures/fig1/eukaryotic_bias_CTCF.pdf Graphic file (type pdf)
-
-<use figures/fig1/eukaryotic_bias_CTCF.pdf, page 2>
-Package pdftex.def Info: figures/fig1/eukaryotic_bias_CTCF.pdf, page2 used on i
-nput line 1569.
-(pdftex.def)             Requested size: 144.3978pt x 144.39407pt.
- [19 <./figures/fig1/chip_explanation_withEnzyme_nexus.pdf> <./figures/fig1/ChI
-PseqPET_ChIPexo_tagCount_comparison.pdf> <./figures/fig1/forward_strand_ratio_c
-omp_old.pdf> <./figures/fig1/scc_ctcf2.pdf> <./figures/fig1/eukaryotic_bias_CTC
-F.pdf> <./figures/fig1/eukaryotic_bias_CTCF.pdf>]
-<figures/fig2/coverage_diagram4.pdf, id=130, 628.51309pt x 806.26256pt>
-File: figures/fig2/coverage_diagram4.pdf Graphic file (type pdf)
-
-<use figures/fig2/coverage_diagram4.pdf>
-Package pdftex.def Info: figures/fig2/coverage_diagram4.pdf used on input line 
-1604.
-(pdftex.def)             Requested size: 361.0pt x 463.09297pt.
-
-Overfull \hbox (12.5pt too wide) in paragraph at lines 1604--1622
- [][] 
- []
-
-[20 <./figures/fig2/coverage_diagram4.pdf>]
-<figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf, id=264, page=1, 650.43pt x 28
-9.08pt>
-File: figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf Graphic file (type pdf)
- <use figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf, page 1>
-Package pdftex.def Info: figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf, page1
- used on input line 1643.
-(pdftex.def)             Requested size: 288.8011pt x 128.36009pt.
-
-<figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, id=265, page=3, 433.62p
-t x 325.215pt>
-File: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf Graphic file (type 
-pdf)
-
-<use figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, page 3>
-Package pdftex.def Info: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf,
- page3 used on input line 1644.
-(pdftex.def)             Requested size: 288.8011pt x 216.61263pt.
-
-<figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, id=266, page=1, 433.62p
-t x 325.215pt>
-File: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf Graphic file (type 
-pdf)
-
-<use figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf, page 1>
-Package pdftex.def Info: figures/fig3/Carroll_FoxA1_mouse_strand_imbalance.pdf,
- page1 used on input line 1645.
-(pdftex.def)             Requested size: 288.8011pt x 216.61263pt.
- [21 <./figures/fig3/Carroll_FoxA1_mouse_enrichment.pdf> <./figures/fig3/Carrol
-l_FoxA1_mouse_strand_imbalance.pdf> <./figures/fig3/Carroll_FoxA1_mouse_strand_
-imbalance.pdf>] <figures/fig4/FoxA1_barplots.pdf, id=282, page=1, 505.89pt x 50
-5.89pt>
-File: figures/fig4/FoxA1_barplots.pdf Graphic file (type pdf)
-
-<use figures/fig4/FoxA1_barplots.pdf, page 1>
-Package pdftex.def Info: figures/fig4/FoxA1_barplots.pdf, page1 used on input l
-ine 1671.
-(pdftex.def)             Requested size: 83.02846pt x 83.02824pt.
-
-<figures/fig4/FoxA1_barplots.pdf, id=283, page=3, 505.89pt x 505.89pt>
+<use figures/fig3/fig3.pdf>
+Package pdftex.def Info: figures/fig3/fig3.pdf used on input line 1435.
+(pdftex.def)             Requested size: 342.9489pt x 228.76231pt.
+ [21 <./figures/fig3/fig3.pdf>]
+<figures/fig4/FoxA1_barplots.pdf, id=270, page=3, 505.89pt x 505.89pt>
 File: figures/fig4/FoxA1_barplots.pdf Graphic file (type pdf)
 
 <use figures/fig4/FoxA1_barplots.pdf, page 3>
 Package pdftex.def Info: figures/fig4/FoxA1_barplots.pdf, page3 used on input l
-ine 1672.
+ine 1462.
 (pdftex.def)             Requested size: 83.02846pt x 83.02824pt.
 
-<figures/fig4/FoxA1_profiles_around_motif.pdf, id=284, 578.16pt x 361.35pt>
+<figures/fig4/FoxA1_profiles_around_motif.pdf, id=271, 578.16pt x 361.35pt>
 File: figures/fig4/FoxA1_profiles_around_motif.pdf Graphic file (type pdf)
 
 <use figures/fig4/FoxA1_profiles_around_motif.pdf>
 Package pdftex.def Info: figures/fig4/FoxA1_profiles_around_motif.pdf used on i
-nput line 1673.
+nput line 1463.
 (pdftex.def)             Requested size: 144.3978pt x 90.24355pt.
 
-<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=285, page=2, 216.81pt x 433.
-62pt>
-File: figures/fig4/FoxA1_matched_motif_sequence.pdf Graphic file (type pdf)
- <use figures/fig4/FoxA1_matched_motif_sequence.pdf, page 2>
-Package pdftex.def Info: figures/fig4/FoxA1_matched_motif_sequence.pdf, page2 u
-sed on input line 1674.
-(pdftex.def)             Requested size: 90.25pt x 180.49811pt.
-
-<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=286, page=3, 216.81pt x 433.
-62pt>
-File: figures/fig4/FoxA1_matched_motif_sequence.pdf Graphic file (type pdf)
- <use figures/fig4/FoxA1_matched_motif_sequence.pdf, page 3>
-Package pdftex.def Info: figures/fig4/FoxA1_matched_motif_sequence.pdf, page3 u
-sed on input line 1675.
-(pdftex.def)             Requested size: 90.25pt x 180.49811pt.
-
-<figures/fig4/FoxA1_matched_motif_sequence.pdf, id=287, page=1, 216.81pt x 433.
-62pt>
-File: figures/fig4/FoxA1_matched_motif_sequence.pdf Graphic file (type pdf)
- <use figures/fig4/FoxA1_matched_motif_sequence.pdf, page 1>
-Package pdftex.def Info: figures/fig4/FoxA1_matched_motif_sequence.pdf, page1 u
-sed on input line 1676.
-(pdftex.def)             Requested size: 90.25pt x 180.49811pt.
-
-<figures/fig4/FoxA1_fimo_score.pdf, id=288, page=1, 867.24pt x 361.35pt>
+<figures/fig4/FoxA1_fimo_score.pdf, id=272, page=1, 867.24pt x 361.35pt>
 File: figures/fig4/FoxA1_fimo_score.pdf Graphic file (type pdf)
 
 <use figures/fig4/FoxA1_fimo_score.pdf, page 1>
 Package pdftex.def Info: figures/fig4/FoxA1_fimo_score.pdf, page1 used on input
- line 1677.
+ line 1467.
 (pdftex.def)             Requested size: 288.8011pt x 120.33208pt.
 
-<figures/fig4/strand_imbalance_FoxA1.pdf, id=289, page=2, 867.24pt x 361.35pt>
-File: figures/fig4/strand_imbalance_FoxA1.pdf Graphic file (type pdf)
+<figures/fig4/TBP_scores_comparison.pdf, id=273, 578.16pt x 289.08pt>
+File: figures/fig4/TBP_scores_comparison.pdf Graphic file (type pdf)
 
-<use figures/fig4/strand_imbalance_FoxA1.pdf, page 2>
-Package pdftex.def Info: figures/fig4/strand_imbalance_FoxA1.pdf, page2 used on
- input line 1678.
-(pdftex.def)             Requested size: 288.8011pt x 120.33208pt.
- [22 <./figures/fig4/FoxA1_barplots.pdf> <./figures/fig4/FoxA1_barplots.pdf> <.
-/figures/fig4/FoxA1_profiles_around_motif.pdf> <./figures/fig4/FoxA1_matched_mo
-tif_sequence.pdf> <./figures/fig4/FoxA1_matched_motif_sequence.pdf> <./figures/
-fig4/FoxA1_matched_motif_sequence.pdf> <./figures/fig4/FoxA1_fimo_score.pdf> <.
-/figures/fig4/strand_imbalance_FoxA1.pdf>]
-<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=318, page=1, 867.24pt x 433.62pt
+<use figures/fig4/TBP_scores_comparison.pdf>
+Package pdftex.def Info: figures/fig4/TBP_scores_comparison.pdf used on input l
+ine 1468.
+(pdftex.def)             Requested size: 180.5pt x 90.24905pt.
+ [22 <./figures/fig4/FoxA1_barplots.pdf> <./figures/fig4/FoxA1_profiles_around_
+motif.pdf> <./figures/fig4/FoxA1_fimo_score.pdf> <./figures/fig4/TBP_scores_com
+parison.pdf>]
+<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=298, page=1, 867.24pt x 433.62pt
 >
 File: figures/fig5/QC_pipeline_eval_boxplot.pdf Graphic file (type pdf)
  <use figures/fig5/QC_pipeline_eval_boxplot.pdf, page 1>
 Package pdftex.def Info: figures/fig5/QC_pipeline_eval_boxplot.pdf, page1 used 
-on input line 1709.
+on input line 1500.
 (pdftex.def)             Requested size: 324.8978pt x 162.4483pt.
 
-<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=319, page=2, 867.24pt x 433.62pt
+<figures/fig5/QC_pipeline_eval_boxplot.pdf, id=299, page=2, 867.24pt x 433.62pt
 >
 File: figures/fig5/QC_pipeline_eval_boxplot.pdf Graphic file (type pdf)
  <use figures/fig5/QC_pipeline_eval_boxplot.pdf, page 2>
 Package pdftex.def Info: figures/fig5/QC_pipeline_eval_boxplot.pdf, page2 used 
-on input line 1711.
+on input line 1502.
 (pdftex.def)             Requested size: 324.8978pt x 162.4483pt.
 
-<figures/fig5/TBP_param_depth_trend.pdf, id=320, page=1, 578.16pt x 289.08pt>
+<figures/fig5/TBP_param_depth_trend.pdf, id=300, page=1, 578.16pt x 289.08pt>
 File: figures/fig5/TBP_param_depth_trend.pdf Graphic file (type pdf)
 
 <use figures/fig5/TBP_param_depth_trend.pdf, page 1>
 Package pdftex.def Info: figures/fig5/TBP_param_depth_trend.pdf, page1 used on 
-input line 1713.
+input line 1504.
 (pdftex.def)             Requested size: 162.4489pt x 81.22414pt.
-
-<figures/fig5/TBP_scores_comparison.pdf, id=321, 578.16pt x 289.08pt>
-File: figures/fig5/TBP_scores_comparison.pdf Graphic file (type pdf)
-
-<use figures/fig5/TBP_scores_comparison.pdf>
-Package pdftex.def Info: figures/fig5/TBP_scores_comparison.pdf used on input l
-ine 1716.
-(pdftex.def)             Requested size: 180.5pt x 90.24905pt.
  [23 <./figures/fig5/QC_pipeline_eval_boxplot.pdf> <./figures/fig5/QC_pipeline_
-eval_boxplot.pdf> <./figures/fig5/TBP_param_depth_trend.pdf> <./figures/fig5/TB
-P_scores_comparison.pdf>]
-<figures/fig6/methods_comp_FDR5_topM400.pdf, id=342, page=1, 289.08pt x 289.08p
+eval_boxplot.pdf> <./figures/fig5/TBP_param_depth_trend.pdf>]
+<figures/fig6/methods_comp_FDR5_topM400.pdf, id=315, page=1, 289.08pt x 289.08p
 t>
 File: figures/fig6/methods_comp_FDR5_topM400.pdf Graphic file (type pdf)
  <use figures/fig6/methods_comp_FDR5_topM400.pdf, page 1>
 Package pdftex.def Info: figures/fig6/methods_comp_FDR5_topM400.pdf, page1 used
- on input line 1741.
+ on input line 1531.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
 
-<figures/fig6/methods_comp_FDR5_topM400.pdf, id=343, page=2, 289.08pt x 289.08p
+<figures/fig6/methods_comp_FDR5_topM400.pdf, id=316, page=2, 289.08pt x 289.08p
 t>
 File: figures/fig6/methods_comp_FDR5_topM400.pdf Graphic file (type pdf)
  <use figures/fig6/methods_comp_FDR5_topM400.pdf, page 2>
 Package pdftex.def Info: figures/fig6/methods_comp_FDR5_topM400.pdf, page2 used
- on input line 1742.
+ on input line 1532.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
 
-<figures/fig6/sigma_delta_old_densities.pdf, id=344, page=1, 289.08pt x 289.08p
+<figures/fig6/sigma_delta_old_densities.pdf, id=317, page=1, 289.08pt x 289.08p
 t>
 File: figures/fig6/sigma_delta_old_densities.pdf Graphic file (type pdf)
  <use figures/fig6/sigma_delta_old_densities.pdf, page 1>
 Package pdftex.def Info: figures/fig6/sigma_delta_old_densities.pdf, page1 used
- on input line 1743.
+ on input line 1533.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
 
-<figures/fig6/sigma_delta_old_densities.pdf, id=345, page=2, 289.08pt x 289.08p
+<figures/fig6/sigma_delta_old_densities.pdf, id=318, page=2, 289.08pt x 289.08p
 t>
 File: figures/fig6/sigma_delta_old_densities.pdf Graphic file (type pdf)
  <use figures/fig6/sigma_delta_old_densities.pdf, page 2>
 Package pdftex.def Info: figures/fig6/sigma_delta_old_densities.pdf, page2 used
- on input line 1744.
+ on input line 1534.
 (pdftex.def)             Requested size: 162.4489pt x 162.44829pt.
  [24 <./figures/fig6/methods_comp_FDR5_topM400.pdf> <./figures/fig6/methods_com
 p_FDR5_topM400.pdf> <./figures/fig6/sigma_delta_old_densities.pdf> <./figures/f
 ig6/sigma_delta_old_densities.pdf>]
-<figures/fig7/saturation_analysis_old.pdf, id=360, 505.89pt x 505.89pt>
+<figures/fig7/saturation_analysis_old.pdf, id=332, 505.89pt x 505.89pt>
 File: figures/fig7/saturation_analysis_old.pdf Graphic file (type pdf)
 
 <use figures/fig7/saturation_analysis_old.pdf>
 Package pdftex.def Info: figures/fig7/saturation_analysis_old.pdf used on input
- line 1782.
+ line 1572.
 (pdftex.def)             Requested size: 324.8978pt x 324.90321pt.
 
-<figures/fig8/sensitivity_exo_olda_data.pdf, id=361, 252.945pt x 252.945pt>
+<figures/fig8/sensitivity_exo_olda_data.pdf, id=333, 252.945pt x 252.945pt>
 File: figures/fig8/sensitivity_exo_olda_data.pdf Graphic file (type pdf)
 
 <use figures/fig8/sensitivity_exo_olda_data.pdf>
 Package pdftex.def Info: figures/fig8/sensitivity_exo_olda_data.pdf used on inp
-ut line 1796.
+ut line 1586.
 (pdftex.def)             Requested size: 166.06242pt x 166.06421pt.
 
-<figures/fig8/resolution_by_dataset_old_data.pdf, id=362, 252.945pt x 252.945pt
+<figures/fig8/resolution_by_dataset_old_data.pdf, id=334, 252.945pt x 252.945pt
 >
 File: figures/fig8/resolution_by_dataset_old_data.pdf Graphic file (type pdf)
  <use figures/fig8/resolution_by_dataset_old_data.pdf>
 Package pdftex.def Info: figures/fig8/resolution_by_dataset_old_data.pdf used o
-n input line 1797.
+n input line 1587.
 (pdftex.def)             Requested size: 166.06242pt x 166.06421pt.
 
 
@@ -1864,13 +1746,13 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 16377 strings out of 493304
- 306622 string characters out of 6139870
+ 16327 strings out of 493304
+ 303908 string characters out of 6139870
  436584 words of memory out of 5000000
- 19436 multiletter control sequences out of 15000+600000
+ 19393 multiletter control sequences out of 15000+600000
  19852 words of font info for 76 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 56i,16n,56p,2041b,540s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,16n,56p,2069b,540s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/texl
@@ -1894,11 +1776,13 @@ public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on chipexo_QC_vs2.pdf (25 pages, 861573 bytes).
+fb></usr/share/texmf/fonts/type1/public/tex-gyre/qhvr.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on chipexo_QC_vs2.pdf (25 pages, 837049 bytes).
 PDF statistics:
- 466 PDF objects out of 1000 (max. 8388607)
- 312 compressed objects within 4 object streams
+ 441 PDF objects out of 1000 (max. 8388607)
+ 302 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
- 158 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 98 words of extra memory for PDF output out of 10000 (max. 10000000)
 
