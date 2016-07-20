@@ -1,6 +1,7 @@
 
 rm(list = ls())
 
+library(dplyr)
 library(data.table)
 library(GenomicAlignments)
 library(devtools)
@@ -8,7 +9,6 @@ library(parallel)
 library(ggplot2)
 library(scales)
 library(RColorBrewer)
-library(dplyr)
 
 ## parameters for plots
 window_length <- 25
@@ -74,20 +74,23 @@ scores <- scores %>%
   mutate(prot = ifelse(grepl("venters",cond),"ChIP-exo","ChIP-nexus"),
          repl = ifelse(grepl("Rep1",cond),"Rep-1",
            ifelse(grepl("Rep2",cond),"Rep-2","Rep-3")),
-         topMM = factor(paste("Top",topM,"\nsites"),
-           levels = paste("Top",mm,"\nsites")))
+         topM = factor(topM))
+
+scores <- data.table(scores)
 
 r <- brewer.pal(n= 8,"Set1")
 
+
+
 pdf(file = "figs/for_paper/TBP_scores_comparison.pdf",height = 4,width = 8)
 ggplot(scores,aes(cond,score,colour = prot))+
-  geom_boxplot(outlier.size = 0.1)+facet_grid( . ~ topMM)+
+  geom_boxplot(outlier.size = 0.1)+facet_grid( . ~ topM)+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90,vjust = .5),
         axis.title.x = element_blank(),
-        strip.background = element_blank(),
+        ## strip.background = element_blank(),
         legend.position = "top")+
-  scale_x_discrete(labels = paste("Rep",c(1:2,1:3),sep = "-"))+
+  ## scale_x_discrete(labels = paste("Rep",c(1:2,1:3),sep = "-"))+
   scale_color_manual(name = "",values = r[c(4,7)])+
   ylab("FIMO score")
 dev.off()

@@ -204,7 +204,7 @@ plots[[4]] <- fsr_plot2(data,probs,values,FALSE)
 plots[[5]] <- label_plot2(data,1:30)
 
 pdf(file = file.path(figsdir,paste(prefix,"enrichment.pdf",sep = "_")),
-      width = 22 ,height = 10)
+      width = 15 ,height = 10)
 u <- lapply(plots[1:2],print)
 dev.off()
  
@@ -255,7 +255,7 @@ plots[[4]] <- fsr_plot2(data,probs,values,FALSE)
 plots[[5]] <- label_plot2(data,1:30)
 
 pdf(file = file.path(figsdir,paste(prefix,"enrichment.pdf",sep = "_")),
-      width = 22 ,height = 10)
+      width = 15 ,height = 10)
 u <- lapply(plots[1:2],print)
 dev.off()
  

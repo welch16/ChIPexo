@@ -158,6 +158,31 @@ ggplot(DT,aes(coord,V1,colour = strand,linetype = rep))+
   xlab("Position around motif start")+ylab("Average counts")
 dev.off()
 
+DT2 = DT
+DT2[, class := paste(rep,strand,sep = "_")]
+r2 <- brewer.pal(name = "Set1",n = 6)
+
+
+# red #4d0000 #ff0000 #ffb3b3
+# blue #00004d  #0000ff  #b3b3f
+r3 = c("#00004d","#4d0000","#0000ff","#ff0000","#b3b3f","#ffb3b3")
+r4 = c("darkblue","firebrick3","blue","red","lightblue","lightpink")
+
+# dark rep1
+# med rep2 
+# light rep3
+
+pdf(file = file.path(figs_dir,"FoxA1_profiles_around_motif_2.pdf"),
+    width= 8,height =5)
+ggplot(DT2,aes(coord,V1,colour = class))+
+  geom_line(size = 1.1)+
+    scale_color_manual(values = r4)+theme_bw()+
+    theme(legend.position = "none")+
+  xlab("Position around motif start")+ylab("Average counts")
+dev.off()
+
+
+
 ## brief notes about plot
 
 ## 1 - the signal is roughly the same for rep1 and rep3

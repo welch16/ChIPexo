@@ -54,6 +54,7 @@ rm(fitSET)
 
 pred.exo <- data.frame( "U00096", unlist(fit.exo@optMu) )
 pred.PET <- data.frame( "U00096", unlist(fit.PET@optMu) )
+
 pred.SET <- data.frame( "U00096", unlist(fit.SET@optMu) )
 
 # IRanges

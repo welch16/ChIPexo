@@ -23,7 +23,7 @@ base_dir <- "/p/keles/ChIPexo/volume6/K12"
 FDR <- "FDR5"
 edsn <- c("1311","1314","1317","1320","931","933")
 max_dist <- 40
-topM <- 400
+topM <- 500
 strength <- 4e3
 mc <- detectCores()
 
@@ -277,3 +277,28 @@ dev.off()
 
   ## geom_jitter(aes(colour = method),size = 1.2)+scale_color_brewer(palette = "Set1")+
 tab1
+
+
+library(dplyr)
+
+
+my_reso = reso %>% filter(dataset %in% c("931","933")) %>%
+  mutate(replicate = ifelse(dataset == "931","Rep 1","Rep 2")) %>%
+  group_by(method)
+
+
+pdf(file = "figs/for_paper/methods_comp_repl_together.pdf",height = 4, width = 8)
+ggplot(my_reso,aes(method,reso,fill = method))+
+  geom_boxplot(outlier.shape = NA)+
+  facet_grid( . ~ replicate)+
+  scale_fill_brewer(palette = "Pastel2")+
+  theme_bw()+
+  theme(legend.position = "top",
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())+
+  ylim(0,30)
+dev.off() 
+  
+
+
