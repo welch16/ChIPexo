@@ -187,13 +187,53 @@ dev.off()
 
 ## landick biosample 1
 
+rl_exo = 58
+rl_set = 32
 
+
+landick1 <- scc %>% filter(grepl("land",name)) %>%
+  filter(grepl("93",name) | grepl("O2",name)) %>%
+  mutate(prot = ifelse(grepl("SE",name),"SE ChIP-seq",
+           ifelse(grepl("PE",name),"PE ChIP-seq","ChIP-exo")),
+         repl = ifelse(grepl("933",name) | grepl("937",name),"Rep-2","Rep-1"),
+         cond = ifelse(grepl("70-O2",name),"Exp - O_2",
+           ifelse(grepl("935",name) | grepl("937",name),"Stat + O_2","Exp + O_2")))
+
+pdf(file = file.path(figs_dir,"Landick_old_SCC.pdf"),width = 9, height = 4)
+ggplot(landick1,aes(shift,cross.corr,colour = cond,linetype = repl))+
+  geom_line(size = .6)+theme_bw()+facet_grid(~  prot)+
+  scale_color_manual(values = rev(r),name = "Growth condition")+
+  scale_linetype_manual(values = c(1,2),name = "Replicate")+
+  theme(legend.position = "top")+
+  geom_vline(xintercept =c( rl_exo,rl_set),linetype = 2)+    
+  xlab("Shift")+ylab("Strand Cross-Correlation (SCC)")      
+dev.off()
 
 
 ## landick biosample 2
 
+rl_exo = 51
+rl_set = 51
 
-
-
+landick2 <- scc %>% filter(grepl("land",name)) %>%
+  filter(grepl("139",name) | grepl("140",name) | grepl("131",name) | grepl("1320",name)) %>%
+  mutate(prot = ifelse(grepl("SE",name),"SE ChIP-seq",
+           ifelse(grepl("PE",name),"PE ChIP-seq","ChIP-exo")),
+         repl = ifelse(grepl("1311",name) | grepl("1314",name) |
+           grepl("1396",name) | grepl("1398",name),"Rep-1","Rep-2"),
+         rif = ifelse(grepl("1311",name) | grepl("1317",name) |
+           grepl("1396",name) | grepl("1400",name),"0 min.","20 min."))
+         
+                                                                           
+pdf(file = file.path(figs_dir,"Landick_new_SCC.pdf"),width = 9, height = 4)
+ggplot(landick2,aes(shift,cross.corr,colour = rif,linetype = repl))+
+  geom_line(size = .6)+theme_bw()+facet_grid(~  prot)+
+  scale_color_manual(values = rev(r),name = "Rif. time")+
+  scale_linetype_manual(values = c(1,2),name = "Replicate")+
+  theme(legend.position = "top")+
+  geom_vline(xintercept =c( rl_exo,rl_set),linetype = 2)+    
+  xlab("Shift")+ylab("Strand Cross-Correlation (SCC)")      
+dev.off()
+         
 
 
