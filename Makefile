@@ -5,17 +5,13 @@ load:
 
 # removes not necessary stuff
 clean:
-	rm -fr *~
-	rm -fr */*~
-	rm -fr */*/*~
+	find . -type f -name '*~' -delete
+	find . -type f -name '.*~' -delete
 	rm -f .RDataTmp
 	rm -f .Rhistory
 	rm -f */.Rhistory
-	rm -f inst/rscripts/*~
-	rm -f inst/rscripts/Ren/*~
 	rm -f inst/rscripts/*Rout
 	rm -f .RData
-	rm -f .*~
 
 clean_out:
 	rm -fr *Rout
