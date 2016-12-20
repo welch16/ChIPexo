@@ -15,6 +15,11 @@ opt = parse_args(OptionParser(option_list = optList))
 
 library(ChIPQC)
 library(parallel)
+library(base)
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 
 separateFiles <- function(ff)
 {
@@ -27,6 +32,8 @@ separateFiles <- function(ff)
 }
 
 opt$files = separateFiles(opt$files)
+
+print(opt$files)
 
 chipqc = mclapply(opt$files,ChIPQCsample,annotation = NULL,runCrossCor = TRUE,mc.cores = 10)
 opt$names = opt$names %>% strsplit(",") %>% unlist
