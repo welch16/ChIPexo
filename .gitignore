@@ -29,3 +29,4 @@ rmarkdown/auto
 inst/mace_analysis
 inst/peakzilla_analysis
 inst/gem_analysis
+other_QCmethods/*
