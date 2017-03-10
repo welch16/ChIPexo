@@ -35,7 +35,6 @@ exo = lapply(samp_reads,function(x)ExoData(reads = x, nregions = 1000,ntimes = 1
 
 baseexo = lapply(reads,function(x)ExoData(reads = x, nregions = 1000,ntimes = 100,mc.cores = 20))
 
-## source("~/Desktop/Docs/Code/ChIPexoQual/R/base_summaryStats.R")
 
 library(data.table)
 
@@ -43,8 +42,7 @@ ntimes = 1e3
 nregions = 1e3
 
 dt = lapply(exo,as.data.frame)
-dt = lapply(dt,as.data.table)
- 
+dt = lapply(dt,as.data.table) 
 dt = lapply(dt,function(x)x[,.(uniquePos,depth)])
 
 calculate_UParam <- function(stats,nregions,ntimes)
@@ -89,9 +87,7 @@ dev.off()
 
 
 beta1 = lapply(dt,calculate_UParam,nregions,ntimes)
-
 beta1 = mapply(function(x,y)x[,name := y],beta1,names(beta1),SIMPLIFY = FALSE)
-
 beta1 = rbindlist(beta1) %>% as.tbl %>% separate(name,into = c("repl","samp"),sep = "\\.") %>%
     mutate(samp.nume = as.numeric(gsub(",","",samp)),
            samp = factor(samp, levels = c("5,000,000","10,000,000","15,000,000","20,000,000")))
@@ -188,9 +184,53 @@ dev.off()
 ## print(u)
 ## dev.off()
 
+## ex = bigdt %>% filter(Rep == "Rep3") %>% group_by(samp)
+
+## source("~/Desktop/Docs/Code/ChIPexoQual/R/base_summaryStats.R")
+
+
+calculate_UParam2 <- function(stats,nregions,ntimes)
+{
+
+    calculate_UParam1 <- function(i,stats,nregions)
+    {
+        dt <- stats[sample(.N,nregions)]
+        model <- lm(depth ~ 0 + uniquePos + width , data = dt)
+        data.table(broom::tidy(model))
+    }
+
+    ss = mclapply(seq_len(ntimes),calculate_UParam1,stats,nregions,mc.cores = 20)
+    ss = rbindlist(ss)
+    ss[term == "uniquePos" , ]
+   
+}
+
+dt = lapply(exo,as.data.frame)
+dt = lapply(dt,as.data.table) 
+dt = lapply(dt,function(x)x[,.(uniquePos,depth,width)])
+
+
+beta1full = lapply(dt,calculate_UParam2,nregions,ntimes)
+beta1full = mapply(function(x,y)x[,name := y],beta1full,names(beta1full),SIMPLIFY = FALSE)
+
+beta1full = rbindlist(beta1full) %>% as.tbl %>% separate(name,into = c("repl","samp"),sep = "\\.") %>%
+    mutate(samp.nume = as.numeric(gsub(",","",samp)),
+           samp = factor(samp, levels = c("5,000,000","10,000,000","15,000,000","20,000,000")))
 
 
 
-ex = bigdt %>% filter(Rep == "Rep3") %>% group_by(samp)
 
+pdf(file.path(figs,"FoxA1_subsample_beta1_full_nested.pdf"))
+u = rbind(beta1 %>% mutate(lab = "beta2 == 0"),
+          beta1full %>% mutate(lab = "full")) %>%
+    ggplot(aes(lab,estimate,fill = lab))+geom_boxplot()+ylim(0,12)+facet_grid(repl ~ samp)+
+    scale_fill_brewer(palette = "Pastel1",name = "Replicate")+
+    theme(legend.position = "top",
+          axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())+
+    geom_abline(slope = 0,intercept = c(0,10) ,linetype = 2)+
+    ylab(expression(beta[1]))+ggtitle("FoxA1 in mouse liver")
+print(u)
+dev.off()
 

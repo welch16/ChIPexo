@@ -11,8 +11,11 @@ files = files[grep("TBP",files)]
 files = files[grep("sort",files)]
 files = files[grep("bai",files,invert = TRUE)]
 files = files[grep("chipseq",files,invert = TRUE)]
+files = files[grep("txt",files,invert = TRUE)]             
 
 library(parallel)
+
+options(mc.cores = 22)
 
 files = files[-4]
 
@@ -22,8 +25,10 @@ reads = lapply(reads,as,"GRanges")
 set.seed(12345)
 
 samp =c( seq_len(4) * 5e6 , seq(3,5) * 1e7)
-lvs = c("5,000,000","10,000,000","15,000,000","20,000,000",
-                                          "30,000,000","40,000,000","50,000,000")
+lvs = prettyNum( as.integer(samp),big.mark = ",")
+
+## lvs = c("5,000,000","10,000,000","15,000,000","20,000,000",
+##                                           "30,000,000","40,000,000","50,000,000")
 
 
 samp_reads = lapply(reads,function(x){
@@ -134,6 +139,7 @@ dev.off()
 
 
 bigdt = mapply(function(x,y)x[,name := y],dt,names(dt),SIMPLIFY = FALSE)
+
 bigdt = rbindlist(bigdt) %>% as.tbl %>% separate(name,into = c("Rep","samp"),sep = "\\.") %>%
     mutate(samp.nume = as.numeric(gsub(",","",samp)),
            samp = factor(samp, levels = lvs),
@@ -180,5 +186,67 @@ print(u)
 dev.off()
     
 
+calculate_UParam2 <- function(stats,nregions,ntimes)
+{
+
+    calculate_UParam1 <- function(i,stats,nregions)
+    {
+        dt <- stats[sample(.N,nregions)]
+        model <- lm(depth ~ 0 + uniquePos + width , data = dt)
+        data.table(broom::tidy(model))
+    }
+
+    ss = mclapply(seq_len(ntimes),calculate_UParam1,stats,nregions,mc.cores = 20)
+    ss = rbindlist(ss)
+    ss[term == "uniquePos" , ]
+   
+}
+
+dt = lapply(exo,as.data.frame)
+dt = lapply(dt,as.data.table) 
+dt = lapply(dt,function(x)x[,.(uniquePos,depth,width)])
 
 
+beta1full = lapply(dt,calculate_UParam2,nregions,ntimes)
+beta1full = mapply(function(x,y)x[,name := y],beta1full,names(beta1full),SIMPLIFY = FALSE)
+
+beta1full = rbindlist(beta1full) %>% as.tbl %>% separate(name,into = c("repl","samp"),sep = "\\.") %>%
+    mutate(samp.nume = as.numeric(gsub(",","",samp)),
+           samp = factor(samp, levels = lvs))
+
+
+pdf(file.path(figs,"TBPall_subsample_beta1_full_nested.pdf"))
+u = rbind(beta1 %>% mutate(lab = "beta2 == 0"),
+          beta1full %>% mutate(lab = "full")) %>%
+    ggplot(aes(lab,estimate,fill = lab))+geom_boxplot()+facet_grid(repl ~ samp)+
+    scale_fill_brewer(palette = "Pastel1",name = "Replicate")+
+    theme(legend.position = "top",
+          axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())+
+    geom_abline(slope = 0,intercept = c(0,50) ,linetype = 2)+
+    ylab(expression(beta[1]))+ggtitle("TBP in K562")
+print(u)
+u = rbind(beta1 %>% mutate(lab = "beta2 == 0"),
+          beta1full %>% mutate(lab = "full")) %>%
+    ggplot(aes(lab,estimate,fill = lab))+geom_boxplot()+facet_grid(repl ~ samp)+
+    scale_fill_brewer(palette = "Pastel1",name = "Replicate")+
+    theme(legend.position = "top",
+          axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())+
+    geom_abline(slope = 0,intercept = c(0,50) ,linetype = 2)+
+    ylab(expression(beta[1]))+ggtitle("TBP in K562")+scale_y_log10()
+print(u)
+u = rbind(beta1 %>% mutate(lab = "beta2 == 0"),
+          beta1full %>% mutate(lab = "full")) %>%
+    ggplot(aes(lab,estimate,fill = lab))+geom_boxplot()+facet_grid(repl ~ samp)+
+    scale_fill_brewer(palette = "Pastel1",name = "Replicate")+
+    theme(legend.position = "top",
+          axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())+
+    geom_abline(slope = 0,intercept = c(0,50) ,linetype = 2)+
+    ylab(expression(beta[1]))+ggtitle("TBP in K562")+ylim(0,800)
+print(u)
+dev.off()

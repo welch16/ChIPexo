@@ -14,6 +14,22 @@ thresh = c(1,5,25,50)
 
 reads = lapply(files,readGAlignments,param = NULL)
 
+## reads = list()
+## reads[[2]] = readGAlignments(files[2],param = NULL)
+
+options(mc.cores = 22)
+
+## exo = list()
+## exo[[2]] = ExoData(reads = reads[[2]])
+
+## island_depth = list()
+## island_depth[[2]] = mcols(exo[[2]])$depth
+
+## ecdf(island_depth[[2]])(thresh) * 100
+
+## > ecdf(island_depth[[2]])(thresh) * 100
+## [1] 16.85490 25.79139 32.33772 38.64425
+
 exoList = list()
 
 exoList[["rep1"]] = lapply(thresh,function(x){

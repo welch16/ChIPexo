@@ -91,5 +91,5 @@ exo_dir <- "/p/keles/ChIPexo/volume4/carroll_data/mouse/fasta_format_exo"
 
 mapply(write.table,fasta_formats,
        file.path(exo_dir,"sequences",
-                 gsub("sort.bam","_exo_peak_sequences.fna",basename(files))),
+                 gsub(".sort.bam","_exo_peak_sequences.fna",basename(files))),
   MoreArgs = list(quote = FALSE,row.names = FALSE,col.names = FALSE))

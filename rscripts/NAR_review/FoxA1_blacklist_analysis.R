@@ -209,6 +209,12 @@ ggplot(ll[term == "uniquePos"],
     theme(axis.title.x = element_blank(),
           axis.text.x = element_blank(),axis.ticks.x = element_blank(),
           legend.position = "top")+scale_color_brewer(palette = "Set1",name = "")
+ggplot(ll[term == "uniquePos"],
+       aes(blackl,estimate,colour = blackl))+geom_boxplot()+
+    facet_grid( . ~ repl)+ylab(expression(beta[1]))+scale_y_log10()+
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),axis.ticks.x = element_blank(),
+          legend.position = "top")+scale_color_brewer(palette = "Set1",name = "")
 ggplot(ll[term == "width"],
        aes(blackl,-estimate,colour = blackl))+geom_boxplot()+
     facet_grid( . ~ repl)+ylab(expression(beta[2]))+ylim(-.1,5)+
