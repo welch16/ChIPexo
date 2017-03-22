@@ -33,7 +33,7 @@ r = viridis(100,option = "D")
 bindata = files[grep("bins",files)] %>% read_tsv
 
 chipexo_chipseqPE_comparison = bindata %>%
-    ggplot(aes(ChIPseqPET,ChIPexo))+stat_binhex(bins = 150)+
+    ggplot(aes(ChIPseqPET,ChIPexo))+stat_binhex(bins = 100)+
     xlab("ChIP-seq (PE) counts")+ylab("ChIP-exo counts")+
     scale_x_log10()+scale_y_log10()+
     scale_fill_gradientn(colours = r,trans = 'log10',
@@ -51,7 +51,7 @@ ggsave(file.path(opt$outdr,"fig1C.png"),chipexo_chipseqPE_comparison)
 mapdata = files[grep("map",files)] %>% read_tsv %>%
     mutate(meanSq = varYall + meanYall^2)
 
-tiles = 100
+tiles = 50
 z = 1.96
 mapdata2 = mapdata %>% mutate(groups = ntile(uS,tiles) / tiles) %>%
     group_by(groups,sample) %>%
@@ -119,7 +119,6 @@ scc = scc %>% mutate(prot = ifelse(grepl("exo",sample),"ChIP-exo","ChIP-seq (SE)
 
 rr = brewer_pal(4,palette = "Set1")(4)[c(1,3)]
 
-
 sccplot = scc %>% ggplot(aes(shift,cross.corr,colour = sample))+
     geom_line(size = opt$line.width)+
     facet_grid( . ~ prot  )+geom_vline(xintercept = 36,linetype = 3,colour = "grey")+
@@ -128,9 +127,6 @@ sccplot = scc %>% ggplot(aes(shift,cross.corr,colour = sample))+
     scale_color_brewer(palette = "Dark2",name = "",
                        guide = guide_legend(nrow = 2))
     
-    
-    
-
 ggsave(file.path(opt$outdr,"fig1F.png"),sccplot)
 
 all = arrangeGrob(ggplot()+ggtitle("A")+theme(panel.border = element_blank()),
@@ -139,10 +135,10 @@ all = arrangeGrob(ggplot()+ggtitle("A")+theme(panel.border = element_blank()),
              mapplot,
              gcplot,
              sccplot,
-             ncol = 2,nrow = 3
+             ncol = 2,nrow = 3,heights = c(1,1.5,1.5)
              )
 
-ggsave(file = file.path(opt$outdr,"fig1.pdf"),all,width = 180,height = 280,units = "mm")
+ggsave(file = file.path(opt$outdr,"fig1.pdf"),all,width = 180,height = 240,units = "mm")
 
 
 

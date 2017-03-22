@@ -6,9 +6,11 @@ optList = list(
     make_option("--outdr", action = "store_true",type = "character",
                 default = "figs/figuresV2/fig4",
                 help = "Directory where all the figures are stored."),
+    make_option("--legend.size",action = "store_true",type = "numeric",default = 7,
+                help = "Text legend size for all figures"),
     make_option("--fig.width",action = "store_true",type = "numeric",default = 7,
                 help = "Width of the figure composed with all panels"),
-    make_option("--line.width",action = "store_true",type = "numeric",default = .8,
+    make_option("--line.width",action = "store_true",type = "numeric",default = 1,
                 help = "Plot line.width")    
 )
 
@@ -36,14 +38,14 @@ FOXA1_scores = files[grepl("FoxA1",files) &
                      grepl("FIMO",files)] %>% read_tsv
 
 foxA1_boxplot = FOXA1_scores %>%
-    ggplot(aes(Replicate,score,fill = Replicate))+geom_boxplot()+
-    facet_grid( . ~ K)+scale_fill_brewer(palette = "Pastel1")+
+    ggplot(aes(Replicate,score,colour = Replicate))+geom_boxplot()+
+    facet_grid( . ~ K)+scale_color_brewer(palette = "Set1",name = "Replicate")+
     ylab("FIMO scores")+
     theme(
-        legend.position = "none",
+        legend.position = "top",
         axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 90))+
-    ggtitle("A")
+    ggtitle("A")+scale_y_continuous(breaks = c(10,12,14,16))
 
 ggsave(file.path(opt$outdr,"fig4A.png"),foxA1_boxplot)
 
@@ -65,7 +67,7 @@ profiles =  prof %>%
                         labels = c("Reverse Rep-1","Forward Rep-1","Reverse Rep-2",
                                    "Forward Rep-2","Reverse Rep-3","Forward Rep-3"),name = "")+
     theme(legend.position = "top",
-          legend.text = element_text(size = 6))+
+          legend.text = element_text(size = opt$legend.size))+
     xlab("Position around motif start")+
     ylab("Average counts")+ggtitle("B")
 
@@ -78,10 +80,10 @@ FoxA1_peakPair = files[grepl("FoxA1",files) &
                        grepl("imbalance",files)] %>% read_tsv
 
 FSR_hist = FoxA1_peakPair %>%
-    ggplot(aes(FSR,fill = nmotif)) + geom_histogram(colour = "black",bins = 25)+
+    ggplot(aes(FSR,fill = nmotif)) + geom_histogram(colour = "black",bins = 21)+
     facet_grid( ~ repl)+
     theme(legend.position = "top",
-          legend.text = element_text(size = 6))+
+          legend.text = element_text(size = opt$legend.size))+
     scale_fill_brewer(palette = "Pastel2",
                       name = "Nr. of motifs")+
     ylab("ChIP regions overlapping peaks")+
@@ -105,12 +107,12 @@ TBP_scores = files[grepl("TBP",files) &
              
 
 TBP_boxplot = TBP_scores %>%
-    ggplot(aes(aux,score,fill = prot))+geom_boxplot()+
-    facet_grid( . ~ K)+scale_fill_brewer(palette = "Pastel2",name = "")+
+    ggplot(aes(aux,score,colour = prot))+geom_boxplot(outlier.size = .5)+
+    facet_grid( . ~ K)+scale_color_brewer(palette = "Dark2",name = "")+
     ylab("FIMO scores")+
     theme(
         legend.position = "top",
-        legend.text = element_text(size = 6),
+        legend.text = element_text(size = opt$legend.size),
         axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 90))+
     scale_x_discrete(labels = paste0("Rep-",c(1,2,3,1,2)))+
@@ -135,9 +137,9 @@ TBP_peakPair = files[grepl("TBP",files) &
 
                                                   
 FSR_hist21 = TBP_peakPair %>% filter(!grepl("Nexus",repl)) %>%
-    ggplot(aes(FSR,fill = as.factor(nmotif))) + geom_histogram(colour = "black",bins = 25)+
+    ggplot(aes(FSR,fill = as.factor(nmotif))) + geom_histogram(colour = "black",bins = 21)+
     facet_grid( ~ repl)+
-    theme(legend.position = "top",legend.text = element_text(size = 6))+
+    theme(legend.position = "top",legend.text = element_text(size = opt$legend.size))+
     scale_fill_brewer(palette = "Pastel2",
                       name = "Nr. of motis")+
     ylab("ChIP regions overlapping peaks")+
@@ -146,9 +148,9 @@ FSR_hist21 = TBP_peakPair %>% filter(!grepl("Nexus",repl)) %>%
 
 
 FSR_hist22 = TBP_peakPair %>% filter(grepl("Nexus",repl)) %>%
-    ggplot(aes(FSR,fill = as.factor(nmotif))) + geom_histogram(colour = "black",bins = 25)+
+    ggplot(aes(FSR,fill = as.factor(nmotif))) + geom_histogram(colour = "black",bins = 21)+
     facet_grid( ~ repl)+
-    theme(legend.position = "top",legend.text = element_text(size = 6))+
+    theme(legend.position = "top",legend.text = element_text(size = opt$legend.size))+
     scale_fill_brewer(palette = "Pastel2",
                       name = "Nr. of motifs")+
     ylab("ChIP regions overlapping peaks")+
@@ -177,10 +179,11 @@ all = arrangeGrob(arrangeGrob(foxA1_boxplot,nrow = 1,ncol = 1),
                   arrangeGrob(profiles,FSR_hist,nrow = 1,ncol = 2),
                   arrangeGrob(TBP_boxplot),
                   TBP_FSR,
-                  heights = c(.6,1,.8,.8))
+                  heights = c(.8,.9,.85,.85))
 
 ggsave(file = file.path(opt$outdr,"fig4.pdf"),all,
        width = 180,
-       height = 280,
+       height = 260,
        units = "mm")
+
 

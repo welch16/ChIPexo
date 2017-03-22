@@ -70,7 +70,7 @@ FSR = FSRdist %>% ggplot(aes(depth,FSR,colour =as.factor( quantiles)))+
     geom_line(,size =opt$line.width)+
     theme(legend.position = "top")+facet_grid( Repl ~ .)+
     ylab("Forward Strand Ratio (FSR)")+xlab("Min. number of reads")+
-    scale_color_brewer(palette = "Dark2",name = "Quantiles",
+    scale_color_brewer(palette = "Set1",name = "Quantiles",
                        guide = guide_legend(nrow = 2))+
     ggtitle("C")
 
