@@ -1,0 +1,87 @@
+
+R version 3.3.2 (2016-10-31) -- "Sincere Pumpkin Patch"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #!/usr/bin/env Rscript
+> 
+> library(optparse,quietly = TRUE)
+> 
+> optList = list(
++     make_option("--outdr", action = "store_true",type = "character",
++                 default = "figs/figuresV2/fig1",
++                 help = "Directory where all the figures are stored."),
++     make_option("--fig.width",action = "store_true",type = "numeric",default = 7,
++                 help = "Width of the figure composed with all panels"),
++     make_option("--line.width",action = "store_true",type = "numeric",default = .8,
++                 help = "Plot line.width")    
++ )
+> 
+> opt = parse_args(OptionParser(option_list = optList))
+> 
+> 
+> library(gridExtra)
+> library(tidyverse)
+Loading tidyverse: ggplot2
+Loading tidyverse: tibble
+Loading tidyverse: tidyr
+Loading tidyverse: readr
+Loading tidyverse: purrr
+Loading tidyverse: dplyr
+Conflicts with tidy packages ---------------------------------------------------
+combine(): dplyr, gridExtra
+filter():  dplyr, stats
+lag():     dplyr, stats
+> library(magrittr)
+
+Attaching package: ‘magrittr’
+
+The following object is masked from ‘package:purrr’:
+
+    set_names
+
+The following object is masked from ‘package:tidyr’:
+
+    extract
+
+> library(viridis)
+> library(scales)
+
+Attaching package: ‘scales’
+
+The following object is masked from ‘package:purrr’:
+
+    discard
+
+The following objects are masked from ‘package:readr’:
+
+    col_factor, col_numeric
+
+> 
+> indr = "data/figures/fig1"
+> 
+> files = list.files(indr,full.names = TRUE,pattern = "tsv")
+> 
+> 
+> theme_set(theme_bw())
+> 
+> r = viridis(100,option = "D")
+> 
+> bindata = files[grep("bins",files)] %>% read_tsv
+Error in if (grepl("\n", x)) { : argument is of length zero
+Calls: %>% ... <Anonymous> -> read_tsv -> read_delimited -> source_name
+Execution halted

@@ -52,7 +52,7 @@ theme_set(theme_bw())
 beta1 = scores %>%
     ggplot(aes(Repl,beta1,colour = protocol))+
     geom_boxplot(outlier.size = NA)+
-    facet_grid( . ~ protocol +Cell + TF, space = "free_x",scales = "free_x")+ggtitle("A")+
+    facet_grid( . ~ protocol + TF + Cell, space = "free_x",scales = "free_x")+ggtitle("A")+
     theme(legend.position = "top",
           axis.text.x = element_text(angle =90,vjust =.5),
           axis.title.x = element_blank(),
@@ -68,7 +68,7 @@ ggsave(file.path(opt$outdr,"fig5A.png"),width = 12,beta1)
 beta2 = scores %>%
     ggplot(aes(Repl,-beta2,colour = protocol))+
     geom_boxplot(outlier.size = NA)+
-    facet_grid( . ~ protocol + Cell + TF, space = "free_x",scales = "free_x")+ggtitle("B")+
+    facet_grid( . ~ protocol + TF + Cell, space = "free_x",scales = "free_x")+ggtitle("B")+
     theme(legend.position = "none",
           axis.text.x = element_text(angle =90,vjust =.5),
           axis.title.x = element_blank(),

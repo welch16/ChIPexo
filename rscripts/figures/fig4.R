@@ -44,7 +44,7 @@ foxA1_boxplot = FOXA1_scores %>%
     theme(
         legend.position = "top",
         axis.title.x = element_blank(),
-        axis.text.x = element_text(angle = 90))+
+        axis.text.x = element_text(angle = 90,vjust = .5))+
     ggtitle("A")+scale_y_continuous(breaks = c(10,12,14,16))
 
 ggsave(file.path(opt$outdr,"fig4A.png"),foxA1_boxplot)
@@ -88,7 +88,7 @@ FSR_hist = FoxA1_peakPair %>%
                       name = "Nr. of motifs")+
     ylab("ChIP regions overlapping peaks")+
     xlab("Forward Strand Ratio (FSR)")+
-    scale_x_continuous(breaks = c(0,.5,1))
+    scale_x_continuous(breaks = c(0,.5,1))+ggtitle("C")
     
 ggsave(file.path(opt$outdr,"fig4C.png"),FSR_hist)    
 
@@ -114,7 +114,7 @@ TBP_boxplot = TBP_scores %>%
         legend.position = "top",
         legend.text = element_text(size = opt$legend.size),
         axis.title.x = element_blank(),
-        axis.text.x = element_text(angle = 90))+
+        axis.text.x = element_text(angle = 90,vjust = .5))+
     scale_x_discrete(labels = paste0("Rep-",c(1,2,3,1,2)))+
     ggtitle("D")
 
