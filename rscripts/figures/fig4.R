@@ -141,7 +141,7 @@ FSR_hist21 = TBP_peakPair %>% filter(!grepl("Nexus",repl)) %>%
     facet_grid( ~ repl)+
     theme(legend.position = "top",legend.text = element_text(size = opt$legend.size))+
     scale_fill_brewer(palette = "Pastel2",
-                      name = "Nr. of motis")+
+                      name = "Nr. of motifs")+
     ylab("ChIP regions overlapping peaks")+
     xlab("Forward Strand Ratio (FSR)")+
     scale_x_continuous(breaks = c(0,.5,1))
@@ -187,3 +187,6 @@ ggsave(file = file.path(opt$outdr,"fig4.pdf"),all,
        units = "mm")
 
 
+TBP_peakPair %>% group_by(repl) %>% summarize(nRegions = n(),  nBalanced  = sum( between(FSR,0.3,.7 ))) %>%
+    mutate(propBalance =  nBalanced / nRegions  * 100,
+           propImbalanced = (100 - propBalance) )
