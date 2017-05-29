@@ -6,19 +6,31 @@ library(GenomicAlignments)
 library(devtools)
 library(parallel)
 
-load_all("~/Desktop/Docs/Code/Segvis")
-load_all("~/Desktop/Docs/Code/ChIPexoQual")
+## load_all("~/Desktop/Docs/Code/Segvis")
+## load_all("~/Desktop/Docs/Code/ChIPexoQual")
 
 data_dir <- "/p/keles/ChIPexo/volume4/carroll_data/mouse"
-files <- list.files(data_dir,pattern = "sort.bam",full.names = TRUE,include.dirs = TRUE)
-files <- files[grep("bai",files,invert = TRUE)]
+data_dir <- "data/ChIPexo_QC_runs"
 
-exo <- lapply(files,create_exo_experiment,parallel = TRUE)
-stats <- lapply(exo,summary_stats)
+files <- list.files(data_dir,full.names = TRUE,include.dirs = TRUE)
+files <- files[grep("mouse",files)]
 
-exo_reads <- lapply(exo,reads)
-readlength <- mclapply(exo_reads,function(x)table(width(x)),
-                mc.cores =3)
+load_file <- function(x){
+  load(x)
+  return(ext_stats[["stats"]])
+}
+
+stats <- mclapply(files,load_file,mc.cores = 3)
+names(stats) <- gsub(".RData","",basename(files))
+
+
+
+## exo <- lapply(files,create_exo_experiment,parallel = TRUE)
+## stats <- lapply(exo,summary_stats)
+
+## exo_reads <- lapply(exo,reads)
+## readlength <- mclapply(exo_reads,function(x)table(width(x)),
+##                 mc.cores =3)
 
 rl <- 36 ## most repeated read length
 

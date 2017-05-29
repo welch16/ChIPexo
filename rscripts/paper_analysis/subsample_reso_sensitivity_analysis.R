@@ -67,7 +67,7 @@ names(fit.exo_list) = names(peakList.exo)
 names(fit.PET_list) = names(peakList.PET)
 names(fit.SET_list) = names(peakList.SET)
 
-seed = "23456"
+seed = "12345"
 rep = 2
 maxdist = 400
 mm = 3000
@@ -292,7 +292,8 @@ p = ggplot(result_rene,aes(Seq,Resolution,colour = Seq))+
   theme_bw()+
   theme(legend.position = "top",plot.title = element_text(hjust = 0),
         axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())+
+        axis.ticks.x = element_blank(),
+        legend.text = element_text(size = 6))+
   scale_color_brewer(palette = "Set1",name = "")+ggtitle("D")
 u = print(p)
 dev.off()

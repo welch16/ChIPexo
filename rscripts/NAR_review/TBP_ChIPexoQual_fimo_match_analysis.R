@@ -14,14 +14,34 @@ files = files[grep("txt",files,invert = TRUE)]
 files = files[grep("chipseq",files,invert = TRUE)]
 
 library(parallel)
+library(readr)
 
 options("mc.cores" = 22)
 
-reads = files %>% lapply(readGAlignments,param = NULL)
-reads = reads %>% mclapply(as,"GRanges")
-names(reads) = c(paste0("Exo",seq_len(3)),paste0("Nexus",seq_len(2)))
 
-exo = lapply(reads,function(x)ExoData(reads =  x))
+dr = "/p/keles/ChIPexo/volume4"
+
+files = list.files("data/figures/fig5",full.names  = TRUE,pattern = "TBP")
+files = files[grep("0M.",files,invert = TRUE)]
+
+scorefiles = files[grep("scores",files)]
+statfiles = files[grep("stat",files)] 
+
+names(scorefiles) = c(paste0("Nexus",seq_len(2)),
+                      paste0("Exo",seq_len(3)))
+
+names(statfiles) = names(scorefiles)
+
+stats = lapply(statfiles,read_tsv)
+scores = lapply(scorefiles,read_tsv)
+
+
+
+## reads = lapply(files,readGAlignments,param = NULL)
+## reads = reads %>% mclapply(as,"GRanges")
+## names(reads) = c(paste0("Exo",seq_len(3)),paste0("Nexus",seq_len(2)))
+
+## exo = lapply(reads,function(x)ExoData(reads =  x))
 
 peakfiles = list.files(dr,full.names = TRUE,recursive = TRUE,pattern = "peaks")
 peakfiles = peakfiles[grep("venters",peakfiles)]
@@ -45,8 +65,15 @@ peaks = lapply(peaks,function(x){
 ## join all peak regions together
 all_peaks = Reduce(c,peaks) %>% reduce
 
-exo_peaks = mclapply(exo,subsetByOverlaps,all_peaks)
-readlength = reads %>% sapply(function(x)x %>% width %>% median)
+exo = stats %>% lapply(function(x)
+    GRanges(seqnames = x$seqnames,
+            ranges = IRanges(
+                start = x$start,end = x$end)))
+
+exo_peaks = mclapply(exo,subsetByOverlaps,all_peaks,type = "any")
+readlength = 42
+
+#readlength = reads %>% sapply(function(x)x %>% width %>% median)
 
 ## common sense filter
 
@@ -68,6 +95,7 @@ fimofiles = list.files(dr,pattern = "fimo",recursive = TRUE,full.names = TRUE)
 fimofiles = fimofiles[grep("txt",fimofiles)]
 fimofiles = fimofiles[grep("fimo_peaks",fimofiles)]
 fimofiles = fimofiles[grep("FOXA1",fimofiles,invert = TRUE)]
+fimofiles  = fimofiles[grep("jaspar2",fimofiles)]
 fimo = lapply(fimofiles,read_delim,delim = "\t")
 names(fimo) = c(paste0("Nexus",1:2),paste0("Exo",1:3))
 
@@ -185,6 +213,11 @@ imbalance = mapply(strand_imbalance_fimo,exo_peaks,fimo,names(fimo),SIMPLIFY = F
 r4 = c("darkblue","firebrick3","blue","red","lightblue","lightpink")
 
 pal = RColorBrewer::brewer.pal(n = 8,"Set2")
+
+
+pdf("figs/NAR_review/TBP_fimo_analysis_around_peaks_det2.pdf",width = 9,height = 6)
+print(score_boxplot(all_fimo,c(50,100,250,500,1e3,2e3,4e3)))
+dev.off()
 
 pdf("figs/NAR_review/TBP_fimo_analysis_around_peaks_det.pdf",width = 9,height = 6)
 print(score_boxplot(all_fimo,c(50,100,250,500,1e3,2e3,4e3)))

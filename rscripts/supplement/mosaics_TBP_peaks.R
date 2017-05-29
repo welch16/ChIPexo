@@ -76,12 +76,3 @@ peaks <- lapply(fit_TBP,call_peaks,thres , fdr)
 
 save(peaks,file = "data/TBP_peaks.RData")
 
-#fit_ER <- lapply(files[grep("ERR",files)],fit_mosaics,addfiles,"rMOM")
-
-## fit_TBP <- lapply(files[grep("TBP_K562",files)],fit_mosaics,addfiles,"matchLow")
-
-## #peaks_ER <- lapply(fit_ER,call_peaks,thres,fdr)
-## peaks_TBP <- lapply(fit_TBP,call_peaks,thres,fdr)
-
-## #save(peaks_ER,file = "data/ChIPexo_ER_peaks.RData")
-## save(peaks_TBP,file = "data/ChIPexo_TBP_peaks.RData")

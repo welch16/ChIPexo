@@ -69,8 +69,10 @@ exo_peaks = exo_peaks %>% lapply(function(x)x[width(x) >= K * rl])
 ## load fimo files
 fimofiles = list.files(dr,pattern = "fimo",recursive = TRUE,full.names = TRUE)
 fimofiles = fimofiles[grep("txt",fimofiles)]
-fimofiles = fimofiles[grep("fimo_peaks",fimofiles)]
+fimofiles = fimofiles[grep("tbp",fimofiles)]
+fimofiles = fimofiles[grep("fimo_peaks",fimofiles,invert = TRUE)]
 fimofiles = fimofiles[grep("FOXA1",fimofiles,invert = TRUE)]
+
 fimo = lapply(fimofiles,read_delim,delim = "\t")
 names(fimo) = c(paste0("Nexus",1:2),paste0("Exo",1:3))
 

@@ -5,24 +5,26 @@ library(data.table)
 library(GenomicAlignments)
 library(devtools)
 library(parallel)
+library(ChIPexoQual)
+library(magrittr)
 
-load_all("~/Desktop/Docs/Code/ChIPexoQual")
+
+## load_all("~/Desktop/Docs/Code/ChIPexoQual")
 
 data_dir <- "data/ChIPexo_QC_runs"
 files <- list.files(data_dir,full.names = TRUE)
-
 files <- files[grep("K562",files)]
 files <- files[grep("TBP",files)]
 files <- files[grep("bai",files,invert = TRUE)]
 files <- files[grep("TBP",files)]
-files <- files[-7]
+
+files <- files[grep("subsa",files,invert = TRUE)]
+
 
 load_file <- function(x){
   load(x)
   return(ext_stats[["stats"]])
 }
-
-files <- files[grep("samp",files,invert = TRUE)]
 
 stats <- mclapply(files,load_file,mc.cores = 22)
 names(stats) <- gsub(".RData","",basename(files))
@@ -36,8 +38,9 @@ stats <- lapply(stats,function(x)x[between(width,rl,2e3)])
 stats <- lapply(stats,function(x)x[f > 0 & r > 0])
 
 ## 3 - deeper regions
-stats <- lapply(stats,function(x){
-  mm <- x[,median(depth)]
+stats <- lapply(stats,function(x){  
+    mm <- x[,median(depth)]
+    message(mm)
   return(x[depth > mm])})
 
 

@@ -1,4 +1,3 @@
-
 rm(list = ls())
 
 library(data.table)
@@ -15,7 +14,7 @@ files <- files[grep("bai",files,invert = TRUE)]
 reads <- mclapply(files,readGAlignments,param = NULL,mc.cores = 3)
 names(reads) <- gsub(".sort.bam","",basename(files))
 
-reads <- lapply(reads,as,"GRanges")
+reads <- mclapply(reads,as,"GRanges",mc.cores = 3 )
 
 exo_dir <- "/p/keles/ChIPexo/volume4/carroll_data/mouse/fasta_format_exo"
 
@@ -238,10 +237,6 @@ peaks <- lapply(peaks,function(x)x[,1:3,with = FALSE])
 peaks <- lapply(peaks,function(x){
   setnames(x,names(x),c("seqnames","start","end"))
   return(ChIPUtils::dt2gr(x))})
-
-
-
-
 
 regions <- lapply(fimo,
         function(x)ChIPUtils::dt2gr(x[,.(seqnames,start,end)]))

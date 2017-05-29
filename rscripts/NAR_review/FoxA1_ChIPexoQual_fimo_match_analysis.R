@@ -77,10 +77,9 @@ exo_peaks = exo_peaks %>% lapply(function(x)x[width(x) >= K * rl])
 fimofiles = list.files(dr,pattern = "fimo",recursive = TRUE,full.names = TRUE)
 fimofiles = fimofiles[grep("carroll",fimofiles)]
 fimofiles = fimofiles[grep("txt",fimofiles)]
-fimofiles = fimofiles[grep("FOXA1",fimofiles)]
-fimofiles = fimofiles[grep("fimo_peaks",fimofiles)]
+fimofiles = fimofiles[grep("FoxA1",fimofiles)]
 fimo = lapply(fimofiles,read_delim,delim = "\t")
-names(fimo) = names(exo)
+names(fimo) = paste0("Rep",seq_along(fimo))
 
 library(ggplot2)
 library(tidyr)
@@ -112,7 +111,7 @@ score_boxplot <- function(all_fimo,topKcuts,ylims = NULL)
 
 }
 
-
+pdf("figs/NAR_review/FoxA1_fimo_analysis_around_peaks_full.pdf",width = 9,height = 6)
 score_boxplot(all_fimo,c(100,500,1e3,2e3), ylims = c(12.5,16.5)) ; dev.off()
 
 ## profiles

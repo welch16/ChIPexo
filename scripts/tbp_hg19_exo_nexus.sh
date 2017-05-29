@@ -1,4 +1,4 @@
-#1/bin/sh
+#!/bin/sh
 
 basedir=/p/keles/ChIPexo/volume4/tbp_analysis
 seqdir=$basedir/sequences

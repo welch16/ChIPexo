@@ -3,31 +3,44 @@ rm(list = ls())
 
 library(ChIPexoQual)
 library(magrittr)
+library(readr)
 
-dr = "/p/keles/ChIPexo/volume4"
+dr = "data/figures/fig5"
 
 files = list.files(dr,recursive = TRUE,full.names = TRUE)
 files = files[grep("carroll",files)]
-files = files[grep("bam",files)]
-files = files[grep("mouse",files)]
-files = files[grep("sort",files)]
-files = files[grep("bai",files,invert = TRUE)]
-files = files[grep("txt",files,invert = TRUE)]
+files = files[grep("Fox",files)]
+files = files[grep("stats",files)]
 
 library(parallel)
-
 options("mc.cores" = 22)
 
-reads = files %>% mclapply(readGAlignments,param = NULL)
-reads = reads %>% mclapply(as,"GRanges")
-names(reads) = paste0("Rep",c(3,1,2))
 
-exo = lapply(reads,function(x)ExoData(reads =  x))
+stats = files %>% mclapply(read_tsv)
 
-peakfiles = list.files(dr,full.names = TRUE,recursive = TRUE,pattern = "peaks")
+## files = files[grep("sort",files)]
+## files = files[grep("bai",files,invert = TRUE)]
+## files = files[grep("txt",files,invert = TRUE)]
+
+
+## reads = files %>% mclapply(readGAlignments,param = NULL)
+## reads = reads %>% mclapply(as,"GRanges")
+## names(reads) = paste0("Rep",c(3,1,2))
+
+## exo = lapply(reads,function(x)ExoData(reads =  x))
+
+exo = stats %>% lapply(function(x)
+    GRanges(seqnames = x$seqnames,
+            ranges = IRanges(
+                start = x$start,end = x$end)))
+names(exo) = paste0("Rep",seq_len(3))
+
+
+peakdr = "/p/keles/ChIPexo/volume4"
+peakfiles = list.files(peakdr,full.names = TRUE,recursive = TRUE,pattern = "peaks")
 peakfiles = peakfiles[grep("mouse",peakfiles)]
 
-library(readr)
+
 library(dplyr)
 library(data.table)
 
@@ -46,7 +59,11 @@ names(peaks) = paste0("Rep",c(3,1,2))
 all_peaks = Reduce(c,peaks) %>% reduce
 
 exo_peaks = mclapply(exo,subsetByOverlaps,all_peaks)
-readlength = reads %>% sapply(function(x)x %>% width %>% median)
+
+readlength = exo %>% sapply(function(x)min(width(x)))
+
+
+#    reads %>% sapply(function(x)x %>% width %>% median)
 
 ## common sense filter
 
@@ -88,6 +105,11 @@ fasta_formats = mapply(function(nms,seqs)paste0(">",nms,"\n",seqs),
                         nms,sequences,SIMPLIFY = FALSE)
 
 exo_dir <- "/p/keles/ChIPexo/volume4/carroll_data/mouse/fasta_format_exo"
+
+mapply(write.table,fasta_formats,
+       file.path(exo_dir,"sequences",
+                 gsub("_stats.tsv","_exo_peak_sequences2.fna",basename(files))),
+  MoreArgs = list(quote = FALSE,row.names = FALSE,col.names = FALSE))
 
 mapply(write.table,fasta_formats,
        file.path(exo_dir,"sequences",

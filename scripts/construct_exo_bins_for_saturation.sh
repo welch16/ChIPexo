@@ -1,6 +1,6 @@
 #!/bin/sh
 
-indir=/p/keles/ChIPexo/volume6/K12/saturation
+indir=/p/keles/ChIPexo/volume6/K12/saturation2
 fragLen=150
 binSize=150
 seed=$1
