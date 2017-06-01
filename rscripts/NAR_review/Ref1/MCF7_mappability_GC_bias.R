@@ -21,19 +21,29 @@ infiles = list.files(work_dir,full.names = TRUE,recursive = TRUE)
 infiles = infiles[grep("sort",infiles)]
 infiles = infiles[grep("bai",infiles,invert = TRUE)]
 
-reads = mclapply(infiles,ChIPUtils:::create_reads,mc.cores =8)
+infiles = infiles[grep("ERR",infiles)]
+infiles = infiles[grep("txt",infiles,invert = TRUE)]
 
-chrom.sizes = read_delim("/p/keles/SOFTWARE/hg19.chrom.sizes",delim = "\t",col_names =FALSE)
-chrom.sizes = GRanges(seqnames = chrom.sizes$X1,
-                      ranges = IRanges(start = 1 , end = chrom.sizes$X2))
+reads = mclapply(infiles,readGAlignments,param = NULL)
+reads = lapply(reads,as,"GRanges")
+reads = lapply(reads,resize, 200)
 
-bins = mclapply(reads,function(x){
-    ChIPUtils:::create_bins(200,reads = x,chrom = chrom.sizes, frag_len = 200)},mc.cores = 8)
+chrom.sizes = read_delim("/p/keles/SOFTWARE/hg19.chrom.sizes",
+                         delim = "\t",col_names =FALSE)
 
-binsDF = lapply(bins,function(x)tibble(chr = as.character(seqnames(x)),start = as.integer(start(x)),
-                                       counts = as.integer(x$tagCounts)))
+bins = ChIPUtils::create_bins(200,chrom.sizes)
 
-depth = lapply(reads,function(x)x@nReads)
+bins = lapply(reads,function(x){
+    mcols(bins)$counts = countOverlaps(bins,x)
+    bins})
+
+binsDF = lapply(bins,
+                function(x)
+                    tibble(chr = as.character(seqnames(x)),
+                           start = as.integer(start(x)),
+                           counts = as.integer(x$counts)))
+
+depth = lapply(reads,length)
 
 write_bins <- function(bin,depth,file)
 {
@@ -60,33 +70,62 @@ read_bins <- function(file)
 }
 
 binfiles = list.files(file.path(work_dir,"bins"),full.names = TRUE)
+binfiles = binfiles[grep("ERR",binfiles)]
 
 bins = mclapply(binfiles,read_bins,mc.cores = 8)
 
-## bin.exo <- readBins( c("chip","M","GC","N"),
-## 	c( "/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/ChIP-exo/CTCF.bowtie_fragL200_bin200.txt",
-## 	"/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/map50/map50_fragL200_bin200.txt",
-## 	"/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/GC/GC_fragL200_bin200.txt",
-## 	"/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/N/N_fragL200_bin200.txt" ) )
 
-## bin.seq <- readBins( c("chip","input","M","GC","N"),
-## 	c( "/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/ChIP-seq_Crawford/CTCF_Crawford.bowtie_fragL200_bin200.txt",
-## 	"/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/Input_Crawford/Input_Crawford.bowtie_fragL200_bin200.txt",
-## 	"/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/map50/map50_fragL200_bin200.txt",
-## 	"/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/GC/GC_fragL200_bin200.txt",
-## 	"/NO_BACKUP/KelesGroup_DongjunChung/ChIP-exo/CTCF/raw_data/N/N_fragL200_bin200.txt" ) )
-
-
-## Rlist <- system( "ls /u/w/e/welch/Desktop/Docs/packages/mosaics/R/*.R", intern=TRUE )
-## for ( i in 1:length(Rlist) ) {
-## 	source( Rlist[i] )
-## }
-
+computeStat <- function( Y, S )
+{    
+    # construct unique M/GC pair
+    
+    tmp <- cbind( Y, S )
+    tempdf <- within( as.data.frame(tmp), {S <- factor(S)} )    
+    ySubList <- with( tempdf, split(Y, S) )  
+    
+    # calculate strata-specific parameters
+    
+    yStatList <- lapply( ySubList, function(Y) {
+            Y <- as.numeric( as.vector(Y) )
+            nitem <- length(Y)
+            nitemgeq0 <- length( Y[Y!=0] )
+            p0 <- length(which( Y==0 )) / length(Y)
+            p1 <- length(which( Y==1 )) / length(Y)
+            meanYgeq0 <- mean( Y[Y!=0],na.rm = TRUE )
+            varYgeq0 <- var( Y[Y!=0] ,na.rm = TRUE)
+            medYgeq0 <- median( Y[Y!=0],na.rm = TRUE )
+            meanYall <- mean(Y,na.rm = TRUE)
+            varYall <- var(Y,na.rm = TRUE)
+            
+            result <- c( nitem, nitemgeq0, p0, p1,
+                meanYgeq0, varYgeq0, medYgeq0, meanYall, varYall )
+            
+            return( result )
+        }
+    )
+    yStatMat <- matrix( unlist(yStatList), ncol = 9, byrow = TRUE )
+    
+    # construct summary
+    
+    yStats <- list( uS = as.numeric(as.vector(names(ySubList))),
+        nitem = as.numeric(as.vector(yStatMat[, 1])),
+        nitemgeq0 = as.numeric(as.vector(yStatMat[, 2])),
+        p0 = as.numeric(as.vector(yStatMat[, 3])),
+        p1 = as.numeric(as.vector(yStatMat[, 4])), 
+        meanYgeq0 = as.numeric(as.vector(yStatMat[, 5])), 
+        varYgeq0 = as.numeric(as.vector(yStatMat[, 6])), 
+        medYgeq0 = as.numeric(as.vector(yStatMat[, 7])),
+        meanYall = as.numeric(as.vector(yStatMat[, 8])),
+        varYall = as.numeric(as.vector(yStatMat[, 9]))
+    )
+        
+    return(yStats)
+}
 
 calculate_stats <- function(bin)
 {
-    statM = mosaics:::.computeStat( Y=tagCount(bin), S=mappability(bin) )
-    statGC = mosaics:::.computeStat( Y=tagCount(bin), S=gcContent(bin) )
+    statM = computeStat( Y=tagCount(bin), S=mappability(bin) )
+    statGC = computeStat( Y=tagCount(bin), S=gcContent(bin) )
     out = list(map = statM , GC = statGC)
     out
 }
@@ -116,7 +155,7 @@ generate_plot <- function(stat,name,ll)
     p = ggplot(stat %>% filter(lab == ll & abs(ub - lb) < 10),
                aes(uS,ymin = lb,ymax = ub)) + geom_linerange()+
         geom_point(aes(x = uS,y = meanYall))+
-        xlim(0,1)+
+        xlim(0,1)+theme_bw()+
         ylab("Mean ChIP tag count")+ggtitle(name)
     if(ll == "GC"){
         p + xlab("GC content score")+
@@ -126,9 +165,11 @@ generate_plot <- function(stat,name,ll)
     }
 }
 
-nms = c("ChIP-exo Rep-1","ChIP-exo Rep-2","ChIP-exo Rep-3",
-        "ChIP-seq Rep-1","ChIP-seq Rep-2","ChIP-seq Rep-3",
-        "ChIP-seq Input")
+nms = c("ChIP-exo Rep-1","ChIP-exo Rep-2","ChIP-exo Rep-3")
+
+## ,
+##         "ChIP-seq Rep-1","ChIP-seq Rep-2","ChIP-seq Rep-3",
+##         "ChIP-seq Input")
 
 
 
@@ -136,11 +177,11 @@ gc = mapply(generate_plot,stats,nms,MoreArgs = list("GC"),SIMPLIFY = FALSE)
 map = mapply(generate_plot,stats,nms,MoreArgs = list("map"),SIMPLIFY = FALSE)
 
 
-pdf("figs/NAR_review/Eukaryotic_biases/MCF7_GC.pdf")
+pdf("figs/NAR_review/Eukaryotic_biases/MCF7_GC_exo.pdf")
 u = lapply(gc,print)
 dev.off()
 
-pdf("figs/NAR_review/Eukaryotic_biases/MCF7_map.pdf")
+pdf("figs/NAR_review/Eukaryotic_biases/MCF7_map_exo.pdf")
 u = lapply(map,print)
 dev.off()
 
