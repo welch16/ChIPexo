@@ -12,7 +12,11 @@ basedr=/p/keles/ChIPexo/volume4
 # FoxA1 mouse - carroll
 indr=$basedr/carroll_data/mouse
 
-$pipeline --readsfile $indr/ERR336935.sort.bam --nregions $nregions --ntimes $ntimes --statsfile $outdr/carroll_FoxA1_mouseliver_Rep3_stats.tsv --scoresfile $outdr/carroll_FoxA1_mouseliver_Rep3_scores.tsv --cores $cores
+$pipeline --readsfile $indr/ERR336935.sort.bam \
+	  --nregions $nregions --ntimes $ntimes \
+	  --statsfile $outdr/carroll_FoxA1_mouseliver_Rep3_stats.tsv \
+	  --scoresfile $outdr/carroll_FoxA1_mouseliver_Rep3_scores.tsv \
+	  --cores $cores
 $pipeline --readsfile $indr/ERR336942.sort.bam --nregions $nregions --ntimes $ntimes --statsfile $outdr/carroll_FoxA1_mouseliver_Rep1_stats.tsv --scoresfile $outdr/carroll_FoxA1_mouseliver_Rep1_scores.tsv --cores $cores
 $pipeline --readsfile $indr/ERR336956.sort.bam --nregions $nregions --ntimes $ntimes --statsfile $outdr/carroll_FoxA1_mouseliver_Rep2_stats.tsv --scoresfile $outdr/carroll_FoxA1_mouseliver_Rep2_scores.tsv --cores $cores 
 

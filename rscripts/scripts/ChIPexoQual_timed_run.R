@@ -65,4 +65,5 @@ out = tibble(
              ),
     cores  = opt$mc.cores)
 
-write_tsv(out,path = opt$outfile)
+readr::write_tsv(x = out,path = opt$timefile)
+
