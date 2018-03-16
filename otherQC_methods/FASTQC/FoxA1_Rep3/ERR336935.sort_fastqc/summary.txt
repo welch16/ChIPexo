@@ -1,0 +1,11 @@
+PASS	Basic Statistics	ERR336935.sort.bam
+PASS	Per base sequence quality	ERR336935.sort.bam
+PASS	Per sequence quality scores	ERR336935.sort.bam
+WARN	Per base sequence content	ERR336935.sort.bam
+PASS	Per sequence GC content	ERR336935.sort.bam
+PASS	Per base N content	ERR336935.sort.bam
+PASS	Sequence Length Distribution	ERR336935.sort.bam
+FAIL	Sequence Duplication Levels	ERR336935.sort.bam
+PASS	Overrepresented sequences	ERR336935.sort.bam
+PASS	Adapter Content	ERR336935.sort.bam
+WARN	Kmer Content	ERR336935.sort.bam
